@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Akses_usr extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'id_usr',
+        'id_role',
+        'id_menu',
+        'hak_akses'
+    ];
 }
