@@ -14,8 +14,13 @@ return new class extends Migration
     public function up()
     {
         Schema::create('akses_usrs', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id_akses');
+            $table->integer('id_usr');
+            $table->integer('id_role');
+            $table->integer('id_menu');
+            $table->tinyInteger('hak_akses')->default(0);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
