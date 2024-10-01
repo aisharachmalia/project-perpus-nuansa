@@ -22,5 +22,8 @@ class RoleSeeder extends Seeder
         Role::create([
             'role_nama' => 'Admin',
         ]);
+        Role::create([
+            'role_nama' => 'Petugas',
+        ]);
     }
 }
