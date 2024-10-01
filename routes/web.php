@@ -45,6 +45,15 @@ Route::post('/lupa-password',[App\Http\Controllers\Auth\ForgotPasswordController
 //
 Auth::routes();
 
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::prefix('data-master')->group(function () {
+    Route::get('/guru', [App\Http\Controllers\GuruController::class, 'pageGuru'])->name('data_master.guru');
+    Route::post('/guru/add', [App\Http\Controllers\GuruController::class, 'addGuru'])->name('data_master.guru.add');
+    Route::get('/guru/show/{id}', [App\Http\Controllers\GuruController::class, 'showGuru'])->name('data_master.guru.show');
+    Route::put('/guru/edit/{id}', [App\Http\Controllers\GuruController::class, 'editGuru'])->name('data_master.guru.edit');
+    Route::delete('/guru/delete/{id}', [App\Http\Controllers\GuruController::class, 'deleteGuru'])->name('data_master.guru.delete');
+});
 Route::get('/forgot-password',[App\Http\Controllers\WebController::class, 'pageForgotPassword'])->name('forgot_password');
 Route::post('/lupa-password',[ForgotPasswordController::class, 'lupaPassword'])->name('lupa_pass');
 Route::get('/reset-password/{id?}',[App\Http\Controllers\WebController::class, 'pageResetPassword'])->name('form_reset_password');
