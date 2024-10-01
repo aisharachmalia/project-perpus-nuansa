@@ -30,13 +30,12 @@ class LoginController extends Controller
             //Validasi
             $rules = [
                 'usr_username' => 'required',
-                'password' => 'required|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/',
+                'password' => 'required',
             ];
 
             $messages = [
                 'usr_username.required' => 'Username harus di isi.',
                 'password.required' => 'Password harus di isi.',
-                'password.regex' => 'Minimal 8 huruf, Harus ada huruf besar, kecil , angka dan karakter spesial.',
             ];
 
             $this->validate($request, $rules, $messages);
