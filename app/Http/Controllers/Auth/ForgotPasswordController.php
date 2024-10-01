@@ -22,7 +22,7 @@ class ForgotPasswordController extends Controller
     |
     */
 
-    public function pohoPassword(Request $request)
+    public function lupaPassword(Request $request)
     {
         try {
             // Validasi
