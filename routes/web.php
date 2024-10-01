@@ -5,7 +5,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\AksesUserController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\WebController;
-
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
