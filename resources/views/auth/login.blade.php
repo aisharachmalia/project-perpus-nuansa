@@ -117,3 +117,23 @@
         });
     </script>
 @endif
+@if (session('success_ganti_password'))
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: '{{ session('success_ganti_password') }}',
+            text: 'Anda berhasil mengubah password anda.',
+            confirmButtonText: 'OK'
+        });
+    </script>
+@endif
+@if (session('error_kode_otp'))
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: '{{ session('error_kode_otp') }}',
+            text: 'Harap masukan kode otp yang sesuai.',
+            confirmButtonText: 'OK'
+        });
+    </script>
+@endif
