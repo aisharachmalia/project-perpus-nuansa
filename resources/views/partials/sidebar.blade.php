@@ -1,7 +1,3 @@
-@php
-    $menu = App\Models\menu::orderBy('menu_urut')->where('menu_parent', 0)->get();
-@endphp
-
 <div id="sidebar" class="active">
     <div class="sidebar-wrapper active">
         <div class="sidebar-header">
@@ -18,16 +14,16 @@
             <ul class="menu">
                 <li class="sidebar-title">Menu</li>
 
-                @foreach ($menu as $item)
+                @foreach (session('menus')->where('menu_parent', 0) as $item)
                     <li class="sidebar-item {{ $item->menu_url ? '' : 'has-sub' }}">
                         <a href="{{ $item->menu_url ? $item->menu_url : 'javascript:;' }}" class='sidebar-link'>
                             <i class="{{ $item->menu_icon }}"></i>
                             <span>{{ $item->menu_nama }}</span>
                         </a>
                         @php
-                            $submenu = App\Models\menu::where('menu_parent', '!=', 0)
-                                ->where('menu_parent', $item->id_menu)
-                                ->get();
+                            $submenu = session('menus')
+                                ->where('menu_parent', '!=', 0)
+                                ->where('menu_parent', $item->id_menu);
                         @endphp
                         @if ($submenu)
                             <ul class="submenu">
