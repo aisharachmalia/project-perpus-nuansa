@@ -34,8 +34,8 @@ class RegisterController extends Controller
                 'usr_nama' => 'required',
                 'usr_username' => 'required|unique:users',
                 'usr_email' => 'required|email|unique:users',
-                'password' => 'required',
-                'password_konf' => 'required|same:password',
+                'password' => 'required|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/',
+               'password_konf' => 'required|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/|same:password',
             ];
 
             $messages = [
@@ -43,9 +43,11 @@ class RegisterController extends Controller
                 'usr_username.required' => 'Username harus di isi.',
                 'usr_email.required' => 'E-Mail harus di isi.',
                 'password.required' => 'Password harus di isi.',
+                'password.regex' => 'Password minimal 8 huruf, harus ada huruf besar, kecil, angka dan karakter spesial.',
                 'password_konf.required' => 'Konfirmasi Password harus di isi.',
                 'usr_email.email' => 'Format E-Mail tidak sesuai.',
                 'password_konf.same' => 'Password Konfirmasi harus sama dengan password di atas.',
+                'password_konf.regex' => 'Password minimal 8 huruf, harus ada huruf besar, kecil, angka dan karakter spesial.',
                 'usr_username.unique' => 'Username ini telah terdaftar.',
                 'usr_email.unique' => 'E-Mail ini telah terdaftar.',
             ];
