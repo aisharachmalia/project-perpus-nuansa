@@ -20,6 +20,7 @@
             <div class="col-lg-6 col-12">
                 <div id="auth-left">
                     <h3 class="auth-title">Lupa Password.</h3>
+                  
                     <form action="{{ route('lupa_pass') }}" method="POST">
                         @csrf
                         <div class="form-group position-relative has-icon-left mb-4">
@@ -28,6 +29,7 @@
                                 <i class="bi bi-envelope"></i>
                             </div>
                             @if ($errors->has('usr_email'))
+                            <span class="text-danger">{{$errors->first('usr_email')}}</span>     
                             @endif
                         </div>
                         <button type="submit" class="btn btn-primary btn-block btn-lg shadow-lg mt-5">Kirim</button>

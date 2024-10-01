@@ -73,34 +73,12 @@
 </html>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-@if (session('success'))
+@if (session('success_ganti_password'))
     <script>
         Swal.fire({
             icon: 'success',
-            title: '{{ session('success') }}',
-            text: 'Cek email Anda untuk memverifikasi akun.',
-            confirmButtonText: 'OK'
-        });
-    </script>
-@endif
-
-@if (session('success_ver'))
-    <script>
-        Swal.fire({
-            icon: 'success',
-            title: '{{ session('success_ver') }}',
-            text: 'Silahkan login menggunakan usernama dan Password yang telah didaftarkan.',
-            confirmButtonText: 'OK'
-        });
-    </script>
-@endif
-
-@if (session('error_login'))
-    <script>
-        Swal.fire({
-            icon: 'error',
-            title: '{{ session('error_login') }}',
-            text: 'Username atau Password yang anda masukan tidak sesuai.',
+            title: '{{ session('success_ganti_password') }}',
+            text: 'Anda berhasil mengubah password anda.',
             confirmButtonText: 'OK'
         });
     </script>
