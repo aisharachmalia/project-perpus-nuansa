@@ -40,12 +40,12 @@ Route::get('/verifikasi-user/{id?}',[App\Http\Controllers\Auth\VerificationContr
 //Login User
 Route::post('/login-user',[App\Http\Controllers\Auth\LoginController::class, 'loginUser'])->name('login_user');
 
-Route::post('/lupa-password',[App\Http\Controllers\Auth\ForgotPasswordController::class, 'pohoPassword'])->name('lupa_pass');
+Route::post('/lupa-password',[App\Http\Controllers\Auth\ForgotPasswordController::class, 'lupaPassword'])->name('lupa_pass');
 
 //
 Auth::routes();
 
 Route::get('/forgot-password',[App\Http\Controllers\WebController::class, 'pageForgotPassword'])->name('forgot_password');
-Route::post('/lupa-password',[ForgotPasswordController::class, 'pohoPassword'])->name('lupa_pass');
+Route::post('/lupa-password',[ForgotPasswordController::class, 'lupaPassword'])->name('lupa_pass');
 Route::get('/reset-password/{id?}',[App\Http\Controllers\WebController::class, 'pageResetPassword'])->name('form_reset_password');
 Route::post('/reset-Password',[ForgotPasswordController::class, 'storePassword'])->name('reset_pass');
