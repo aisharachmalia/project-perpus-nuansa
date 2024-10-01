@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Menu;
 use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Session;
 
 class LoginController extends Controller
 {
@@ -56,10 +58,12 @@ class LoginController extends Controller
                     ]);
 
                     if (Auth::check()) {
-                        $role = user::join('akses_usrs', 'users.id_usr', '=', 'akses_usrs.id_usr')
-                            ->where('users.id_usr', Auth::user()->id_usr)
-                            ->select('akses_usrs.id_role')
-                            ->first();
+                        $menus =  Menu::join('akses_usrs', 'menus.id_menu', '=', 'akses_usrs.id_menu')
+                            ->where('akses_usrs.id_usr', Auth::user()->id_usr)
+                            ->select('menus.*')
+                            ->groupBy('menus.id_menu')
+                            ->get();
+                        Session::put('menus', $menus);
                         if (isset($request->remember_me)) {
                             $user = auth()->user();
                             Auth::login($user, true);
@@ -75,24 +79,6 @@ class LoginController extends Controller
                                 unset($_COOKIE['login_user']);
                             }
                         }
-                        // if ($role->id_role >= 3) {
-                        //     if (isset($request->remember_me)) {
-                        //         $user = auth()->user();
-                        //         Auth::login($user, true);
-
-                        //         $expires = time() + 60 * 60 * 24 * 365;
-
-                        //         $login_user = Crypt::encryptString($username . '|' . $password);
-
-                        //         setcookie("login_user", $login_user, $expires);
-                        //     } else {
-                        //         if (isset($_COOKIE['login_user'])) {
-                        //             setcookie("login_user", "", time() - 3600);
-                        //             unset($_COOKIE['login_user']);
-                        //         }
-                        //     }
-                        //     return redirect()->route('user-page');
-                        // }
                         return redirect()->route('home');
                     } else {
                         return redirect()->route('login')->with('error_login', 'Gagal Login.');

@@ -32,5 +32,13 @@ class UserSeeder extends Seeder
             'usr_stat' => 1,
             'email_verified' => now(),
         ]);
+        User::create([
+            'usr_nama' => 'Pustakawan',
+            'usr_username' => 'pustakawan',
+            'usr_email' => 'pustakawan@gmail.com',
+            'password' => bcrypt('Pustakawan@2024'),
+            'usr_stat' => 1,
+            'email_verified' => now(),
+        ]);
     }
 }

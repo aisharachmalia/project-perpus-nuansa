@@ -1,4 +1,6 @@
-
+@php
+    $role=App\Models\akses_usr::join('users','akses_usrs.id_usr','users.id_usr')->where('users.id_usr',Auth::user()->id_usr)->join('roles','akses_usrs.id_role','roles.id_role')->first();
+@endphp
 <div id="main" class='layout-navbar'>
     <header class='mb-3'>
         <nav class="navbar navbar-expand navbar-light ">
@@ -44,7 +46,7 @@
                             <div class="user-menu d-flex">
                                 <div class="user-name text-end me-3">
                                     <h6 class="mb-0 text-gray-600">{{ Auth::user()->usr_nama }}</h6>
-                                    <p class="mb-0 text-sm text-gray-600">Administrator</p>
+                                    <p class="mb-0 text-sm text-gray-600">{{ $role->role_nama }}</p>
                                 </div>
                                 <div class="user-img d-flex align-items-center">
                                     <div class="avatar avatar-md">
