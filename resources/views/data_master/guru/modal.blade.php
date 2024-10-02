@@ -1,3 +1,4 @@
+
 <div class="modal fade text-left" id="create" tabindex="-1" role="dialog" aria-labelledby="modalCreate" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
         <div class="modal-content">
@@ -120,14 +121,9 @@
                             <div class="form-group">
                                 <div class="form-group">
                                     <label for="id_usr">Mata Pelajaran</label>
-                                    @php
-                                        $mpl = DB::table('dm_mapels')->get();    
-                                    @endphp
                                     <select class="form-control" id="id_mapel" name="id_mapel" required>
-                                        <option disabled selected>Pilih User</option>
-                                        @foreach ($mpl as $item)
-                                            <option value="{{ $item->id_mapel }}">{{ $item->dmapel_nama_mapel }}</option>
-                                        @endforeach
+                                        <option disabled selected value=""></option>
+
                                     </select>
                                     <span id="mapel-error" class="text-danger"></span>
                                 </div>

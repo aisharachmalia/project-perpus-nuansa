@@ -49,7 +49,13 @@ class GuruController extends Controller
             ->select('dm_gurus.*', 'dm_mapels.dmapel_nama_mapel')
             ->first();
 
-        return response()->json($gr);
+        $mpl = \DB::table('dm_mapels')->get();
+        $slc = '';
+        foreach ($mpl as $mp) {
+            $slc .= '<option value="' . $mp->id_mapel . '" '.($mp->id_mapel == $gr->id_mapel ? 'selected' : '').'>' . $mp->dmapel_nama_mapel . '</option>';    
+        }
+
+        return response()->json(['gr' => $gr,  'slc' => $slc]);
     }
     public function addGuru(Request $request)
     {
@@ -57,12 +63,14 @@ class GuruController extends Controller
             'dguru_nama' => 'required',
             'dguru_nip' => 'required|unique:dm_gurus,dguru_nip',
             'dguru_email' => 'required|email|unique:dm_gurus,dguru_email',
-            'dguru_no_telp' => 'required|unique:dm_gurus,dguru_no_telp',
+            'dguru_no_telp' => 'required|unique:dm_gurus,dguru_no_telp|regex:/^([0-9\s\-\+\(\)]*)$/|min:10|max:13',
             'dguru_alamat' => 'required',
             'id_mapel' => 'required',
         ];
 
         $messages = [
+
+            'dguru_email.email' => 'Format email tidak sesuai',
             'id_mapel.required' => 'Mata Pelajaran harus diisi!',
             'dguru_nama.required' => 'Nama harus diisi!',
             'dguru_nip.required' => 'NIP harus diisi!',
@@ -72,6 +80,9 @@ class GuruController extends Controller
             'dguru_nip.unique' => 'NIP sudah terdaftar!',
             'dguru_email.unique' => 'Email sudah terdaftar!',
             'dguru_no_telp.unique' => 'No. Telp sudah terdaftar!',
+            'dguru_no_telp.regex' => 'No. Telp harus angka!',
+            'dguru_no_telp.min' => 'No. Telp minimal 11 angka!',
+            'dguru_no_telp.max' => 'No. Telp maksimal 13 angka!',
         ];
 
         // Lakukan validasi
@@ -103,11 +114,14 @@ class GuruController extends Controller
     public function editGuru($id = null, Request $request)
     {
         try {
+            $idGr = Crypt::decryptString($id);
+            $guru = dm_guru::find($idGr);
+
             $rules = [
                 'dguru_nama' => 'required',
-                'dguru_nip' => 'required|unique:dm_gurus,dguru_nip',
-                'dguru_email' => 'required|email|unique:dm_gurus,dguru_email',
-                'dguru_no_telp' => 'required|unique:dm_gurus,dguru_no_telp',
+                'dguru_nip' => 'required|unique:dm_gurus,dguru_nip,' . $guru->id_dguru . ',id_dguru',
+                'dguru_email' => 'required|email|unique:dm_gurus,dguru_email,' . $guru->id_dguru . ',id_dguru',
+                'dguru_no_telp' => 'required|unique:dm_gurus,dguru_no_telp,' . $guru->id_dguru . ',id_dguru|numeric|regex:/^([0-9\s\-\+\(\)]*)$/|min:10|max:13',
                 'dguru_alamat' => 'required',
                 'id_mapel' => 'required',
             ];
@@ -122,6 +136,9 @@ class GuruController extends Controller
                 'dguru_nip.unique' => 'NIP sudah terdaftar!',
                 'dguru_email.unique' => 'Email sudah terdaftar!',
                 'dguru_no_telp.unique' => 'No. Telp sudah terdaftar!',
+                'dguru_no_telp.regex' => 'No. Telp harus angka!',
+                'dguru_no_telp.min' => 'No. Telp minimal 11 angka!',
+                'dguru_no_telp.max' => 'No. Telp maksimal 13 angka!',
             ];
 
             // Lakukan validasi
@@ -133,8 +150,7 @@ class GuruController extends Controller
                     'errors' => $validator->errors()
                 ], 422);
             }
-            
-            $idGr = Crypt::decryptString($id);
+
 
             // Create the transaction with mapel ID
             dm_guru::where('id_dguru', $idGr)->update([
