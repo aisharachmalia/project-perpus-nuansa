@@ -13,7 +13,19 @@ return new class extends Migration
      */
     public function up()
     {
-        //
+        Schema::create('trks_transaksi', function (Blueprint $table) {
+            $table->increments('id_trks');
+            $table->integer('id_dbuku');
+            $table->integer('id_dsiswa');
+            $table->integer('id_dpustakawan');
+            $table->dateTime('trks_tgl_peminjaman');
+            $table->dateTime('trks_tgl_jatuh_tempo');
+            $table->dateTime('trks_tgl_pengembalian')->nullable();
+            $table->double('trks_denda')->nullable();
+            $table->text('trks_keterangan')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
+        });
     }
 
     /**
@@ -23,6 +35,6 @@ return new class extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('trks_transaksi');
     }
 };
