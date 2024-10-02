@@ -130,11 +130,11 @@
                                 showConfirmButton: false,
                                 timer: 3000
                             });
+                            $('#tbl_list').DataTable().ajax.reload()
                         }
                     });
                 }
             })
-            $('#tbl_list').DataTable().ajax.reload()
         });
     </script>
 
@@ -142,26 +142,23 @@
     <script>
         $('#store').off('click').on('click', function(e) {
             e.preventDefault();
-
+    
             let dguru_nama = $('#create').find('#dguru_nama').val();
             let dguru_nip = $('#create').find('#dguru_nip').val();
             let dguru_email = $('#create').find('#dguru_email').val();
             let dguru_no_telp = $('#create').find('#dguru_no_telp').val();
             let dguru_alamat = $('#create').find('#dguru_alamat').val();
-            let dmapel_nama_mapel = $('#create').find('#dmapel_nama_mapel').val();
-            let id_mapel = $('#create').find('#id_mapel').val(); // Tambahkan ini
+            let id_mapel = $('#create').find('#id_mapel').val();
             let token = $("meta[name='csrf-token']").attr("content");
-
+    
+            // Clear previous error messages
             $('#create').find('#nama-error').text('');
             $('#create').find('#nip-error').text('');
             $('#create').find('#email-error').text('');
             $('#create').find('#telp-error').text('');
             $('#create').find('#alamat-error').text('');
             $('#create').find('#mapel-error').text('');
-
-            // Clear previous error messages
-            $('#create').find('.text-danger').text('');
-
+    
             $.ajax({
                 url: `guru/add`,
                 type: "POST",
@@ -172,7 +169,7 @@
                     "dguru_email": dguru_email,
                     "dguru_no_telp": dguru_no_telp,
                     "dguru_alamat": dguru_alamat,
-                    "id_mapel": id_mapel, // Pastikan variabel ini ada
+                    "id_mapel": id_mapel,
                     "_token": token
                 },
                 success: function(response) {
@@ -183,40 +180,36 @@
                         timer: 3000
                     });
                     $('#create').modal('toggle');
-                    $('.modal-backdrop').remove();
+                    $('#tbl_list').DataTable().ajax.reload();
+    
+                    // Kosongkan form setelah berhasil disimpan
+                    $('#create').find('input').val(''); // Ini akan mengosongkan semua input
+                    $('#create').find('select').val(''); // Ini akan mengosongkan semua dropdown
+                    $('#create').find('textarea').val(''); // Ini akan mengosongkan semua textarea
                 },
                 error: function(xhr) {
-                    console.log(xhr.status);
                     if (xhr.status === 422) {
-                        // Pastikan responseJSON ada dan mengandung errors
-                        console.log(xhr);
                         if (xhr.responseText) {
                             var errors = JSON.parse(xhr.responseText);
-                            console.log(errors.errors);
-                            var errors = errors.errors;
+                            errors = errors.errors;
+    
                             // Show error messages for each field
                             if (errors.dguru_nama) {
-                                console.log(errors.dguru_nama);
                                 $('#create').find('#nama-error').text(errors.dguru_nama[0]);
                             }
                             if (errors.dguru_nip) {
-                                console.log(errors.dguru_nip);
                                 $('#create').find('#nip-error').text(errors.dguru_nip[0]);
                             }
                             if (errors.dguru_email) {
-                                console.log(errors.dguru_email);
                                 $('#create').find('#email-error').text(errors.dguru_email[0]);
                             }
                             if (errors.dguru_no_telp) {
-                                console.log(errors.dguru_no_telp);
                                 $('#create').find('#telp-error').text(errors.dguru_no_telp[0]);
                             }
                             if (errors.dguru_alamat) {
-                                console.log(errors.dguru_alamat);
                                 $('#create').find('#alamat-error').text(errors.dguru_alamat[0]);
                             }
                             if (errors.id_mapel) {
-                                console.log(errors.id_mapel);
                                 $('#create').find('#mapel-error').text(errors.id_mapel[0]);
                             }
                         } else {
@@ -226,11 +219,10 @@
                         console.log("Unexpected error:", xhr);
                     }
                 }
-
             });
         });
     </script>
-
+    
     {{-- show --}}
     <script>
         //button create post event
@@ -246,13 +238,13 @@
                 success: function(response) {
                     console.log(response)
                     //fill data to form
-                    $('#show').find('#dguru_nama').text(response.dguru_nama);
-                    $('#show').find('#dguru_nip').text(response.dguru_nip);
-                    $('#show').find('#dguru_email').text(response.dguru_email);
-                    $('#show').find('#dguru_no_telp').text(response.dguru_no_telp);
-                    $('#show').find('#dguru_status').text(response.dguru_status);
-                    $('#show').find('#dguru_alamat').text(response.dguru_alamat);
-                    $('#show').find('#dmapel_nama_mapel').text(response.dmapel_nama_mapel);
+                    $('#show').find('#dguru_nama').text(response.gr.dguru_nama);
+                    $('#show').find('#dguru_nip').text(response.gr.dguru_nip);
+                    $('#show').find('#dguru_email').text(response.gr.dguru_email);
+                    $('#show').find('#dguru_no_telp').text(response.gr.dguru_no_telp);
+                    $('#show').find('#dguru_status').text(response.gr.dguru_status);
+                    $('#show').find('#dguru_alamat').text(response.gr.dguru_alamat);
+                    $('#show').find('#dmapel_nama_mapel').text(response.gr. dmapel_nama_mapel);
                 }
             });
         });
@@ -275,13 +267,13 @@
                     //fill data to form
 
                     $('#edit').find('#id_dguru').val(id_gr);
-                    $('#edit').find('#dguru_nama').val(response.dguru_nama);
-                    $('#edit').find('#dguru_nip').val(response.dguru_nip);
-                    $('#edit').find('#dguru_email').val(response.dguru_email);
-                    $('#edit').find('#dguru_no_telp').val(response.dguru_no_telp);
-                    $('#edit').find('#dguru_status').val(response.dguru_status);
-                    $('#edit').find('#dguru_alamat').val(response.dguru_alamat);
-                    $('#edit').find('#dmapel_nama_mapel').val(response.dmapel_nama_mapel);
+                    $('#edit').find('#dguru_nama').val(response.gr.dguru_nama);
+                    $('#edit').find('#dguru_nip').val(response.gr.dguru_nip);
+                    $('#edit').find('#dguru_email').val(response.gr.dguru_email);
+                    $('#edit').find('#dguru_no_telp').val(response.gr.dguru_no_telp);
+                    $('#edit').find('#dguru_status').val(response.gr.dguru_status);
+                    $('#edit').find('#dguru_alamat').val(response.gr.dguru_alamat);
+                    $('#edit').find('#id_mapel').html(response.slc);
 
 
                     $('#edit').find('#nama-error').text('');
@@ -343,7 +335,8 @@
                         timer: 3000
                     });
                     $('#edit').modal('toggle');
-                    $('.modal-backdrop').remove();
+
+                    $('#tbl_list').DataTable().ajax.reload()
                 },
                 error: function(xhr) {
                     console.log(xhr.status);
