@@ -18,7 +18,7 @@ class MenuSeeder extends Seeder
         Menu::create([
             'menu_nama' => 'Dashboard',
             'menu_parent' => 0,
-            'menu_url' => 'dashboard',
+            'menu_url' => 'dasboard',
             'menu_icon' => 'bi bi-grid-fill',
             'menu_urut' => 1,
             'menu_stat' => 1
@@ -61,7 +61,7 @@ class MenuSeeder extends Seeder
         menu::create([
             'menu_nama' => 'Siswa',
             'menu_parent' => 5,
-            'menu_url' => 'siswa',
+            'menu_url' => 'data_master.siswa',
             'menu_icon' => null,
             'menu_urut' => 1,
             'menu_stat' => 1
@@ -69,7 +69,7 @@ class MenuSeeder extends Seeder
         menu::create([
             'menu_nama' => 'Guru',
             'menu_parent' => 5,
-            'menu_url' => 'guru',
+            'menu_url' => 'data_master.guru',
             'menu_icon' => null,
             'menu_urut' => 2,
             'menu_stat' => 1
@@ -77,7 +77,7 @@ class MenuSeeder extends Seeder
         menu::create([
             'menu_nama' => 'Pustakawan',
             'menu_parent' => 5,
-            'menu_url' => 'pustakawan',
+            'menu_url' => 'data_master.pustakawan',
             'menu_icon' => null,
             'menu_urut' => 3,
             'menu_stat' => 1
@@ -85,7 +85,7 @@ class MenuSeeder extends Seeder
         menu::create([
             'menu_nama' => 'Buku',
             'menu_parent' => 5,
-            'menu_url' => 'buku',
+            'menu_url' => 'data_master.buku',
             'menu_icon' => null,
             'menu_urut' => 4,
             'menu_stat' => 1
@@ -93,7 +93,7 @@ class MenuSeeder extends Seeder
         menu::create([
             'menu_nama' => 'Referensi',
             'menu_parent' => 5,
-            'menu_url' => 'referensi',
+            'menu_url' => 'data_master.referensi',
             'menu_icon' => null,
             'menu_urut' => 5,
             'menu_stat' => 1

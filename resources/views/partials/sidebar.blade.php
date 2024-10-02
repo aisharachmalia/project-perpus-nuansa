@@ -16,7 +16,8 @@
 
                 @foreach (session('menus')->where('menu_parent', 0) as $item)
                     <li class="sidebar-item {{ $item->menu_url ? '' : 'has-sub' }}">
-                        <a href="{{ $item->menu_url ? $item->menu_url : 'javascript:;' }}" class='sidebar-link'>
+                        <a href="{{ Route::has($item->menu_url) ? route($item->menu_url) : 'javascript:;' }}"
+                            class='sidebar-link'>
                             <i class="{{ $item->menu_icon }}"></i>
                             <span>{{ $item->menu_nama }}</span>
                         </a>
@@ -29,7 +30,8 @@
                             <ul class="submenu">
                                 @foreach ($submenu as $submenuItem)
                                     <li class="submenu-item">
-                                        <a href="#">{{ $submenuItem->menu_nama }}</a>
+                                        <a
+                                            href="{{ Route::has($submenuItem->menu_url) ? route($submenuItem->menu_url) : 'javascript:;' }}">{{ $submenuItem->menu_nama }}</a>
                                     </li>
                                 @endforeach
                             </ul>
