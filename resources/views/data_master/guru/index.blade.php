@@ -8,7 +8,7 @@
                         <div class="row">
                             <div class="col-12 d-flex justify-content-start">
                                 <a href="javascript:void(0)" class="btn btn-success mb-2" data-bs-toggle="modal"
-                                    data-bs-target="#create">ADD</a>
+                                    data-bs-target="#create">+ Tambah</a>
                             </div>
                         </div>
                     </div>
@@ -17,10 +17,8 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Nama</th>
-                                    <th>NIP</th>
-                                    <th>Email</th>
-                                    <th>No. Telp</th>
+                                    <th>Nama & NIP</th>
+                                    <th>Email & No Telp</th>
                                     <th>Alamat</th>
                                     <th>Mata Pelajaran</th>
                                     <th>Status</th>
@@ -45,31 +43,36 @@
 
     <script type="text/javascript">
         $(document).ready(function() {
-            var i = 1;
             var table = $('#tbl_list').DataTable({
                 serverSide: true,
                 ajax: '{{ url()->current() }}',
                 columns: [{
-                        "render": function() {
-                            return i++;
+                        data: 'DT_RowIndex',
+                        orderable: false,
+                        searchable: false,
+                        class: "text-center"
+                    },
+                    {
+                        class: "text-center",
+                        data: null, // Digunakan untuk menggabungkan data
+                        render: function(data, type, row) {
+                            return '<strong>' + row.dguru_nama + '</strong><br>' + row.dguru_nip;
                         }
                     },
                     {
-                        data: 'dguru_nama'
+                        class: "text-center",
+                        data: 'null',
+                        render: function(data, type, row) {
+                            return '<strong>' + row.dguru_email + '</strong><br>' + row
+                                .dguru_no_telp;
+                        }
                     },
                     {
-                        data: 'dguru_nip'
-                    },
-                    {
-                        data: 'dguru_email'
-                    },
-                    {
-                        data: 'dguru_no_telp'
-                    },
-                    {
+                        class: "text-center",
                         data: 'dguru_alamat'
                     },
                     {
+                        class: "text-center",
                         data: 'dmapel_nama_mapel'
                     },
                     {
@@ -91,6 +94,7 @@
             });
         });
     </script>
+
 
     {{-- delete --}}
     <script>
@@ -142,7 +146,7 @@
     <script>
         $('#store').off('click').on('click', function(e) {
             e.preventDefault();
-    
+
             let dguru_nama = $('#create').find('#dguru_nama').val();
             let dguru_nip = $('#create').find('#dguru_nip').val();
             let dguru_email = $('#create').find('#dguru_email').val();
@@ -150,7 +154,7 @@
             let dguru_alamat = $('#create').find('#dguru_alamat').val();
             let id_mapel = $('#create').find('#id_mapel').val();
             let token = $("meta[name='csrf-token']").attr("content");
-    
+
             // Clear previous error messages
             $('#create').find('#nama-error').text('');
             $('#create').find('#nip-error').text('');
@@ -158,7 +162,7 @@
             $('#create').find('#telp-error').text('');
             $('#create').find('#alamat-error').text('');
             $('#create').find('#mapel-error').text('');
-    
+
             $.ajax({
                 url: `guru/add`,
                 type: "POST",
@@ -181,7 +185,7 @@
                     });
                     $('#create').modal('toggle');
                     $('#tbl_list').DataTable().ajax.reload();
-    
+
                     // Kosongkan form setelah berhasil disimpan
                     $('#create').find('input').val(''); // Ini akan mengosongkan semua input
                     $('#create').find('select').val(''); // Ini akan mengosongkan semua dropdown
@@ -192,7 +196,7 @@
                         if (xhr.responseText) {
                             var errors = JSON.parse(xhr.responseText);
                             errors = errors.errors;
-    
+
                             // Show error messages for each field
                             if (errors.dguru_nama) {
                                 $('#create').find('#nama-error').text(errors.dguru_nama[0]);
@@ -222,7 +226,7 @@
             });
         });
     </script>
-    
+
     {{-- show --}}
     <script>
         //button create post event
@@ -244,7 +248,7 @@
                     $('#show').find('#dguru_no_telp').text(response.gr.dguru_no_telp);
                     $('#show').find('#dguru_status').text(response.gr.dguru_status);
                     $('#show').find('#dguru_alamat').text(response.gr.dguru_alamat);
-                    $('#show').find('#dmapel_nama_mapel').text(response.gr. dmapel_nama_mapel);
+                    $('#show').find('#dmapel_nama_mapel').text(response.gr.dmapel_nama_mapel);
                 }
             });
         });

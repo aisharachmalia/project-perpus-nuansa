@@ -1,9 +1,8 @@
-
 <div class="modal fade text-left" id="create" tabindex="-1" role="dialog" aria-labelledby="modalCreate" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="modalCreate">Create Guru</h4>
+                <h4 class="modal-title" id="modalCreate">Tambah Guru</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -65,13 +64,9 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
-                    <i class="bx bx-x d-block d-sm-none"></i>
-                    <span class="d-none d-sm-block">Close</span>
-                </button>
                 <button type="button" class="btn btn-primary ml-1" id="store">
                     <i class="bx bx-check d-block d-sm-none"></i>
-                    <span class="d-none d-sm-block">Accept</span>
+                    <span class="d-none d-sm-block">Simpan</span>
                 </button>
             </div>
         </div>
@@ -83,7 +78,7 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="modalEdit">Edit Guru</h4>
+                <h4 class="modal-title" id="modalEdit">Perbaharui Guru</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -150,8 +145,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="update">Save</button>
+                <button type="button" class="btn btn-primary" id="update">Simpan</button>
             </div>
         </div>
     </div>
@@ -162,7 +156,7 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="modalDelete">Show Guru</h4>
+                <h4 class="modal-title" id="modalDelete">Detail Guru</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -190,13 +184,12 @@
                         <p id="dguru_alamat"></p>
                     </div>
                     <div class="col-4">
-                        <b>mata pelajaran</b> : <br>
+                        <b>Mata pelajaran</b> : <br>
                         <p id="dmapel_nama_mapel"></p>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
