@@ -103,11 +103,12 @@ class PustakawanController extends Controller
             $rules = [
                 'dpustakawan_nama' => 'required',
                 'dpustakawan_email' => 'required|email|unique:dm_pustakawan,dpustakawan_email,' . $pustakawan->id_dpustakawan . ',id_dpustakawan',
-                'dpustakawan_no_telp' => 'required|unique:dm_pustakawans,dpustakawan_no_telp,' . $pustakawan->id_dpustakawan . ',id_dpustakawan|numeric|regex:/^([0-9\s\-\+\(\)]*)$/|digits_between:11,13',
+                'dpustakawan_no_telp' => 'required|unique:dm_pustakawan,dpustakawan_no_telp,' . $pustakawan->id_dpustakawan . ',id_dpustakawan|numeric|regex:/^([0-9\s\-\+\(\)]*)$/|digits_between:11,13',
                 'dpustakawan_alamat' => 'required',
             ];
             
             $messages = [
+                'dpustakawan_email.email' => 'Format email tidak sesuai',
                 'dpustakawan_nama.required' => 'Nama harus diisi!',
                 'dpustakawan_email.required' => 'Email harus diisi!',
                 'dpustakawan_no_telp.required' => 'No. Telp harus diisi!',
