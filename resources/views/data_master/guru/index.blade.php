@@ -7,7 +7,7 @@
                     <div class="card-header">
                         <div class="row">
                             <div class="col-12 d-flex justify-content-start">
-                                <a href="javascript:void(0)" class="btn btn-success mb-2" data-bs-toggle="modal"
+                                <a href="javascript:void(0)" class="btn btn-success mb-2 modalCreate" data-bs-toggle="modal"
                                     data-bs-target="#create">+ Tambah</a>
                             </div>
                         </div>
@@ -95,7 +95,6 @@
         });
     </script>
 
-
     {{-- delete --}}
     <script>
         $('body').on('click', '#btn-delete', function() {
@@ -144,6 +143,15 @@
 
     {{-- create --}}
     <script>
+        $('body').on('click', '.modalCreate', function() {
+            $('#create').find('#nama-error').text('');
+            $('#create').find('#nip-error').text('');
+            $('#create').find('#email-error').text('');
+            $('#create').find('#telp-error').text('');
+            $('#create').find('#alamat-error').text('');
+            $('#create').find('#mapel-error').text('');
+        });
+
         $('#store').off('click').on('click', function(e) {
             e.preventDefault();
 
@@ -262,7 +270,7 @@
 
             //fetch detail post with ajax
             $.ajax({
-                url: `guru/show/${id_gr}`,  
+                url: `guru/show/${id_gr}`,
                 type: "GET",
                 cache: false,
                 success: function(response) {
