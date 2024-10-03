@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\PenulisExport;
 use App\Models\dm_kategori;
 use App\Models\dm_penerbit;
 use App\Models\dm_penulis;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -395,5 +397,24 @@ class ReferensiController extends Controller
             'success' => true,
             'message' => 'Data Berhasil Dihapus!.',
         ]);
+    }
+
+    public function linkExport(Request $request)
+    {
+        try {
+            $link = route('data_master.referensi.export');
+            return \Response::json(array('link' => $link));
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function exportPenulis(Request $request)
+    {
+        try {
+            return (new PenulisExport)->dataExport($request->all())->download('Rekap Penulis.xlsx');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }
