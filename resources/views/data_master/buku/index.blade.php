@@ -7,9 +7,11 @@
                     <div class="card-header">
                         <div class="row">
                             <div class="col-12 d-flex justify-content-start">
-                                <a href="javascript:void(0)" class="btn btn-success mb-2" data-bs-toggle="modal"
-                                    data-bs-target="#createBuku">+ Tambah</a>&nbsp;&nbsp;
+                                <a href="javascript:void(0)" class="btn btn-success mb-2" data-bs-toggle="modal" data-bs-target="#createBuku">+ Tambah</a>
+                                &nbsp;&nbsp;
                                 <a href="javascript:;" class="btn btn-success mb-2" id="export"> Export Excel</a>
+                                &nbsp;&nbsp;
+                                <a href="javascript:;" class="btn btn-danger mb-2" id="printout"> Printout Pdf</a>
                             </div>
                             
                         </div>
