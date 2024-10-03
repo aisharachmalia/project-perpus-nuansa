@@ -8,7 +8,8 @@
                         <div class="row">
                             <div class="col-12 d-flex justify-content-start">
                                 <a href="javascript:void(0)" class="btn btn-success mb-2 modalSimpanPenulis"
-                                    data-bs-toggle="modal" data-bs-target="#tambahPenulis">+ Tambah</a>
+                                    data-bs-toggle="modal" data-bs-target="#tambahPenulis">+ Tambah</a>&nbsp;&nbsp;&nbsp;
+                                <a href="javascript:;" class="btn btn-success mb-2" id="export">Export Excel</a>
                             </div>
                         </div>
                     </div>
@@ -571,6 +572,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="text/javascript">
         $(document).ready(function() {
+            var link_export="{{route('data_master.referensi.linkExport')}}";
             var table = $('#tbl_penulis').DataTable({
                 serverSide: true,
                 ajax: '{{ url('/data-master/dpenulis') }}',
@@ -595,6 +597,31 @@
                     }
                 ]
             });
+
+            $(document).on('click','#export',function(){
+                var value_table = $('#tbl_penulis').DataTable().data().count();
+                if (value_table > 0) {
+                    $.ajax({
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        type: 'POST',
+                        url: link_export,
+                        dataType: 'json',
+                        success: function(data) {
+                            window.open(data.link, '_blank');
+                        },
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        html: 'Tidak terdapat Data yang akan dicetak',
+                        showCloseButton: true,
+                        focusConfirm: false,
+                        confirmButtonText:
+                        '<i class="fa fa-thumbs-up"></i> OK',
+                    });
+                }
+            });
+
             var table = $('#tbl_penerbit').DataTable({
                 serverSide: true,
                 ajax: '{{ url('/data-master/dpenerbit') }}',
@@ -880,6 +907,7 @@
         });
 
 
+       
         // ajax edit
         $('body').on('click', '.modalEditPenerbit', function() {
 

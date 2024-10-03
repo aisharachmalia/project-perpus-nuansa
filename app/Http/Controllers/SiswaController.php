@@ -8,7 +8,7 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Carbon\Carbon;
-
+use App\Exports\SiswaExport;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -195,5 +195,24 @@ public function update($id = null, Request $request)
             'success' => true,
             'message' => 'Data Berhasil Dihapus!.',
         ]);
+    }
+
+    public function linkExportSiswa(Request $request)
+    {
+        try {
+            $link = route('export_siswa');
+            return \Response::json(array('link' =>$link));
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function exportSiswa(Request $request)
+    {
+        try {
+            return (new SiswaExport)->dataExport($request->all())->download('Rekap Siswa.xlsx');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }
