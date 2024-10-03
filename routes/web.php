@@ -65,8 +65,8 @@ Route::get('/siswa/show/{id}', [SiswaController::class, 'show'])->name('siswa.sh
 Route::put('/siswa/update/{id?}', [SiswaController::class, 'update'])->name('siswa.update');
 Route::delete('/siswa/delete/{id}', [SiswaController::class, 'destroy'])->name('siswa.destroy');
 Route::prefix('data-master')->group(function () {
-    Route::get('/pustakawan', [App\Http\Controllers\pustakawanController::class, 'pagepustakawan'])->name('data_master.pustakawan');
-    Route::post('/pustakawan/add', [App\Http\Controllers\pustakawanController::class, 'addGuru'])->name('data_master.guru.add');
+    Route::get('/guru', [App\Http\Controllers\GuruController::class, 'pageGuru'])->name('data_master.guru');
+    Route::post('/guru/add', [App\Http\Controllers\GuruController::class, 'addGuru'])->name('data_master.guru.add');
     Route::get('/guru/show/{id}', [App\Http\Controllers\GuruController::class, 'showGuru'])->name('data_master.guru.show');
     Route::put('/guru/edit/{id}', [App\Http\Controllers\GuruController::class, 'editGuru'])->name('data_master.guru.edit');
     Route::delete('/guru/delete/{id}', [App\Http\Controllers\GuruController::class, 'deleteGuru'])->name('data_master.guru.delete');
@@ -75,5 +75,4 @@ Route::prefix('data-master')->group(function () {
     Route::get('/pustakawan/show/{id}', [App\Http\Controllers\PustakawanController::class, 'showPustakawan'])->name('data_master.pustakawan.show');
     Route::post('/pustakawan/add', [App\Http\Controllers\PustakawanController::class, 'addPustakawan'])->name('data_master.pustakawan.add');
     Route::put('/pustakawan/edit/{id}', [App\Http\Controllers\PustakawanController::class, 'editPustakawan'])->name('data_master.pustakawan.edit');
-    Route::delete('/pustakawan/delete/{id}', [App\Http\Controllers\PustakawanController::class, 'deletePustakawan'])->name('data_master.pustakawan.delete');
 });

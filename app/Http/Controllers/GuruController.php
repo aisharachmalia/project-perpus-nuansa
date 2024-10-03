@@ -61,7 +61,7 @@ class GuruController extends Controller
     {
         try {
             $rules = [
-                'dguru_nama' => 'required|regex:/^[a-zA-Z]+$/',
+                'dguru_nama' => 'required|regex:/^[a-zA-Z\s]+$/|max:255',
                 'dguru_nip' => 'required|unique:dm_gurus,dguru_nip',
                 'dguru_email' => 'required|email|unique:dm_gurus,dguru_email',
                 'dguru_no_telp' => 'required|unique:dm_gurus,dguru_no_telp|regex:/^([0-9\s\-\+\(\)]*)$/|min:10|max:13',
@@ -70,10 +70,11 @@ class GuruController extends Controller
             ];
     
             $messages = [
-    
                 'dguru_email.email' => 'Format email tidak sesuai',
                 'id_mapel.required' => 'Mata Pelajaran harus diisi!',
                 'dguru_nama.required' => 'Nama harus diisi!',
+                'dguru_nama.regex' => 'Hanya boleh huruf!',
+                'dguru_nama.max' => 'Maksimal 255 karakter!',
                 'dguru_nip.required' => 'NIP harus diisi!',
                 'dguru_email.required' => 'Email harus diisi!',
                 'dguru_no_telp.required' => 'No. Telp harus diisi!',
@@ -84,7 +85,7 @@ class GuruController extends Controller
                 'dguru_no_telp.regex' => 'No. Telp harus angka!',
                 'dguru_no_telp.min' => 'No. Telp minimal 11 angka!',
                 'dguru_no_telp.max' => 'No. Telp maksimal 13 angka!',
-                'dguru_nama.regex' => 'Nama Hanya boleh huruf!'
+                
             ];
     
             // Lakukan validasi
@@ -123,7 +124,7 @@ class GuruController extends Controller
             $guru = dm_guru::find($idGr);
 
             $rules = [
-                'dguru_nama' => 'required|regex:/^[a-zA-Z]+$/',
+                'dguru_nama' => 'required|regex:/^[a-zA-Z\s]+$/|max:255',
                 'dguru_nip' => 'required|unique:dm_gurus,dguru_nip,' . $guru->id_dguru . ',id_dguru',
                 'dguru_email' => 'required|email|unique:dm_gurus,dguru_email,' . $guru->id_dguru . ',id_dguru',
                 'dguru_no_telp' => 'required|unique:dm_gurus,dguru_no_telp,' . $guru->id_dguru . ',id_dguru|numeric|regex:/^([0-9\s\-\+\(\)]*)$/|digits_between:11,13',
@@ -134,6 +135,8 @@ class GuruController extends Controller
             $messages = [
                 'id_mapel.required' => 'Mata Pelajaran harus diisi!',
                 'dguru_nama.required' => 'Nama harus diisi!',
+                'dguru_nama.regex' => 'Hanya boleh huruf!',
+                'dguru_nama.max' => 'Maksimal 255 karakter!',
                 'dguru_nip.required' => 'NIP harus diisi!',
                 'dguru_email.required' => 'Email harus diisi!',
                 'dguru_no_telp.required' => 'No. Telp harus diisi!',

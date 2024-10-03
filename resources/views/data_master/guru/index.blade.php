@@ -262,7 +262,7 @@
 
             //fetch detail post with ajax
             $.ajax({
-                url: `guru/show/${id_gr}`,
+                url: `guru/show/${id_gr}`,  
                 type: "GET",
                 cache: false,
                 success: function(response) {
@@ -354,15 +354,15 @@
                             // Show error messages for each field
                             if (errors.dguru_nama) {
                                 console.log(errors.dguru_nama);
-                                $('#create').find('#nama-error').text(errors.dguru_nama[0]);
+                                $('#edit').find('#nama-error').text(errors.dguru_nama[0]);
                             }
                             if (errors.dguru_nip) {
                                 console.log(errors.dguru_nip);
-                                $('#create').find('#nip-error').text(errors.dguru_nip[0]);
+                                $('#edit').find('#nip-error').text(errors.dguru_nip[0]);
                             }
                             if (errors.dguru_email) {
                                 console.log(errors.dguru_email);
-                                $('#create').find('#email-error').text(errors.dguru_email[0]);
+                                $('#edit').find('#email-error').text(errors.dguru_email[0]);
                             }
                             if (errors.dguru_no_telp) {
                                 console.log(errors.dguru_no_telp);
