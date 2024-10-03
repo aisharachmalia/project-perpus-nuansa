@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 @extends('master')
 @section('content')
     <div class="container">
@@ -8,7 +9,10 @@
                         <div class="row">
                             <div class="col-12 d-flex justify-content-start">
                                <a href="javascript:void(0)" class="btn btn-custom btn-success mb-2 modalCreate" data-bs-toggle="modal" data-bs-target="#create">+ Tambah</a>&nbsp;
-                               <a href="javascript:;" class="btn btn-custom btn-success mb-2" id="export">Export Excel</a>
+                              <a href="javascript:;" class="btn btn-custom btn-success mb-2" id="export">
+                                <i class="fas fa-file-excel"></i> Export Excel
+                            </a>
+
                             </div>
                         </div>
                     </div>
@@ -286,6 +290,7 @@
 
     <script type="text/javascript">
         $(document).ready(function() {
+            var link_export = "{{ route('link_export_siswa') }}";
             var table = $('#tbl_list').DataTable({
                 serverSide: true,
                 ajax: '{{ url()->current() }}',
@@ -333,6 +338,30 @@
                         orderable: false
                     }
                 ]
+            });
+
+            $(document).on('click','#export',function(){
+                var value_table = $('#tbl_list').DataTable().data().count();
+                if (value_table > 0) {
+                    $.ajax({
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        type: 'POST',
+                        url: link_export,
+                        dataType: 'json',
+                        success: function(data) {
+                            window.open(data.link, '_blank');
+                        },
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        html: 'Tidak terdapat Data yang akan dicetak',
+                        showCloseButton: true,
+                        focusConfirm: false,
+                        confirmButtonText:
+                        '<i class="fa fa-thumbs-up"></i> OK',
+                    });
+                }
             });
         });
     </script>
@@ -600,6 +629,7 @@
         });
     });
 });
+
 
     </script>
 @endpush
