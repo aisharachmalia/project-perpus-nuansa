@@ -41,6 +41,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="text/javascript">
         $(document).ready(function() {
+            var link_export ="{{route('link_export_pustakawan')}}"
             $('#tbl_list').DataTable({
                 processing: true,
                 serverSide: true,
@@ -80,6 +81,29 @@
                 ]
             });
 
+            $(document).on('click','#export',function(){
+                var value_table = $('#tbl_list').DataTable().data().count();
+                if (value_table > 0) {
+                    $.ajax({
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        type: 'POST',
+                        url: link_export,
+                        dataType: 'json',
+                        success: function(data) {
+                            window.open(data.link, '_blank');
+                        },
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        html: 'Tidak terdapat Data yang akan dicetak',
+                        showCloseButton: true,
+                        focusConfirm: false,
+                        confirmButtonText:
+                        '<i class="fa fa-thumbs-up"></i> OK',
+                    });
+                }
+            });
         })
     </script>
     <script>
@@ -341,5 +365,8 @@
                 }
             })
         });
+    </script>
+    <script>
+        
     </script>
 @endpush

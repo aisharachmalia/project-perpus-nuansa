@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Crypt;
 use Carbon\Carbon;
 use Yajra\DataTables\Facades\DataTables;
+use App\Exports\PustakawanExport;
 
 class PustakawanController extends Controller
 {
@@ -169,6 +170,24 @@ class PustakawanController extends Controller
             'success' => true,
             'message' => 'Data Berhasil Dihapus!.',
         ]);
+    }
+    public function linkExportPustakawan(Request $request)
+    {
+        try {
+            $link = route('export_pustakawan');
+            return \Response::json(array('link' =>$link));
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function exportPustakawan(Request $request)
+    {
+        try {
+            return (new PustakawanExport)->dataExport($request->all())->download('Rekap Pustakawan.xlsx');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }
 
