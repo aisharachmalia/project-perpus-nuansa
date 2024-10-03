@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\SiswaController;
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -23,3 +26,19 @@ Route::get('/index', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+
+//user;
+Route::get('/kelas', [App\Http\Controllers\KelasController::class, 'index'])->name('dmkelas.index');
+Route::get('/kelas-detail/{id?}', [App\Http\Controllers\KelasController::class, 'detail'])->name('kelas.detail');
+Route::delete('/kelas/delete/{id?}', [App\Http\Controllers\KelasController::class, 'destroy'])->name('kelas.delete');
+Route::put('/kelas-update/{id?}', [App\Http\Controllers\KelasController::class, 'update'])->name('kelas.update');
+
+
+
+// Rute untuk halaman daftar siswa
+Route::get('/siswa', [SiswaController::class, 'index'])->name('dmsiswa.index');
+Route::post('/siswa/add', [SiswaController::class, 'store'])->name('siswa.store');
+Route::get('/siswa/show/{id}', [SiswaController::class, 'show'])->name('siswa.show');
+Route::put('/siswa/update/{id?}', [SiswaController::class, 'update'])->name('siswa.update');
+Route::delete('/siswa/delete/{id}', [SiswaController::class, 'destroy'])->name('siswa.destroy');
