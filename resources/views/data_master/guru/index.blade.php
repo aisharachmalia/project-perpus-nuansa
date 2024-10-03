@@ -236,6 +236,34 @@
         });
     </script>
 
+    {{-- export --}}
+    <script>    
+        $(document).on('click','#export',function(){
+                var link_export = "{{ route('link_export_dm_guru') }}";
+                var value_table = $('#tbl_list').DataTable().data().count();
+                if (value_table > 0) {
+                    $.ajax({
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        type: 'POST',
+                        url: link_export,
+                        dataType: 'json',
+                        success: function(data) {
+                            window.open(data.link, '_blank');
+                        },
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        html: 'Tidak terdapat Data yang akan dicetak',
+                        showCloseButton: true,
+                        focusConfirm: false,
+                        confirmButtonText:
+                        '<i class="fa fa-thumbs-up"></i> OK',
+                    });
+                }
+            });
+    </script>
+
     {{-- show --}}
     <script>
         //button create post event

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Crypt;
 use Carbon\Carbon;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
+use App\Exports\GuruExport;
 
 class GuruController extends Controller
 {
@@ -57,6 +58,7 @@ class GuruController extends Controller
 
         return response()->json(['gr' => $gr,  'slc' => $slc]);
     }
+    
     public function addGuru(Request $request)
     {
         try {
@@ -115,7 +117,6 @@ class GuruController extends Controller
             throw $th;
         }
     }
-
 
     public function editGuru($id = null, Request $request)
     {
@@ -185,7 +186,6 @@ class GuruController extends Controller
         }
     }
 
-
     public function deleteGuru($id = null)
     {
         $id_dguru = Crypt::decryptString($id);
@@ -199,5 +199,24 @@ class GuruController extends Controller
             'success' => true,
             'message' => 'Data Berhasil Dihapus!.',
         ]);
+    }
+
+    public function linkExportGuru(Request $request)
+    {
+        try {
+            $link = route('export_dm_guru');
+            return \Response::json(array('link' =>$link));
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function exportGuru(Request $request)
+    {
+        try {
+            return (new GuruExport)->dataExport($request->all())->download('Rekap Guru.xlsx');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }
