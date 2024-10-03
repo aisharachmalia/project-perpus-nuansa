@@ -9,7 +9,8 @@
                             <div class="col-12 d-flex justify-content-start">
                                 <a href="javascript:void(0)" class="btn btn-success mb-2 modalSimpanPenulis"
                                     data-bs-toggle="modal" data-bs-target="#tambahPenulis">+ Tambah</a>&nbsp;&nbsp;&nbsp;
-                                <a href="javascript:;" class="btn btn-success mb-2" id="export">Export Excel</a>
+                                <a href="javascript:;" class="btn btn-primary mb-2" id="export">Export Excel</a>&nbsp;&nbsp;&nbsp;
+                                <a href="javascript:;" class="btn btn-danger mb-2" id="printout">Printout Pdf</a>
                             </div>
                         </div>
                     </div>
