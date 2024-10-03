@@ -19,8 +19,10 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             MenuSeeder::class,
             AksesUsrSeeder::class,
+            KelasSeeder::class,
             DmGuruSeeder::class,
-            DmMapelSeeder::class
+            DmMapelSeeder::class,
+            DMPustakawanSeeder::class
         ]);
     }
 }

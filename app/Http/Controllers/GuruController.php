@@ -126,7 +126,7 @@ class GuruController extends Controller
                 'dguru_nama' => 'required|regex:/^[a-zA-Z]+$/',
                 'dguru_nip' => 'required|unique:dm_gurus,dguru_nip,' . $guru->id_dguru . ',id_dguru',
                 'dguru_email' => 'required|email|unique:dm_gurus,dguru_email,' . $guru->id_dguru . ',id_dguru',
-                'dguru_no_telp' => 'required|unique:dm_gurus,dguru_no_telp,' . $guru->id_dguru . ',id_dguru|numeric|regex:/^([0-9\s\-\+\(\)]*)$/|min:10|max:13',
+                'dguru_no_telp' => 'required|unique:dm_gurus,dguru_no_telp,' . $guru->id_dguru . ',id_dguru|numeric|regex:/^([0-9\s\-\+\(\)]*)$/|digits_between:11,13',
                 'dguru_alamat' => 'required',
                 'id_mapel' => 'required',
             ];
@@ -142,9 +142,7 @@ class GuruController extends Controller
                 'dguru_email.unique' => 'Email sudah terdaftar!',
                 'dguru_no_telp.unique' => 'No. Telp sudah terdaftar!',
                 'dguru_no_telp.regex' => 'No. Telp harus angka!',
-                'dguru_no_telp.min' => 'No. Telp minimal 11 angka!',
-                'dguru_no_telp.max' => 'No. Telp maksimal 13 angka!',
-                'dguru_nama.regex' => 'Nama Hanya boleh huruf!'
+                'dguru_no_telp.digits_between' => 'No. Telp harus di antara 11 hingga 13 angka!',
             ];
 
             // Lakukan validasi
