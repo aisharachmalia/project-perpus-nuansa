@@ -1,13 +1,10 @@
 <?php
 use App\Http\Controllers\Auth\ForgotPasswordController;
-use App\Http\Controllers\AksesUserController;
-use App\Http\Controllers\RegisterController;
-use App\Http\Controllers\PustakawanController;
-use App\Http\Controllers\WebController;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\SiswaController;
 
+use App\Http\Controllers\SiswaController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -95,6 +92,9 @@ Route::prefix('data-master')->group(function () {
 
     // refernsi route
     Route::get('/referensi', [App\Http\Controllers\ReferensiController::class, 'pageReferensi'])->name('data_master.referensi');
+    Route::get('/referensi/export', [App\Http\Controllers\ReferensiController::class, 'exportPenulis'])->name('data_master.referensi.export');
+    Route::post('/link/export', [App\Http\Controllers\ReferensiController::class, 'linkExport'])->name('data_master.referensi.linkExport');
+
 
     // penulis route
     Route::get('/dpenulis', [App\Http\Controllers\ReferensiController::class, 'dpenulis']);
