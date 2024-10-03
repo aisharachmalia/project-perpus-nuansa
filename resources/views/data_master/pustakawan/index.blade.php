@@ -7,7 +7,7 @@
                     <div class="card-header">
                         <div class="row">
                             <div class="col-12 d-flex justify-content-start">
-                                <a href="javascript:void(0)" class="btn btn-success mb-2" data-bs-toggle="modal"
+                                <a href="javascript:void(0)" class="btn btn-success mb-2 modalCreate" data-bs-toggle="modal"
                                     data-bs-target="#create">Add +</a>
                             </div>
                         </div>
@@ -82,7 +82,7 @@
         })
     </script>
     <script>
-        $('#store').off('click').on('click', function(e) {
+        $('#store').off('click').on('click', '.modalCreate',function(e) {
             e.preventDefault();
 
             let dpustakawan_nama = $('#create').find('#dpustakawan_nama').val();
