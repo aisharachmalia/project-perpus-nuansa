@@ -162,7 +162,7 @@ $(document).ready(function() {
     $('#tbl_list').on('click', '.show-btn', function() {
         var id = $(this).data('id'); 
         $.ajax({
-            url: `/kelas-detail/${id}`,
+            url: `kelas-detail/${id}`,
             method: 'GET',
             success: function(response) {
                 $('#show').find('#dkelas_nama_kelas').text(response.dkelas_nama_kelas);
@@ -180,7 +180,7 @@ $(document).ready(function() {
     $('#tbl_list').on('click', '.edit-btn', function() {
         var id = $(this).data('id');
         $.ajax({
-            url: `/kelas-detail/${id}`,
+            url: `kelas-detail/${id}`,
             method: 'GET',
             success: function(response) {
                 $('#edit').find('#id_dkelas').val(response.id_dkelas);  // Ambil id dengan benar
@@ -206,7 +206,7 @@ $(document).ready(function() {
         let token = $('meta[name="csrf-token"]').attr('content');
 
         $.ajax({
-            url: `/kelas-update/${id_dkelas}`,  // Pastikan URL update benar
+            url: `kelas-update/${id_dkelas}`,  // Pastikan URL update benar
             type: "PUT",
             data: {
                 "_token": token,
@@ -248,7 +248,7 @@ $('body').on('click', '.delete-btn', function() {
         if (result.isConfirmed) {
             // Mengirim permintaan DELETE ke server
             $.ajax({
-                url: `/kelas/delete/${id_dkelas}`,  // Pastikan URL delete sesuai dengan route Anda
+                url: `kelas/delete/${id_dkelas}`,  // Pastikan URL delete sesuai dengan route Anda
                 type: "DELETE",
                 data: {
                     "_token": token
