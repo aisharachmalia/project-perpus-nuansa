@@ -53,6 +53,10 @@ Route::prefix('data-master')->group(function () {
     Route::get('/guru/show/{id}', [App\Http\Controllers\GuruController::class, 'showGuru'])->name('data_master.guru.show');
     Route::put('/guru/edit/{id}', [App\Http\Controllers\GuruController::class, 'editGuru'])->name('data_master.guru.edit');
     Route::delete('/guru/delete/{id}', [App\Http\Controllers\GuruController::class, 'deleteGuru'])->name('data_master.guru.delete');
+
+    Route::get('/buku',[App\Http\Controllers\BukuController::class, 'pageBuku'])->name('data_master.buku');
+    Route::get('/table-buku',[App\Http\Controllers\BukuController::class, 'tableBuku'])->name('table_dm_buku');
+    Route::match(['post','put','delete'],'/crud-buku/{id?}',[App\Http\Controllers\BukuController::class, 'crudBuku'])->name('crud_dm_buku');
 });
 Route::get('/forgot-password',[App\Http\Controllers\WebController::class, 'pageForgotPassword'])->name('forgot_password');
 Route::post('/lupa-password',[ForgotPasswordController::class, 'lupaPassword'])->name('lupa_pass');
