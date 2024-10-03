@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Carbon\Carbon;
 use Yajra\DataTables\Facades\DataTables;
-
+use App\Exports\BukuExport;
 class BukuController extends Controller
 {
     //Halaman
@@ -145,6 +145,26 @@ class BukuController extends Controller
                 'message' => $message,
                 'errors' => $errors,
             ], $sts_kode);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    //
+    public function linkExportBuku(Request $request)
+    {
+        try {
+            $link = route('export_buku');
+            return \Response::json(array('link' =>$link));
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function exportBuku(Request $request)
+    {
+        try {
+            return (new BukuExport)->dataExport($request->all())->download('Rekap Buku.xlsx');
         } catch (\Throwable $th) {
             throw $th;
         }

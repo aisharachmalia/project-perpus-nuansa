@@ -8,8 +8,10 @@
                         <div class="row">
                             <div class="col-12 d-flex justify-content-start">
                                 <a href="javascript:void(0)" class="btn btn-success mb-2" data-bs-toggle="modal"
-                                    data-bs-target="#createBuku">+ Tambah</a>
+                                    data-bs-target="#createBuku">+ Tambah</a>&nbsp;&nbsp;
+                                <a href="javascript:;" class="btn btn-success mb-2" id="export"> Export Excel</a>
                             </div>
+                            
                         </div>
                     </div>
                     <div class="card-body">
@@ -39,6 +41,8 @@
     <script type="text/javascript">
         $(document).ready(function() {
             var crud_buku = "{{ route('crud_dm_buku') }}";
+            
+            var link_export = "{{ route('link_export_buku') }}";
 
             var table = $('#tbl_dmbuku').DataTable({
                 serverSide: true,
@@ -119,6 +123,30 @@
                         }
                     }
                 });
+            });
+
+            $(document).on('click','#export',function(){
+                var value_table = $('#tbl_dmbuku').DataTable().data().count();
+                if (value_table > 0) {
+                    $.ajax({
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        type: 'POST',
+                        url: link_export,
+                        dataType: 'json',
+                        success: function(data) {
+                            window.open(data.link, '_blank');
+                        },
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        html: 'Tidak terdapat Data yang akan dicetak',
+                        showCloseButton: true,
+                        focusConfirm: false,
+                        confirmButtonText:
+                        '<i class="fa fa-thumbs-up"></i> OK',
+                    });
+                }
             });
         });
     </script>
