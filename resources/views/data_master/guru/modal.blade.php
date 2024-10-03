@@ -56,7 +56,7 @@
                         <div class="col-md-12 col-12 mt-4">
                             <div class="form-group">
                                 <label for="country-floating">Alamat</label>
-                                <textarea class="form-control" id="dguru_alamat" name="dguru_alamat" rows="3"></textarea>
+                                <textarea class="form-control" id="dguru_alamat" name="dguru_alamat" rows="3" placeholder="Masukan alamat"></textarea>
                                 <span id="alamat-error" class="text-danger"></span>
                             </div>
                         </div>
@@ -89,6 +89,7 @@
                                 <label for="first-name-column">Nama</label>
                                 <input type="hidden" id="id_dguru">
                                 <input type="text" id="dguru_nama" class="form-control" placeholder="Nama" name="dguru_nama">
+                                <span id="nama-error" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-md-4 col-12">
@@ -137,7 +138,7 @@
                         <div class="col-md-12 col-12 mt-4">
                             <div class="form-group">
                                 <label for="country-floating">Alamat</label>
-                                <textarea class="form-control" id="dguru_alamat" name="dguru_alamat" rows="3"></textarea>
+                                <textarea class="form-control" id="dguru_alamat" name="dguru_alamat" rows="3" placeholder="Masukan alamat"></textarea>
                                 <span class="text-danger" id="alamat-error"></span>
                             </div>
                         </div>
