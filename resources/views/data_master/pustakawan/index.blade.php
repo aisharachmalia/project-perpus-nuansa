@@ -100,7 +100,7 @@
             $('#create').find('.text-danger').text('');
 
             $.ajax({
-                url: '{{ route("data_master.pustakawan.add") }}', // pastikan ini benar
+                url: '{{ route('data_master.pustakawan.add') }}', // pastikan ini benar
                 type: "POST",
                 cache: false,
                 data: {
@@ -240,12 +240,13 @@
                             var errors = errors.errors;
                             // Show error messages for each field
                             if (errors.dpustakawan_nama) {
-                                console.log(errors.dpustakawan_nama);
-                                $('#create').find('#nama-error').text(errors.dpustakawan_nama[0]);
+                                $('#edit').find('#nama-error').text(errors.dpustakawan_nama[
+                                0]); // Ubah dari #create ke #edit
                             }
+
                             if (errors.dpustakawan_email) {
-                                console.log(errors.dpustakawan_email);
-                                $('#create').find('#email-error').text(errors.dpustakawan_email[0]);
+                                $('#edit').find('#email-error').text(errors.dpustakawan_email[
+                                0]); // Ubah dari #create ke #edit
                             }
                             if (errors.dpustakawan_no_telp) {
                                 console.log(errors.dpustakawan_no_telp);
@@ -268,9 +269,9 @@
     <script>
         //button create post event
         $('body').on('click', '.modalShow', function() {
-    
+
             let id_gr = $(this).data('id');
-    
+
             //fetch detail post with ajax
             $.ajax({
                 url: `pustakawan/show/${id_gr}`,
@@ -288,7 +289,7 @@
             });
         });
     </script>
-     <script>
+    <script>
         $('body').on('click', '#btn-delete', function() {
 
             let id_gr = $(this).data('id');
