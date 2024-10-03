@@ -95,7 +95,6 @@
         });
     </script>
 
-
     {{-- delete --}}
     <script>
         $('body').on('click', '#btn-delete', function() {
