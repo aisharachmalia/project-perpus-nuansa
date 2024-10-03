@@ -21,7 +21,8 @@ class DatabaseSeeder extends Seeder
             AksesUsrSeeder::class,
             KelasSeeder::class,
             DmGuruSeeder::class,
-            DmMapelSeeder::class
+            DmMapelSeeder::class,
+            DMPustakawanSeeder::class
         ]);
     }
 }
