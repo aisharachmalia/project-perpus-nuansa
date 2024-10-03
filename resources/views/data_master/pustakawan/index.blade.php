@@ -9,7 +9,8 @@
                             <div class="col-12 d-flex justify-content-start">
                                 <a href="javascript:void(0)" class="btn btn-success mb-2 modalCreate " data-bs-toggle="modal"
                                     data-bs-target="#create">Tambah +</a>&nbsp;
-                                <a href="javascript:;" class="btn btn-success mb-2" id="export" >Export</a>
+                                <a href="javascript:;" class="btn btn-success mb-2" id="export" >Export Excel</a>
+                                <a href="javascript:;" class="btn btn-success mb-2" id="printout" >Printout PDF</a>
                             </div>
                         </div>
                     </div>
