@@ -59,55 +59,60 @@ class GuruController extends Controller
     }
     public function addGuru(Request $request)
     {
-        $rules = [
-            'dguru_nama' => 'required',
-            'dguru_nip' => 'required|unique:dm_gurus,dguru_nip',
-            'dguru_email' => 'required|email|unique:dm_gurus,dguru_email',
-            'dguru_no_telp' => 'required|unique:dm_gurus,dguru_no_telp|regex:/^([0-9\s\-\+\(\)]*)$/|min:10|max:13',
-            'dguru_alamat' => 'required',
-            'id_mapel' => 'required',
-        ];
-
-        $messages = [
-
-            'dguru_email.email' => 'Format email tidak sesuai',
-            'id_mapel.required' => 'Mata Pelajaran harus diisi!',
-            'dguru_nama.required' => 'Nama harus diisi!',
-            'dguru_nip.required' => 'NIP harus diisi!',
-            'dguru_email.required' => 'Email harus diisi!',
-            'dguru_no_telp.required' => 'No. Telp harus diisi!',
-            'dguru_alamat.required' => 'Alamat harus diisi!',
-            'dguru_nip.unique' => 'NIP sudah terdaftar!',
-            'dguru_email.unique' => 'Email sudah terdaftar!',
-            'dguru_no_telp.unique' => 'No. Telp sudah terdaftar!',
-            'dguru_no_telp.regex' => 'No. Telp harus angka!',
-            'dguru_no_telp.min' => 'No. Telp minimal 11 angka!',
-            'dguru_no_telp.max' => 'No. Telp maksimal 13 angka!',
-        ];
-
-        // Lakukan validasi
-        $validator = \Validator::make($request->all(), $rules, $messages);
-
-        if ($validator->fails()) {
+        try {
+            $rules = [
+                'dguru_nama' => 'required|regex:/^[a-zA-Z]+$/',
+                'dguru_nip' => 'required|unique:dm_gurus,dguru_nip',
+                'dguru_email' => 'required|email|unique:dm_gurus,dguru_email',
+                'dguru_no_telp' => 'required|unique:dm_gurus,dguru_no_telp|regex:/^([0-9\s\-\+\(\)]*)$/|min:10|max:13',
+                'dguru_alamat' => 'required',
+                'id_mapel' => 'required',
+            ];
+    
+            $messages = [
+    
+                'dguru_email.email' => 'Format email tidak sesuai',
+                'id_mapel.required' => 'Mata Pelajaran harus diisi!',
+                'dguru_nama.required' => 'Nama harus diisi!',
+                'dguru_nip.required' => 'NIP harus diisi!',
+                'dguru_email.required' => 'Email harus diisi!',
+                'dguru_no_telp.required' => 'No. Telp harus diisi!',
+                'dguru_alamat.required' => 'Alamat harus diisi!',
+                'dguru_nip.unique' => 'NIP sudah terdaftar!',
+                'dguru_email.unique' => 'Email sudah terdaftar!',
+                'dguru_no_telp.unique' => 'No. Telp sudah terdaftar!',
+                'dguru_no_telp.regex' => 'No. Telp harus angka!',
+                'dguru_no_telp.min' => 'No. Telp minimal 11 angka!',
+                'dguru_no_telp.max' => 'No. Telp maksimal 13 angka!',
+                'dguru_nama.regex' => 'Nama Hanya boleh huruf!'
+            ];
+    
+            // Lakukan validasi
+            $validator = \Validator::make($request->all(), $rules, $messages);
+    
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+    
+            dm_guru::create([
+                'id_mapel' => $request->id_mapel,
+                'dguru_nama' => $request->dguru_nama,
+                'dguru_nip' => $request->dguru_nip,
+                'dguru_email' => $request->dguru_email,
+                'dguru_no_telp' => $request->dguru_no_telp,
+                'dguru_alamat' => $request->dguru_alamat,
+            ]);
+    
             return response()->json([
-                'success' => false,
-                'errors' => $validator->errors()
-            ], 422);
+                'success' => true,
+                'message' => 'Data Berhasil Disimpan!'
+            ], 200);
+        } catch (\Throwable $th) {
+            throw $th;
         }
-
-        dm_guru::create([
-            'id_mapel' => $request->id_mapel,
-            'dguru_nama' => $request->dguru_nama,
-            'dguru_nip' => $request->dguru_nip,
-            'dguru_email' => $request->dguru_email,
-            'dguru_no_telp' => $request->dguru_no_telp,
-            'dguru_alamat' => $request->dguru_alamat,
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Data Berhasil Disimpan!'
-        ], 200);
     }
 
 
@@ -118,7 +123,7 @@ class GuruController extends Controller
             $guru = dm_guru::find($idGr);
 
             $rules = [
-                'dguru_nama' => 'required',
+                'dguru_nama' => 'required|regex:/^[a-zA-Z]+$/',
                 'dguru_nip' => 'required|unique:dm_gurus,dguru_nip,' . $guru->id_dguru . ',id_dguru',
                 'dguru_email' => 'required|email|unique:dm_gurus,dguru_email,' . $guru->id_dguru . ',id_dguru',
                 'dguru_no_telp' => 'required|unique:dm_gurus,dguru_no_telp,' . $guru->id_dguru . ',id_dguru|numeric|regex:/^([0-9\s\-\+\(\)]*)$/|min:10|max:13',
@@ -139,6 +144,7 @@ class GuruController extends Controller
                 'dguru_no_telp.regex' => 'No. Telp harus angka!',
                 'dguru_no_telp.min' => 'No. Telp minimal 11 angka!',
                 'dguru_no_telp.max' => 'No. Telp maksimal 13 angka!',
+                'dguru_nama.regex' => 'Nama Hanya boleh huruf!'
             ];
 
             // Lakukan validasi
@@ -181,7 +187,6 @@ class GuruController extends Controller
 
     public function deleteGuru($id = null)
     {
-
         $id_dguru = Crypt::decryptString($id);
 
         $gr = dm_guru::find($id_dguru);
