@@ -82,7 +82,15 @@
         })
     </script>
     <script>
-        $('#store').off('click').on('click', '.modalCreate',function(e) {
+      $('body').on('click', '.modalCreate', function() {
+            $('#create').find('#nama-error').text('');
+            $('#create').find('#nip-error').text('');
+            $('#create').find('#email-error').text('');
+            $('#create').find('#telp-error').text('');
+            $('#create').find('#alamat-error').text('');
+            $('#create').find('#mapel-error').text('');
+        });
+        $('#store').off('click').on('click',function(e) {
             e.preventDefault();
 
             let dpustakawan_nama = $('#create').find('#dpustakawan_nama').val();
