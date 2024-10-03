@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
             MenuSeeder::class,
             AksesUsrSeeder::class,
             KelasSeeder::class,
+            DmGuruSeeder::class,
+            DmMapelSeeder::class
         ]);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\VerifiesEmails;
+use App\Models\User;
 
 class VerificationController extends Controller
 {
@@ -20,22 +21,30 @@ class VerificationController extends Controller
 
     use VerifiesEmails;
 
-    /**
-     * Where to redirect users after verification.
-     *
-     * @var string
-     */
-    protected $redirectTo = '/home';
+    public function verificationUser($id = null)
+    {   
+        if (!$id) {
+            return redirect()->route('login')->with('error_ver', 'Link tidak ditemukan.');
+        }
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-        $this->middleware('signed')->only('verify');
-        $this->middleware('throttle:6,1')->only('verify', 'resend');
+        $id_usr = \Crypt::decryptString($id);
+        $user = User::find($id_usr);
+
+        if (!$user) {
+            return redirect()->route('login')->with('error_ver', 'Pengguna tidak ditemukan.');
+        }
+        if (!$user) {
+            return redirect()->route('login')->with('error_ver', 'Akun anda belum di verifikasi.');
+        }
+
+        if ($user->email_verified) {
+            return redirect()->route('login')->with('info_ver', 'Email sudah diverifikasi.');
+        }
+
+        $user->email_verified = now();
+        $user->usr_stat = 1;
+        $user->save();
+
+        return redirect()->route('login')->with('success_ver', 'Email berhasil diverifikasi.');
     }
 }
