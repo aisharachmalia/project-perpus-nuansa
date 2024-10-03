@@ -1,0 +1,20 @@
+<table>
+    <tr>
+        <th>No</th>
+        <th>Nama</th>
+        <th>Email</th>
+        <th>No.Telepon</th>
+        <th>Alamat</th>
+        <th>Status</th>
+    </tr>
+    @foreach ($pustakawan as $key => $item)
+        <tr>
+            <td>{{$key+1}}</td>
+            <td>{{$item->dpustakawan_nama}}</td>
+            <td>{{$item->dpustakawan_email}}</td>
+            <td>{{$item->dpustakawan_no_telp}}</td>
+            <td>{{$item->dpustakawan_alamat}}</td>
+            <td>{{$item->dpustakawan_status}}</td>
+        </tr>
+    @endforeach
+</table>
