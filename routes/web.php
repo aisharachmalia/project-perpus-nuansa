@@ -58,8 +58,8 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 // Rute untuk halaman daftar siswa
 
 Route::prefix('data-master')->group(function () {
-    Route::get('/pustakawan', [App\Http\Controllers\pustakawanController::class, 'pagepustakawan'])->name('data_master.pustakawan');
-    Route::post('/pustakawan/add', [App\Http\Controllers\pustakawanController::class, 'addGuru'])->name('data_master.guru.add');
+    Route::get('/guru', [App\Http\Controllers\GuruController::class, 'pageGuru'])->name('data_master.guru');
+    Route::post('/guru/add', [App\Http\Controllers\GuruController::class, 'addGuru'])->name('data_master.guru.add');
     Route::get('/guru/show/{id}', [App\Http\Controllers\GuruController::class, 'showGuru'])->name('data_master.guru.show');
     Route::put('/guru/edit/{id}', [App\Http\Controllers\GuruController::class, 'editGuru'])->name('data_master.guru.edit');
     Route::delete('/guru/delete/{id}', [App\Http\Controllers\GuruController::class, 'deleteGuru'])->name('data_master.guru.delete');
