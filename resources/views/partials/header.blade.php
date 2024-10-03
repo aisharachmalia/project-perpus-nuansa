@@ -1,5 +1,8 @@
 @php
-    $role=App\Models\akses_usr::join('users','akses_usrs.id_usr','users.id_usr')->where('users.id_usr',Auth::user()->id_usr)->join('roles','akses_usrs.id_role','roles.id_role')->first();
+    $role = App\Models\akses_usr::join('users', 'akses_usrs.id_usr', 'users.id_usr')
+        ->where('users.id_usr', Auth::user()->id_usr)
+        ->join('roles', 'akses_usrs.id_role', 'roles.id_role')
+        ->first();
 @endphp
 <div id="main" class='layout-navbar'>
     <header class='mb-3'>
@@ -50,7 +53,7 @@
                                 </div>
                                 <div class="user-img d-flex align-items-center">
                                     <div class="avatar avatar-md">
-                                        <img src="{{asset('assets/images/faces/1.jpg')}}">
+                                        <img src={{ asset('assets/images/faces/1.jpg') }}>
                                     </div>
                                 </div>
                             </div>
@@ -67,12 +70,12 @@
                                 <hr class="dropdown-divider">
                             </li>
                             <li><a class="dropdown-item" href="{{ route('logout') }}"
-                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i
-                                    class="icon-mid bi bi-box-arrow-left me-2"></i> Logout </a></li>
+                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i
+                                        class="icon-mid bi bi-box-arrow-left me-2"></i> Logout </a></li>
 
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                            @csrf
-                        </form>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
                         </ul>
                     </div>
                 </div>
