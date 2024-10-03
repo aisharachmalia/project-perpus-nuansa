@@ -7,7 +7,7 @@
                     <div class="card-header">
                         <div class="row">
                             <div class="col-12 d-flex justify-content-start">
-                                <a href="javascript:void(0)" class="btn btn-success mb-2" data-bs-toggle="modal"
+                                <a href="javascript:void(0)" class="btn btn-success mb-2 modalCreate" data-bs-toggle="modal"
                                     data-bs-target="#create">Add +</a>
                             </div>
                         </div>
@@ -82,7 +82,15 @@
         })
     </script>
     <script>
-        $('#store').off('click').on('click', function(e) {
+      $('body').on('click', '.modalCreate', function() {
+            $('#create').find('#nama-error').text('');
+            $('#create').find('#nip-error').text('');
+            $('#create').find('#email-error').text('');
+            $('#create').find('#telp-error').text('');
+            $('#create').find('#alamat-error').text('');
+            $('#create').find('#mapel-error').text('');
+        });
+        $('#store').off('click').on('click',function(e) {
             e.preventDefault();
 
             let dpustakawan_nama = $('#create').find('#dpustakawan_nama').val();
