@@ -7,7 +7,7 @@ use App\Http\Controllers\WebController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\SiswaController;
-
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -95,6 +95,8 @@ Route::prefix('data-master')->group(function () {
 
     // refernsi route
     Route::get('/referensi', [App\Http\Controllers\ReferensiController::class, 'pageReferensi'])->name('data_master.referensi');
+    Route::get('/referensi/export/', [App\Http\Controllers\ReferensiController::class, 'exportReferensi'])->name('data_master.referensi.export');
+
 
     // penulis route
     Route::get('/dpenulis', [App\Http\Controllers\ReferensiController::class, 'dpenulis']);
