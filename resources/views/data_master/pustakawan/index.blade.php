@@ -7,8 +7,9 @@
                     <div class="card-header">
                         <div class="row">
                             <div class="col-12 d-flex justify-content-start">
-                                <a href="javascript:void(0)" class="btn btn-success mb-2 modalCreate" data-bs-toggle="modal"
-                                    data-bs-target="#create">Add +</a>
+                                <a href="javascript:void(0)" class="btn btn-success mb-2 modalCreate " data-bs-toggle="modal"
+                                    data-bs-target="#create">Tambah +</a>&nbsp;
+                                <a href="javascript:;" class="btn btn-success mb-2" id="export" >Export</a>
                             </div>
                         </div>
                     </div>
