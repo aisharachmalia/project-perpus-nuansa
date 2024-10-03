@@ -8,7 +8,8 @@
                         <div class="row">
                             <div class="col-12 d-flex justify-content-start">
                                 <a href="javascript:void(0)" class="btn btn-success mb-2 modalCreate" data-bs-toggle="modal"
-                                    data-bs-target="#create">+ Tambah</a>
+                                    data-bs-target="#create">+ Tambah</a>&nbsp; &nbsp;
+                                <a href="javascript:void(0)" class="btn btn-success mb-2" id="export">Export Excel</a>
                             </div>
                         </div>
                     </div>
