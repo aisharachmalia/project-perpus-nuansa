@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Crypt;
 use Carbon\Carbon;
 use Yajra\DataTables\Facades\DataTables;
 use App\Exports\BukuExport;
+use Barryvdh\DomPDF\Facade\Pdf;
 class BukuController extends Controller
 {
     //Halaman
@@ -165,6 +166,26 @@ class BukuController extends Controller
     {
         try {
             return (new BukuExport)->dataExport($request->all())->download('Rekap Buku.xlsx');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function linkPrintoutBuku(Request $request)
+    {
+        try {
+            $link = route('printout_buku');
+            return \Response::json(array('link' =>$link));
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function printoutBuku(Request $request)
+    {
+        try {
+            $pdf = Pdf::loadView('pdf.pdf_buku', $request->all());
+            return $pdf->stream('Printout Buku.pdf');
         } catch (\Throwable $th) {
             throw $th;
         }

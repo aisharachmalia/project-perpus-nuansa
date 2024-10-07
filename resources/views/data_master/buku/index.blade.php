@@ -45,6 +45,7 @@
             var crud_buku = "{{ route('crud_dm_buku') }}";
             
             var link_export = "{{ route('link_export_buku') }}";
+            var link_printout = "{{ route('link_printout_buku') }}";
 
             var table = $('#tbl_dmbuku').DataTable({
                 serverSide: true,
@@ -135,6 +136,32 @@
                         type: 'POST',
                         url: link_export,
                         dataType: 'json',
+                        success: function(data) {
+                            window.open(data.link, '_blank');
+                        },
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        html: 'Tidak terdapat Data yang akan dicetak',
+                        showCloseButton: true,
+                        focusConfirm: false,
+                        confirmButtonText:
+                        '<i class="fa fa-thumbs-up"></i> OK',
+                    });
+                }
+            });
+
+            $(document).on('click','#printout',function(){
+                var value_table = $('#tbl_dmbuku').DataTable().data().count();
+                if (value_table > 0) {
+                    $.ajax({
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        type: 'POST',
+                        url: link_printout,
+                        dataType: 'json',
+                        data: {
+                        },
                         success: function(data) {
                             window.open(data.link, '_blank');
                         },
