@@ -74,8 +74,11 @@ Route::prefix('data-master')->group(function () {
     Route::post('/pustakawan/add', [App\Http\Controllers\PustakawanController::class, 'addPustakawan'])->name('data_master.pustakawan.add');
     Route::put('/pustakawan/edit/{id}', [App\Http\Controllers\PustakawanController::class, 'editPustakawan'])->name('data_master.pustakawan.edit');
     Route::delete('/pustakawan/delete/{id}', [App\Http\Controllers\PustakawanController::class, 'deletePustakawan'])->name('data_master.pustakawan.delete');
+
     Route::post('/link-export-pustakawan',[App\Http\Controllers\PustakawanController::class,'linkExportPustakawan'])->name('link_export_pustakawan');
     Route::get('/export-pustakawan',[App\Http\Controllers\PustakawanController::class,'exportPustakawan'])->name('export_pustakawan');
+    Route::post('/link-printout-pustakawan',[App\Http\Controllers\PustakawanController::class,'linkPrintoutPustakawan'])->name('link_printout_pustakawan');
+    Route::get('/printout-pustakawan',[App\Http\Controllers\PustakawanController::class,'printoutPustakawan'])->name('printout_pustakawan');
 
     // Siswa
     Route::get('/siswa', [SiswaController::class, 'index'])->name('data_master.siswa');
