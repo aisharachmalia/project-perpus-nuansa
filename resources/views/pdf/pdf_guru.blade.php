@@ -16,19 +16,19 @@
         <b>{{ $title }}</b>
     </h1>
 
-    <table class="table table-striped">
+    <table border="1" cellpadding="2" class="table table-striped">
         <tr>
-            <th>No</th>
-            <th>NIP</th>
-            <th>Nama</th>
-            <th>Email</th>
-            <th>No.Telepon</th>
-            <th>Alamat</th>
-            <th>Mata Pelajaran</th>
+            <th width="5%">No</th>
+            <th width="10%">NIP</th>
+            <th width="20%">Nama</th>
+            <th width="20%">Email</th>
+            <th width="10%">No.Telepon</th>
+            <th width="20%">Alamat</th>
+            <th >Mata Pelajaran</th>
         </tr>
         @foreach ($gr as $item)
             <tr>
-                <td>{{ $loop->iteration }}</td>
+                <td style="text-align: center">{{ $loop->iteration }}</td>
                 <td>{{ $item->dguru_nip }}</td>
                 <td>{{ $item->dguru_nama }}</td>
                 <td>{{ $item->dguru_email }}</td>
