@@ -7,9 +7,12 @@
                     <div class="card-header">
                         <div class="row">
                             <div class="col-12 d-flex justify-content-start">
-                                <a href="javascript:void(0)" class="btn btn-success mb-2 modalCreate" data-bs-toggle="modal"
-                                    data-bs-target="#create">+ Tambah</a>&nbsp; &nbsp;
+                                <a href="javascript:void(0)" class="btn btn-success mb-2 modalCreate"
+                                    data-bs-toggle="modal"data-bs-target="#create">+ Tambah</a>
+                                &nbsp; &nbsp;
                                 <a href="javascript:void(0)" class="btn btn-success mb-2" id="export">Export Excel</a>
+                                &nbsp; &nbsp;
+                                <a href="javascript:void(0)" class="btn btn-danger mb-2" id="printout">Printout Pdf</a>
                             </div>
                         </div>
                     </div>
@@ -237,31 +240,61 @@
     </script>
 
     {{-- export --}}
-    <script>    
-        $(document).on('click','#export',function(){
-                var link_export = "{{ route('link_export_dm_guru') }}";
-                var value_table = $('#tbl_list').DataTable().data().count();
-                if (value_table > 0) {
-                    $.ajax({
-                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                        type: 'POST',
-                        url: link_export,
-                        dataType: 'json',
-                        success: function(data) {
-                            window.open(data.link, '_blank');
-                        },
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'warning',
-                        html: 'Tidak terdapat Data yang akan dicetak',
-                        showCloseButton: true,
-                        focusConfirm: false,
-                        confirmButtonText:
-                        '<i class="fa fa-thumbs-up"></i> OK',
-                    });
-                }
-            });
+    <script>
+        $(document).on('click', '#export', function() {
+            var link_export = "{{ route('link_export_dm_guru') }}";
+            var value_table = $('#tbl_list').DataTable().data().count();
+            if (value_table > 0) {
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    type: 'POST',
+                    url: link_export,
+                    dataType: 'json',
+                    success: function(data) {
+                        window.open(data.link, '_blank');
+                    },
+                });
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    html: 'Tidak terdapat Data yang akan dicetak',
+                    showCloseButton: true,
+                    focusConfirm: false,
+                    confirmButtonText: '<i class="fa fa-thumbs-up"></i> OK',
+                });
+            }
+        });
+    </script>
+
+    {{-- printout --}}
+    <script>
+        $(document).on('click', '#printout', function() {
+            var link_export = "{{ route('link_printout_guru') }}";
+            var value_table = $('#tbl_list').DataTable().data().count();
+            if (value_table > 0) {
+                $.ajax({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    type: 'POST',
+                    url: link_export,
+                    dataType: 'json',
+                    success: function(data) {
+                        window.open(data.link, '_blank');
+                    },
+                });
+            } else {
+                Swal.fire({
+                    icon: 'warning',
+                    html: 'Tidak terdapat Data yang akan dicetak',
+                    showCloseButton: true,
+                    focusConfirm: false,
+                    confirmButtonText: '<i class="fa fa-thumbs-up"></i> OK',
+                });
+            }
+        });
     </script>
 
     {{-- show --}}

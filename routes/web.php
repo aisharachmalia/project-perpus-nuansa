@@ -56,6 +56,9 @@ Route::prefix('data-master')->group(function () {
     //export
     Route::get('/export-guru', [App\Http\Controllers\GuruController::class, 'exportGuru'])->name('export_dm_guru');
     Route::post('/link-export-guru', [App\Http\Controllers\GuruController::class, 'linkExportGuru'])->name('link_export_dm_guru');
+    //pdf
+    Route::get('/printout-guru', [App\Http\Controllers\GuruController::class, 'printoutGuru'])->name('printout_guru');
+    Route::post('/link-printout-guru', [App\Http\Controllers\GuruController::class, 'linkPrintoutGuru'])->name('link_printout_guru');
 
     //Buku
     Route::get('/buku',[App\Http\Controllers\BukuController::class, 'pageBuku'])->name('data_master.buku');
