@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
 use App\Exports\GuruExport;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class GuruController extends Controller
 {
@@ -53,12 +54,12 @@ class GuruController extends Controller
         $mpl = \DB::table('dm_mapels')->get();
         $slc = '';
         foreach ($mpl as $mp) {
-            $slc .= '<option value="' . $mp->id_mapel . '" '.($mp->id_mapel == $gr->id_mapel ? 'selected' : '').'>' . $mp->dmapel_nama_mapel . '</option>';    
+            $slc .= '<option value="' . $mp->id_mapel . '" ' . ($mp->id_mapel == $gr->id_mapel ? 'selected' : '') . '>' . $mp->dmapel_nama_mapel . '</option>';
         }
 
-        return response()->json(['gr' => $gr,  'slc' => $slc]);
+        return response()->json(['gr' => $gr, 'slc' => $slc]);
     }
-    
+
     public function addGuru(Request $request)
     {
         try {
@@ -70,7 +71,7 @@ class GuruController extends Controller
                 'dguru_alamat' => 'required',
                 'id_mapel' => 'required',
             ];
-    
+
             $messages = [
                 'dguru_email.email' => 'Format email tidak sesuai',
                 'id_mapel.required' => 'Mata Pelajaran harus diisi!',
@@ -87,19 +88,19 @@ class GuruController extends Controller
                 'dguru_no_telp.regex' => 'No. Telp harus angka!',
                 'dguru_no_telp.min' => 'No. Telp minimal 11 angka!',
                 'dguru_no_telp.max' => 'No. Telp maksimal 13 angka!',
-                
+
             ];
-    
+
             // Lakukan validasi
             $validator = \Validator::make($request->all(), $rules, $messages);
-    
+
             if ($validator->fails()) {
                 return response()->json([
                     'success' => false,
                     'errors' => $validator->errors()
                 ], 422);
             }
-    
+
             dm_guru::create([
                 'id_mapel' => $request->id_mapel,
                 'dguru_nama' => $request->dguru_nama,
@@ -108,7 +109,7 @@ class GuruController extends Controller
                 'dguru_no_telp' => $request->dguru_no_telp,
                 'dguru_alamat' => $request->dguru_alamat,
             ]);
-    
+
             return response()->json([
                 'success' => true,
                 'message' => 'Data Berhasil Disimpan!'
@@ -205,7 +206,7 @@ class GuruController extends Controller
     {
         try {
             $link = route('export_dm_guru');
-            return \Response::json(array('link' =>$link));
+            return \Response::json(array('link' => $link));
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -215,6 +216,35 @@ class GuruController extends Controller
     {
         try {
             return (new GuruExport)->dataExport($request->all())->download('Rekap Guru.xlsx');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function linkPrintoutGuru(Request $request)
+    {
+        try {
+            $link = route('printout_guru');
+            return \Response::json(array('link' => $link));
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function printoutGuru(Request $request)
+    {
+        try {
+            $gr = \DB::table('dm_gurus')
+            ->join('dm_mapels', 'dm_gurus.id_mapel', '=', 'dm_mapels.id_mapel')
+            ->select('dm_gurus.*', 'dm_mapels.dmapel_nama_mapel')
+            ->get();
+            $data = [
+                'title' => 'Printout Guru',
+                'gr' => $gr
+            ];
+            
+            $pdf = Pdf::loadView('pdf.pdf_guru',$data);
+            return $pdf->stream('Printout Guru.pdf');
         } catch (\Throwable $th) {
             throw $th;
         }

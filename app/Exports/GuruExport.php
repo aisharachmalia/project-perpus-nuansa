@@ -25,4 +25,6 @@ class GuruExport implements FromView
         
         return view('export.exc_guru',compact('gr'));
     }
+
+    
 }
