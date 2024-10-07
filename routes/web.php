@@ -87,6 +87,10 @@ Route::prefix('data-master')->group(function () {
     Route::post('/link-export-siswa', [App\Http\Controllers\SiswaController::class, 'linkExportSiswa'])->name('link_export_siswa');
     Route::get('/export-siswa',[App\Http\Controllers\SiswaController::class, 'exportSiswa'])->name('export_siswa');
 
+    Route::post('/link-printout-siswa', [App\Http\Controllers\SiswaController::class, 'linkPrintoutSiswa'])->name('link_printout_siswa');
+    Route::get('/printout-siswa', [App\Http\Controllers\SiswaController::class, 'printoutSiswa'])->name('printout_siswa');
+
+
     // Kelas
     Route::get('/kelas', [App\Http\Controllers\KelasController::class, 'index'])->name('data_master.kelas');
     Route::get('/kelas-detail/{id?}', [App\Http\Controllers\KelasController::class, 'detail'])->name('kelas.detail');

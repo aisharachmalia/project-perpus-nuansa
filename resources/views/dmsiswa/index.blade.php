@@ -8,9 +8,13 @@
                     <div class="card-header">
                         <div class="row">
                             <div class="col-12 d-flex justify-content-start">
-                               <a href="javascript:void(0)" class="btn btn-custom btn-success mb-2 modalCreate" data-bs-toggle="modal" data-bs-target="#create">+ Tambah</a>&nbsp;
+                               <a href="javascript:void(0)" class="btn btn-custom btn-success mb-2 modalCreate" data-bs-toggle="modal" data-bs-target="#create">+ Tambah</a>&nbsp; &nbsp;
                               <a href="javascript:;" class="btn btn-custom btn-success mb-2" id="export">
                                 <i class="fas fa-file-excel"></i> Export Excel
+                            </a>
+                            &nbsp; &nbsp;
+                             <a href="javascript:;" class="btn btn-custom btn-danger mb-2" id="printout">
+                                <i class="fas fa-file-pdf"></i> Printout PDF
                             </a>
 
                             </div>
@@ -291,6 +295,7 @@
     <script type="text/javascript">
         $(document).ready(function() {
             var link_export = "{{ route('link_export_siswa') }}";
+            var link_printout = "{{ route('link_printout_siswa') }}";
             var table = $('#tbl_list').DataTable({
                 serverSide: true,
                 ajax: '{{ url()->current() }}',
@@ -363,7 +368,32 @@
                     });
                 }
             });
+
+            $(document).on('click','#printout',function(){
+                var value_table = $('#tbl_list').DataTable().data().count();
+                if (value_table > 0) {
+                    $.ajax({
+                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        type: 'POST',
+                        url: link_printout,
+                        dataType: 'json',
+                        success: function(data) {
+                            window.open(data.link, '_blank');
+                        },
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        html: 'Tidak terdapat Data yang akan dicetak',
+                        showCloseButton: true,
+                        focusConfirm: false,
+                        confirmButtonText:
+                        '<i class="fa fa-thumbs-up"></i> OK',
+                    });
+                }
+            });
         });
+    
     </script>
 
     {{-- delete --}}
@@ -416,13 +446,18 @@
             let id_dkelas = $('#create').find('#id_dkelas').val();
             let token = $("meta[name='csrf-token']").attr("content");
 
-            // Clear previous error messages
-            $('#create').find('#nama-error').text('');
-            $('#create').find('#nis-error').text('');
-            $('#create').find('#email-error').text('');
-            $('#create').find('#telp-error').text('');
-            $('#create').find('#alamat-error').text('');
-            $('#create').find('#kelas-error').text('');
+            $('#create').on('hidden.bs.modal', function () {
+            // Hapus pesan error
+            $('#nama-error').text('');
+            $('#nis-error').text('');
+            $('#email-error').text('');
+            $('#telp-error').text('');
+            $('#kelas-error').text('');
+            $('#alamat-error').text('');
+
+                // Reset form
+                $(this).find('form')[0].reset();
+            });
 
             $.ajax({
                 url: `siswa/add`,
@@ -562,7 +597,7 @@
         let id_dkelas = $('#edit').find('#id_dkelas').val();
         let token = $("meta[name='csrf-token']").attr("content");
 
-        // Clear previous error messages
+        // Clear previous error messages 
         $('#edit').find('#nama-error').text('');
         $('#edit').find('#nis-error').text('');
         $('#edit').find('#email-error').text('');
