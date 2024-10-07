@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Crypt;
 use Carbon\Carbon;
 use Yajra\DataTables\Facades\DataTables;
 use App\Exports\PustakawanExport;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PustakawanController extends Controller
 {
@@ -185,6 +186,25 @@ class PustakawanController extends Controller
     {
         try {
             return (new PustakawanExport)->dataExport($request->all())->download('Rekap Pustakawan.xlsx');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+    public function linkPrintoutPustakawan(Request $request)
+    {
+        try {
+            $link = route('printout_pustakawan');
+            return \Response::json(array('link' =>$link));
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function printoutPustakawan(Request $request)
+    {
+        try {
+            $pdf = Pdf::loadView('pdf.pdf_pustakawan', $request->all());
+            return $pdf->stream('Printout Pustakawan .pdf');
         } catch (\Throwable $th) {
             throw $th;
         }
