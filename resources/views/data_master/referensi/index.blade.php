@@ -9,7 +9,8 @@
                             <div class="col-12 d-flex justify-content-start">
                                 <a href="javascript:void(0)" class="btn btn-success mb-2 modalSimpanPenulis"
                                     data-bs-toggle="modal" data-bs-target="#tambahPenulis">+ Tambah</a>&nbsp;&nbsp;&nbsp;
-                                <a href="javascript:;" class="btn btn-primary mb-2" id="export">Export Excel</a>&nbsp;&nbsp;&nbsp;
+                                <a href="javascript:;" class="btn btn-primary mb-2" id="export">Export
+                                    Excel</a>&nbsp;&nbsp;&nbsp;
                                 <a href="javascript:;" class="btn btn-danger mb-2" id="printout">Printout Pdf</a>
                             </div>
                         </div>
@@ -573,7 +574,8 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            var link_export="{{route('data_master.referensi.linkExport')}}";
+            var link_export = "{{ route('referensi.linkExport') }}";
+            var link_print = "{{ route('referensi.linkPrintout') }}";
             var table = $('#tbl_penulis').DataTable({
                 serverSide: true,
                 ajax: '{{ url('/data-master/dpenulis') }}',
@@ -599,11 +601,13 @@
                 ]
             });
 
-            $(document).on('click','#export',function(){
+            $(document).on('click', '#export', function() {
                 var value_table = $('#tbl_penulis').DataTable().data().count();
                 if (value_table > 0) {
                     $.ajax({
-                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
                         type: 'POST',
                         url: link_export,
                         dataType: 'json',
@@ -617,8 +621,31 @@
                         html: 'Tidak terdapat Data yang akan dicetak',
                         showCloseButton: true,
                         focusConfirm: false,
-                        confirmButtonText:
-                        '<i class="fa fa-thumbs-up"></i> OK',
+                        confirmButtonText: '<i class="fa fa-thumbs-up"></i> OK',
+                    });
+                }
+            });
+            $(document).on('click', '#printout', function() {
+                var value_table = $('#tbl_penulis').DataTable().data().count();
+                if (value_table > 0) {
+                    $.ajax({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        type: 'POST',
+                        url: link_print,
+                        dataType: 'json',
+                        success: function(data) {
+                            window.open(data.link, '_blank');
+                        },
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        html: 'Tidak terdapat Data yang akan dicetak',
+                        showCloseButton: true,
+                        focusConfirm: false,
+                        confirmButtonText: '<i class="fa fa-thumbs-up"></i> OK',
                     });
                 }
             });
@@ -775,15 +802,9 @@
 
         // ajax add
         $('body').on('click', '.modalSimpanPenulis', function() {
-            $('#tgl_error').text('');
-            $('#nama_error').text('');
-            $('#kewarganegaraan_error').text('');
-
-
-            $('#tambahPenulis').find('#nama_penulis').val();
-            $('#tambahPenulis').find('#kewarganegaraan').val();
-            $('#tambahPenulis').find('#tgl_lahir').val();
-
+            $('#tambahPenulis').find('#tgl_error').text('');
+            $('#tambahPenulis').find('#nama_error').text('');
+            $('#tambahPenulis').find('#kewarganegaraan_error').text('');
         });
         $('#simpanPenulis').on('click', function(e) {
             e.preventDefault();
@@ -811,6 +832,9 @@
                     });
                     $('#tambahPenulis').modal('toggle');
                     $('.modal-backdrop').remove();
+                    $('#tambahPenulis').find('#nama_penulis').val('');
+                    $('#tambahPenulis').find('#kewarganegaraan').val('');
+                    $('#tambahPenulis').find('#tgl_lahir').val('');
                 },
                 error: function(xhr) {
                     if (xhr.status === 422) {
@@ -908,7 +932,7 @@
         });
 
 
-       
+
         // ajax edit
         $('body').on('click', '.modalEditPenerbit', function() {
 
@@ -1001,9 +1025,9 @@
             $('#tambahPenerbit').find('#nama_error').text('');
             $('#tambahPenerbit').find('#alamat_error').text('');
 
-            $('#tambahPenerbit').find('#nama_penerbit').val();
-            $('#tambahPenerbit').find('#alamat').val();
-            $('#tambahPenerbit').find('#no_kontak').val();
+            $('#tambahPenerbit').find('#nama_penerbit').val('');
+            $('#tambahPenerbit').find('#alamat').val('');
+            $('#tambahPenerbit').find('#no_kontak').val('');
         });
         $('#simpanPenerbit').on('click', function(e) {
             e.preventDefault();
@@ -1191,7 +1215,7 @@
 
         $('body').on('click', '.modalSimpanKategori', function() {
             $('#tambahKategori').find('#nama_error').text('');
-            $('#tambahKategori').find('#nama_kategori').val();
+            $('#tambahKategori').find('#nama_kategori').val('');
         });
         $('#simpanKategori').on('click', function(e) {
             e.preventDefault();
@@ -1275,3 +1299,4 @@
     </script>
     {{-- end ajax kategori --}}
 @endpush
+

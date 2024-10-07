@@ -6,9 +6,9 @@ use App\Exports\PenulisExport;
 use App\Models\dm_kategori;
 use App\Models\dm_penerbit;
 use App\Models\dm_penulis;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -402,17 +402,37 @@ class ReferensiController extends Controller
     public function linkExport(Request $request)
     {
         try {
-            $link = route('data_master.referensi.export');
+            $link = route('referensi.export');
             return \Response::json(array('link' => $link));
         } catch (\Throwable $th) {
             throw $th;
         }
     }
 
-    public function exportPenulis(Request $request)
+    public function exportRefensi(Request $request)
     {
         try {
             return (new PenulisExport)->dataExport($request->all())->download('Rekap Penulis.xlsx');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+    public function linkPrintout(Request $request)
+    {
+        try {
+            $link = route('referensi.printout');
+            return \Response::json(array('link' => $link));
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function printoutReferensi(Request $request)
+    {
+        try {
+            $penulis = dm_penulis::all();
+            $pdf = Pdf::loadView('pdf.pdf_referensi', compact('penulis'));
+            return $pdf->stream('Rekap Penulis.pdf');
         } catch (\Throwable $th) {
             throw $th;
         }
