@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Carbon\Carbon;
 use App\Exports\SiswaExport;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -215,4 +216,28 @@ public function update($id = null, Request $request)
             throw $th;
         }
     }
-}
+
+    public function linkPrintoutSiswa(Request $request)
+    {
+        try {
+            $link = route('printout_siswa');
+            return \Response::json(array('link' =>$link));
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+     public function printoutSiswa(Request $request)
+    {
+        try {
+        $pdf = Pdf::loadView('pdf.pdf_siswa', $request->all());
+        return $pdf->stream('Printout Siswa.pdf');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+        
+
+        }
+    }
+
+// return $pdf->download('Printout Siswa.pdf');
