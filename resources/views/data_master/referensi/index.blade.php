@@ -773,6 +773,9 @@
                     });
                     $('#editPenulis').modal('toggle');
                     $('.modal-backdrop').remove();
+                    $('#tbl_penulis').DataTable().ajax.reload();
+                    $('body').removeClass('modal-open');
+                    $('body').css('overflow', 'auto');
                 },
                 error: function(xhr) {
                     if (xhr.status === 422) {
@@ -832,6 +835,9 @@
                     });
                     $('#tambahPenulis').modal('toggle');
                     $('.modal-backdrop').remove();
+                    $('#tbl_penulis').DataTable().ajax.reload();
+                    $('body').removeClass('modal-open');
+                    $('body').css('overflow', 'auto');
                     $('#tambahPenulis').find('#nama_penulis').val('');
                     $('#tambahPenulis').find('#kewarganegaraan').val('');
                     $('#tambahPenulis').find('#tgl_lahir').val('');
@@ -902,11 +908,11 @@
                                 showConfirmButton: false,
                                 timer: 3000
                             });
+                            $('#tbl_penulis').DataTable().ajax.reload();
                         }
                     });
                 }
             })
-            $('#tbl_penulis').DataTable().ajax.reload()
         });
     </script>
     {{-- end ajax penulis --}}
@@ -992,6 +998,9 @@
                     });
                     $('#editPenerbit').modal('toggle');
                     $('.modal-backdrop').remove();
+                    $('#tbl_penerbit').DataTable().ajax.reload();
+                    $('body').removeClass('modal-open');
+                    $('body').css('overflow', 'auto');
                 },
                 error: function(xhr) {
                     if (xhr.status === 422) {
@@ -1055,6 +1064,9 @@
                     });
                     $('#tambahPenerbit').modal('toggle');
                     $('.modal-backdrop').remove();
+                    $('#tbl_penerbit').DataTable().ajax.reload();
+                    $('body').removeClass('modal-open');
+                    $('body').css('overflow', 'auto');
                 },
                 error: function(xhr) {
                     if (xhr.status === 422) {
@@ -1117,11 +1129,11 @@
                                 showConfirmButton: false,
                                 timer: 3000
                             });
+                            $('#tbl_penerbit').DataTable().ajax.reload();
                         }
                     });
                 }
             })
-            $('#tbl_penerbit').DataTable().ajax.reload()
         });
     </script>
     {{-- end ajax penerbit --}}
@@ -1195,6 +1207,9 @@
                     });
                     $('#editKategori').modal('toggle');
                     $('.modal-backdrop').remove();
+                    $('#tbl_kategori').DataTable().ajax.reload();
+                    $('body').removeClass('modal-open');
+                    $('body').css('overflow', 'auto');
                 },
                 error: function(xhr) {
                     if (xhr.status === 422) {
@@ -1237,9 +1252,11 @@
                         showConfirmButton: false,
                         timer: 3000
                     });
-                    $('#tbl_kategori').DataTable().ajax.reload()
                     $('#tambahKategori').modal('toggle');
                     $('.modal-backdrop').remove();
+                    $('#tbl_kategori').DataTable().ajax.reload();
+                    $('body').removeClass('modal-open');
+                    $('body').css('overflow', 'auto');
                 },
                 error: function(xhr) {
                     if (xhr.status === 422) {
@@ -1290,13 +1307,12 @@
                                 showConfirmButton: false,
                                 timer: 3000
                             });
+                            $('#tbl_kategori').DataTable().ajax.reload()
                         }
                     });
                 }
             })
-            $('#tbl_kategori').DataTable().ajax.reload()
         });
     </script>
     {{-- end ajax kategori --}}
 @endpush
-

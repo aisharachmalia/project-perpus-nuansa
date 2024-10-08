@@ -130,6 +130,11 @@ Route::prefix('data-master')->group(function () {
     Route::get('/kategori/show/{id?}', [App\Http\Controllers\ReferensiController::class, 'showKategori'])->name('data_master.referensi.kategori.show');
     Route::delete('/kategori/delete/{id?}', [App\Http\Controllers\ReferensiController::class, 'deleteKategori'])->name('data_master.referensi.kategori.delete');
 });
+
+Route::prefix('setting')->group(function () {
+
+});
+
 Route::get('/forgot-password', [App\Http\Controllers\WebController::class, 'pageForgotPassword'])->name('forgot_password');
 Route::post('/lupa-password', [ForgotPasswordController::class, 'lupaPassword'])->name('lupa_pass');
 Route::get('/reset-password/{id?}', [App\Http\Controllers\WebController::class, 'pageResetPassword'])->name('form_reset_password');
