@@ -147,8 +147,25 @@ Route::prefix('laporan')->group(function () {
 });
 
 Route::prefix('setting')->group(function () {
+    //crud user
+    Route::get('/user', [App\Http\Controllers\UserController::class, 'index'])->name('setting.users');
+    Route::get('/user-detail/{id?}', [App\Http\Controllers\UserController::class, 'detail'])->name('setting.users.detail');
+    Route::delete('/user-delete/{id?}', [App\Http\Controllers\UserController::class, 'delete'])->name('setting.users.delete');
+    Route::put('/user-update/{id?}', [App\Http\Controllers\UserController::class, 'update'])->name('setting.users.edit');
 
+
+    //hak akses
+    Route::get('/akses-user', [App\Http\Controllers\AksesUsrController::class, 'index'])->name('setting.akses-users');
+    Route::get('/akses-user-show/{id?}', [App\Http\Controllers\AksesUsrController::class, 'detail'])->name('setting.user-access-show');
+    Route::post('/akses-user-store', [App\Http\Controllers\AksesUsrController::class, 'store'])->name('setting.user-access-store');
+    Route::put('/default-password/{id?}', [App\Http\Controllers\AksesUsrController::class, 'defaultPassword'])->name('setting.user-default-password');
 });
+
+// route denda
+Route::get('/denda', [App\Http\Controllers\DendaController::class, 'index'])->name('denda');
+Route::get('/denda-detail/{id?}', [App\Http\Controllers\DendaController::class, 'detail'])->name('detail_denda');
+Route::post('/denda-bayar/{id?}', [App\Http\Controllers\DendaController::class, 'bayar'])->name('bayar_denda');
+Route::get('/table-denda', [App\Http\Controllers\DendaController::class, 'table']);
 
 Route::get('/forgot-password', [App\Http\Controllers\WebController::class, 'pageForgotPassword'])->name('forgot_password');
 Route::post('/lupa-password', [ForgotPasswordController::class, 'lupaPassword'])->name('lupa_pass');
