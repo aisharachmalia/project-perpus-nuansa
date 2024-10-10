@@ -7,8 +7,8 @@ use App\Models\dm_kategori;
 use App\Models\dm_penerbit;
 use App\Models\dm_penulis;
 use Carbon\Carbon;
+use Elibyy\TCPDF\Facades\TCPDF;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -53,8 +53,8 @@ class ReferensiController extends Controller
     {
         try {
             $rules = [
-                'dpenulis_nama_penulis' => 'required|unique:dm_penulis,dpenulis_nama_penulis|regex:/^[a-zA-Z]+$/',
-                'dpenulis_kewarganegaraan' => 'required|regex:/^[a-zA-Z]+$/',
+                'dpenulis_nama_penulis' => 'required|unique:dm_penulis,dpenulis_nama_penulis|regex:/^[a-zA-Z\s]+$/',
+                'dpenulis_kewarganegaraan' => 'required|regex:/^[a-zA-Z\s]+$/',
                 'dpenulis_tgl_lahir' => 'required',
             ];
 
@@ -95,7 +95,7 @@ class ReferensiController extends Controller
                     Rule::unique('dm_penulis', 'dpenulis_nama_penulis')->ignore($penulis->id_dpenulis, 'id_dpenulis'),
                     'regex:/^[a-zA-Z\s]+$/'
                 ],
-                'dpenulis_kewarganegaraan' => 'required|regex:/^[a-zA-Z]+$/',
+                'dpenulis_kewarganegaraan' => 'required|regex:/^[a-zA-Z\s]+$/',
                 'dpenulis_tgl_lahir' => 'required',
             ];
 
@@ -402,17 +402,74 @@ class ReferensiController extends Controller
     public function linkExport(Request $request)
     {
         try {
-            $link = route('data_master.referensi.export');
+            $link = route('referensi.export');
             return \Response::json(array('link' => $link));
         } catch (\Throwable $th) {
             throw $th;
         }
     }
 
-    public function exportPenulis(Request $request)
+    public function exportRefensi(Request $request)
     {
         try {
             return (new PenulisExport)->dataExport($request->all())->download('Rekap Penulis.xlsx');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+    public function linkPrintout(Request $request)
+    {
+        try {
+            $link = route('referensi.printout');
+            return \Response::json(array('link' => $link));
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function printoutReferensi(Request $request)
+    {
+        // try {
+        //     $penulis = dm_penulis::all();
+        //     $pdf = Pdf::loadView('pdf.pdf_referensi', compact('penulis'));
+        //     return $pdf->stream('Rekap Penulis.pdf');
+        // } catch (\Throwable $th) {
+        //     throw $th;
+        // }
+
+        try {
+            $filename = 'Guru.pdf';
+
+            $style = array(
+                'border' => true,
+                'vpadding' => 'auto',
+                'hpadding' => 'auto',
+                'fgcolor' => array(0,0,0),
+                'bgcolor' => false, //array(255,255,255)
+                'module_width' => 1, // width of a single module in points
+                'module_height' => 1 // height of a single module in points
+            );
+
+            $penulis = DB::table('dm_penulis')->get();
+
+            $html = \View::make('pdf.pdf_referensi', [
+                'title' => 'Printout Refensi',
+                'penulis' => $penulis,
+            ])->render();
+
+            TCPDF::setPrintHeader(false);
+            TCPDF::setPrintFooter(false);
+            TCPDF::SetPageOrientation('L');
+            TCPDF::SetMargins(4, 3, 3, true);
+
+            $code = 'https://tcpdf.org/examples/example_050/';
+
+            TCPDF::AddPage();
+            TCPDF::write2DBarcode($code, 'QRCODE,Q', 230, 150, 44, 35, false, 'P');
+            TCPDF::writeHTML($html, true, false, true, false, '');
+
+            return TCPDF::Output($filename, 'I');
+
         } catch (\Throwable $th) {
             throw $th;
         }
