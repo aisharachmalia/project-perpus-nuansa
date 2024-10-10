@@ -46,6 +46,11 @@ class DmKategoriSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'dkategori_nama_kategori' => 'Atlas',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
             // [
             //     'dkategori_nama_kategori' => 'Agatha Christie',
             //     'created_at' => now(),
