@@ -237,15 +237,6 @@ class GuruController extends Controller
         try {
             $filename = 'Guru.pdf';
 
-            $style = array(
-                'border' => true,
-                'vpadding' => 'auto',
-                'hpadding' => 'auto',
-                'fgcolor' => array(0,0,0),
-                'bgcolor' => false, //array(255,255,255)
-                'module_width' => 1, // width of a single module in points
-                'module_height' => 1 // height of a single module in points
-            );
 
             $gr = \DB::table('dm_gurus')
                 ->join('dm_mapels', 'dm_gurus.id_mapel', '=', 'dm_mapels.id_mapel')
@@ -262,7 +253,7 @@ class GuruController extends Controller
             TCPDF::SetPageOrientation('L');
             TCPDF::SetMargins(4, 3, 3, true);
 
-            $code = 'https://tcpdf.org/examples/example_050/';
+            $code = 'aisha';
 
             TCPDF::AddPage();
             TCPDF::write2DBarcode($code, 'QRCODE,Q', 230, 150, 44, 35, false, 'P');

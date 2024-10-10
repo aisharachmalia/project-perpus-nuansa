@@ -37,10 +37,7 @@ class WebController extends Controller
     {
         return view('auth.forgot');
     }
-    public function pageHome()
-    {
-        return view('home');
-    }
+
 
     public function pageResetPassword($id)
     {

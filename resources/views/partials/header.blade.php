@@ -5,7 +5,7 @@
         ->first();
 @endphp
 <div id="main" class='layout-navbar'>
-    <header class='mb-3'>
+    <header class=''>
         <nav class="navbar navbar-expand navbar-light ">
             <div class="container-fluid">
                 <a href="#" class="burger-btn d-block">

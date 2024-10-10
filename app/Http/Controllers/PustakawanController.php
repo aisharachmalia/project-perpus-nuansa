@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Yajra\DataTables\Facades\DataTables;
 use App\Exports\PustakawanExport;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Elibyy\TCPDF\Facades\TCPDF;
 
 class PustakawanController extends Controller
 {
@@ -162,9 +163,9 @@ class PustakawanController extends Controller
 
         $id_dpustakawan = Crypt::decryptString($id);
 
-        $gr = dm_pustakawan::find($id_dpustakawan);
-        $gr->deleted_at = Carbon::now();
-        $gr->save();
+        $ps = dm_pustakawan::find($id_dpustakawan);
+        $ps->deleted_at = Carbon::now();
+        $ps->save();
 
         //return response
         return response()->json([
@@ -194,7 +195,7 @@ class PustakawanController extends Controller
     {
         try {
             $link = route('printout_pustakawan');
-            return \Response::json(array('link' =>$link));
+            return \Response::json(array('link' => $link));
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -203,8 +204,31 @@ class PustakawanController extends Controller
     public function printoutPustakawan(Request $request)
     {
         try {
-            $pdf = Pdf::loadView('pdf.pdf_pustakawan', $request->all());
-            return $pdf->stream('Printout Pustakawan .pdf');
+            $filename = 'pustakawan.pdf';
+
+
+            $ps = \DB::table('dm_pustakawan')
+                ->select('dm_pustakawan.*')
+                ->get();
+
+            $html = \View::make('pdf.pdf_pustakawan', [
+                'title' => 'Printout Pustakawan',
+                'ps' => $ps
+            ])->render();
+
+            TCPDF::setPrintHeader(false);
+            TCPDF::setPrintFooter(false);
+            TCPDF::SetPageOrientation('L');
+            TCPDF::SetMargins(4, 3, 3, true);
+
+            $code = 'aisha';
+
+            TCPDF::AddPage();
+            TCPDF::write2DBarcode($code, 'QRCODE,Q', 230, 150, 44, 35, false, 'P');
+            TCPDF::writeHTML($html, true, false, true, false, '');
+
+            return TCPDF::Output($filename, 'I');
+
         } catch (\Throwable $th) {
             throw $th;
         }

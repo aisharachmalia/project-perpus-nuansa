@@ -135,11 +135,9 @@
     <script>
       $('body').on('click', '.modalCreate', function() {
             $('#create').find('#nama-error').text('');
-            $('#create').find('#nip-error').text('');
             $('#create').find('#email-error').text('');
             $('#create').find('#telp-error').text('');
             $('#create').find('#alamat-error').text('');
-            $('#create').find('#mapel-error').text('');
         });
         $('#store').off('click').on('click',function(e) {
             e.preventDefault();
@@ -285,7 +283,7 @@
                         timer: 3000
                     });
                     $('#edit').modal('toggle');
-
+                    $('.modal-backdrop').remove();
                     $('#tbl_list').DataTable().ajax.reload()
                 },
                 error: function(xhr) {

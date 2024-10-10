@@ -17,55 +17,55 @@ class DmKategoriSeeder extends Seeder
     {
         DB::table('dm_kategoris')->insert([
             [
-                'dkategori_nama_kategori' => 'J.K. Rowling',
+                'dkategori_nama_kategori' => 'Komik',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'dkategori_nama_kategori' => 'George Orwell',
+                'dkategori_nama_kategori' => 'Novel',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'dkategori_nama_kategori' => 'Ernest Hemingway',
+                'dkategori_nama_kategori' => 'Kamus',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'dkategori_nama_kategori' => 'Jane Austen',
+                'dkategori_nama_kategori' => 'Dongeng',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'dkategori_nama_kategori' => 'Mark Twain',
+                'dkategori_nama_kategori' => 'Buku Ilmiah',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'dkategori_nama_kategori' => 'F. Scott Fitzgerald',
+                'dkategori_nama_kategori' => 'Ensiklopedia',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-            [
-                'dkategori_nama_kategori' => 'Agatha Christie',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'dkategori_nama_kategori' => 'Leo Tolstoy',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'dkategori_nama_kategori' => 'Charles Dickens',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'dkategori_nama_kategori' => 'Gabriel García Márquez',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
+            // [
+            //     'dkategori_nama_kategori' => 'Agatha Christie',
+            //     'created_at' => now(),
+            //     'updated_at' => now(),
+            // ],
+            // [
+            //     'dkategori_nama_kategori' => 'Leo Tolstoy',
+            //     'created_at' => now(),
+            //     'updated_at' => now(),
+            // ],
+            // [
+            //     'dkategori_nama_kategori' => 'Charles Dickens',
+            //     'created_at' => now(),
+            //     'updated_at' => now(),
+            // ],
+            // [
+            //     'dkategori_nama_kategori' => 'Gabriel García Márquez',
+            //     'created_at' => now(),
+            //     'updated_at' => now(),
+            // ],
         ]);
     }
 }

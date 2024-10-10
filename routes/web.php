@@ -21,7 +21,7 @@ Route::get('/', [App\Http\Controllers\WebController::class, 'pageWeb'])->name('p
 
 //Login
 Route::get('/login-usr', [App\Http\Controllers\WebController::class, 'pageLogin'])->name('login-usr');
-Route::get('/home', [App\Http\Controllers\WebController::class, 'pageHome'])->name('home');
+
 
 //Register
 Route::get('/register', [App\Http\Controllers\WebController::class, 'pageRegister'])->name('register');
@@ -135,3 +135,7 @@ Route::get('/forgot-password', [App\Http\Controllers\WebController::class, 'page
 Route::post('/lupa-password', [ForgotPasswordController::class, 'lupaPassword'])->name('lupa_pass');
 Route::get('/reset-password/{id?}', [App\Http\Controllers\WebController::class, 'pageResetPassword'])->name('form_reset_password');
 Route::post('/reset-Password', [ForgotPasswordController::class, 'storePassword'])->name('reset_pass');
+use App\Http\Controllers\DashboardController;
+
+Route::get('/dashboard', [DashboardController::class, 'index']);
+
