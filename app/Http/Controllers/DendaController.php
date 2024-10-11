@@ -39,70 +39,78 @@ class DendaController extends Controller
     }
     public function detail($id)
     {
-        $id = Crypt::decryptString($id);
-        $data['denda'] = DB::table('trks_transaksi')
-            ->where('trks_transaksi.id_dsiswa', $id)
-            ->join('dm_buku', 'trks_transaksi.id_dbuku', '=', 'dm_buku.id_dbuku')
-            ->join('trks_denda', 'trks_denda.id_trks', '=', 'trks_transaksi.id_trks')
-            ->select('dm_buku.dbuku_judul', 'trks_transaksi.trks_tgl_peminjaman', 'trks_transaksi.trks_tgl_jatuh_tempo', 'trks_transaksi.trks_denda', 'trks_denda.id_tdenda')
-            ->get()
-            ->map(function ($data) {
-                $data->id_tdenda = Crypt::encryptString($data->id_tdenda);
-                return $data;
-            });
-        return Response::json($data);
+        try {
+            $id = Crypt::decryptString($id);
+            $data['denda'] = DB::table('trks_transaksi')
+                ->where('trks_transaksi.id_dsiswa', $id)
+                ->join('dm_buku', 'trks_transaksi.id_dbuku', '=', 'dm_buku.id_dbuku')
+                ->join('trks_denda', 'trks_denda.id_trks', '=', 'trks_transaksi.id_trks')
+                ->select('dm_buku.dbuku_judul', 'trks_transaksi.trks_tgl_peminjaman', 'trks_transaksi.trks_tgl_jatuh_tempo', 'trks_transaksi.trks_denda', 'trks_denda.id_tdenda')
+                ->get()
+                ->map(function ($data) {
+                    $data->id_tdenda = Crypt::encryptString($data->id_tdenda);
+                    return $data;
+                });
+            return Response::json($data);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
     public function bayar(Request $request, $id = null)
     {
-        $id = Crypt::decryptString($id);
-        $rules = [
-            'buku' => [
-                'required',
-            ],
-            'tanggal_peminjaman' => [
-                'required',
-                'date',
-                'before_or_equal:tanggal_jatuh_tempo',
-            ],
-            'tanggal_jatuh_tempo' => [
-                'required',
-                'date',
-                'after_or_equal:tanggal_peminjaman',
-            ],
-            'denda' => [
-                'required',
-                'min:0',
-            ],
-            'tanggal_pembayaran' => [
-                'date',
-                'after_or_equal:tanggal_jatuh_tempo',
-            ],
-        ];
+        try {
+            $id = Crypt::decryptString($id);
+            $rules = [
+                'buku' => [
+                    'required',
+                ],
+                'tanggal_peminjaman' => [
+                    'required',
+                    'date',
+                    'before_or_equal:tanggal_jatuh_tempo',
+                ],
+                'tanggal_jatuh_tempo' => [
+                    'required',
+                    'date',
+                    'after_or_equal:tanggal_peminjaman',
+                ],
+                'denda' => [
+                    'required',
+                    'min:0',
+                ],
+                'tanggal_pembayaran' => [
+                    'date',
+                    'after_or_equal:tanggal_jatuh_tempo',
+                ],
+            ];
 
-        // Pesan kesalahan validasi
-        $messages = [
-            'buku.required' => 'Buku harus diisi!',
-            'tanggal_peminjaman.required' => 'Tanggal peminjaman harus diisi!',
-            'tanggal_peminjaman.date' => 'Tanggal peminjaman harus berupa tanggal yang valid!',
-            'tanggal_peminjaman.before_or_equal' => 'Tanggal peminjaman tidak boleh setelah tanggal jatuh tempo!',
-            'tanggal_jatuh_tempo.required' => 'Tanggal jatuh tempo harus diisi!',
-            'tanggal_jatuh_tempo.date' => 'Tanggal jatuh tempo harus berupa tanggal yang valid!',
-            'tanggal_jatuh_tempo.after_or_equal' => 'Tanggal jatuh tempo harus setelah tanggal peminjaman!',
-            'denda.required' => 'Denda harus diisi!',
-            'denda.min' => 'Denda tidak boleh negatif!',
-            'tanggal_pembayaran.date' => 'Tanggal pembayaran harus berupa tanggal yang valid!',
-            'tanggal_pembayaran.after_or_equal' => 'Tanggal pembayaran harus setelah tanggal jatuh tempo!',
-        ];
+            // Pesan kesalahan validasi
+            $messages = [
+                'buku.required' => 'Buku harus diisi!',
+                'tanggal_peminjaman.required' => 'Tanggal peminjaman harus diisi!',
+                'tanggal_peminjaman.date' => 'Tanggal peminjaman harus berupa tanggal yang valid!',
+                'tanggal_peminjaman.before_or_equal' => 'Tanggal peminjaman tidak boleh setelah tanggal jatuh tempo!',
+                'tanggal_jatuh_tempo.required' => 'Tanggal jatuh tempo harus diisi!',
+                'tanggal_jatuh_tempo.date' => 'Tanggal jatuh tempo harus berupa tanggal yang valid!',
+                'tanggal_jatuh_tempo.after_or_equal' => 'Tanggal jatuh tempo harus setelah tanggal peminjaman!',
+                'denda.required' => 'Denda harus diisi!',
+                'denda.min' => 'Denda tidak boleh negatif!',
+                'tanggal_pembayaran.date' => 'Tanggal pembayaran harus berupa tanggal yang valid!',
+                'tanggal_pembayaran.after_or_equal' => 'Tanggal pembayaran harus setelah tanggal jatuh tempo!',
+            ];
 
-        $validated = $request->validate($rules, $messages);
-        $denda = Trks_denda::find($id);
-        $denda->tdenda_status = 2;
-        $denda->tdenda_tgl_bayar = $request->tanggal_pembayaran;
-        $denda->save();
-        return response()->json([
-            'success' => true,
-            'message' => 'Pembayaran Berhasil Dilakukan!',
-        ]);
+            $validated = $request->validate($rules, $messages);
+            $denda = Trks_denda::find($id);
+            $denda->tdenda_status = "Sudah bayar";
+            $denda->tdenda_tgl_bayar = $request->tanggal_pembayaran;
+            $denda->save();
+            return response()->json([
+                'success' => true,
+                'message' => 'Pembayaran Berhasil Dilakukan!',
+            ]);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }

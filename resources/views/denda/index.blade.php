@@ -22,6 +22,10 @@
                 margin-bottom: 30px;
             }
 
+            th {
+                color: #8b4513;
+            }
+
             .form-control {
                 border-color: #d2b48c;
             }
@@ -137,7 +141,7 @@
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title text-center">Daftar Denda</h4>
+                        <h2 class="card-title text-center">Daftar Denda</h2>
                     </div>
                     <div class="card-body">
                         <table id="tbl_denda" class="table table-striped table-bordered" cellspacing="0" width="100%">
@@ -175,16 +179,20 @@
                         class: "text-center"
                     },
                     {
-                        data: 'dsiswa_nama'
+                        data: 'dsiswa_nama',
+                        class: 'text-center'
                     },
                     {
-                        data: 'dbuku_judul'
+                        data: 'dbuku_judul',
+                        class: 'text-center'
                     },
                     {
-                        data: 'tdenda_jumlah'
+                        data: 'tdenda_jumlah',
+                        class: 'text-center'
                     },
                     {
                         data: 'tdenda_tgl_bayar',
+                        class: 'text-center',
                         render: function(data) {
                             if (data == null) {
                                 return '<span class="badge bg-danger">Belum bayar</span>';
@@ -196,14 +204,13 @@
                     {
                         data: 'tdenda_status',
                         render: function(data) {
-                            if (data == 2) {
-                                return '<span class="badge bg-success">Lunas</span>';
-                            } else if (data == 1) {
-                                return '<span class="badge bg-warning">Belum lunas</span>';
+                            if (data != null) {
+                                return data;
                             } else {
-                                return '<span class="badge bg-danger">Belum bayar</span>';
+                                return 'Belum bayar';
                             }
-                        }
+                        },
+                        class: 'text-center'
                     }
                 ]
             });
