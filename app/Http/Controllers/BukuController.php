@@ -67,7 +67,89 @@ class BukuController extends Controller
             $errors = [];
             $sts_kode = 400;
 
-            if ($request->isMethod('post')) {
+
+            if ($request->isMethod('post') && isset($request->id_bk)) {
+                $id = Crypt::decryptString($id);
+                $id_bk = dm_buku::find($id);
+
+                $rules = [
+                    'dbuku_cover' => 'image|mimes:jpg,jpeg,png|max:2000',
+                    'dbuku_judul' => 'required',
+                    'dbuku_isbn' => 'required|unique:dm_buku,dbuku_isbn,' . $id_bk->id_dbuku . ',id_dbuku',
+                    'dbuku_thn_terbit' => 'required',
+                    'dbuku_lokasi_rak' => 'required',
+                    'dbuku_bahasa' => 'required',
+                    'dbuku_jml_total' => 'required',
+                    'dbuku_edisi' => 'required',
+                    'id_dpenulis' => 'required',
+                    'id_dpenerbit' => 'required',
+                    'id_dkategori' => 'required',
+                    'id_dmapel' => 'required',
+                ];
+
+                $messages = [
+                    'dbuku_cover.image' => 'File harus berupa gambar!',
+                    'dbuku_cover.mimes' => 'File harus berupa jpg,jpeg,png!',
+                    'dbuku_judul.required' => 'Judul Buku harus diisi!',
+                    'dbuku_isbn.required' => 'ISBN harus diisi!',
+                    'dbuku_isbn.unique' => 'ISBN sudah terdaftar!',
+                    'dbuku_thn_terbit.required' => 'Tahun Terbit harus diisi!',
+                    'dbuku_lokasi_rak.required' => 'Lokasi Rak harus diisi!',
+                    'dbuku_bahasa.required' => 'Bahasa harus diisi!',
+                    'dbuku_edisi.required' => 'Edisi harus diisi!',
+                    'dbuku_jml_total.required' => 'Jumlah harus diisi!',
+                    'id_dpenulis.required' => 'Penulis harus diisi!',
+                    'id_dpenerbit.required' => 'Penerbit harus diisi!',
+                    'id_dkategori.required' => 'Kategori harus diisi!',
+                    'id_dmapel.required' => 'Mata Pelajaran harus diisi!',
+                ];
+
+                // Lakukan validasi
+                $validator = \Validator::make($request->all(), $rules, $messages);
+
+                if ($validator->fails()) {
+                    return response()->json([
+                        'success' => false,
+                        'errors' => $validator->errors()
+                    ], 422);
+                }
+
+                $cover = $id_bk->dbuku_cover; // Ambil cover lama
+
+                // Jika file cover baru di-upload
+                if ($request->hasFile('dbuku_cover')) {
+                    $file = $request->file('dbuku_cover');
+                    // Buat nama file baru dengan timestamp
+                    $cover = 'cover_buku_' . time() . '.' . $file->getClientOriginalExtension();
+                    // Simpan file ke direktori 'public/cover'
+                    $file->storeAs('public/cover', $cover);
+                }
+
+                // Create the transaction with mapel ID
+
+                dm_buku::where('id_dbuku', $id_bk->id_dbuku)->update([
+                    'dbuku_cover' => $cover,
+                    'dbuku_judul' => $request->dbuku_judul,
+                    'dbuku_isbn' => $request->dbuku_isbn,
+                    'id_dpenulis' => $request->id_dpenulis,
+                    'id_dpenerbit' => $request->id_dpenerbit,
+                    'id_dkategori' => $request->id_dkategori,
+                    'id_dmapel' => $request->id_dmapel,
+                    'dbuku_thn_terbit' => $request->dbuku_thn_terbit,
+                    'dbuku_lokasi_rak' => $request->dbuku_lokasi_rak,
+                    'dbuku_bahasa' => $request->dbuku_bahasa,
+                    'dbuku_jml_total' => $request->dbuku_jml_total,
+                    'dbuku_jml_tersedia' => $request->dbuku_jml_total,
+                    'dbuku_edisi' => $request->dbuku_edisi,
+                    'dbuku_status' => 1,
+                    'updated_at' => now(),
+                ]);
+                // Return success response
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Data Berhasil Disimpan!',
+                ]);
+            } else {
                 $rules = [
                     'dbuku_cover' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                     'dbuku_judul' => 'required',
@@ -122,7 +204,7 @@ class BukuController extends Controller
                         $cover
                     );
                 }
-
+                
                 $buku = [
                     'dbuku_cover' => $cover,
                     'dbuku_judul' => $request->dbuku_judul,
@@ -147,90 +229,6 @@ class BukuController extends Controller
                 $success = true;
                 $errors = [];
                 $sts_kode = 200;
-            }
-
-            if ($request->isMethod('put')) {
-                $id = Crypt::decryptString($id);
-                $id_bk = dm_buku::find($id);
-
-                $rules = [
-                    'dbuku_cover' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-                    'dbuku_judul' => 'required',
-                    'dbuku_isbn' => 'required|unique:dm_buku,dbuku_isbn,' . $id_bk->id_dbuku . ',id_dbuku',
-                    'dbuku_thn_terbit' => 'required',
-                    'dbuku_lokasi_rak' => 'required',
-                    'dbuku_bahasa' => 'required',
-                    'dbuku_jml_total' => 'required',
-                    'dbuku_edisi' => 'required',
-                    'id_dpenulis' => 'required',
-                    'id_dpenerbit' => 'required',
-                    'id_dkategori' => 'required',
-                    'id_dmapel' => 'required',
-                ];
-
-                $messages = [
-                    'dbuku_cover.image' => 'File harus berupa gambar!',
-                    'dbuku_cover.mimes' => 'File harus berupa jpg,jpeg,png!',
-                    'dbuku_judul.required' => 'Judul Buku harus diisi!',
-                    'dbuku_isbn.required' => 'ISBN harus diisi!',
-                    'dbuku_isbn.unique' => 'ISBN sudah terdaftar!',
-                    'dbuku_thn_terbit.required' => 'Tahun Terbit harus diisi!',
-                    'dbuku_lokasi_rak.required' => 'Lokasi Rak harus diisi!',
-                    'dbuku_bahasa.required' => 'Bahasa harus diisi!',
-                    'dbuku_edisi.required' => 'Edisi harus diisi!',
-                    'dbuku_jml_total.required' => 'Jumlah harus diisi!',
-                    'id_dpenulis.required' => 'Penulis harus diisi!',
-                    'id_dpenerbit.required' => 'Penerbit harus diisi!',
-                    'id_dkategori.required' => 'Kategori harus diisi!',
-                    'id_dmapel.required' => 'Mata Pelajaran harus diisi!',
-                ];
-
-                // Lakukan validasi
-                $validator = \Validator::make($request->all(), $rules, $messages);
-
-                if ($validator->fails()) {
-                    return response()->json([
-                        'success' => false,
-                        'errors' => $validator->errors()
-                    ], 422);
-                }
-
-                $cover = $id_bk->dbuku_cover;
-
-                if (isset($request->dbuku_cover)) {
-                    $file = $request->dbuku_cover;
-                    $cover = 'cover_buku_' . time() . '.' . $file->getClientOriginalExtension();
-
-                    $request->file('dbuku_cover')->storeAs(
-                        'public/cover',
-                        $cover
-                    );
-                }
-
-                // Create the transaction with mapel ID
-                
-                dm_buku::where('id_dbuku', $id_bk->id_dbuku)->update([
-                    'dbuku_cover' => $cover,
-                    'dbuku_judul' => $request->dbuku_judul,
-                    'dbuku_isbn' => $request->dbuku_isbn,
-                    'id_dpenulis' => $request->id_dpenulis,
-                    'id_dpenerbit' => $request->id_dpenerbit,
-                    'id_dkategori' => $request->id_dkategori,
-                    'id_dmapel' => $request->id_dmapel,
-                    'dbuku_thn_terbit' => $request->dbuku_thn_terbit,
-                    'dbuku_lokasi_rak' => $request->dbuku_lokasi_rak,
-                    'dbuku_bahasa' => $request->dbuku_bahasa,
-                    'dbuku_jml_total' => $request->dbuku_jml_total,
-                    'dbuku_jml_tersedia' => $request->dbuku_jml_total,
-                    'dbuku_edisi' => $request->dbuku_edisi,
-                    'dbuku_status' => 1,
-                    'updated_at' => now(),
-                ]);
-                // Return success response
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Data Berhasil Disimpan!',
-                ]);
             }
 
             if ($request->isMethod('delete')) {
@@ -273,7 +271,7 @@ class BukuController extends Controller
                                     WHERE dm_buku.id_dbuku = $id_bk;
                             ");
 
-        $pnls = \DB::select("SELECT * FROM dm_penulis"); 
+        $pnls = \DB::select("SELECT * FROM dm_penulis");
         $pnb = \DB::select("SELECT * FROM dm_penerbits");
         $ktr = \DB::select("SELECT * FROM dm_kategoris");
         $mpl = \DB::table('dm_mapels')->get();
@@ -287,7 +285,7 @@ class BukuController extends Controller
         foreach ($mpl as $key => $value) {
             $slc1 .= '<option value="' . $value->id_mapel . '" ' . ($value->id_mapel == $bk[0]->id_dmapel ? 'selected' : '') . '>' . $value->dmapel_nama_mapel . '</option>';
         }
-        
+
         $slc2 = '';
         foreach ($ktr as $key => $value) {
             $slc2 .= '<option value="' . $value->id_dkategori . '" ' . ($value->id_dkategori == $bk[0]->id_dkategori ? 'selected' : '') . '>' . $value->dkategori_nama_kategori . '</option>';
@@ -315,8 +313,8 @@ class BukuController extends Controller
 
         $slc6 = '';
         foreach ($bahasa as $bhs) {
-            $slc6 .= '<option value="'.$bhs.'">'.$bhs.'</option>';
-        }   
+            $slc6 .= '<option value="' . $bhs . '">' . $bhs . '</option>';
+        }
 
         $lokasiRak = ["Rak A", "Rak B", "Rak C", "Rak D", "Rak E"];
 
@@ -328,11 +326,11 @@ class BukuController extends Controller
         $edisi = ["1", "2", "3", "3", "5", "6", "7", "8", "9", "10"];
         $slc8 = '';
         foreach ($edisi as $ed) {
-            $slc8 .= '<option value="'.$ed.'">'.$ed.'</option>';
-        }   
+            $slc8 .= '<option value="' . $ed . '">' . $ed . '</option>';
+        }
 
 
-        return response()->json(['bk' => $bk, 'img' => $img, 'slc1' => $slc1 , 'slc2' => $slc2, 'slc3' => $slc3, 'slc4' => $slc4, 'slc5' => $slc5, 'slc6' => $slc6, 'slc7' => $slc7 , 'slc8' => $slc8]);
+        return response()->json(['bk' => $bk, 'img' => $img, 'slc1' => $slc1, 'slc2' => $slc2, 'slc3' => $slc3, 'slc4' => $slc4, 'slc5' => $slc5, 'slc6' => $slc6, 'slc7' => $slc7, 'slc8' => $slc8]);
     }
     //
     public function linkExportBuku(Request $request)

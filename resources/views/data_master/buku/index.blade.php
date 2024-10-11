@@ -1,4 +1,3 @@
-
 @extends('master')
 @section('content')
     <div class="container">
@@ -281,6 +280,20 @@
         $('body').on('click', '.modalEdit', function() {
             let id_bk = $(this).data('id');
 
+            // Clear previous error messages
+            $('#edit').find('#cover-error').text('');
+            $('#edit').find('#isbn-error').text('');
+            $('#edit').find('#judul-error').text('');
+            $('#edit').find('#mapel-error').text('');
+            $('#edit').find('#kategori-error').text('');
+            $('#edit').find('#penerbit-error').text('');
+            $('#edit').find('#penulis-error').text('');
+            $('#edit').find('#thn_terbit-error').text('');
+            $('#edit').find('#jml_total-error').text('');
+            $('#edit').find('#bahasa-error').text('');
+            $('#edit').find('#edisi-error').text('');
+            $('#edit').find('#lokasi_rak-error').text('');
+
             // Fetch detail post with ajax
             $.ajax({
                 url: `buku/show/${id_bk}`,
@@ -305,6 +318,7 @@
                     $('#edit').find('#dbuku_edisi').html(response.slc8);
                     $('#edit').find('#dbuku_jml_total').val(response.bk[0]
                         .dbuku_jml_total); // Available quantity
+
                 },
                 error: function(error) {
                     console.log("Error:", error);
@@ -317,52 +331,23 @@
             e.preventDefault();
 
             //define variable
-            let token = $('meta[name="csrf-token"]').attr('content');
-            let id_bk = $('#edit').find('#id_bk').val();
-            let dbuku_isbn = $('#edit').find('#dbuku_isbn').val();
-
-            let dbuku_judul = $('#edit').find('#dbuku_judul').val();
-            let id_mapel = $('#edit').find('#id_mapel').val();
-            let id_kategori = $('#edit').find('#id_kategori').val();
-            let id_penerbit = $('#edit').find('#id_penerbit').val();
-            let id_penulis = $('#edit').find('#id_penulis').val();
-            let dbuku_thn_terbit = $('#edit').find('#dbuku_thn_terbit').val();
-            let dbuku_bahasa = $('#edit').find('#dbuku_bahasa').val();
-            let dbuku_lokasi_rak = $('#edit').find('#dbuku_lokasi_rak').val();
-            let dbuku_edisi = $('#edit').find('#dbuku_edisi').val();
-            let dbuku_jml_total = $('#edit').find('#dbuku_jml_total').val();
-
-            //clear error message
-            $('#edit').find('#isbn-error').text('');
-            $('#edit').find('#judul-error').text('');
-            $('#edit').find('#mapel-error').text('');
-            $('#edit').find('#kategori-error').text('');
-            $('#edit').find('#penerbit-error').text('');
-            $('#edit').find('#penulis-error').text('');
-            $('#edit').find('#thn_terbit-error').text('');
-            $('#edit').find('#bahasa-error').text('');
-            $('#edit').find('#lokasi_rak-error').text('');
-            $('#edit').find('#edisi-error').text('');
+            var form = $("#form_buku_upd")[0];
+            var id_bk = $('#id_bk').val();
+            var data = new FormData(form);
 
             //ajax
             $.ajax({
-                url: `crud-buku/${id_bk}`,
-                type: "PUT",
-                cache: false,
-                data: {
-                    "dbuku_isbn": dbuku_isbn,
-                    "dbuku_judul": dbuku_judul,
-                    "id_dmapel": id_mapel,
-                    "id_dkategori": id_kategori,
-                    "id_dpenerbit": id_penerbit,
-                    "id_dpenulis": id_penulis,
-                    "dbuku_thn_terbit": dbuku_thn_terbit,
-                    "dbuku_bahasa": dbuku_bahasa,
-                    "dbuku_lokasi_rak": dbuku_lokasi_rak,
-                    "dbuku_edisi": dbuku_edisi,
-                    "dbuku_jml_total": dbuku_jml_total,
-                    "_token": token
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
+                url: `crud-buku/${id_bk}`,
+                type: "POST",
+                cache: false,
+                data: data,
+                cache: false,
+                contentType: false,
+                processData: false,
+
                 success: function(response) {
 
                     //edit success message
@@ -374,6 +359,7 @@
                         timer: 3000
                     });
                     $('#edit').modal('toggle');
+                    $('#edit').find('#dbuku_cover').val('');
                     $('#tbl_dmbuku').DataTable().ajax.reload()
                 },
                 error: function(xhr) {
