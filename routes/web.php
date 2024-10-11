@@ -62,12 +62,16 @@ Route::prefix('data-master')->group(function () {
     Route::post('/link-printout-guru', [App\Http\Controllers\GuruController::class, 'linkPrintoutGuru'])->name('link_printout_guru');
 
     //Buku
-    Route::get('/buku', [App\Http\Controllers\BukuController::class, 'pageBuku'])->name('data_master.buku');
-    Route::get('/table-buku', [App\Http\Controllers\BukuController::class, 'tableBuku'])->name('table_dm_buku');
-    Route::match(['post', 'put', 'delete'], '/crud-buku/{id?}', [App\Http\Controllers\BukuController::class, 'crudBuku'])->name('crud_dm_buku');
-
-    Route::post('/link-export-buku', [App\Http\Controllers\BukuController::class, 'linkExportBuku'])->name('link_export_buku');
-    Route::get('/export-buku', [App\Http\Controllers\BukuController::class, 'exportBuku'])->name('export_buku');
+    Route::get('/buku',[App\Http\Controllers\BukuController::class, 'pageBuku'])->name('data_master.buku');
+    Route::get('/table-buku',[App\Http\Controllers\BukuController::class, 'tableBuku'])->name('table_dm_buku');
+    Route::match(['post','put','delete'],'/crud-buku/{id?}',[App\Http\Controllers\BukuController::class, 'crudBuku'])->name('crud_dm_buku');
+    Route::get('/buku/show/{id}',[App\Http\Controllers\BukuController::class, 'showBuku'])->name('data_master.buku.show');
+    
+    Route::post('/link-export-buku',[App\Http\Controllers\BukuController::class, 'linkExportBuku'])->name('link_export_buku');
+    Route::get('/export-buku',[App\Http\Controllers\BukuController::class, 'exportBuku'])->name('export_buku');
+    
+    Route::post('/link-printout-buku',[App\Http\Controllers\BukuController::class, 'linkPrintoutBuku'])->name('link_printout_buku');
+    Route::get('/printout-buku',[App\Http\Controllers\BukuController::class, 'printoutBuku'])->name('printout_buku');
 
     // PUSTAKAWAN
     Route::get('/pustakawan', [App\Http\Controllers\PustakawanController::class, 'pagePustakawan'])->name('data_master.pustakawan');
@@ -129,6 +133,17 @@ Route::prefix('data-master')->group(function () {
     Route::put('/kategori/edit/{id?}', [App\Http\Controllers\ReferensiController::class, 'editKategori'])->name('data_master.referensi.kategori.edit');
     Route::get('/kategori/show/{id?}', [App\Http\Controllers\ReferensiController::class, 'showKategori'])->name('data_master.referensi.kategori.show');
     Route::delete('/kategori/delete/{id?}', [App\Http\Controllers\ReferensiController::class, 'deleteKategori'])->name('data_master.referensi.kategori.delete');
+});
+
+Route::prefix('laporan')->group(function () {
+    Route::get('/laporan-transaksi',[App\Http\Controllers\LaporanController::class, 'pageLaporan'])->name('pageLaporan');
+    Route::get('/table-laporan-transaksi',[App\Http\Controllers\LaporanController::class, 'tableTrks'])->name('table_lap_trks');
+    
+    Route::post('/link-export-laporan',[App\Http\Controllers\LaporanController::class, 'linkExportLaporan'])->name('link_export_laporan');
+    Route::get('/export-laporan',[App\Http\Controllers\LaporanController::class, 'exportLaporan'])->name('export_laporan');
+    
+    Route::post('/link-printout-laporan',[App\Http\Controllers\LaporanController::class, 'linkPrintoutLaporan'])->name('link_printout_laporan');
+    Route::get('/printout-laporan',[App\Http\Controllers\LaporanController::class, 'printoutLaporan'])->name('printout_laporan');
 });
 
 Route::prefix('setting')->group(function () {

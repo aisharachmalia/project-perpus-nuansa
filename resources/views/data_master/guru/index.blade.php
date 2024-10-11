@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 @extends('master')
 @section('content')
     <div class="container">
@@ -6,13 +7,15 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="row">
-                            <div class="col-12 d-flex justify-content-start">
-                                <a href="javascript:void(0)" class="btn btn-success mb-2 modalCreate"
-                                    data-bs-toggle="modal"data-bs-target="#create">+ Tambah</a>
-                                &nbsp; &nbsp;
-                                <a href="javascript:void(0)" class="btn btn-success mb-2" id="export">Export Excel</a>
-                                &nbsp; &nbsp;
-                                <a href="javascript:void(0)" class="btn btn-danger mb-2" id="printout">Printout Pdf</a>
+                            <div class="col-12 d-flex justify-content-end">
+                                <a href="#" class=" icon icon-left dropdown-toggle" data-bs-toggle="dropdown"
+                                    ><i class="bi bi-justify fs-3"></i></a>
+                                <div class="dropdown-menu">
+                                    <a href="javascript:void(0)" class="dropdown-item mb-2 modalCreate" style="text-align: end"
+                                    data-bs-toggle="modal"data-bs-target="#create"><span class="badge bg-light-success">Tambah <i class="fa fa-plus"></i></span></a>
+                                    <a href="javascript:void(0)" class="dropdown-item mb-2" style="text-align: end" id="export"><span class="badge bg-light-warning">Export Excel <i class="fa fa-file-excel"></i></span></a>
+                                    <a href="javascript:void(0)" class="dropdown-item mb-2" style="text-align: end" id="printout"><span class="badge bg-light-danger">Printout Pdf <i class="fa fa-file-pdf"></i></span></a>
+                                </div>
                             </div>
                         </div>
                     </div>

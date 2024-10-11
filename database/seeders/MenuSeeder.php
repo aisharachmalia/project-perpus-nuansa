@@ -45,7 +45,7 @@ class MenuSeeder extends Seeder
         menu::create([
             'menu_nama' => 'Laporan',
             'menu_parent' => 0,
-            'menu_url' => 'laporan',
+            'menu_url' => 'pageLaporan',
             'menu_icon' => 'bi bi-journal-bookmark-fill',
             'menu_urut' => 4,
             'menu_stat' => 1
