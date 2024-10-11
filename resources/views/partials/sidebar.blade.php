@@ -31,8 +31,7 @@
                             <ul class="submenu">
                                 @foreach ($submenu as $submenuItem)
                                     <li class="submenu-item">
-                                        <a
-                                            href="{{ Route::has($submenuItem->menu_url) ? route($submenuItem->menu_url) : 'javascript:;' }}">{{ $submenuItem->menu_nama }}</a>
+                                        <a href="{{ Route::has($submenuItem->menu_url) ? route($submenuItem->menu_url) : 'javascript:;' }}">{{ $submenuItem->menu_nama }}</a>
                                     </li>
                                 @endforeach
                             </ul>

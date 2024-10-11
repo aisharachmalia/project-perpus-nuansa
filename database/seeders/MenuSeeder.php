@@ -111,7 +111,7 @@ class MenuSeeder extends Seeder
         Menu::create([
             'menu_nama' => 'User',
             'menu_parent' => 11,
-            'menu_url' => 'users',
+            'menu_url' => 'setting.users',
             'menu_icon' => null,
             'menu_urut' => 1,
             'menu_stat' => 1
@@ -120,7 +120,7 @@ class MenuSeeder extends Seeder
         menu::create([
             'menu_nama' => 'Akses User',
             'menu_parent' => 11,
-            'menu_url' => 'akses-users',
+            'menu_url' => 'setting.akses-users',
             'menu_icon' => null,
             'menu_urut' => 2,
             'menu_stat' => 1
