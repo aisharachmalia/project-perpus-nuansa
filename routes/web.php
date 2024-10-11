@@ -60,6 +60,8 @@ Route::prefix('data-master')->group(function () {
     //pdf
     Route::get('/printout-guru', [App\Http\Controllers\GuruController::class, 'printoutGuru'])->name('printout_guru');
     Route::post('/link-printout-guru', [App\Http\Controllers\GuruController::class, 'linkPrintoutGuru'])->name('link_printout_guru');
+    Route::post('/link-printout-buku', [App\Http\Controllers\BukuController::class, 'linkPrintoutBuku'])->name('link_printout_buku');
+    Route::post('/link-printout-pustakawan', [App\Http\Controllers\PustakawanController::class, 'linkPrintoutPustakawan'])->name('link_printout_pustakawan');
 
     //Buku
     Route::get('/buku', [App\Http\Controllers\BukuController::class, 'pageBuku'])->name('data_master.buku');
@@ -139,7 +141,4 @@ Route::get('/forgot-password', [App\Http\Controllers\WebController::class, 'page
 Route::post('/lupa-password', [ForgotPasswordController::class, 'lupaPassword'])->name('lupa_pass');
 Route::get('/reset-password/{id?}', [App\Http\Controllers\WebController::class, 'pageResetPassword'])->name('form_reset_password');
 Route::post('/reset-Password', [ForgotPasswordController::class, 'storePassword'])->name('reset_pass');
-use App\Http\Controllers\DashboardController;
-
-Route::get('/dashboard', [DashboardController::class, 'index']);
 
