@@ -1,4 +1,5 @@
 <?php
+
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use Illuminate\Support\Facades\Route;
 
@@ -78,11 +79,8 @@ Route::prefix('data-master')->group(function () {
     Route::post('/pustakawan/add', [App\Http\Controllers\PustakawanController::class, 'addPustakawan'])->name('data_master.pustakawan.add');
     Route::put('/pustakawan/edit/{id}', [App\Http\Controllers\PustakawanController::class, 'editPustakawan'])->name('data_master.pustakawan.edit');
     Route::delete('/pustakawan/delete/{id}', [App\Http\Controllers\PustakawanController::class, 'deletePustakawan'])->name('data_master.pustakawan.delete');
-
-    Route::post('/link-export-pustakawan',[App\Http\Controllers\PustakawanController::class,'linkExportPustakawan'])->name('link_export_pustakawan');
-    Route::get('/export-pustakawan',[App\Http\Controllers\PustakawanController::class,'exportPustakawan'])->name('export_pustakawan');
-    Route::post('/link-printout-pustakawan',[App\Http\Controllers\PustakawanController::class,'linkPrintoutPustakawan'])->name('link_printout_pustakawan');
-    Route::get('/printout-pustakawan',[App\Http\Controllers\PustakawanController::class,'printoutPustakawan'])->name('printout_pustakawan');
+    Route::post('/link-export-pustakawan', [App\Http\Controllers\PustakawanController::class, 'linkExportPustakawan'])->name('link_export_pustakawan');
+    Route::get('/export-pustakawan', [App\Http\Controllers\PustakawanController::class, 'exportPustakawan'])->name('export_pustakawan');
 
     // Siswa
     Route::get('/siswa', [SiswaController::class, 'index'])->name('data_master.siswa');
@@ -92,7 +90,7 @@ Route::prefix('data-master')->group(function () {
     Route::delete('/siswa/delete/{id}', [SiswaController::class, 'destroy'])->name('siswa.destroy');
 
     Route::post('/link-export-siswa', [App\Http\Controllers\SiswaController::class, 'linkExportSiswa'])->name('link_export_siswa');
-    Route::get('/export-siswa',[App\Http\Controllers\SiswaController::class, 'exportSiswa'])->name('export_siswa');
+    Route::get('/export-siswa', [App\Http\Controllers\SiswaController::class, 'exportSiswa'])->name('export_siswa');
 
     Route::post('/link-printout-siswa', [App\Http\Controllers\SiswaController::class, 'linkPrintoutSiswa'])->name('link_printout_siswa');
     Route::get('/printout-siswa', [App\Http\Controllers\SiswaController::class, 'printoutSiswa'])->name('printout_siswa');
@@ -106,8 +104,12 @@ Route::prefix('data-master')->group(function () {
 
     // refernsi route
     Route::get('/referensi', [App\Http\Controllers\ReferensiController::class, 'pageReferensi'])->name('data_master.referensi');
-    Route::get('/referensi/export', [App\Http\Controllers\ReferensiController::class, 'exportPenulis'])->name('data_master.referensi.export');
-    Route::post('/link/export', [App\Http\Controllers\ReferensiController::class, 'linkExport'])->name('data_master.referensi.linkExport');
+    // excel
+    Route::get('/referensi/export', [App\Http\Controllers\ReferensiController::class, 'exportReferensi'])->name('referensi.export');
+    Route::post('/link/export', [App\Http\Controllers\ReferensiController::class, 'linkExport'])->name('referensi.linkExport');
+    // pdf
+    Route::get('/referensi/printout', [App\Http\Controllers\ReferensiController::class, 'printoutReferensi'])->name('referensi.printout');
+    Route::post('/link/printout', [App\Http\Controllers\ReferensiController::class, 'linkPrintout'])->name('referensi.linkPrintout');
 
 
     // penulis route
@@ -142,6 +144,10 @@ Route::prefix('laporan')->group(function () {
     
     Route::post('/link-printout-laporan',[App\Http\Controllers\LaporanController::class, 'linkPrintoutLaporan'])->name('link_printout_laporan');
     Route::get('/printout-laporan',[App\Http\Controllers\LaporanController::class, 'printoutLaporan'])->name('printout_laporan');
+});
+
+Route::prefix('setting')->group(function () {
+
 });
 
 Route::get('/forgot-password', [App\Http\Controllers\WebController::class, 'pageForgotPassword'])->name('forgot_password');
