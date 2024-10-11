@@ -20,10 +20,19 @@ class BukuExport implements FromView
 
     public function view(): View
     {
-        $buku = \DB::select("SELECT db.*,dp.dpenulis_nama_penulis 
-                            FROM dm_buku as db
-                            JOIN dm_penulis as dp ON dp.id_dpenulis = db.id_dpenulis");
+        $buku = \DB::select("SELECT dm_buku.*, 
+                                            dm_mapels.dmapel_nama_mapel, 
+                                            dm_penulis.dpenulis_nama_penulis, 
+                                            dm_penerbits.dpenerbit_nama_penerbit, 
+                                            dm_kategoris.dkategori_nama_kategori 
+                                    FROM dm_buku 
+                                    JOIN dm_penulis ON dm_buku.id_dpenulis = dm_penulis.id_dpenulis 
+                                    JOIN dm_penerbits ON dm_buku.id_dpenerbit = dm_penerbits.id_dpenerbit 
+                                    JOIN dm_kategoris ON dm_buku.id_dkategori = dm_kategoris.id_dkategori 
+                                    JOIN dm_mapels ON dm_buku.id_dmapel = dm_mapels.id_mapel 
+                                    WHERE dm_buku.deleted_at IS NULL;
+");
 
-        return view('export.exc_buku',compact('buku'));
+        return view('export.exc_laporan', compact('buku'));
     }
 }

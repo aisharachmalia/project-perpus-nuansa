@@ -244,7 +244,7 @@ class GuruController extends Controller
                 ->get();
 
             $html = \View::make('pdf.pdf_guru', [
-                'title' => 'Printout Guru',
+                'title' => 'Data Guru',
                 'gr' => $gr
             ])->render();
 
@@ -256,7 +256,7 @@ class GuruController extends Controller
             $code = 'aisha';
 
             TCPDF::AddPage();
-            TCPDF::write2DBarcode($code, 'QRCODE,Q', 230, 150, 44, 35, false, 'P');
+            TCPDF::write2DBarcode($code, 'QRCODE,Q', 240, 150, 44, 35, false, 'P');
             TCPDF::writeHTML($html, true, false, true, false, '');
 
             return TCPDF::Output($filename, 'I');
