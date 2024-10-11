@@ -26,7 +26,7 @@ class TransaksiController extends Controller
                 ->addIndexColumn()
                 ->addColumn('aksi', function ($row) {
                     $btn = '<div class="d-flex mr-2">
-                    <a href="javascript:void(0)" data-id="' . Crypt::encryptString($row->id_trks) . '" class="btn btn-warning btn-sm modalEdit mr-2" data-bs-toggle="modal" data-bs-target="#edit">
+                    <a href="javascript:void(0)" data-id="' . Crypt::encryptString($row->id_trks) . '" class="btn btn-warning btn-sm editPeminjaman mr-2" data-bs-toggle="modal" data-bs-target="#edit">
                         <i class="bi bi-pencil"></i>
                     </a>
                     |
