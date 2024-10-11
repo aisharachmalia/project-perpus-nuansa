@@ -21,7 +21,7 @@ Route::get('/', [App\Http\Controllers\WebController::class, 'pageWeb'])->name('p
 
 //Login
 Route::get('/login-usr', [App\Http\Controllers\WebController::class, 'pageLogin'])->name('login-usr');
-Route::get('/home', [App\Http\Controllers\WebController::class, 'pageHome'])->name('home');
+
 
 //Register
 Route::get('/register', [App\Http\Controllers\WebController::class, 'pageRegister'])->name('register');
@@ -59,6 +59,8 @@ Route::prefix('data-master')->group(function () {
     //pdf
     Route::get('/printout-guru', [App\Http\Controllers\GuruController::class, 'printoutGuru'])->name('printout_guru');
     Route::post('/link-printout-guru', [App\Http\Controllers\GuruController::class, 'linkPrintoutGuru'])->name('link_printout_guru');
+    Route::post('/link-printout-buku', [App\Http\Controllers\BukuController::class, 'linkPrintoutBuku'])->name('link_printout_buku');
+    Route::post('/link-printout-pustakawan', [App\Http\Controllers\PustakawanController::class, 'linkPrintoutPustakawan'])->name('link_printout_pustakawan');
 
     //Buku
     Route::get('/buku',[App\Http\Controllers\BukuController::class, 'pageBuku'])->name('data_master.buku');

@@ -18,7 +18,7 @@ class MenuSeeder extends Seeder
         Menu::create([
             'menu_nama' => 'Dashboard',
             'menu_parent' => 0,
-            'menu_url' => 'dasboard',
+            'menu_url' => 'home',
             'menu_icon' => 'bi bi-grid-fill',
             'menu_urut' => 1,
             'menu_stat' => 1
