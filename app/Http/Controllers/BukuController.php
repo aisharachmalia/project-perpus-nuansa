@@ -295,6 +295,8 @@ class BukuController extends Controller
         $img = '';
         if ($bk[0]->dbuku_cover != null) {
             $img = asset('storage/cover/' . $bk[0]->dbuku_cover);
+        } else {
+            $img = asset('storage/cover/default.jpg');
         }
 
         $slc1 = '';

@@ -59,7 +59,7 @@
                         orderable: false,
                         searchable: false,
                         class: "text-center"
-                    }, 
+                    },
                     {
                         data: 'dbuku_cover',
                         class: 'object-fit-cover',
@@ -67,7 +67,10 @@
                             // Use the asset() helper function to get the full URL
                             var imageUrl = '/storage/cover/' + data; // Ensure this path is correct
                             return '<img src="' + imageUrl +
-                                '" width="100px" height="100px" onerror="this.onerror=null;this.src=\'/path/to/default/image.jpg\';" style="width: 100%; height: 100%; object-fit: cover; object-position: center">'; // Optional: default image on error
+                                '" width="100px" height="100px" onerror="this.onerror=null;this.src=\'/storage/cover/default.jpg\';" style="width: 100%; height: 100%; object-fit: cover; object-position: center">'; // Optional: default image on error
+
+
+
                         }
                     },
                     {
