@@ -178,8 +178,9 @@
 
                     // Fill data into the modal
                     $('#show').find('#dbuku_isbn').text(response.bk[0].dbuku_isbn);
-                    $('#show').find('#dbuku_cover').attr('src', response
-                        .img); // Assuming dbuku_cover is an image URL
+                    $('#show').find('#dbuku_cover').attr('src', response.img).on('error', function() {
+                        $(this).attr('src', '/storage/cover/default.jpg');
+                    });
                     $('#show').find('#dbuku_judul').text(response.bk[0].dbuku_judul);
                     $('#show').find('#id_mapel').text(response.bk[0].id_dmapel == null ? '-' : response
                         .bk[0].dmapel_nama_mapel);
