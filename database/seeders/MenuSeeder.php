@@ -18,7 +18,7 @@ class MenuSeeder extends Seeder
         Menu::create([
             'menu_nama' => 'Dashboard',
             'menu_parent' => 0,
-            'menu_url' => 'dasboard',
+            'menu_url' => 'home',
             'menu_icon' => 'bi bi-grid-fill',
             'menu_urut' => 1,
             'menu_stat' => 1
@@ -28,7 +28,7 @@ class MenuSeeder extends Seeder
         menu::create([
             'menu_nama' => 'Peminjaman dan Pegembalian',
             'menu_parent' => 0,
-            'menu_url' => 'peminjaman-pengembalian',
+            'menu_url' => 'transaksi.transaksi',
             'menu_icon' => 'bi bi-book-half',
             'menu_urut' => 2,
             'menu_stat' => 1
@@ -111,7 +111,7 @@ class MenuSeeder extends Seeder
         Menu::create([
             'menu_nama' => 'User',
             'menu_parent' => 11,
-            'menu_url' => 'users',
+            'menu_url' => 'setting.users',
             'menu_icon' => null,
             'menu_urut' => 1,
             'menu_stat' => 1
@@ -120,7 +120,7 @@ class MenuSeeder extends Seeder
         menu::create([
             'menu_nama' => 'Akses User',
             'menu_parent' => 11,
-            'menu_url' => 'akses-users',
+            'menu_url' => 'setting.akses-users',
             'menu_icon' => null,
             'menu_urut' => 2,
             'menu_stat' => 1
