@@ -186,114 +186,90 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="modalEdit">Perbaharui Guru</h4>
+                <h4 class="modal-title" id="modalEdit">Perbaharui Buku</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form class="form">
+                <form class="form" id="form_buku_upd" method="PUT" enctype="multipart/form-data">
                     <div class="row">
-                        <div class="col-4">
-                            <div class="form-group">
-                                <label>Cover Sebelumnya</label>
-                                <img id="dbuku_cover" style="width: 150px; height: auto;" >
-                                <input type="hidden" id="id_bk">
-                                <label for="dbuku_cover">Ubah Cover</label>
-                                <input type="file" name="dbuku_cover" id="dbuku_cover" class="form-control mt-2" >
-                                <span id="cover-error" class="text-danger"></span>
-                            </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Cover Sebelumnya</label>
+                            <img id="dbuku_cover" style="width: 150px; height: auto;" >
+                            <input type="hidden" id="id_bk" name="id_bk">
+                            <label for="dbuku_cover">Ubah Cover</label>
+                            <input type="file" name="dbuku_cover" id="dbuku_cover" class="form-control">
+                            <span id="cover-error" class="text-danger"></span>
                         </div>
-                        <div class="col-4">
-                            <div class="form-group">
-                                <label>Judul Buku</label>
-                                <input type="text" id="dbuku_judul" class="form-control" placeholder="Judul Buku" name="dbuku_judul">
-                                <span id="judul-error" class="text-danger"></span>
-                            </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Judul Buku</label>
+                            <input type="text" id="dbuku_judul" class="form-control" placeholder="Judul Buku" name="dbuku_judul">
+                            <span id="judul-error" class="text-danger"></span>
                         </div>
-                        <div class="col-4">
-                            <div class="form-group">
-                                <label>ISBN</label>
-                                <input type="text" id="dbuku_isbn" class="form-control" placeholder="ISBN" name="dbuku_isbn">
-                                <span id="isbn-error" class="text-danger"></span>
-                            </div>
+                        <div class="col-md-4 mb-3">
+                            <label>ISBN</label>
+                            <input type="text" id="dbuku_isbn" class="form-control" placeholder="ISBN" name="dbuku_isbn">
+                            <span id="isbn-error" class="text-danger"></span>
                         </div>
-                        <div class="col-4">
-                            <div class="form-group">
-                                <label>Penulis</label>
-                                <select class="form-control" name="id_dpenulis" id="id_penulis">
-                                    <option value="" selected disabled>Pilih Penulis</option>
-                                </select>
-                                <span id="penulis-error" class="text-danger"></span>
-                            </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Penulis</label>
+                            <select class="form-control" name="id_dpenulis" id="id_penulis">
+                                <option value="" selected disabled>Pilih Penulis</option>
+                            </select>
+                            <span id="penulis-error" class="text-danger"></span>
                         </div>
-                        <div class="col-4">
-                            <div class="form-group">
-                                <label>Penerbit</label>
-                                <select class="form-control" name="id_dpenerbit" id="id_penerbit">
-                                    <option value="" selected disabled>Pilih Penerbit</option>
-                                </select>
-                                <span id="penerbit-error" class="text-danger"></span>
-                            </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Penerbit</label>
+                            <select class="form-control" name="id_dpenerbit" id="id_penerbit">
+                                <option value="" selected disabled>Pilih Penerbit</option>
+                            </select>
+                            <span id="penerbit-error" class="text-danger"></span>
                         </div>
-                        <div class="col-4">
-                            <div class="form-group">
-                                <label>Kategori</label>
-                                <select class="form-control" name="id_dkategori" id="id_kategori">
-                                    <option value="" selected disabled>Pilih Kategori</option>
-                                </select>
-                                <span id="kategori-error" class="text-danger"></span>
-                            </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Kategori</label>
+                            <select class="form-control" name="id_dkategori" id="id_kategori">
+                                <option value="" selected disabled>Pilih Kategori</option>
+                            </select>
+                            <span id="kategori-error" class="text-danger"></span>
                         </div>
-                        <div class="col-4">
-                            <div class="form-group">
-                                <label>Mata Pelajaran</label>
-                                <select class="form-control" name="id_dmapel" id="id_mapel">
-                                    <option value="" selected disabled>Pilih Mata Pelajaran</option>
-                                </select>
-                                <span id="mapel-error" class="text-danger"></span>
-                            </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Mata Pelajaran</label>
+                            <select class="form-control" name="id_dmapel" id="id_mapel">
+                                <option value="" selected disabled>Pilih Mata Pelajaran</option>
+                            </select>
+                            <span id="mapel-error" class="text-danger"></span>
                         </div>
-                        <div class="col-4">
-                            <div class="form-group">
-                                <label>Tahun Terbit</label>
-                                <select class="form-control" name="dbuku_thn_terbit" id="dbuku_thn_terbit">
-                                    <option value="" selected disabled>Pilih Tahun Terbit</option>
-                                </select>
-                                <span id="thn_terbit-error" class="text-danger"></span>
-                            </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Tahun Terbit</label>
+                            <select class="form-control" name="dbuku_thn_terbit" id="dbuku_thn_terbit">
+                                <option value="" selected disabled>Pilih Tahun Terbit</option>
+                            </select>
+                            <span id="thn_terbit-error" class="text-danger"></span>
                         </div>
-                        <div class="col-4">
-                            <div class="form-group">
-                                <label>Lokasi Rak</label>
-                                <select class="form-control" name="dbuku_lokasi_rak" id="dbuku_lokasi_rak">
-                                    <option value="" selected disabled>Pilih Lokasi Rak</option>
-                                </select>
-                                <span id="lokasi_rak-error" class="text-danger"></span>
-                            </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Lokasi Rak</label>
+                            <select class="form-control" name="dbuku_lokasi_rak" id="dbuku_lokasi_rak">
+                                <option value="" selected disabled>Pilih Lokasi Rak</option>
+                            </select>
+                            <span id="lokasi_rak-error" class="text-danger"></span>
                         </div>
-                        <div class="col-4">
-                            <div class="form-group">
-                                <label>Bahasa</label>
-                                <select class="form-control" name="dbuku_bahasa" id="dbuku_bahasa">
-                                    <option value="" selected disabled>Pilih Bahasa</option>
-                                </select>
-                                <span id="bahasa-error" class="text-danger"></span>
-                            </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Bahasa</label>
+                            <select class="form-control" name="dbuku_bahasa" id="dbuku_bahasa">
+                                <option value="" selected disabled>Pilih Bahasa</option>
+                            </select>
+                            <span id="bahasa-error" class="text-danger"></span>
                         </div>
-                        <div class="col-4">
-                            <div class="form-group">
-                                <label>Jumlah Buku</label>
-                                <input type="number" name="dbuku_jml_total" class="form-control" placeholder="Jumlah" id="dbuku_jml_total">
-                                <span id="jml_total-error" class="text-danger"></span>
-                            </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Jumlah Buku</label>
+                            <input type="number" name="dbuku_jml_total" class="form-control" placeholder="Jumlah" id="dbuku_jml_total">
+                            <span id="jml_total-error" class="text-danger"></span>
                         </div>
-                        <div class="col-4">
-                            <div class="form-group">
-                                <label>Edisi Buku</label>
-                                <select class="form-control" name="dbuku_edisi" id="dbuku_edisi">
-                                    <option value="" selected disabled>Pilih Edisi</option>
-                                </select>
-                                <span id="edisi-error" class="text-danger"></span>
-                            </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Edisi Buku</label>
+                            <select class="form-control" name="dbuku_edisi" id="dbuku_edisi">
+                                <option value="" selected disabled>Pilih Edisi</option>
+                            </select>
+                            <span id="edisi-error" class="text-danger"></span>
                         </div>
                     </div>
                 </form>
@@ -304,6 +280,7 @@
         </div>
     </div>
 </div>
+
 
 <div class="modal fade text-left" id="show" tabindex="-1" role="dialog" aria-labelledby="modalDelete" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
