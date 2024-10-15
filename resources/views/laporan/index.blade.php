@@ -2,6 +2,13 @@
 @section('content')
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .dropdown-menu {
+            border-radius: 0;
+            background: transparent;
+            -webkit-appearance: none;
+        }
+    </style>
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-12">
@@ -13,7 +20,20 @@
                                 <h4>Laporan Peminjaman</h4>
                             </div>
                         </div>
-
+                        <div class="col-md-2 mt-2 d-flex justify-content-start mb-2">
+                            <a href="#" class="icon icon-left dropdown-toggle" data-bs-toggle="dropdown"><i
+                                    class="bi bi-justify fs-3"></i></a>
+                            <div class="dropdown-menu justify-content-start">
+                                <a href="javascript:void(0)" class="dropdown-item mb-2 text-start" id="export">
+                                    <span class="badge bg-light-warning">Export Excel <i
+                                            class="fas fa-file-excel"></i></span>
+                                </a>
+                                <a href="javascript:void(0)" class="dropdown-item mb-2 text-start" id="printout">
+                                    <span class="badge bg-light-danger">Printout Pdf <i
+                                            class="fas fa-file-pdf"></i></span>
+                                </a>
+                            </div>
+                        </div>
                         <!-- Filters Section -->
                         <div class="row">
                             <!-- Filter Buku -->
@@ -55,7 +75,7 @@
                             </div>
 
                             <!-- Filter Tanggal -->
-                            <div class="col-md-5 mb-2">
+                            <div class="col-md-6 mb-2">
                                 <span>Filter Tanggal</span>
                                 <div id="daterange" class="float-end"
                                     style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%; text-align:center">
@@ -68,20 +88,7 @@
                             </div>
 
                             <!-- Export and Print Buttons Section -->
-                            <div class="col-md-2 mt-2 d-flex justify-content-end mb-2">
-                                <a href="#" class="icon icon-left dropdown-toggle" data-bs-toggle="dropdown"><i
-                                        class="bi bi-justify fs-3"></i></a>
-                                <div class="dropdown-menu">
-                                    <a href="javascript:void(0)" class="dropdown-item mb-2 text-end" id="export">
-                                        <span class="badge bg-light-warning">Export Excel <i
-                                                class="fas fa-file-excel"></i></span>
-                                    </a>
-                                    <a href="javascript:void(0)" class="dropdown-item mb-2 text-end" id="printout">
-                                        <span class="badge bg-light-danger">Printout Pdf <i
-                                                class="fas fa-file-pdf"></i></span>
-                                    </a>
-                                </div>
-                            </div>
+                            
                         </div>
                     </div>
 
@@ -219,6 +226,7 @@
                         data: 'tdenda_jumlah'
                     },
                     {
+                        class: "text-center",
                         data: 'tdenda_status',
                         render: function(data) {
                             if (data == 'Sudah Lunas') {

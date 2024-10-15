@@ -56,7 +56,7 @@ class LaporanController extends Controller
         return DataTables::of($trks)
             ->addIndexColumn()
             ->editColumn('trks_tgl_peminjaman', function ($trks) {
-                return Carbon::parse($trks->trks_tgl_peminjaman)->format('d-m-Y-H:i');
+                return Carbon::parse($trks->trks_tgl_peminjaman)->format('d-m-Y H:i');
             })
             ->editColumn('trks_tgl_jatuh_tempo', function ($trks) {
                 return Carbon::parse($trks->trks_tgl_jatuh_tempo)->format('d-m-Y');
@@ -65,7 +65,7 @@ class LaporanController extends Controller
                 if ($trks->trks_tgl_pengembalian == null) {
                     return '-';
                 } else {
-                    return Carbon::parse($trks->trks_tgl_pengembalian)->format('d-m-Y-H:i');
+                    return Carbon::parse($trks->trks_tgl_pengembalian)->format('d-m-Y H:i');
                 }
             })
             ->editColumn('tdenda_jumlah', function ($trks) {
