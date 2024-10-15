@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('id_trks');
             $table->double('tdenda_jumlah');
             $table->dateTime('tdenda_tgl_bayar')->nullable();
-            $table->tinyInteger('tdenda_status');
+            $table->string('tdenda_status');
             $table->timestamps();
             $table->softDeletes();
         });

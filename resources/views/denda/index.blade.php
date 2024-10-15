@@ -3,11 +3,6 @@
 @section('content')
     @push('css')
         <style>
-            body {
-                background-color: #ffffff;
-                font-family: 'Georgia', serif;
-            }
-
             .container {
                 background-color: #fff;
                 border-radius: 15px;
@@ -53,12 +48,13 @@
 
             .icon-input {
                 position: relative;
+                margin: 0;
             }
 
             .icon-input i {
                 position: absolute;
                 left: 10px;
-                top: 10px;
+                top: 30px;
                 color: #8b4513;
             }
 
@@ -66,14 +62,15 @@
                 padding-left: 35px;
             }
 
+            .icon-input p {
+                padding-left: 35px;
+                margin: 0;
+            }
+
             .icon-input select {
                 padding-left: 35px;
             }
 
-            .icon-input i.bi.bi-calendar-plus,
-            .icon-input i.bi.bi-calendar-x-fill {
-                left: 23px;
-            }
 
             input[type="number"] {
                 -moz-appearance: textfield;
@@ -92,42 +89,60 @@
         <h2><i class="fas fa-book-reader"></i> Pembayaran Denda Perpustakaan</h2>
         <div id="pembayaran">
             <div class="mb-3 icon-input">
-                <input type="hidden" id="id_denda">
-                <i class="bi bi-person-fill"></i>
-                <select id="siswa" name="siswa" class="form-control">
-                    <option value="">Pilih Siswa</option>
-                    @foreach ($siswa as $data)
-                        <option value="{{ Crypt::encryptString($data->id_dsiswa) }}">
-                            {{ $data->dsiswa_nama }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="mb-3 icon-input">
-                <i class="bi bi-book-fill"></i>
-                <input type="text" class="form-control" id="buku" placeholder="Judul Buku" required>
-                <span id="buku_error" class="text-danger"></span>
-            </div>
-            <div class="row">
-                <div class="col-md-6 mb-3 icon-input">
-                    <i class="bi bi-calendar-plus"></i>
-                    <input type="date" class="form-control" id="tanggalPeminjaman" required>
-                    <span id="peminjaman_error" class="text-danger"></span>
-                </div>
-                <div class="col-md-6 mb-3 icon-input">
-                    <i class="bi bi-calendar-x-fill"></i>
-                    <input type="date" class="form-control" id="tanggalJatuhTempo" required>
-                    <span id="jatuh_tempo_error" class="text-danger"></span>
+                <div class="form-group">
+                    <label for="siswa">Nama Siswa</label>
+                    <input type="hidden" id="id_denda">
+                    <i class="bi bi-person-fill"></i>
+                    <select id="siswa" name="siswa" class="form-control">
+                        <option value="">Pilih Siswa</option>
+                        @foreach ($siswa as $data)
+                            <option value="{{ Crypt::encryptString($data->id_dsiswa) }}">
+                                {{ $data->dsiswa_nama }}</option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
             <div class="mb-3 icon-input">
-                <i class="bi bi-cash-stack"></i>
-                <input type="number" class="form-control" id="jumlahDenda" placeholder="Jumlah Denda" required>
-                <span id="denda_error" class="text-danger"></span>
+                <div class="form-group">
+                    <label for="buku">Judul Buku</label>
+                    <i class="bi bi-book-fill"></i>
+                    <select id="buku" name="buku" class="form-control">
+                        <option value="">Pilih Buku</option>
+                    </select>
+                    <span id="buku_error" class="text-danger"></span>
+                </div>
+            </div>
+                <div class="mb-3 icon-input">
+                    <div class="form-group">
+                        <label for="tanggalPeminjaman">Tanggal Pinjam</label>
+                        <i class="bi bi-calendar-plus"></i>
+                        <p class="form-control" id="tanggalPeminjaman">Tanggal Pinjam</p>
+                        <span id="peminjaman_error" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class=" mb-3 icon-input">
+                    <div class="form-group">
+                        <label for="tanggalJatuhTempo">Tanggal Jatuh Tempo</label>
+                        <i class="bi bi-calendar-x-fill"></i>
+                        <p class="form-control" id="tanggalJatuhTempo">Jatuh Tempo</p>
+                        <span id="jatuh_tempo_error" class="text-danger"></span>
+                    </div>
+                </div>
+            <div class="mb-3 icon-input">
+                <div class="form-group">
+                    <label for="denda">Jumlah Denda</label>
+                    <i class="bi bi-cash-stack"></i>
+                    <input type="number" class="form-control" id="jumlahDenda" placeholder="Jumlah Denda" required>
+                    <span id="denda_error" class="text-danger"></span>
+                </div>
             </div>
             <div class="mb-3 icon-input">
-                <i class="bi bi-calendar-check"></i>
-                <input type="date" class="form-control" id="tanggalPembayaran" required>
-                <span id="tgl_pembayaran_error" class="text-danger"></span>
+                <div class="form-group">
+                    <label for="tanggalPembayaran">Tanggal Pembayaran</label>
+                    <i class="bi bi-calendar-check"></i>
+                    <input type="date" class="form-control" id="tanggalPembayaran" required>
+                    <span id="tgl_pembayaran_error" class="text-danger"></span>
+                </div>
             </div>
             <button type="button" class="btn btn-primary" id="bayar">
                 <span class="d-none d-sm-block">Simpan</span>
@@ -187,7 +202,7 @@
                         class: 'text-center'
                     },
                     {
-                        data: 'tdenda_jumlah',
+                        data: 'trks_denda',
                         class: 'text-center'
                     },
                     {
@@ -222,27 +237,52 @@
                         url: `/denda-detail/${siswaId}`,
                         type: 'GET',
                         success: function(response) {
-                            $('#pembayaran').find('#buku').val(response['denda'][0]
-                                .dbuku_judul);
-                            $('#pembayaran').find('#tanggalPeminjaman').val(response['denda'][0]
-                                .trks_tgl_peminjaman.split(' ')[0]);
                             $('#pembayaran').find('#id_denda').val(response['denda'][0]
                                 .id_tdenda);
-                            $('#pembayaran').find('#tanggalJatuhTempo').val(response['denda'][0]
-                                .trks_tgl_jatuh_tempo.split(' ')[0]);
-                            $('#pembayaran').find('#jumlahDenda').val(response['denda'][0]
-                                .trks_denda);
                             $('#pembayaran').find('#tanggalPembayaran').val(new Date()
                                 .toISOString().slice(0, 10));
+                            $('#pembayaran').find('#buku').empty();
+                            $('#pembayaran').find('#buku').append(
+                                '<option value="">Pilih Buku</option>');
+                            $.each(response.buku, function(index, value) {
+                                $('#pembayaran').find('#buku').append(
+                                    '<option value="' + value.id_dbuku + '">' +
+                                    value.dbuku_judul + '</option>');
+                            });
                         }
                     });
                 } else {
                     $('#pembayaran').find('#buku').val('');
-                    $('#pembayaran').find('#tanggalPeminjaman').val('');
+                    $('#pembayaran').find('#tanggalPeminjaman').text('Tanggal Pinjam');
                     $('#pembayaran').find('#id_denda').val('');
-                    $('#pembayaran').find('#tanggalJatuhTempo').val('');
+                    $('#pembayaran').find('#tanggalJatuhTempo').text('Jatuh Tempo');
                     $('#pembayaran').find('#jumlahDenda').val('');
                     $('#pembayaran').find('#tanggalPembayaran').val('');
+                    $('#pembayaran').find('#buku').empty();
+                    $('#pembayaran').find('#buku').append('<option value="">Pilih Buku</option>');
+                }
+            });
+
+            $('#buku').on('change', function() {
+                var bukuId = $(this).val();
+                var siswaId = $('#siswa').val();
+                if (bukuId) {
+                    $.ajax({
+                        url: `/denda-buku-detail/${siswaId}/${bukuId}`,
+                        type: 'GET',
+                        success: function(response) {
+                            $('#pembayaran').find('#tanggalPeminjaman').text(response['buku'][0]
+                                .trks_tgl_peminjaman.split(' ')[0]);
+                            $('#pembayaran').find('#tanggalJatuhTempo').text(response['buku'][0]
+                                .trks_tgl_jatuh_tempo.split(' ')[0]);
+                            $('#pembayaran').find('#jumlahDenda').val(response['buku'][0]
+                                .trks_denda);
+                        }
+                    });
+                } else {
+                    $('#pembayaran').find('#tanggalPeminjaman').text('Tanggal Peminjaman');
+                    $('#pembayaran').find('#tanggalJatuhTempo').text('Tanggal Jatuh Tempo');
+                    $('#pembayaran').find('#jumlahDenda').val('');
                 }
             });
 
@@ -260,22 +300,17 @@
                     return;
                 }
                 let token = $('meta[name="csrf-token"]').attr('content');
-                let buku = $('#pembayaran').find('#buku').val();
-                let tanggal_peminjaman = $('#pembayaran').find('#tanggalPeminjaman').val();
-                let tanggal_jatuh_tempo = $('#pembayaran').find('#tanggalJatuhTempo').val();
                 let denda = $('#pembayaran').find('#jumlahDenda').val();
                 let id_denda = $('#pembayaran').find('#id_denda').val();
                 let tanggal_pembayaran = $('#pembayaran').find('#tanggalPembayaran').val();
-
+                let id_buku = $('#pembayaran').find('#buku').val();
                 $.ajax({
                     url: `/denda-bayar/${id_denda}`,
                     type: "POST",
                     cache: false,
                     data: {
                         "_token": token,
-                        "buku": buku,
-                        "tanggal_peminjaman": tanggal_peminjaman,
-                        "tanggal_jatuh_tempo": tanggal_jatuh_tempo,
+                        "id_buku": id_buku,
                         "denda": denda,
                         "tanggal_pembayaran": tanggal_pembayaran
                     },
@@ -287,13 +322,15 @@
                             editConfirmButton: false,
                             timer: 3000
                         });
-                        $('#pembayaran').find('#buku').val('');
                         $('#pembayaran').find('#siswa').val('');
-                        $('#pembayaran').find('#tanggalPeminjaman').val('');
+                        $('#pembayaran').find('#tanggalPeminjaman').text('Tanggal Peminjaman');
                         $('#pembayaran').find('#id_denda').val('');
-                        $('#pembayaran').find('#tanggalJatuhTempo').val('');
+                        $('#pembayaran').find('#tanggalJatuhTempo').text('Tanggal Jatuh Tempo');
                         $('#pembayaran').find('#jumlahDenda').val('');
                         $('#pembayaran').find('#tanggalPembayaran').val('');
+                        $('#pembayaran').find('#buku').empty();
+                        $('#pembayaran').find('#buku').append(
+                            '<option value="">Pilih Buku</option>');
                         // kosongin span err
                         $('#pembayaran').find('#buku_error').text('');
                         $('#pembayaran').find('#peminjaman_error').text('');

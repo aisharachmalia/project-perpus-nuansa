@@ -67,10 +67,10 @@ Route::prefix('data-master')->group(function () {
     Route::get('/table-buku',[App\Http\Controllers\BukuController::class, 'tableBuku'])->name('table_dm_buku');
     Route::match(['post','put','delete'],'/crud-buku/{id?}',[App\Http\Controllers\BukuController::class, 'crudBuku'])->name('crud_dm_buku');
     Route::get('/buku/show/{id}',[App\Http\Controllers\BukuController::class, 'showBuku'])->name('data_master.buku.show');
-    
+
     Route::post('/link-export-buku',[App\Http\Controllers\BukuController::class, 'linkExportBuku'])->name('link_export_buku');
     Route::get('/export-buku',[App\Http\Controllers\BukuController::class, 'exportBuku'])->name('export_buku');
-    
+
     Route::post('/link-printout-buku',[App\Http\Controllers\BukuController::class, 'linkPrintoutBuku'])->name('link_printout_buku');
     Route::get('/printout-buku',[App\Http\Controllers\BukuController::class, 'printoutBuku'])->name('printout_buku');
 
@@ -139,10 +139,10 @@ Route::prefix('data-master')->group(function () {
 Route::prefix('laporan')->group(function () {
     Route::get('/laporan-transaksi',[App\Http\Controllers\LaporanController::class, 'pageLaporan'])->name('pageLaporan');
     Route::get('/table-laporan-transaksi',[App\Http\Controllers\LaporanController::class, 'tableTrks'])->name('table_lap_trks');
-    
+
     Route::post('/link-export-laporan',[App\Http\Controllers\LaporanController::class, 'linkExportLaporan'])->name('link_export_laporan');
     Route::get('/export-laporan',[App\Http\Controllers\LaporanController::class, 'exportLaporan'])->name('export_laporan');
-    
+
     Route::post('/link-printout-laporan',[App\Http\Controllers\LaporanController::class, 'linkPrintoutLaporan'])->name('link_printout_laporan');
     Route::get('/printout-laporan',[App\Http\Controllers\LaporanController::class, 'printoutLaporan'])->name('printout_laporan');
 });
@@ -165,6 +165,7 @@ Route::prefix('setting')->group(function () {
 // route denda
 Route::get('/denda', [App\Http\Controllers\DendaController::class, 'index'])->name('denda');
 Route::get('/denda-detail/{id?}', [App\Http\Controllers\DendaController::class, 'detail'])->name('detail_denda');
+Route::get('/denda-buku-detail/{id?}/{id2?}', [App\Http\Controllers\DendaController::class, 'datailBuku']);
 Route::post('/denda-bayar/{id?}', [App\Http\Controllers\DendaController::class, 'bayar'])->name('bayar_denda');
 Route::get('/table-denda', [App\Http\Controllers\DendaController::class, 'table']);
 
@@ -182,4 +183,4 @@ Route::put('/pengembalian/update/{id}', [TransaksiController::class, 'editPengem
 Route::get('/transaksi/show/{id}', [TransaksiController::class, 'show'])->name('transaksi.show');
 Route::delete('/transaksi/delete/{id}', [TransaksiController::class, 'delete'])->name('transaksi.delete');
 
- 
+
