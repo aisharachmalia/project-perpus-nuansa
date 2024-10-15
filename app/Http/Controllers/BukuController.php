@@ -27,10 +27,10 @@ class BukuController extends Controller
                                             dm_penerbits.dpenerbit_nama_penerbit, 
                                             dm_kategoris.dkategori_nama_kategori 
                                     FROM dm_buku 
-                                    JOIN dm_penulis ON dm_buku.id_dpenulis = dm_penulis.id_dpenulis 
-                                    JOIN dm_penerbits ON dm_buku.id_dpenerbit = dm_penerbits.id_dpenerbit 
-                                    JOIN dm_kategoris ON dm_buku.id_dkategori = dm_kategoris.id_dkategori 
-                                    JOIN dm_mapels ON dm_buku.id_dmapel = dm_mapels.id_mapel 
+                                    LEFT JOIN dm_penulis ON dm_buku.id_dpenulis = dm_penulis.id_dpenulis 
+                                    LEFT JOIN dm_penerbits ON dm_buku.id_dpenerbit = dm_penerbits.id_dpenerbit 
+                                    LEFT JOIN dm_kategoris ON dm_buku.id_dkategori = dm_kategoris.id_dkategori 
+                                    LEFT JOIN dm_mapels ON dm_buku.id_dmapel = dm_mapels.id_mapel 
                                     WHERE dm_buku.deleted_at IS NULL;
                                 ");
 
@@ -59,6 +59,7 @@ class BukuController extends Controller
         }
     }
 
+
     //CRUD
     public function crudBuku(Request $request, $id = null)
     {
@@ -75,7 +76,7 @@ class BukuController extends Controller
                 $rules = [
                     'dbuku_cover' => 'image|mimes:jpg,jpeg,png|max:2000',
                     'dbuku_judul' => 'required',
-                    'dbuku_isbn' => 'required|unique:dm_buku,dbuku_isbn,' . $id_bk->id_dbuku . ',id_dbuku',
+                    'dbuku_isbn' => 'required|unique:dm_buku,dbuku_isbn,' . $id_bk->id_dbuku . ',id_dbuku|numeric|digits:13',
                     'dbuku_thn_terbit' => 'required',
                     'dbuku_lokasi_rak' => 'required',
                     'dbuku_bahasa' => 'required',
@@ -84,15 +85,24 @@ class BukuController extends Controller
                     'id_dpenulis' => 'required',
                     'id_dpenerbit' => 'required',
                     'id_dkategori' => 'required',
-                    'id_dmapel' => 'required',
+                    'id_dmapel' => 'nullable',
                 ];
 
+                if ($request->id_dkategori == '1') {
+                    $rules['id_dmapel'] = 'required';
+                } else {
+                    $rules['id_dmapel'] = 'nullable';
+                }
+
                 $messages = [
+                    'dbuku_cover.required' => 'Cover Buku harus diisi!',
+                    'dbuku_cover.mimes' => 'File harus memiliki format berupa jpg,jpeg,png!',
                     'dbuku_cover.image' => 'File harus berupa gambar!',
-                    'dbuku_cover.mimes' => 'File harus berupa jpg,jpeg,png!',
                     'dbuku_judul.required' => 'Judul Buku harus diisi!',
                     'dbuku_isbn.required' => 'ISBN harus diisi!',
                     'dbuku_isbn.unique' => 'ISBN sudah terdaftar!',
+                    'dbuku_isbn.numeric' => 'ISBN harus berupa angka!',
+                    'dbuku_isbn.digits' => 'ISBN harus 13 digit!',
                     'dbuku_thn_terbit.required' => 'Tahun Terbit harus diisi!',
                     'dbuku_lokasi_rak.required' => 'Lokasi Rak harus diisi!',
                     'dbuku_bahasa.required' => 'Bahasa harus diisi!',
@@ -101,7 +111,7 @@ class BukuController extends Controller
                     'id_dpenulis.required' => 'Penulis harus diisi!',
                     'id_dpenerbit.required' => 'Penerbit harus diisi!',
                     'id_dkategori.required' => 'Kategori harus diisi!',
-                    'id_dmapel.required' => 'Mata Pelajaran harus diisi!',
+                    'id_dmapel.required' => 'Mata Pelajaran harus diisi untuk Buku Paket!',
                 ];
 
                 // Lakukan validasi
@@ -149,11 +159,11 @@ class BukuController extends Controller
                     'success' => true,
                     'message' => 'Data Berhasil Disimpan!',
                 ]);
-            } else {
+            } else if ($request->isMethod('post') && !isset($request->id_bk)) {
                 $rules = [
                     'dbuku_cover' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                     'dbuku_judul' => 'required',
-                    'dbuku_isbn' => 'required|unique:dm_buku,dbuku_isbn',
+                    'dbuku_isbn' => 'required|unique:dm_buku,dbuku_isbn|numeric|digits:13',
                     'dbuku_thn_terbit' => 'required',
                     'dbuku_lokasi_rak' => 'required',
                     'dbuku_bahasa' => 'required',
@@ -162,8 +172,14 @@ class BukuController extends Controller
                     'id_dpenulis' => 'required',
                     'id_dpenerbit' => 'required',
                     'id_dkategori' => 'required',
-                    'id_dmapel' => 'required',
+                    'id_dmapel' => 'nullable',
                 ];
+
+                if ($request->id_dkategori == '1') {
+                    $rules['id_dmapel'] = 'required';
+                } else {
+                    $rules['id_dmapel'] = 'nullable';
+                }
 
                 $messages = [
                     'dbuku_cover.required' => 'Cover Buku harus diisi!',
@@ -172,6 +188,8 @@ class BukuController extends Controller
                     'dbuku_judul.required' => 'Judul Buku harus diisi!',
                     'dbuku_isbn.required' => 'ISBN harus diisi!',
                     'dbuku_isbn.unique' => 'ISBN sudah terdaftar!',
+                    'dbuku_isbn.numeric' => 'ISBN harus berupa angka!',
+                    'dbuku_isbn.digits' => 'ISBN harus 13 digit!',
                     'dbuku_thn_terbit.required' => 'Tahun Terbit harus diisi!',
                     'dbuku_lokasi_rak.required' => 'Lokasi Rak harus diisi!',
                     'dbuku_bahasa.required' => 'Bahasa harus diisi!',
@@ -180,7 +198,7 @@ class BukuController extends Controller
                     'id_dpenulis.required' => 'Penulis harus diisi!',
                     'id_dpenerbit.required' => 'Penerbit harus diisi!',
                     'id_dkategori.required' => 'Kategori harus diisi!',
-                    'id_dmapel.required' => 'Mata Pelajaran harus diisi!',
+                    'id_dmapel.required' => 'Mata Pelajaran harus diisi untuk Buku Paket!',
                 ];
 
                 // Lakukan validasi
@@ -204,7 +222,7 @@ class BukuController extends Controller
                         $cover
                     );
                 }
-                
+
                 $buku = [
                     'dbuku_cover' => $cover,
                     'dbuku_judul' => $request->dbuku_judul,
@@ -229,9 +247,7 @@ class BukuController extends Controller
                 $success = true;
                 $errors = [];
                 $sts_kode = 200;
-            }
-
-            if ($request->isMethod('delete')) {
+            } else if($request->isMethod('delete')) {
                 $idb = Crypt::decryptString($id);
 
                 $b = dm_buku::find($idb);
@@ -264,10 +280,10 @@ class BukuController extends Controller
                                             dm_penerbits.dpenerbit_nama_penerbit, 
                                             dm_kategoris.dkategori_nama_kategori 
                                     FROM dm_buku 
-                                    JOIN dm_penulis ON dm_buku.id_dpenulis = dm_penulis.id_dpenulis 
-                                    JOIN dm_penerbits ON dm_buku.id_dpenerbit = dm_penerbits.id_dpenerbit 
-                                    JOIN dm_kategoris ON dm_buku.id_dkategori = dm_kategoris.id_dkategori 
-                                    JOIN dm_mapels ON dm_buku.id_dmapel = dm_mapels.id_mapel 
+                                    LEFT JOIN dm_penulis ON dm_buku.id_dpenulis = dm_penulis.id_dpenulis 
+                                    LEFT JOIN dm_penerbits ON dm_buku.id_dpenerbit = dm_penerbits.id_dpenerbit 
+                                    LEFT JOIN dm_kategoris ON dm_buku.id_dkategori = dm_kategoris.id_dkategori 
+                                    LEFT JOIN dm_mapels ON dm_buku.id_dmapel = dm_mapels.id_mapel 
                                     WHERE dm_buku.id_dbuku = $id_bk;
                             ");
 
@@ -279,6 +295,8 @@ class BukuController extends Controller
         $img = '';
         if ($bk[0]->dbuku_cover != null) {
             $img = asset('storage/cover/' . $bk[0]->dbuku_cover);
+        } else {
+            $img = asset('storage/cover/default.jpg');
         }
 
         $slc1 = '';
@@ -309,7 +327,7 @@ class BukuController extends Controller
             $slc5 .= '<option value="' . $tahun . '">' . $tahun . '</option>';
         }
 
-        $bahasa = ["Indonesia", "Ingbukuis", "Mandarin", "Spanyol", "Jepang"];
+        $bahasa = ["Indonesia", "Inggris", "Mandarin", "Spanyol", "Jepang"];
 
         $slc6 = '';
         foreach ($bahasa as $bhs) {
@@ -374,10 +392,10 @@ class BukuController extends Controller
                                                 dm_penerbits.dpenerbit_nama_penerbit, 
                                                 dm_kategoris.dkategori_nama_kategori 
                                         FROM dm_buku 
-                                        JOIN dm_penulis ON dm_buku.id_dpenulis = dm_penulis.id_dpenulis 
-                                        JOIN dm_penerbits ON dm_buku.id_dpenerbit = dm_penerbits.id_dpenerbit 
-                                        JOIN dm_kategoris ON dm_buku.id_dkategori = dm_kategoris.id_dkategori 
-                                        JOIN dm_mapels ON dm_buku.id_dmapel = dm_mapels.id_mapel 
+                                        LEFT JOIN dm_penulis ON dm_buku.id_dpenulis = dm_penulis.id_dpenulis 
+                                        LEFT JOIN dm_penerbits ON dm_buku.id_dpenerbit = dm_penerbits.id_dpenerbit 
+                                        LEFT JOIN dm_kategoris ON dm_buku.id_dkategori = dm_kategoris.id_dkategori 
+                                        LEFT JOIN dm_mapels ON dm_buku.id_dmapel = dm_mapels.id_mapel 
                                         WHERE dm_buku.deleted_at IS NULL;
                                     ");
 

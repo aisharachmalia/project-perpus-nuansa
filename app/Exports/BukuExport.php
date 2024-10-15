@@ -26,10 +26,10 @@ class BukuExport implements FromView
                                             dm_penerbits.dpenerbit_nama_penerbit, 
                                             dm_kategoris.dkategori_nama_kategori 
                                     FROM dm_buku 
-                                    JOIN dm_penulis ON dm_buku.id_dpenulis = dm_penulis.id_dpenulis 
-                                    JOIN dm_penerbits ON dm_buku.id_dpenerbit = dm_penerbits.id_dpenerbit 
-                                    JOIN dm_kategoris ON dm_buku.id_dkategori = dm_kategoris.id_dkategori 
-                                    JOIN dm_mapels ON dm_buku.id_dmapel = dm_mapels.id_mapel 
+                                    LEFT JOIN dm_penulis ON dm_buku.id_dpenulis = dm_penulis.id_dpenulis 
+                                    LEFT JOIN dm_penerbits ON dm_buku.id_dpenerbit = dm_penerbits.id_dpenerbit 
+                                    LEFT JOIN dm_kategoris ON dm_buku.id_dkategori = dm_kategoris.id_dkategori 
+                                    LEFT JOIN dm_mapels ON dm_buku.id_dmapel = dm_mapels.id_mapel 
                                     WHERE dm_buku.deleted_at IS NULL;
 ");
 

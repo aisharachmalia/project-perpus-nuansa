@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class DmKategoriSeeder extends Seeder
 {
@@ -16,61 +17,26 @@ class DmKategoriSeeder extends Seeder
     public function run()
     {
         DB::table('dm_kategoris')->insert([
-            [
-                'dkategori_nama_kategori' => 'Komik',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'dkategori_nama_kategori' => 'Novel',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'dkategori_nama_kategori' => 'Kamus',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'dkategori_nama_kategori' => 'Dongeng',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'dkategori_nama_kategori' => 'Buku Ilmiah',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'dkategori_nama_kategori' => 'Ensiklopedia',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'dkategori_nama_kategori' => 'Atlas',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            // [
-            //     'dkategori_nama_kategori' => 'Agatha Christie',
-            //     'created_at' => now(),
-            //     'updated_at' => now(),
-            // ],
-            // [
-            //     'dkategori_nama_kategori' => 'Leo Tolstoy',
-            //     'created_at' => now(),
-            //     'updated_at' => now(),
-            // ],
-            // [
-            //     'dkategori_nama_kategori' => 'Charles Dickens',
-            //     'created_at' => now(),
-            //     'updated_at' => now(),
-            // ],
-            // [
-            //     'dkategori_nama_kategori' => 'Gabriel García Márquez',
-            //     'created_at' => now(),
-            //     'updated_at' => now(),
-            // ],
+            ['dkategori_nama_kategori' => 'Buku Paket', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now(), 'deleted_at' => null],
+            ['dkategori_nama_kategori' => 'Fiksi', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now(), 'deleted_at' => null],
+            ['dkategori_nama_kategori' => 'Non-Fiksi', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now(), 'deleted_at' => null],
+            ['dkategori_nama_kategori' => 'Biografi', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now(), 'deleted_at' => null],
+            ['dkategori_nama_kategori' => 'Sejarah', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now(), 'deleted_at' => null],
+            ['dkategori_nama_kategori' => 'Sains', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now(), 'deleted_at' => null],
+            ['dkategori_nama_kategori' => 'Teknologi', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now(), 'deleted_at' => null],
+            ['dkategori_nama_kategori' => 'Agama', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now(), 'deleted_at' => null],
+            ['dkategori_nama_kategori' => 'Bisnis', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now(), 'deleted_at' => null],
+            ['dkategori_nama_kategori' => 'Kesehatan', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now(), 'deleted_at' => null],
+            ['dkategori_nama_kategori' => 'Kuliner', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now(), 'deleted_at' => null],
+            ['dkategori_nama_kategori' => 'Sastra', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now(), 'deleted_at' => null],
+            ['dkategori_nama_kategori' => 'Travel', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now(), 'deleted_at' => null],
+            ['dkategori_nama_kategori' => 'Hobi', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now(), 'deleted_at' => null],
+            ['dkategori_nama_kategori' => 'Psikologi', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now(), 'deleted_at' => null],
+            ['dkategori_nama_kategori' => 'Pengembangan Diri', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now(), 'deleted_at' => null],
+            ['dkategori_nama_kategori' => 'Politik', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now(), 'deleted_at' => null],
+            ['dkategori_nama_kategori' => 'Seni', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now(), 'deleted_at' => null],
+            ['dkategori_nama_kategori' => 'Teknik', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now(), 'deleted_at' => null],
+            ['dkategori_nama_kategori' => 'Bahasa', 'created_at' => Carbon::now(), 'updated_at' => Carbon::now(), 'deleted_at' => null],
         ]);
     }
 }

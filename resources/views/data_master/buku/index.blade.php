@@ -22,6 +22,7 @@
                             <thead>
                                 <tr>
                                     <th width="3%">No</th>
+                                    <th width="10%">cover</th>
                                     <th>ISBN<br>Judul</th>
                                     <th>Penerbit<br>Penulis</th>
                                     <th>Kategori<br>Mata Pelajaran</th>
@@ -60,26 +61,46 @@
                         class: "text-center"
                     },
                     {
-                        class: "text-center",
-                        data: null,
+                        data: 'dbuku_cover',
+                        class: 'object-fit-cover',
                         render: function(data, type, row) {
-                            return '<strong>' + row.dbuku_isbn + '</strong><br>' + row.dbuku_judul;
+                            // Use the asset() helper function to get the full URL
+                            var imageUrl = '/storage/cover/' + data; // Ensure this path is correct
+                            return '<img src="' + imageUrl +
+                                '" width="100px" height="100px" onerror="this.onerror=null;this.src=\'/storage/cover/default.jpg\';" style="width: 100%; height: 100%; object-fit: cover; object-position: center">'; // Optional: default image on error
+
+
+
                         }
                     },
                     {
                         class: "text-center",
                         data: null,
                         render: function(data, type, row) {
-                            return '<strong>' + row.dpenerbit_nama_penerbit + '</strong><br>' + row
-                                .dpenulis_nama_penulis;
+                            let isbn = row.dbuku_isbn ? row.dbuku_isbn : '-';
+                            let judul = row.dbuku_judul ? row.dbuku_judul : '-';
+                            return '<strong>' + isbn + '</strong><br>' + judul;
                         }
                     },
                     {
                         class: "text-center",
                         data: null,
                         render: function(data, type, row) {
-                            return '<strong>' + row.dkategori_nama_kategori + '</strong><br>' + row
-                                .dmapel_nama_mapel;
+                            let penerbit = row.dpenerbit_nama_penerbit ? row
+                                .dpenerbit_nama_penerbit : '-';
+                            let penulis = row.dpenulis_nama_penulis ? row.dpenulis_nama_penulis :
+                                '-';
+                            return '<strong>' + penerbit + '</strong><br>' + penulis;
+                        }
+                    },
+                    {
+                        class: "text-center",
+                        data: null,
+                        render: function(data, type, row) {
+                            let kategori = row.dkategori_nama_kategori ? row
+                                .dkategori_nama_kategori : '-';
+                            let mapel = row.dmapel_nama_mapel ? row.dmapel_nama_mapel : '-';
+                            return '<strong>' + kategori + '</strong><br>' + mapel;
                         }
                     },
                     {
@@ -89,6 +110,7 @@
                     }
                 ]
             });
+
 
             $(document).on('click', '#export', function() {
                 var value_table = $('#tbl_dmbuku').DataTable().data().count();
@@ -142,7 +164,7 @@
             });
         });
 
-        // Show
+        // Show modal
         $('body').on('click', '.modalShow', function() {
             let id_bk = $(this).data('id');
 
@@ -159,7 +181,8 @@
                     $('#show').find('#dbuku_cover').attr('src', response
                         .img); // Assuming dbuku_cover is an image URL
                     $('#show').find('#dbuku_judul').text(response.bk[0].dbuku_judul);
-                    $('#show').find('#id_mapel').text(response.bk[0].dmapel_nama_mapel);
+                    $('#show').find('#id_mapel').text(response.bk[0].id_dmapel == null ? '-' : response
+                        .bk[0].dmapel_nama_mapel);
                     $('#show').find('#id_kategori').text(response.bk[0].dkategori_nama_kategori);
                     $('#show').find('#id_penerbit').text(response.bk[0].dpenerbit_nama_penerbit);
                     $('#show').find('#id_penulis').text(response.bk[0].dpenulis_nama_penulis);
@@ -167,6 +190,9 @@
                     $('#show').find('#dbuku_jml_total').text(response.bk[0]
                         .dbuku_jml_total); // Available quantity
                     $('#show').find('#dbuku_bahasa').text(response.bk[0].dbuku_bahasa);
+                    $('#show').find('#dbuku_edisi').text(response.bk[0].dbuku_edisi);
+                    $('#show').find('#dbuku_lokasi_rak').text(response.bk[0]
+                        .dbuku_lokasi_rak);
                 },
                 error: function(error) {
                     console.log("Error:", error);
@@ -174,7 +200,11 @@
             });
         });
 
+
         $('body').on('click', '.modalCreate', function() {
+            $('#createBuku').find('input, textarea, select').val('');
+            $('#createBuku').find('img').attr('src', '');
+
             $('#createBuku').find('#cover-error').text('');
             $('#createBuku').find('#isbn-error').text('');
             $('#createBuku').find('#judul-error').text('');
@@ -215,11 +245,7 @@
                     $('#createBuku').modal('toggle');
                     $('#tbl_dmbuku').DataTable().ajax.reload();
 
-                    $('#createBuku').find('input').val(''); // Ini akan mengosongkan semua input
-                    $('#createBuku').find('select').val(''); // Ini akan mengosongkan semua dropdown
-                    $('#createBuku').find('textarea').val(''); // Ini akan mengosongkan semua textarea
-
-                    $('#form_buku')[0].reset();
+                    $('#createBuku')[0].reset();
                 },
                 error: function(xhr) {
                     console.log(xhr.status);
@@ -228,7 +254,6 @@
                         var response = JSON.parse(xhr.responseText);
                         console.log(response.errors);
                         var errors = response.errors;
-                        console.log(errors.dbuku_edisi);
                         if (errors.dbuku_cover) {
                             $('#createBuku').find('#cover-error').text(errors.dbuku_cover[0]);
                         }
@@ -280,6 +305,8 @@
         $('body').on('click', '.modalEdit', function() {
             let id_bk = $(this).data('id');
 
+            $('#edit').find('input, textarea, select').val('');
+            $('#edit').find('img').attr('src', '');
             // Clear previous error messages
             $('#edit').find('#cover-error').text('');
             $('#edit').find('#isbn-error').text('');
@@ -310,6 +337,18 @@
                     $('#edit').find('#dbuku_judul').val(response.bk[0].dbuku_judul);
                     $('#edit').find('#id_mapel').html(response.slc1);
                     $('#edit').find('#id_kategori').html(response.slc2);
+                    $('#edit').find('#id_kategori').change(function() {
+                        const kategoriValue = $(this).val();
+                        if (kategoriValue ===
+                            '1') { // Replace with the actual ID for 'Buku Paket'
+                            $('#edit').find('#id_mapel').prop('disabled', false);
+                        } else {
+                            $('#edit').find('#id_mapel').prop('disabled', true).val(
+                                ''); // Clear and disable mapel
+                        }
+                    });
+
+                    $('#edit').find('#id_kategori').change();
                     $('#edit').find('#id_penerbit').html(response.slc3);
                     $('#edit').find('#id_penulis').html(response.slc4);
                     $('#edit').find('#dbuku_thn_terbit').html(response.slc5);
