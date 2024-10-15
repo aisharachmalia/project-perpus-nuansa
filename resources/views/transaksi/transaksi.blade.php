@@ -85,80 +85,77 @@
     <!-- Modal untuk Tambah Peminjaman -->
 <div class="modal fade text-left" id="tambahPeminjaman" tabindex="-1" role="dialog" aria-labelledby="modalCreate1">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="modalCreate">Tambah Peminjaman</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content shadow-lg rounded-4 border-0"> <!-- Tambahkan shadow, rounded, border-0 -->
+            <div class="modal-header bg-gradient-primary text-white rounded-top-4"> <!-- Gradient background untuk header -->
+                <h4 class="modal-title fw-bold" id="modalCreate">Tambah Peminjaman</h4>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <form class="form" data-action="{{ route('pinjam.store') }}" method="POST" id="pinjamanForm">
                     @csrf
-                    <div class="row">
+                    <div class="row g-4"> <!-- Tambahkan gap untuk ruang antar kolom -->
                         <div class="col-md-4 col-12">
                             <div class="form-group">
-                                <label for="first-name-column">Judul Buku</label>
-                               <select id="id_dbuku" name="id_dbuku" class="form-control">
-                    <option value="">Pilih Buku</option>
-                    @foreach ($buku as $data)
-                        <option value="{{ Crypt::encryptString($data->id_dbuku) }}">
-                            {{ $data->dbuku_judul }}</option>
-                    @endforeach
-                </select>
-                                <span id="buku-error" class="text-danger"></span>
+                                <label for="first-name-column" class="fw-semibold">Judul Buku</label>
+                                <select id="id_dbuku" name="id_dbuku" class="form-control shadow-sm rounded-pill">
+                                    <option value="">Pilih Buku</option>
+                                    @foreach ($buku as $data)
+                                        <option value="{{ Crypt::encryptString($data->id_dbuku) }}">{{ $data->dbuku_judul }}</option>
+                                    @endforeach
+                                </select>
+                                <span id="buku-error" class="text-danger small"></span>
                             </div>
                         </div>
                         <div class="col-md-4 col-12">
                             <div class="form-group">
-                                <label for="last-name-column">Nama Siswa</label>
-                                <select id="id_dsiswa" name="id_dsiswa" class="form-control">
-                    <option value="">Pilih Siswa</option>
-                    @foreach ($siswa as $data)
-                        <option value="{{ Crypt::encryptString($data->id_dsiswa) }}">
-                            {{ $data->dsiswa_nama }}</option>
-                    @endforeach
-                </select>
-                                <span id="siswa-error" class="text-danger"></span>
+                                <label for="last-name-column" class="fw-semibold">Nama Siswa</label>
+                                <select id="id_dsiswa" name="id_dsiswa" class="form-control shadow-sm rounded-pill">
+                                    <option value="">Pilih Siswa</option>
+                                    @foreach ($siswa as $data)
+                                        <option value="{{ Crypt::encryptString($data->id_dsiswa) }}">{{ $data->dsiswa_nama }}</option>
+                                    @endforeach
+                                </select>
+                                <span id="siswa-error" class="text-danger small"></span>
                             </div>
                         </div>
                         <div class="col-md-4 col-12">
                             <div class="form-group">
-                                <label for="city-column">Nama Pustakawan</label>
-                                           <select id="id_dpustakawan" name="id_dpustakawan" class="form-control">
-                    <option value="">Pilih Pustakawan</option>
-                    @foreach ($pustakawan as $data)
-                        <option value="{{ Crypt::encryptString($data->id_dpustakawan) }}">
-                            {{ $data->dpustakawan_nama }}</option>
-                    @endforeach
-                </select>
-                                <span id="pustakawan-error" class="text-danger"></span>
+                                <label for="city-column" class="fw-semibold">Nama Pustakawan</label>
+                                <select id="id_dpustakawan" name="id_dpustakawan" class="form-control shadow-sm rounded-pill">
+                                    <option value="">Pilih Pustakawan</option>
+                                    @foreach ($pustakawan as $data)
+                                        <option value="{{ Crypt::encryptString($data->id_dpustakawan) }}">{{ $data->dpustakawan_nama }}</option>
+                                    @endforeach
+                                </select>
+                                <span id="pustakawan-error" class="text-danger small"></span>
                             </div>
                         </div>
                         <div class="col-md-4 col-12">
                             <div class="form-group">
-                                <label for="country-floating">Tanggal Peminjaman</label>
-                                <input type="date" class="form-control" placeholder="tanggal pinjam" name="trks_tgl_peminjaman" id="trks_tgl_peminjaman">
-                                <span id="tgl-pinjam-error" class="text-danger"></span>
+                                <label for="country-floating" class="fw-semibold">Tanggal Peminjaman</label>
+                                <input type="date" class="form-control shadow-sm rounded-pill" placeholder="tanggal pinjam" name="trks_tgl_peminjaman" id="trks_tgl_peminjaman">
+                                <span id="tgl-pinjam-error" class="text-danger small"></span>
                             </div>
                         </div>
                         <div class="col-md-4 col-12">
                             <div class="form-group">
-                                <label for="country-floating">Tanggal Jatuh Tempo</label>
-                                <input type="date" class="form-control" placeholder="tanggal jatuh tempo" name="trks_tgl_jatuh_tempo" id="trks_tgl_jatuh_tempo">
-                                <span id="tgl-jatuh-tempo-error" class="text-danger"></span>
+                                <label for="country-floating" class="fw-semibold">Tanggal Jatuh Tempo</label>
+                                <input type="date" class="form-control shadow-sm rounded-pill" placeholder="tanggal jatuh tempo" name="trks_tgl_jatuh_tempo" id="trks_tgl_jatuh_tempo">
+                                <span id="tgl-jatuh-tempo-error" class="text-danger small"></span>
                             </div>
                         </div>
                     </div>
                 </form>
             </div>
-            <div class="modal-footer">
-            <button type="button" class="btn btn-custom btn-primary ml-1" id="storePinjaman">
-             <i class="bx bx-check d-block d-sm-none"></i>
-             <span class="d-none d-sm-block">Simpan</span>
-        </button>
+            <div class="modal-footer border-top-0">
+                <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Tutup</button>
+                <button type="submit" class="btn btn-primary rounded-pill" id="storePinjaman">Simpan</button>
             </div>
         </div>
     </div>
 </div>
+
+
 
 @include('transaksi.edit_trks')
 
@@ -167,7 +164,7 @@
 
 
     {{-- create --}}
-    <!-- Modal untuk Pengembalian -->
+  <!-- Modal untuk Pengembalian -->
 <div class="modal fade text-left" id="tambahPengembalian" tabindex="-1" role="dialog" aria-labelledby="modalPengembalian">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
         <div class="modal-content">
@@ -183,8 +180,7 @@
                             <select id="id_dbuku" name="id_dbuku" class="form-control">
                                 <option value="">Pilih Buku</option>
                                 @foreach ($buku as $data)
-                                    <option value="{{ Crypt::encryptString($data->id_dbuku) }}">
-                                        {{ $data->dbuku_judul }}</option>
+                                    <option value="{{ Crypt::encryptString($data->id_dbuku) }}">{{ $data->dbuku_judul }}</option>
                                 @endforeach
                             </select>
                             <span id="buku-error" class="text-danger"></span>
@@ -196,8 +192,7 @@
                             <select id="id_dsiswa" name="id_dsiswa" class="form-control">
                                 <option value="">Pilih Siswa</option>
                                 @foreach ($siswa as $data)
-                                    <option value="{{ Crypt::encryptString($data->id_dsiswa) }}">
-                                        {{ $data->dsiswa_nama }}</option>
+                                    <option value="{{ Crypt::encryptString($data->id_dsiswa) }}">{{ $data->dsiswa_nama }}</option>
                                 @endforeach
                             </select>
                             <span id="siswa-error" class="text-danger"></span>
@@ -209,8 +204,7 @@
                             <select id="id_dpustakawan" name="id_dpustakawan" class="form-control">
                                 <option value="">Pilih Pustakawan</option>
                                 @foreach ($pustakawan as $data)
-                                    <option value="{{ Crypt::encryptString($data->id_dpustakawan) }}">
-                                        {{ $data->dpustakawan_nama }}</option>
+                                    <option value="{{ Crypt::encryptString($data->id_dpustakawan) }}">{{ $data->dpustakawan_nama }}</option>
                                 @endforeach
                             </select>
                             <span id="pustakawan-error" class="text-danger"></span>
@@ -378,131 +372,131 @@
 
     {{-- js ajax peminjaman --}}
     <script>
-        // ajax edit
-        $('body').on('click', '.modalEditPeminjaman', function() {
-            let id_trks = $(this).data('id');
-                $.ajax({
-                url: `peminjaman/show/${id_trks}`,
-                type: "GET",
-                cache: false,
-                success: function(response) {
-                    $('#editPeminjaman').find('#id_trks').val(id_trks);
-                    $('#editPeminjaman').find('#id_dbuku').val(response.peminjaman.id_dbuku);
-                    $('#editPeminjaman').find('#id_dsiswa').val(response.peminjaman.id_dsiswa);
-                    $('#editPeminjaman').find('#id_dpustakawan').val(response.peminjaman.id_dpustakawan);
-                    $('#editPeminjaman').find('#trks_tgl_peminjaman').val(response.peminjaman.trks_tgl_peminjaman);
-                    $('#editPeminjaman').find('#trks_tgl_jatuh_tempo').val(response.peminjaman.trks_tgl_jatuh_tempo);
-                    $('#editPeminjaman').find('#trks_tgl_pengembalian').val(response.peminjaman.trks_tgl_pengembalian);
-                    $('#editPeminjaman').find('#trks_denda').val(response.peminjaman.trks_denda);
-                    $('#editPeminjaman').find('#trks_status').val(response.peminjaman.trks_status);
-                    $('#editPeminjaman').find('#trks_keterangan').val(response.peminjaman.trks_keterangan);
-                },
-                error: function(xhr) {
-                    console.log("Error fetching data:", xhr);
-                }
+      // AJAX Edit
+$('body').on('click', '.modalEditPeminjaman', function() {
+    let id_trks = $(this).data('id');
+    $.ajax({
+        url: `transaksi/show/${id_trks}`,
+        type: "GET",
+        cache: false,
+        success: function(response) {
+            $('#editPeminjaman').find('#id_trks').val(id_trks);
+            $('#editPeminjaman').find('#id_dbuku').val(response.peminjaman.id_dbuku);
+            $('#editPeminjaman').find('#id_dsiswa').val(response.peminjaman.id_dsiswa);
+            $('#editPeminjaman').find('#id_dpustakawan').val(response.peminjaman.id_dpustakawan);
+            $('#editPeminjaman').find('#trks_tgl_peminjaman').val(response.peminjaman.trks_tgl_peminjaman);
+            $('#editPeminjaman').find('#trks_tgl_jatuh_tempo').val(response.peminjaman.trks_tgl_jatuh_tempo);
+            $('#editPeminjaman').find('#trks_tgl_pengembalian').val(response.peminjaman.trks_tgl_pengembalian);
+            $('#editPeminjaman').find('#trks_denda').val(response.peminjaman.trks_denda);
+            $('#editPeminjaman').find('#trks_status').val(response.peminjaman.trks_status);
+            $('#editPeminjaman').find('#trks_keterangan').val(response.peminjaman.trks_keterangan);
+
+            // Menampilkan modal edit
+            $('#editPeminjaman').modal('show');
+        },
+        error: function(xhr) {
+            console.log("Error fetching data:", xhr);
+        }
+    });
+});
+
+// Setup CSRF token untuk semua request AJAX
+$.ajaxSetup({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    }
+});
+
+// Update peminjaman
+$('#updatePeminjaman').on('click', function(e) {
+    e.preventDefault();
+    
+    // Hapus pesan error sebelumnya
+    $('#editPeminjaman').find('#buku-error').text('');
+    $('#editPeminjaman').find('#siswa-error').text('');
+    $('#editPeminjaman').find('#pustakawan-error').text('');
+    $('#editPeminjaman').find('#tgl-pinjam-error').text('');
+    $('#editPeminjaman').find('#tgl-jatuh-tempo-error').text('');
+    $('#editPeminjaman').find('#tgl-pengembalian-error').text('');
+    $('#editPeminjaman').find('#denda-error').text('');
+    $('#editPeminjaman').find('#keterangan-error').text('');
+
+    let id_trks = $('#editPeminjaman').find('#id_trks').val();
+    let id_dbuku = $('#editPeminjaman').find('#id_dbuku').val();
+    let id_dsiswa = $('#editPeminjaman').find('#id_dsiswa').val();
+    let id_dpustakawan = $('#editPeminjaman').find('#id_dpustakawan').val();
+    let trks_tgl_peminjaman = $('#editPeminjaman').find('#trks_tgl_peminjaman').val();
+    let trks_tgl_jatuh_tempo = $('#editPeminjaman').find('#trks_tgl_jatuh_tempo').val();
+    let trks_tgl_pengembalian = $('#editPeminjaman').find('#trks_tgl_pengembalian').val();
+    let trks_denda = $('#editPeminjaman').find('#trks_denda').val();
+    let trks_status = $('#editPeminjaman').find('#trks_status').val();
+    let trks_keterangan = $('#editPeminjaman').find('#trks_keterangan').val();
+    let token = $("meta[name='csrf-token']").attr("content");
+
+    $.ajax({
+        url: `/peminjaman/update/${id_trks}`, // Menggunakan id peminjaman
+        type: "PUT",
+        data: {
+            "_method": "PUT",
+            "id_dbuku": id_dbuku,
+            "id_dsiswa": id_dsiswa,
+            "id_dpustakawan": id_dpustakawan,
+            "trks_tgl_peminjaman": trks_tgl_peminjaman,
+            "trks_tgl_jatuh_tempo": trks_tgl_jatuh_tempo,
+            "trks_tgl_pengembalian": trks_tgl_pengembalian,
+            "trks_denda": trks_denda,
+            "trks_status": trks_status,
+            "trks_keterangan": trks_keterangan,
+            "_token": token
+        },
+        success: function(response) {
+            Swal.fire({
+                icon: 'success',
+                title: `${response.message}`,
+                showConfirmButton: false,
+                timer: 3000
             });
-        });
-
-        // Setup CSRF token untuk semua request AJAX
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-        // Update peminjaman
-        $('#updatePeminjaman').on('click', function(e) {
-            e.preventDefault();
-
-            let id_trks = $('#editPeminjaman').find('#id_trks').val();
-            let id_dbuku = $('#editPeminjaman').find('#id_dbuku').val();
-            let id_dsiswa = $('#editPeminjaman').find('#id_dsiswa').val();
-            let id_dpustakawan = $('#editPeminjaman').find('#id_dpustakawan').val();
-            let trks_tgl_peminjaman = $('#editPeminjaman').find('#trks_tgl_peminjaman').val();
-            let trks_tgl_jatuh_tempo = $('#editPeminjaman').find('#trks_tgl_jatuh_tempo').val();
-            let trks_tgl_pengembalian = $('#editPeminjaman').find('#trks_tgl_pengembalian').val();
-            let trks_denda = $('#editPeminjaman').find('#trks_denda').val();
-            let trks_status = $('#editPeminjaman').find('#trks_status').val();
-            let trks_keterangan = $('#editPeminjaman').find('#trks_keterangan').val();
-            let token = $("meta[name='csrf-token']").attr("content");
-       
-            $.ajax({
-              url: `/peminjaman/update/${id_trks}`, // Menggunakan id peminjaman
-              type: "PUT",
-              data: {
-                    "_method": "PUT",
-                    "id_dbuku": id_dbuku,
-                    "id_dsiswa": id_dsiswa,
-                    "id_dpustakawan": id_dpustakawan,
-                    "trks_tgl_peminjaman": trks_tgl_peminjaman,
-                    "trks_tgl_jatuh_tempo": trks_tgl_jatuh_tempo,
-                    "trks_tgl_pengembalian": trks_tgl_pengembalian,
-                    "trks_denda": trks_denda,
-                    "trks_status": trks_status,
-                    "trks_keterangan": trks_keterangan,
-                    "_token": token
-                },
-                success: function(response) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: `${response.message}`,
-                        showConfirmButton: false,
-                        timer: 3000
-                    });
-                    $('#editPeminjaman').modal('toggle');
-                    $('.modal-backdrop').remove();
-                },
-                error: function(xhr) {
-                    if (xhr.status === 422) {
-                        if (xhr.responseText) {
-                            var errors = JSON.parse(xhr.responseText).errors;
-                            // Tampilkan error di form
-                            if (errors.id_dbuku) {
-                                $('#editPeminjaman').find('#buku-error').text(errors.id_dbuku[0]);
-                            }
-                            if (errors.id_dsiswa) {
-                                $('#editPeminjaman').find('#siswa-error').text(errors.id_dsiswa[0]);
-                            }
-                            if (errors.id_dpustakawan) {
-                                $('#editPeminjaman').find('#pustakawan-error').text(errors.id_dpustakawan[0]);
-                            }
-                            if (errors.trks_tgl_peminjaman) {
-                                $('#editPeminjaman').find('#tgl-pinjam-error').text(errors.trks_tgl_peminjaman[0]);
-                            }
-                            if (errors.trks_tgl_jatuh_tempo) {
-                                $('#editPeminjaman').find('#tgl-jatuh-tempo-error').text(errors.trks_tgl_jatuh_tempo[0]);
-                            }
-                             if (errors.trks_tgl_pengembalian) {
-                                $('#editPeminjaman').find('#tgl-pengembalian-error').text(errors.trks_tgl_pengembalian[0]);
-                            }
-                            if (errors.trks_denda) {
-                                $('#editPeminjaman').find('#denda-error').text(errors.trks_denda[0]);
-                            }
-                            // if (errors.trks_status) {
-                            //     $('#editPeminjaman').find('#status-error').text(errors.trks_status[0]);
-                            // }
-                            if (errors.trks_keterangan) {
-                                $('#editPeminjaman').find('#keterangan-error').text(errors.trks_keterangan[0]);
-                            }
-                        } else {
-                            console.log("Error structure not as expected :", xhr.responseJSON);
-                        }
-                    } else {
-                        console.log("Unexpected error:", xhr);
+            $('#editPeminjaman').modal('toggle');
+            $('.modal-backdrop').remove();
+        },
+        error: function(xhr) {
+            if (xhr.status === 422) {
+                if (xhr.responseText) {
+                    var errors = JSON.parse(xhr.responseText).errors;
+                    // Tampilkan error di form
+                    if (errors.id_dbuku) {
+                        $('#editPeminjaman').find('#buku-error').text(errors.id_dbuku[0]);
                     }
+                    if (errors.id_dsiswa) {
+                        $('#editPeminjaman').find('#siswa-error').text(errors.id_dsiswa[0]);
+                    }
+                    if (errors.id_dpustakawan) {
+                        $('#editPeminjaman').find('#pustakawan-error').text(errors.id_dpustakawan[0]);
+                    }
+                    if (errors.trks_tgl_peminjaman) {
+                        $('#editPeminjaman').find('#tgl-pinjam-error').text(errors.trks_tgl_peminjaman[0]);
+                    }
+                    if (errors.trks_tgl_jatuh_tempo) {
+                        $('#editPeminjaman').find('#tgl-jatuh-tempo-error').text(errors.trks_tgl_jatuh_tempo[0]);
+                    }
+                    if (errors.trks_tgl_pengembalian) {
+                        $('#editPeminjaman').find('#tgl-pengembalian-error').text(errors.trks_tgl_pengembalian[0]);
+                    }
+                    if (errors.trks_denda) {
+                        $('#editPeminjaman').find('#denda-error').text(errors.trks_denda[0]);
+                    }
+                    if (errors.trks_keterangan) {
+                        $('#editPeminjaman').find('#keterangan-error').text(errors.trks_keterangan[0]);
+                    }
+                } else {
+                    console.log("Error structure not as expected :", xhr.responseJSON);
                 }
-            });
-            // Hapus pesan error sebelumnya
-            $('#editPeminjaman').find('#buku-error').text('');
-            $('#editPeminjaman').find('#siswa-error').text('');
-            $('#editPeminjaman').find('#pustakawan-error').text('');
-            $('#editPeminjaman').find('#tgl-pinjam-error').text('');
-            $('#editPeminjaman').find('#tgl-jatuh-tempo-error').text('');
-            $('#editPeminjaman').find('#tgl-pengembalian-error').text('');
-            $('#editPeminjaman').find('#denda-error').text('');
-            // $('#editPeminjaman').find('#status-error').text('');
-            $('#editPeminjaman').find('#keterangan-error').text('');
-        });
+            } else {
+                console.log("Unexpected error:", xhr);
+            }
+        }
+    });
+});
 
             
         // ajax add
@@ -656,7 +650,7 @@
                     //fetch to delete data
                     $.ajax({
 
-                        url: `peminjaman/delete/${id_dsiswa}`,
+                        url: `/transaksi/delete/${id_dsiswa}`,
                         type: "DELETE",
                         cache: false,
                         data: {
@@ -896,47 +890,51 @@
                 });
             });
 
-
-
-        // ajax delete
-        $('body').on('click', '#btn-delete-pengembalian', function() {
-
-            let id_dsiswa = $(this).data('id');
-            let token = $("meta[name='csrf-token']").attr("content");
-
-            Swal.fire({
-                title: 'Apakah Kamu Yakin?',
-                text: "ingin menghapus data ini!",
-                icon: 'warning',
-                showCancelButton: true,
-                cancelButtonText: 'TIDAK',
-                confirmButtonText: 'YA, HAPUS!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-
-                        url: `pengembalian/delete/${id_dsiswa}`,
-                        type: "DELETE",
-                        cache: false,
-                        data: {
-                            "_token": token
-                        },
-                        success: function(response) {
-
-                            //show success message
-                            Swal.fire({
-                                type: 'success',
-                                icon: 'success',
-                                title: `${response.message}`,
-                                showConfirmButton: false,
-                                timer: 3000
-                            });
-                        }
-                    });
-                }
-            })
-            $('#tbl_pengembalian').DataTable().ajax.reload()
-        });
     </script>
-    {{-- end ajax penerbit --}}
+
 @endpush
+
+<style>
+  .modal-content {
+    background: linear-gradient(135deg, #f3f4f6, #e2e8f0); /* Gradasi warna lembut */
+    border-radius: 12px; /* Membuat sudut modal melengkung */
+    border: none; /* Menghilangkan border */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Bayangan lembut */
+}
+
+.modal-header {
+    border-bottom: 2px solid #cbd5e1; /* Garis bawah header */
+}
+
+.modal-title {
+    color: #1f2937; /* Warna judul yang kontras */
+    font-weight: bold; /* Membuat judul lebih menonjol */
+}
+
+.modal-body {
+    padding: 20px; /* Ruang yang lebih besar untuk isi modal */
+}
+
+.form-control {
+    border: 1px solid #cbd5e1; /* Border yang lebih halus */
+    border-radius: 8px; /* Sudut input melengkung */
+    transition: border-color 0.3s; /* Efek transisi border */
+}
+
+.form-control:focus {
+    border-color: #3b82f6; /* Warna border saat fokus */
+    box-shadow: 0 0 5px rgba(59, 130, 246, 0.5); /* Efek bayangan saat fokus */
+}
+
+.btn-custom {
+    background-color: #3b82f6; /* Warna tombol */
+    color: white; /* Warna teks tombol */
+    border-radius: 8px; /* Sudut tombol melengkung */
+    transition: background-color 0.3s; /* Efek transisi warna tombol */
+}
+
+.btn-custom:hover {
+    background-color: #2563eb; /* Warna tombol saat hover */
+}
+
+</style>

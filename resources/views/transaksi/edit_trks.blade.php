@@ -96,14 +96,15 @@
                                         </div>
                                     </div>
 
-                                <!-- Keterangan -->
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="trks_keterangan">Keterangan</label>
-                                        <input type="text" id="trks_keterangan" class="form-control shadow-sm rounded-pill" placeholder="Masukkan Keterangan" name="trks_keterangan">
-                                        <span id="keterangan-error" class="text-danger small"></span>
+                               <!-- Keterangan -->
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="trks_keterangan">Keterangan</label>
+                                            <textarea id="trks_keterangan" class="form-control shadow-sm " placeholder="Masukkan Keterangan" name="trks_keterangan"></textarea>
+                                            <span id="keterangan-error" class="text-danger small"></span>
+                                        </div>
                                     </div>
-                                </div>
+
                             </div> <!-- End of Row -->
                         </div>
                     </div>
