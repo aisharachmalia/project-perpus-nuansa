@@ -123,7 +123,7 @@ class AksesUsrController extends Controller
                 ],
             ];
 
-            Mail::send('mail.default_password', $array, function ($message) use ($array) {
+            Mail::send('mail.reseting_password', $array, function ($message) use ($array) {
                 $message->to($array['receive'])
                     ->subject($array['subject']);
                 $message->from('no-reply@project.com', 'Project PKL');
