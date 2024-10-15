@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('trks_transaksi', function (Blueprint $table) {
-            $table->increments('p');
+            $table->increments('id_trks');
             $table->integer('id_dbuku');
             $table->integer('id_dsiswa');
             $table->integer('id_dpustakawan');
@@ -22,6 +22,7 @@ return new class extends Migration
             $table->dateTime('trks_tgl_jatuh_tempo');
             $table->dateTime('trks_tgl_pengembalian')->nullable();
             $table->double('trks_denda')->nullable();
+            $table->tinyInteger('trks_status')->default(1);
             $table->text('trks_keterangan')->nullable();
             $table->timestamps();
             $table->softDeletes();

@@ -8,6 +8,7 @@ use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
 class TransaksiController extends Controller
@@ -26,10 +27,10 @@ class TransaksiController extends Controller
                 ->addIndexColumn()
                 ->addColumn('aksi', function ($row) {
                     $btn = '<div class="d-flex mr-2">
-                    <a href="javascript:void(0)" data-id="' . Crypt::encryptString($row->id_trks) . '" class="btn btn-warning btn-sm editPeminjaman mr-2" data-bs-toggle="modal" data-bs-target="#edit">
-                        <i class="bi bi-pencil"></i>
-                    </a>
-                    |
+                   <a href="javascript:void(0)" class="btn btn-warning btn-sm editPeminjaman mr-2" data-id="{{ Crypt::encryptString($row->id_trks) }}" data-bs-toggle="modal" data-bs-target="#editPeminjaman">
+                    <i class="bi bi-pencil"></i>
+                </a>
+                    | 
                     <a href="javascript:void(0)" id="btn-delete" data-id="' . Crypt::encryptString($row->id_trks) . '" class="btn btn-danger btn-sm">
                         <i class="bi bi-trash"></i>
                     </a>
@@ -39,7 +40,7 @@ class TransaksiController extends Controller
                 ->rawColumns(['aksi'])
                 ->make(true);
         }
-        $buku = \DB::table('dm_buku')->get();
+        $buku = DB::table('dm_buku')->get();
         $siswa = Dm_siswa::all();
         $pustakawan = dm_pustakawan::all();
         return view('transaksi.transaksi', compact('buku', 'siswa', 'pustakawan'));
@@ -76,20 +77,28 @@ class TransaksiController extends Controller
     // Fungsi untuk edit peminjaman
     public function editPeminjaman(Request $request, $id)
     {
-        $id_transaksi = Crypt::decryptString($id);
+        $id_trks = Crypt::decryptString($id);
 
         $rules = [
             'id_dsiswa' => 'required',
             'id_dbuku' => 'required',
             'id_dpustakawan' => 'required',
-            'tgl_pinjam' => 'required|date',
+            'trks_tgl_peminjaman' => 'required|date',
+            'trks_tgl_jatuh_tempo' => 'required|date',
+            'trks_tgl_pengembalian' => 'required|date',
+            'trks_denda' => 'required|numeric',
+            'trks_keterangan' => 'required',
         ];
 
         $messages = [
             'id_dsiswa.required' => 'Siswa harus dipilih!',
             'id_dbuku.required' => 'Buku harus dipilih!',
             'id_dpustakawan.required' => 'Pustakawan harus dipilih!',
-            'tgl_pinjam.required' => 'Tanggal pinjam harus diisi!',
+            'trks_tgl_peminjaman.required' => 'Tanggal pinjam harus diisi!',
+            'trks_tgl_jatuh_tempo.required' => 'Tanggal jatuh tempo harus diisi!',
+            'trks_tgl_pengembalian.required' => 'Tanggal pengembalian harus diisi!',
+            'trks_denda.required' => 'Nominal denda harus diisi!',
+            'trks_keterangan.required' => 'Keterangan harus diisi!',
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -101,12 +110,15 @@ class TransaksiController extends Controller
             ], 422);
         }
 
-        Transaksi::where('id_transaksi', $id_transaksi)->update([
+        Transaksi::where('id_trks', $id_trks)->update([
             'id_dsiswa' => $request->id_dsiswa,
             'id_dbuku' => $request->id_dbuku,
             'id_dpustakawan' => $request->id_dpustakawan,
-            'tgl_pinjam' => $request->tgl_pinjam,
-            'status' => 'Dipinjam',
+            'trks_tgl_peminjaman' => $request->trks_tgl_peminjaman,
+            'trks_tgl_jatuh_tempo' => $request->trks_tgl_jatuh_tempo,
+            'trks_tgl_pengembalian' => $request->trks_tgl_pengembalian,
+            'trks_denda' => $request->trks_denda,
+            'trks_keterangan' => $request->trks_keterangan,
         ]);
 
         return response()->json([
@@ -114,33 +126,38 @@ class TransaksiController extends Controller
             'message' => 'Peminjaman Berhasil Diedit!',
         ]);
     }
-
     // Fungsi untuk create pengembalian
-    public function createPengembalian(Request $request, $id)
+    public function createPengembalian(Request $request)
     {
-        $request->validate([
-            'id_dbuku' => 'required',
-            'id_dsiswa' => 'required',
-            'id_dpustakawan' => 'required',
-            'trks_tgl_peminjaman' => 'required',
-            'trks_tgl_jatuh_tempo' => 'required',
-            'trks_tgl_pengembalian' => 'required',
-            'trks_denda' => 'required',
-            'trks_keterangan' => 'required',
-        ]);
+        try {
+            $request->validate([
+                'id_dbuku' => 'required',
+                'id_dsiswa' => 'required',
+                'id_dpustakawan' => 'required',
+                'trks_tgl_peminjaman' => 'required',
+                'trks_tgl_jatuh_tempo' => 'required',
+                'trks_tgl_pengembalian' => 'required',
+                'trks_denda' => 'required',
+                'trks_keterangan' => 'required',
+            ]);
+            $buku = Crypt::decryptString($request->id_dbuku);
+            $siswa = Crypt::decryptString($request->id_dsiswa);
+            $pustakawan = Crypt::decryptString($request->id_dpustakawan);
+            $transaksi = new Transaksi();
+            $transaksi->id_dbuku = $buku;
+            $transaksi->id_dsiswa = $siswa;
+            $transaksi->id_dpustakawan = $pustakawan;
+            $transaksi->trks_tgl_peminjaman = $request->trks_tgl_peminjaman;
+            $transaksi->trks_tgl_jatuh_tempo = $request->trks_tgl_jatuh_tempo;
+            $transaksi->trks_tgl_pengembalian = $request->trks_tgl_pengembalian;
+            $transaksi->trks_denda = $request->trks_denda;
+            $transaksi->trks_keterangan = $request->trks_keterangan;
+            $transaksi->save();
 
-        $transaksi = new Transaksi();
-        $transaksi->id_dbuku = $request->id_dbuku;
-        $transaksi->id_dsiswa = $request->id_dsiswa;
-        $transaksi->id_dpustakawan = $request->id_dpustakawan;
-        $transaksi->trks_tgl_peminjaman = $request->trks_tgl_peminjaman;
-        $transaksi->trks_tgl_jatuh_tempo = $request->trks_tgl_jatuh_tempo;
-        $transaksi->trks_tgl_pengembalian = $request->trks_tgl_pengembalian;
-        $transaksi->trks_denda = $request->trks_denda;
-        $transaksi->trks_keterangan = $request->trks_keterangan;
-        $transaksi->save();
-
-        return response()->json(['message' => 'Data pengembalian berhasil disimpan']);
+            return response()->json(['message' => 'Data transaksi berhasil disimpan']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 422);
+        }
     }
 
     public function show($id)
@@ -148,25 +165,38 @@ class TransaksiController extends Controller
         $transaksi = Transaksi::join('dm_buku', 'transaksi.id_dbuku', '=', 'dm_buku.id')
             ->join('dm_siswa', 'transaksi.id_dsiswa', '=', 'dm_siswa.id')
             ->join('dm_pustakawan', 'transaksi.id_dpustakawan', '=', 'dm_pustakawan.id')
-            ->select('transaksi.*', 'dm_buku.judul as dbuku_judul', 'dm_siswa.nama as dsiswa_nama', 'dm_pustakawan.nama as dpustakawan_nama')
+            ->select('transaksi.*', 'dm_buku.dbuku_judul', 'dm_siswa.dsiswa_nama', 'dm_pustakawan.dpustakawan_nama')
             ->where('transaksi.id', $id)
             ->first();
 
         return response()->json($transaksi);
     }
 
-    // Fungsi untuk edit pengembalian
+     // Fungsi untuk edit pengembalian
     public function editPengembalian(Request $request, $id)
     {
-        $id_transaksi = Crypt::decryptString($id);
+        $id_trks = Crypt::decryptString($id);
 
         $rules = [
-            'tgl_kembali' => 'required|date|after_or_equal:tgl_pinjam',
+            'id_dsiswa' => 'required',
+            'id_dbuku' => 'required',
+            'id_dpustakawan' => 'required',
+            'trks_tgl_peminjaman' => 'required|date',
+            'trks_tgl_jatuh_tempo' => 'required|date',
+            'trks_tgl_pengembalian' => 'required|date',
+            'trks_denda' => 'required|numeric',
+            'trks_keterangan' => 'required',
         ];
 
         $messages = [
-            'tgl_kembali.required' => 'Tanggal kembali harus diisi!',
-            'tgl_kembali.after_or_equal' => 'Tanggal kembali harus setelah atau sama dengan tanggal pinjam!',
+            'id_dsiswa.required' => 'Siswa harus dipilih!',
+            'id_dbuku.required' => 'Buku harus dipilih!',
+            'id_dpustakawan.required' => 'Pustakawan harus dipilih!',
+            'trks_tgl_peminjaman.required' => 'Tanggal pinjam harus diisi!',
+            'trks_tgl_jatuh_tempo.required' => 'Tanggal jatuh tempo harus diisi!',
+            'trks_tgl_pengembalian.required' => 'Tanggal pengembalian harus diisi!',
+            'trks_denda.required' => 'Nominal denda harus diisi!',
+            'trks_keterangan.required' => 'Keterangan harus diisi!',
         ];
 
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -178,14 +208,20 @@ class TransaksiController extends Controller
             ], 422);
         }
 
-        Transaksi::where('id_transaksi', $id_transaksi)->update([
-            'tgl_kembali' => $request->tgl_kembali,
-            'status' => 'Dikembalikan',
+        Transaksi::where('id_trks', $id_trks)->update([
+            'id_dsiswa' => $request->id_dsiswa,
+            'id_dbuku' => $request->id_dbuku,
+            'id_dpustakawan' => $request->id_dpustakawan,
+            'trks_tgl_peminjaman' => $request->trks_tgl_peminjaman,
+            'trks_tgl_jatuh_tempo' => $request->trks_tgl_jatuh_tempo,
+            'trks_tgl_pengembalian' => $request->trks_tgl_pengembalian,
+            'trks_denda' => $request->trks_denda,
+            'trks_keterangan' => $request->trks_keterangan,
         ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Data Pengembalian Berhasil Diperbarui!',
+            'message' => 'Peminjaman Berhasil Diedit!',
         ]);
     }
 
