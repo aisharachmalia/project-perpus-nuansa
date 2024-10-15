@@ -137,8 +137,8 @@ class TransaksiController extends Controller
                 'trks_tgl_peminjaman' => 'required',
                 'trks_tgl_jatuh_tempo' => 'required',
                 'trks_tgl_pengembalian' => 'required',
-                'trks_denda' => 'required',
-                'trks_keterangan' => 'required',
+                // 'trks_denda' => 'required',
+                // 'trks_keterangan' => 'required',
             ]);
             $buku = Crypt::decryptString($request->id_dbuku);
             $siswa = Crypt::decryptString($request->id_dsiswa);
@@ -172,58 +172,58 @@ class TransaksiController extends Controller
         return response()->json($transaksi);
     }
 
-     // Fungsi untuk edit pengembalian
-    public function editPengembalian(Request $request, $id)
-    {
-        $id_trks = Crypt::decryptString($id);
+    //  // Fungsi untuk edit pengembalian
+    // public function editPengembalian(Request $request, $id)
+    // {
+    //     $id_trks = Crypt::decryptString($id);
 
-        $rules = [
-            'id_dsiswa' => 'required',
-            'id_dbuku' => 'required',
-            'id_dpustakawan' => 'required',
-            'trks_tgl_peminjaman' => 'required|date',
-            'trks_tgl_jatuh_tempo' => 'required|date',
-            'trks_tgl_pengembalian' => 'required|date',
-            'trks_denda' => 'required|numeric',
-            'trks_keterangan' => 'required',
-        ];
+    //     $rules = [
+    //         'id_dsiswa' => 'required',
+    //         'id_dbuku' => 'required',
+    //         'id_dpustakawan' => 'required',
+    //         'trks_tgl_peminjaman' => 'required|date',
+    //         'trks_tgl_jatuh_tempo' => 'required|date',
+    //         'trks_tgl_pengembalian' => 'required|date',
+    //         'trks_denda' => 'required|numeric',
+    //         'trks_keterangan' => 'required',
+    //     ];
 
-        $messages = [
-            'id_dsiswa.required' => 'Siswa harus dipilih!',
-            'id_dbuku.required' => 'Buku harus dipilih!',
-            'id_dpustakawan.required' => 'Pustakawan harus dipilih!',
-            'trks_tgl_peminjaman.required' => 'Tanggal pinjam harus diisi!',
-            'trks_tgl_jatuh_tempo.required' => 'Tanggal jatuh tempo harus diisi!',
-            'trks_tgl_pengembalian.required' => 'Tanggal pengembalian harus diisi!',
-            'trks_denda.required' => 'Nominal denda harus diisi!',
-            'trks_keterangan.required' => 'Keterangan harus diisi!',
-        ];
+    //     $messages = [
+    //         'id_dsiswa.required' => 'Siswa harus dipilih!',
+    //         'id_dbuku.required' => 'Buku harus dipilih!',
+    //         'id_dpustakawan.required' => 'Pustakawan harus dipilih!',
+    //         'trks_tgl_peminjaman.required' => 'Tanggal pinjam harus diisi!',
+    //         'trks_tgl_jatuh_tempo.required' => 'Tanggal jatuh tempo harus diisi!',
+    //         'trks_tgl_pengembalian.required' => 'Tanggal pengembalian harus diisi!',
+    //         'trks_denda.required' => 'Nominal denda harus diisi!',
+    //         'trks_keterangan.required' => 'Keterangan harus diisi!',
+    //     ];
 
-        $validator = Validator::make($request->all(), $rules, $messages);
+    //     $validator = Validator::make($request->all(), $rules, $messages);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors(),
-            ], 422);
-        }
+    //     if ($validator->fails()) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'errors' => $validator->errors(),
+    //         ], 422);
+    //     }
 
-        Transaksi::where('id_trks', $id_trks)->update([
-            'id_dsiswa' => $request->id_dsiswa,
-            'id_dbuku' => $request->id_dbuku,
-            'id_dpustakawan' => $request->id_dpustakawan,
-            'trks_tgl_peminjaman' => $request->trks_tgl_peminjaman,
-            'trks_tgl_jatuh_tempo' => $request->trks_tgl_jatuh_tempo,
-            'trks_tgl_pengembalian' => $request->trks_tgl_pengembalian,
-            'trks_denda' => $request->trks_denda,
-            'trks_keterangan' => $request->trks_keterangan,
-        ]);
+    //     Transaksi::where('id_trks', $id_trks)->update([
+    //         'id_dsiswa' => $request->id_dsiswa,
+    //         'id_dbuku' => $request->id_dbuku,
+    //         'id_dpustakawan' => $request->id_dpustakawan,
+    //         'trks_tgl_peminjaman' => $request->trks_tgl_peminjaman,
+    //         'trks_tgl_jatuh_tempo' => $request->trks_tgl_jatuh_tempo,
+    //         'trks_tgl_pengembalian' => $request->trks_tgl_pengembalian,
+    //         'trks_denda' => $request->trks_denda,
+    //         'trks_keterangan' => $request->trks_keterangan,
+    //     ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Peminjaman Berhasil Diedit!',
-        ]);
-    }
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => 'Peminjaman Berhasil Diedit!',
+    //     ]);
+    // }
 
     public function delete($id)
     {
