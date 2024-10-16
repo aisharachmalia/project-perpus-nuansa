@@ -88,11 +88,61 @@ flex-direction: column;
 align-items: center;
 }
 }
+.dropdown {
+  float: left;
+  overflow: hidden;
+}
 
+/* Dropdown button */
+.dropdown .dropbtn {
+  font-size: 16px;
+  border: none;
+  outline: none;
+  color: white;
+  padding: 14px 16px;
+  background-color: inherit;
+  font-family: inherit; /* Important for vertical align on mobile phones */
+  margin: 0; /* Important for vertical align on mobile phones */
+}
+
+/* Add a red background color to navbar links on hover */
+.navbar a:hover, .dropdown:hover .dropbtn {
+  background-color: red;
+}
+
+/* Dropdown content (hidden by default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  float: none;
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+/* Add a grey background color to dropdown links on hover */
+.dropdown-content a:hover {
+  background-color: #ddd;
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
 
 
 .hero {
-    background-image: url('https://wallpaperaccess.com/full/253375.png');
+    background-image: url('https://media.houseandgarden.co.uk/photos/620bb44d47f811e6e7d15429/16:9/w_2580,c_limit/Annabelle-Holland.jpg');
     /* Gambar latar belakang */
     background-size: cover;
     /* Memastikan gambar menutupi seluruh area */
@@ -111,6 +161,8 @@ align-items: center;
 }
 
 .hero p {
+    white-space: break-spaces;
+    padding: 10px;
     margin-bottom: 40px;
     font-size: 18px;
     /* Ukuran font untuk teks lebih besar */
@@ -186,7 +238,7 @@ section.book-features {
 }
 
 .container5 {
-    max-width: 1200px;
+    max-width: 900px;
     margin: 0 auto;
 }
 
@@ -210,7 +262,7 @@ section.book-features {
 }
 
 .book-features li {
-width: 200px;
+    width: 250px;
     background-color: #f9f9f9;
     border-radius: 10px;
     padding: 20px;

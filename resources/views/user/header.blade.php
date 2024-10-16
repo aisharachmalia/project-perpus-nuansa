@@ -5,11 +5,17 @@
         </div>
         <nav>
             <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">My Books</a></li>
-                <li><a href="#">Browse</a></li>
-                <li><a href="#">Community</a></li>
-                <li><a href="#">Sign Up</a></li>
+                <li><a href="#">Beranda</a></li>
+                <div class="dropdown">
+                    <li><a href="#">Buku</a></li>
+                    <div class="dropdown-content">
+                      <a href="#">Kategori 1</a>
+                      <a href="#">Kategori 2</a>
+                      <a href="#">Kategori 3</a>
+                    </div>
+                  </div>
+                <li><a href="#">Panduan</a></li>
+                <li><a href="#">Tentang</a></li>
                 {{-- <li><a href="#"><img src="cart.png" alt="Cart"></a></li> --}}
             </ul>
         </nav>

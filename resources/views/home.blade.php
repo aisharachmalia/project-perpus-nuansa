@@ -100,6 +100,38 @@
 <div class="page-heading">
     <h3>Dashboard Perpustakaan</h3>
 </div>
+<div class="row mb-4">
+    <div class="col-6">
+        <form action="{{ route('home') }}" method="GET" class="form-inline">
+            <div class="form-group">
+                <label for="bulan">Bulan:</label>
+                <select name="bulan" id="bulan" class="form-control mx-2" onchange="this.form.submit()">
+                    <option value="">-- Pilih Bulan --</option>
+                    @foreach (['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'] as $index => $bulan)
+                        <option value="{{ $index + 1 }}" {{ request('bulan') == ($index + 1) ? 'selected' : '' }}>{{ $bulan }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </form>
+        
+    </div>
+    <div class="col-6">
+        <form action="{{ route('home') }}" method="GET" class="form-inline"> 
+           
+            <div class="form-group">
+                <label for="tahun">Tahun:</label>
+                <select name="tahun" id="tahun" class="form-control mx-2" onchange="this.form.submit()">
+                    <option value="">-- Pilih Tahun --</option>
+                    @for ($tahun = date('Y'); $tahun >= 2000; $tahun--)
+                        <option value="{{ $tahun }}" {{ request('tahun') == $tahun ? 'selected' : '' }}>{{ $tahun }}</option>
+                    @endfor
+                </select>
+            </div>
+        </form>
+    </div>
+</div>
+
+
 <div class="page-content">
     <section class="row">
         <div class="col-12 col-lg-9">
@@ -132,7 +164,7 @@
                                     </div>
                                     <div class="col-md-8">
                                         <h6 class="text-muted font-semibold">Total E-Book</h6>
-                                        <h6 class="font-extrabold mb-0">183.000</h6>
+                                        <h6 class="font-extrabold mb-0">183</h6>
                                     </div>
                                 </div>
                             </div>
@@ -149,7 +181,7 @@
                                     </div>
                                     <div class="col-md-8">
                                         <h6 class="text-muted font-semibold">Peminjaman</h6>
-                                        <h6 class="font-extrabold mb-0">80</h6>
+                                        <h6 class="font-extrabold mb-0">{{$totalPeminjaman }}</h6>
                                     </div>
                                 </div>
                             </div>
@@ -165,8 +197,8 @@
                                         </div>
                                     </div>
                                     <div class="col-md-8">
-                                        <h6 class="text-muted font-semibold">Denda </h6>
-                                        <h6 class="font-extrabold mb-0">80.000</h6>
+                                        <h6 class="text-muted font-semibold">pelanggaran </h6>
+                                        <h6 class="font-extrabold mb-0">{{$totalDenda}}</h6>
                                     </div>
                                 </div>
                             </div>
@@ -196,53 +228,42 @@
             </div>
         </div>
     </div>
-    <div class="col-12 col-xl-7">
-        <div class="card">
-            <div class="card-header">
-                <h4>Peminjaman Terbanyak</h4>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
+  <!-- Peminjam Terbanyak -->
+  <div class="col-12 col-xl-7">
+    <div class="card">
+        <div class="card-header">
+            <h4>Peminjam Terbanyak</h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Peringkat</th>
+                            <th>Nama</th>
+                            <th>Total Bacaan</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if($peminjaman_terbanyak->isEmpty())
                             <tr>
-                                <th>Peringkat</th>
-                                <th>Nama</th>
-                                <th>Total Bacaan</th>
+                                <td colspan="3" class="text-center">Belum ada peminjam.</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Anindya Putri Nabila</td>
-                                <td>35 Buku</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>Alvito Daffa Ramadan</td>
-                                <td>30 Buku</td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>Alvin Purwo Ardianto</td>
-                                <td>29 Buku</td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>Alvin Purwo Ardianto</td>
-                                <td>29 Buku</td>
-                            </tr>
-                            <tr>
-                                <td>5</td>
-                                <td>Alvin Purwo Ardianto</td>
-                                <td>29 Buku</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                        @else
+                            @foreach ($peminjaman_terbanyak->take(5) as $key => $peminjam)
+                                <tr>
+                                    <td>{{ $key + 1 }}</td>
+                                    <td>{{ $peminjam->dsiswa_nama }}</td>
+                                    <td>{{ $peminjam->total_bacaan }}</td>
+                                </tr>
+                            @endforeach
+                        @endif
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
+</div>
 </div>
 
         </div>
@@ -250,19 +271,20 @@
         <!-- Info Admin/Pustakawan & Notifikasi -->
         <div class="col-12 col-lg-3">
             <div class="card">
-                <div class="card-body py-4 px-5">
-                    <div class="d-flex align-items-center">
-                        <div class="avatar avatar-xl">
-                            <img src="assets/images/faces/1.jpg" alt="Face 1">
+                <div class="card-body px-3 py-4-5">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="stats-icon red">
+                                <i class="fas fa-coins"></i>
+                            </div>
                         </div>
-                        <div class="ms-2 name">
-                            <h5 class="font-bold">{{ Auth::user()->usr_nama }}</h5>
-                            <h6 class="text-muted mb-0">{{ Auth::user()->usr_email }}</h6>
+                        <div class="col-md-8">
+                            <h6 class="text-muted font-semibold">Jumlah Denda</h6>
+                            <h6 class="font-extrabold mb-0">Rp.{{$totalDenda}}</h6>
                         </div>
                     </div>
                 </div>
             </div>
-
             <!-- Notifikasi -->
             <div class="card" id="card-notifikasi">
                 <div class="card-body">
@@ -280,41 +302,39 @@
             </div>
             
             <!-- Buku Terbanyak Terpinjam -->
-            <div class="card">
-                <div class="card-header">
-                    <h4>Buku Terbanyak Terpinjam</h4>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
+<!-- Buku Terbanyak Terpinjam -->
+
+    <div class="card" >
+        <div class="card-header">
+            <h4>Buku Terbanyak Terpinjam</h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Judul Buku</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if($bukuTerbanyakDipinjam->isEmpty())
+                            <tr>
+                                <td colspan="1" class="text-center">Belum ada buku yang dipinjam.</td>
+                            </tr>
+                        @else
+                            @foreach($bukuTerbanyakDipinjam as $buku)
                                 <tr>
-                                    <th>Judul Buku</th>
-                                    <th>Nama Penulis</th>
+                                    <td>{{ $buku->dbuku_judul }}</td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Matahari</td>
-                                    <td>Tere Liye</td>
-                                </tr>
-                                <tr>
-                                    <td>Bulan</td>
-                                    <td>Tere Liye</td>
-                                </tr>
-                                <tr>
-                                    <td>Bumi</td>
-                                    <td>Tere Liye</td>
-                                </tr>
-                                <tr>
-                                    <td>Bumi</td>
-                                    <td>Tere Liye</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                            @endforeach
+                        @endif
+                    </tbody>
+                </table>
             </div>
+        </div>
+    </div>
+</div>
+</div>
             
         </div>
     </section>
@@ -326,31 +346,38 @@
 <script>
 // Statistik Peminjaman Buku
 Highcharts.chart('chart_utama', {
-    chart: { type: 'area' },
-    title:  { text: null },
-    xAxis: { categories: ['Januari', 'Februari', 'Maret','April','Mei','Juni','Juli', 'Agustus','September', 'Oktober', 'November', 'Desember'] },
-    yAxis: { title: { text: '' } },
-    credits: { enabled: false },
-    series: [{
-        name: 'Total siswa yang meminjam buku',
-        data: [37, 29, 52,22,23,70,72]
-    }]
-});
+        chart: { 
+            type: 'area' 
+        },
+        title:  { text: null },
+        xAxis: { 
+            categories: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'] 
+        },
+        yAxis: { 
+            title: { text: null }
+        },
+        credits: { 
+            enabled: false 
+        },
+        series: [{
+            name: 'Total Siswa yang Meminjam Buku',
+            data: {!! json_encode($data) !!} // Mengambil data dari controller
+        }]
+    });
 
 // Kategori Terbanyak Dibaca
+var chartData = @json($chartData); // Ambil data dari controller
+
 Highcharts.chart('chart_profile', {
-    title:  { text: null },
+    title: { text: null },
     chart: {
         type: 'pie',
-        height: 280, 
-        width:280 // Sesuaikan dengan height card
+        height: 280,
+        width: 280 // Sesuaikan dengan height card
     },
     series: [{
         name: 'Kategori',
-        data: [
-            { name: 'komik', y: 74.77, sliced: true, selected: true },
-            { name: 'novel', y: 12.82 }
-        ]
+        data: chartData // Data yang sudah diformat
     }]
 });
 </script>
