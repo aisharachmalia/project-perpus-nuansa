@@ -4,6 +4,7 @@
     <thead>
         <tr style="background-color: #f2f2f2;">
             <th style="text-align: center" width="5%">No</th>
+            <th style="text-align: center;">cover</th>
             <th width="20%" style="text-align: center;">Judul Buku</th>
             <th style="text-align: center;">ISBN</th>
             <th>Nama Penulis</th>
@@ -17,6 +18,9 @@
         @foreach ($buku as $key => $item)
             <tr>
                 <td style="text-align: center;background-color: #fefe76" width="5%">{{ $key + 1 }}</td>
+                <td style="height: 100%; object-fit: cover; object-position: center">
+                    <img src="storage/cover/{{ $item->dbuku_cover }}" alt="Book Cover">
+                </td>
                 <td width="20%">{{ $item->dbuku_judul }}</td>
                 <td style="text-align: start;">{{ $item->dbuku_isbn }}</td>
                 <td>{{ $item->dpenulis_nama_penulis }}</td>
