@@ -299,7 +299,7 @@ class BukuController extends Controller
             $img = asset('storage/cover/default.jpg');
         }
 
-        $slc1 = '';
+        $slc1 = '<option value="">Pilih Mapel</option>';
         foreach ($mpl as $key => $value) {
             $slc1 .= '<option value="' . $value->id_mapel . '" ' . ($value->id_mapel == $bk[0]->id_dmapel ? 'selected' : '') . '>' . $value->dmapel_nama_mapel . '</option>';
         }
