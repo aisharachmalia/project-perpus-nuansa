@@ -1,7 +1,6 @@
 @extends('master')
 @section('content')
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         .dropdown-menu {
             border-radius: 0;
@@ -45,7 +44,7 @@
                                         $buku = DB::table('dm_buku')->get();
                                     @endphp
                                     @foreach ($buku as $item)
-                                        <option value="{{ $item->id_dbuku }}">{{ $item->dbuku_judul }}</option>
+                                        <option value="{{ Crypt::encrypt($item->id_dbuku) }}">{{ $item->dbuku_judul }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -59,7 +58,7 @@
                                         $siswa = DB::table('dm_siswas')->get();
                                     @endphp
                                     @foreach ($siswa as $item)
-                                        <option value="{{ $item->id_dsiswa }}">{{ $item->dsiswa_nama }}</option>
+                                        <option value="{{ Crypt::encrypt($item->id_dsiswa)}}">{{ $item->dsiswa_nama }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -70,7 +69,8 @@
                                 <select id="filter-status" class="form-control">
                                     <option value="">All</option>
                                     <option value="Sudah Lunas">Sudah Lunas</option>
-                                    <option value="Belum Bayar">Belum Bayar"></option>
+                                    <option value="Belum Bayar">Belum Bayar</option>
+                                    <option value="Belum Dikembalikan">Belum Dikembalikan</option>
                                 </select>
                             </div>
 
@@ -185,10 +185,10 @@
                 }
             });
         }
+
         $(document).ready(function() {
             var link_export = "{{ route('link_export_buku') }}";
             var link_printout = "{{ route('link_printout_buku') }}";
-
             var table = $('#tbl_trks').DataTable({
                 serverSide: true,
                 ajax: {
@@ -231,8 +231,10 @@
                         render: function(data) {
                             if (data == 'Sudah Lunas') {
                                 return '<span class="badge bg-light-success">' + data + '</span>';
+                            } else if (data == 'Belum Bayar') {
+                                return '<span class="badge bg-light-danger">' + data + '</span>';
                             } else {
-                                return '<span class="badge bg-light-warning">' + data + '</span>';
+                                return '<span class="badge bg-light-warning"> Belum Dikembalikan </span>';
                             }
                         }
                     },

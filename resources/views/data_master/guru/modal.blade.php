@@ -46,7 +46,7 @@
                                     <select class="form-control" id="id_mapel" name="id_mapel" required>
                                         <option disabled value="0" selected>Pilih Mata Pelajaran</option>
                                         @foreach ($mpl as $item)
-                                            <option value="{{ $item->id_mapel }}">{{ $item->dmapel_nama_mapel }}</option>
+                                            <option value="{{ Crypt::encryptString($item->id_mapel) }}">{{ $item->dmapel_nama_mapel }}</option>
                                         @endforeach
                                     </select>
                                     <span id="mapel-error" class="text-danger"></span>

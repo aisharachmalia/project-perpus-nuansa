@@ -55,7 +55,7 @@ class GuruController extends Controller
         $mpl = \DB::table('dm_mapels')->get();
         $slc = '';
         foreach ($mpl as $mp) {
-            $slc .= '<option value="' . $mp->id_mapel . '" ' . ($mp->id_mapel == $gr->id_mapel ? 'selected' : '') . '>' . $mp->dmapel_nama_mapel . '</option>';
+            $slc .= '<option value="' . Crypt::encryptString($mp->id_mapel) . '" ' . ($mp->id_mapel == $gr->id_mapel ? 'selected' : '') . '>' . $mp->dmapel_nama_mapel . '</option>';
         }
 
         return response()->json(['gr' => $gr, 'slc' => $slc]);
@@ -103,7 +103,7 @@ class GuruController extends Controller
             }
 
             dm_guru::create([
-                'id_mapel' => $request->id_mapel,
+                'id_mapel' => Crypt::decryptString($request->id_mapel),
                 'dguru_nama' => $request->dguru_nama,
                 'dguru_nip' => $request->dguru_nip,
                 'dguru_email' => $request->dguru_email,
@@ -164,7 +164,7 @@ class GuruController extends Controller
 
             // Create the transaction with mapel ID
             dm_guru::where('id_dguru', $idGr)->update([
-                'id_mapel' => $request->id_mapel,
+                'id_mapel' => Crypt::decryptString($request->id_mapel),
                 'dguru_nama' => $request->dguru_nama,
                 'dguru_nip' => $request->dguru_nip,
                 'dguru_email' => $request->dguru_email,

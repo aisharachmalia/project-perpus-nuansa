@@ -21,63 +21,61 @@ class LaporanController extends Controller
 
     public function tableTrks(Request $request)
     {
-        $filt ='';
 
-        if ($request->get('status') == 'Sudah Lunas' || $request->get('status') == 'Belum Bayar') {
+        $filt = '';
+
+        if ($request->get('status') == 'Sudah Lunas' || $request->get('status') == 'Belum Bayar' || $request->get('status') == 'Belum Dikembalikan') {
             $filt .= "AND trks_denda.tdenda_status = '" . $request->get('status') . "'";
         }
 
         if ($request->get('buku')) {
-            $filt .= "AND trks_transaksi.id_dbuku LIKE '%" . $request->get('buku') . "%'";
+            // Decrypt the book ID if it's encrypted
+            $buku_id = decrypt($request->get('buku'));
+            $filt .= "AND trks_transaksi.id_dbuku LIKE '%" . $buku_id . "%'";
         }
 
         if ($request->get('siswa')) {
-            $filt .= "AND trks_transaksi.id_dsiswa LIKE '%" . $request->get('siswa') . "%'";
+            // Decrypt the student ID if it's encrypted
+            $siswa_id = decrypt($request->get('siswa'));
+            $filt .= "AND trks_transaksi.id_dsiswa LIKE '%" . $siswa_id . "%'";
         }
 
-        if($request->get('tanggal_awal') && $request->get('tanggal_akhir')){
+        if ($request->get('tanggal_awal') && $request->get('tanggal_akhir')) {
             $filt .= "AND DATE_FORMAT(trks_transaksi.trks_tgl_peminjaman, '%Y-%m-%d') BETWEEN '" . $request->get('tanggal_awal') . "' AND '" . $request->get('tanggal_akhir') . "'";
         }
-        
+    
         $trks = \DB::select(
             "SELECT trks_transaksi.*,
-                            dm_buku.dbuku_judul,
-                            dm_siswas.dsiswa_nama,
-                            trks_denda.tdenda_jumlah,
-                            trks_denda.tdenda_status
-                    FROM trks_transaksi
-                    LEFT JOIN dm_buku ON trks_transaksi.id_dbuku = dm_buku.id_dbuku
-                    LEFT JOIN dm_siswas ON trks_transaksi.id_dsiswa = dm_siswas.id_dsiswa
-                    RIGHT JOIN trks_denda ON trks_transaksi.id_trks = trks_denda.id_trks
-                    WHERE trks_transaksi.deleted_at IS NULL $filt
-                    "
+                    dm_buku.dbuku_judul,
+                    dm_siswas.dsiswa_nama,
+                    trks_denda.tdenda_jumlah,
+                    trks_denda.tdenda_status
+            FROM trks_transaksi
+            LEFT JOIN dm_buku ON trks_transaksi.id_dbuku = dm_buku.id_dbuku
+            LEFT JOIN dm_siswas ON trks_transaksi.id_dsiswa = dm_siswas.id_dsiswa
+            RIGHT JOIN trks_denda ON trks_transaksi.id_trks = trks_denda.id_trks
+            WHERE trks_transaksi.deleted_at IS NULL $filt"
         );
+
         if ($request->ajax()) {
-        return DataTables::of($trks)
-            ->addIndexColumn()
-            ->editColumn('trks_tgl_peminjaman', function ($trks) {
-                return Carbon::parse($trks->trks_tgl_peminjaman)->format('d-m-Y H:i');
-            })
-            ->editColumn('trks_tgl_jatuh_tempo', function ($trks) {
-                return Carbon::parse($trks->trks_tgl_jatuh_tempo)->format('d-m-Y');
-            })
-            ->editColumn('trks_tgl_pengembalian', function ($trks) {
-                if ($trks->trks_tgl_pengembalian == null) {
-                    return '-';
-                } else {
-                    return Carbon::parse($trks->trks_tgl_pengembalian)->format('d-m-Y H:i');
-                }
-            })
-            ->editColumn('tdenda_jumlah', function ($trks) {
-                if ($trks->tdenda_jumlah == null) {
-                    return '0';
-                } else {
-                    return $trks->tdenda_jumlah;
-                }
-            })
-            ->make(true);
+            return DataTables::of($trks)
+                ->addIndexColumn()
+                ->editColumn('trks_tgl_peminjaman', function ($trks) {
+                    return Carbon::parse($trks->trks_tgl_peminjaman)->format('d-m-Y H:i');
+                })
+                ->editColumn('trks_tgl_jatuh_tempo', function ($trks) {
+                    return Carbon::parse($trks->trks_tgl_jatuh_tempo)->format('d-m-Y');
+                })
+                ->editColumn('trks_tgl_pengembalian', function ($trks) {
+                    return $trks->trks_tgl_pengembalian ? Carbon::parse($trks->trks_tgl_pengembalian)->format('d-m-Y H:i') : '-';
+                })
+                ->editColumn('tdenda_jumlah', function ($trks) {
+                    return $trks->tdenda_jumlah ? $trks->tdenda_jumlah : '0';
+                })
+                ->make(true);
+        }
+
     }
-}
 
     public function linkExportLaporan(Request $request)
     {
