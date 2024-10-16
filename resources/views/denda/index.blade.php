@@ -112,22 +112,22 @@
                     <span id="buku_error" class="text-danger"></span>
                 </div>
             </div>
-                <div class="mb-3 icon-input">
-                    <div class="form-group">
-                        <label for="tanggalPeminjaman">Tanggal Pinjam</label>
-                        <i class="bi bi-calendar-plus"></i>
-                        <p class="form-control" id="tanggalPeminjaman">Tanggal Pinjam</p>
-                        <span id="peminjaman_error" class="text-danger"></span>
-                    </div>
+            <div class="mb-3 icon-input">
+                <div class="form-group">
+                    <label for="tanggalPeminjaman">Tanggal Pinjam</label>
+                    <i class="bi bi-calendar-plus"></i>
+                    <p class="form-control" id="tanggalPeminjaman">Tanggal Pinjam</p>
+                    <span id="peminjaman_error" class="text-danger"></span>
                 </div>
-                <div class=" mb-3 icon-input">
-                    <div class="form-group">
-                        <label for="tanggalJatuhTempo">Tanggal Jatuh Tempo</label>
-                        <i class="bi bi-calendar-x-fill"></i>
-                        <p class="form-control" id="tanggalJatuhTempo">Jatuh Tempo</p>
-                        <span id="jatuh_tempo_error" class="text-danger"></span>
-                    </div>
+            </div>
+            <div class=" mb-3 icon-input">
+                <div class="form-group">
+                    <label for="tanggalJatuhTempo">Tanggal Jatuh Tempo</label>
+                    <i class="bi bi-calendar-x-fill"></i>
+                    <p class="form-control" id="tanggalJatuhTempo">Jatuh Tempo</p>
+                    <span id="jatuh_tempo_error" class="text-danger"></span>
                 </div>
+            </div>
             <div class="mb-3 icon-input">
                 <div class="form-group">
                     <label for="denda">Jumlah Denda</label>
@@ -277,12 +277,20 @@
                                 .trks_tgl_jatuh_tempo.split(' ')[0]);
                             $('#pembayaran').find('#jumlahDenda').val(response['buku'][0]
                                 .trks_denda);
+                            $('#pembayaran').find('#buku_error').text('');
+                            $('#pembayaran').find('#denda_error').text('');
+                            $('#pembayaran').find('#tgl_pembayaran_error').text('');
                         }
                     });
                 } else {
                     $('#pembayaran').find('#tanggalPeminjaman').text('Tanggal Peminjaman');
                     $('#pembayaran').find('#tanggalJatuhTempo').text('Tanggal Jatuh Tempo');
                     $('#pembayaran').find('#jumlahDenda').val('');
+
+
+                    $('#pembayaran').find('#buku_error').text('');
+                    $('#pembayaran').find('#denda_error').text('');
+                    $('#pembayaran').find('#tgl_pembayaran_error').text('');
                 }
             });
 
@@ -310,7 +318,7 @@
                     cache: false,
                     data: {
                         "_token": token,
-                        "id_buku": id_buku,
+                        "buku": id_buku,
                         "denda": denda,
                         "tanggal_pembayaran": tanggal_pembayaran
                     },
@@ -333,10 +341,8 @@
                             '<option value="">Pilih Buku</option>');
                         // kosongin span err
                         $('#pembayaran').find('#buku_error').text('');
-                        $('#pembayaran').find('#peminjaman_error').text('');
-                        $('#pembayaran').find('#jatuh_tempo_error').text('');
                         $('#pembayaran').find('#denda_error').text('');
-                        $('#pembayaran').find('#pembayaran_error').text('');
+                        $('#pembayaran').find('#tgl_pembayaran_error').text('');
                         $('#tbl_denda').DataTable().ajax.reload();
                     },
                     error: function(xhr) {
@@ -348,18 +354,6 @@
                                 $('#pembayaran').find('#buku_error').text(errors.buku[0]);
                             } else {
                                 $('#pembayaran').find('#buku_error').text('');
-                            }
-                            if (errors.tanggal_peminjaman) {
-                                $('#pembayaran').find('#peminjaman_error').text(errors
-                                    .tanggal_peminjaman[0]);
-                            } else {
-                                $('#pembayaran').find('#peminjaman_error').text('');
-                            }
-                            if (errors.tanggal_jatuh_tempo) {
-                                $('#pembayaran').find('#jatuh_tempo_error').text(errors
-                                    .tanggal_jatuh_tempo[0]);
-                            } else {
-                                $('#pembayaran').find('#jatuh_tempo_error').text('');
                             }
                             if (errors.denda) {
                                 $('#pembayaran').find('#denda_error').text(errors.denda[0]);

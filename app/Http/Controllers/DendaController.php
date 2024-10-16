@@ -93,11 +93,9 @@ class DendaController extends Controller
     public function bayar(Request $request, $id = null)
     {
         try {
-            $id = Crypt::decryptString($id);
-            $id_buku = Crypt::decryptString($request->id_buku);
             // Validasi
             $rules = [
-                'id_buku' => [
+                'buku' => [
                     'required',
                 ],
                 'denda' => [
@@ -105,14 +103,14 @@ class DendaController extends Controller
                     'min:0',
                 ],
                 'tanggal_pembayaran' => [
+                    'required',
                     'date',
                     'after_or_equal:tanggal_jatuh_tempo',
                 ],
             ];
-
             // Pesan kesalahan validasi
             $messages = [
-                'buku.required' => 'Buku harus diisi!',
+                'buku.required' => 'Buku harus dipilih!',
                 'tanggal_peminjaman.required' => 'Tanggal peminjaman harus diisi!',
                 'tanggal_peminjaman.date' => 'Tanggal peminjaman harus berupa tanggal yang valid!',
                 'tanggal_peminjaman.before_or_equal' => 'Tanggal peminjaman tidak boleh setelah tanggal jatuh tempo!',
@@ -121,12 +119,17 @@ class DendaController extends Controller
                 'tanggal_jatuh_tempo.after_or_equal' => 'Tanggal jatuh tempo harus setelah tanggal peminjaman!',
                 'denda.required' => 'Denda harus diisi!',
                 'denda.min' => 'Denda tidak boleh negatif!',
+                'tanggal_pembayaran.required' => 'Tanggal pembayaran harus diisi!',
                 'tanggal_pembayaran.date' => 'Tanggal pembayaran harus berupa tanggal yang valid!',
                 'tanggal_pembayaran.after_or_equal' => 'Tanggal pembayaran harus setelah tanggal jatuh tempo!',
             ];
 
             $validated = $request->validate($rules, $messages);
-            $denda = Trks_denda::find($id)->join('trks_transaksi', 'trks_denda.id_trks', '=', 'trks_transaksi.id_trks')->where('trks_transaksi.id_dbuku', $id_buku)->first();
+            $id = Crypt::decryptString($id);
+            $id_buku = Crypt::decryptString($request->buku);
+            $denda = Trks_denda::find($id)->join('trks_transaksi', 'trks_denda.id_trks', '=', 'trks_transaksi.id_trks')
+                ->where('trks_transaksi.id_dbuku', $id_buku)
+                ->first();
             $denda->tdenda_status = 'Sudah Lunas';
             $denda->tdenda_tgl_bayar = $request->tanggal_pembayaran;
             $denda->save();
