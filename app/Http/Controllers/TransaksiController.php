@@ -7,6 +7,7 @@ use App\Models\dm_pustakawan;
 use App\Models\Dm_siswa;
 use App\Models\Transaksi;
 use App\Models\Trks_denda;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Crypt;
@@ -30,13 +31,14 @@ class TransaksiController extends Controller
                 ->addIndexColumn()
                 ->addColumn('aksi', function ($row) {
                     $btn = '<div class="d-flex mr-2">
-                   <a href="javascript:void(0)" class="btn btn-warning btn-sm editPeminjaman mr-2" data-id="{{ Crypt::encryptString($row->id_trks) }}" data-bs-toggle="modal" data-bs-target="#editPeminjaman">
+                   <a href="javascript:void(0)" class="btn btn-warning btn-sm editPeminjaman mr-2" data-id="' . Crypt::encryptString($row->id_trks) . '" data-bs-toggle="modal" data-bs-target="#editPeminjaman">
                     <i class="bi bi-pencil"></i>
                 </a>
                     |
                     <a href="javascript:void(0)" id="btn-delete" data-id="' . Crypt::encryptString($row->id_trks) . '" class="btn btn-danger btn-sm">
-                        <i class="bi bi-trash"></i>
-                    </a>
+                    <i class="bi bi-trash"></i>
+                </a>
+
                 </div>';
                     return $btn;
                 })
@@ -45,11 +47,12 @@ class TransaksiController extends Controller
         }
         $buku = dm_buku::select('id_dbuku', 'dbuku_judul')->get();
         $siswa = Dm_siswa::join('trks_transaksi', 'dm_siswas.id_dsiswa', '=', 'trks_transaksi.id_dsiswa')
-        ->whereNull('trks_transaksi.trks_tgl_pengembalian')
-        ->groupBy('dm_siswas.id_dsiswa')
-        ->select('dm_siswas.id_dsiswa', 'dm_siswas.dsiswa_nama')->get();
+            ->whereNull('trks_transaksi.trks_tgl_pengembalian')
+            ->groupBy('dm_siswas.id_dsiswa')
+            ->select('dm_siswas.id_dsiswa', 'dm_siswas.dsiswa_nama')->get();
+        $siswa2 = Dm_siswa::select('id_dsiswa', 'dsiswa_nama')->get();
         $pustakawan = dm_pustakawan::select('id_dpustakawan', 'dpustakawan_nama')->get();
-        return view('transaksi.transaksi', compact('buku', 'siswa', 'pustakawan'));
+        return view('transaksi.transaksi', compact('buku', 'siswa', 'pustakawan', 'siswa2'));
     }
 
     // Fungsi untuk create peminjaman
@@ -105,9 +108,7 @@ class TransaksiController extends Controller
         $id_trks = Crypt::decryptString($id);
 
         $rules = [
-            'id_dsiswa' => 'required',
             'id_dbuku' => 'required',
-            'id_dpustakawan' => 'required',
             'trks_tgl_peminjaman' => 'required|date',
             'trks_tgl_jatuh_tempo' => 'required|date',
             'trks_tgl_pengembalian' => 'required|date',
@@ -116,9 +117,7 @@ class TransaksiController extends Controller
         ];
 
         $messages = [
-            'id_dsiswa.required' => 'Siswa harus dipilih!',
             'id_dbuku.required' => 'Buku harus dipilih!',
-            'id_dpustakawan.required' => 'Pustakawan harus dipilih!',
             'trks_tgl_peminjaman.required' => 'Tanggal pinjam harus diisi!',
             'trks_tgl_jatuh_tempo.required' => 'Tanggal jatuh tempo harus diisi!',
             'trks_tgl_pengembalian.required' => 'Tanggal pengembalian harus diisi!',
@@ -134,11 +133,9 @@ class TransaksiController extends Controller
                 'errors' => $validator->errors(),
             ], 422);
         }
-
+        $id_dbuku = Crypt::decryptString($request->id_dbuku);
         Transaksi::where('id_trks', $id_trks)->update([
-            'id_dsiswa' => $request->id_dsiswa,
-            'id_dbuku' => $request->id_dbuku,
-            'id_dpustakawan' => $request->id_dpustakawan,
+            'id_dbuku' => $id_dbuku,
             'trks_tgl_peminjaman' => $request->trks_tgl_peminjaman,
             'trks_tgl_jatuh_tempo' => $request->trks_tgl_jatuh_tempo,
             'trks_tgl_pengembalian' => $request->trks_tgl_pengembalian,
@@ -156,7 +153,7 @@ class TransaksiController extends Controller
     {
         try {
             $request->validate([
-                'siswa'=> 'required',
+                'siswa' => 'required',
                 'denda' => 'numeric|min:0',
                 'buku' => 'required',
                 'jatuh_tempo' => 'required|date|after_or_equal:peminjaman',
@@ -224,6 +221,7 @@ class TransaksiController extends Controller
             ->select(
                 'trks_transaksi.trks_tgl_peminjaman',
                 'trks_transaksi.trks_tgl_jatuh_tempo',
+                'trks_transaksi.trks_tgl_pengembalian',
                 'dm_buku.dbuku_judul',
                 'dm_buku.id_dbuku',
                 'dm_siswas.dsiswa_nama',
@@ -268,10 +266,41 @@ class TransaksiController extends Controller
     }
 
 
+
     public function delete($id)
     {
         $id_trks = Crypt::decryptString($id);
-        Transaksi::where('id', $id_trks)->delete();
+        $transaksi = Transaksi::where('id_trks', $id_trks)->first();
+        $transaksi->deleted_at = Carbon::now();
+        $transaksi->save();
         return response()->json(['message' => 'Data transaksi berhasil dihapus']);
+    }
+
+
+
+    public function showModalEdit($id)
+    {
+        $transaksiId = Crypt::decryptString($id);
+        $transaksi = Transaksi::join('dm_buku', 'trks_transaksi.id_dbuku', '=', 'dm_buku.id_dbuku')
+            ->join('dm_siswas', 'trks_transaksi.id_dsiswa', '=', 'dm_siswas.id_dsiswa')
+            ->join('dm_pustakawan', 'trks_transaksi.id_dpustakawan', '=', 'dm_pustakawan.id_dpustakawan')
+            ->where('trks_transaksi.id_trks', $transaksiId)
+            ->select(
+                'trks_transaksi.trks_tgl_peminjaman',
+                'trks_transaksi.trks_tgl_jatuh_tempo',
+                'trks_transaksi.trks_tgl_pengembalian',
+                'dm_buku.id_dbuku',
+                'dm_siswas.dsiswa_nama',
+                'dm_pustakawan.dpustakawan_nama',
+                'trks_transaksi.trks_denda',
+                'trks_transaksi.trks_keterangan'
+            )
+            ->get()
+            ->map(function ($transaksi) {
+                // Enkripsi ID buku
+                $transaksi->id_dbuku = Crypt::encryptString($transaksi->id_dbuku);
+                return $transaksi;
+            });
+        return response()->json($transaksi);
     }
 }

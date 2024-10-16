@@ -179,9 +179,9 @@ Route::get('/transaksi', [TransaksiController::class, 'index'])->name('transaksi
 Route::post('/peminjaman/add', [TransaksiController::class, 'createPeminjaman'])->name('pinjam.store');
 Route::post('/pengembalian/{id?}', [TransaksiController::class, 'pengembalian']);
 Route::put('/peminjaman/update/{id}', [TransaksiController::class, 'editPeminjaman'])->name('peminjaman.update');
-Route::put('/pengembalian/update/{id}', [TransaksiController::class, 'editPengembalian'])->name('pengembalian.update');
+// Route::put('/pengembalian/update/{id}', [TransaksiController::class, 'editPengembalian'])->name('pengembalian.update');
 Route::get('/transaksi/detail/{id}', [TransaksiController::class, 'show']);
 Route::get('/transaksi/detailBuku/{id}/{id2}/{id3?}', [TransaksiController::class, 'detailBuku']);
 Route::delete('/transaksi/delete/{id}', [TransaksiController::class, 'delete'])->name('transaksi.delete');
-
+Route::get('/transaksi/detail/update/{id}', [TransaksiController::class, 'showModalEdit']);
 

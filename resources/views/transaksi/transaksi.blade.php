@@ -12,8 +12,8 @@
                                     Peminjaman
                                 </a>
                                 &nbsp; &nbsp;
-                                <a href="javascript:void(0)" class="btn btn-custom btn-danger mb-2 pengembalian" data-bs-toggle="modal"
-                                    data-bs-target="#pengembalian">
+                                <a href="javascript:void(0)" class="btn btn-custom btn-danger mb-2 pengembalian"
+                                    data-bs-toggle="modal" data-bs-target="#pengembalian">
                                     Pengembalian
                                 </a>
                             </div>
@@ -75,7 +75,7 @@
                                     <label for="last-name-column" class="fw-semibold">Nama Siswa</label>
                                     <select id="id_dsiswa" name="id_dsiswa" class="form-control shadow-sm rounded-pill">
                                         <option value="">Pilih Siswa</option>
-                                        @foreach ($siswa as $data)
+                                        @foreach ($siswa2 as $data)
                                             <option value="{{ Crypt::encryptString($data->id_dsiswa) }}">
                                                 {{ $data->dsiswa_nama }}</option>
                                         @endforeach
@@ -394,8 +394,17 @@
 
         $('#pengembalian').find('#simpan').on('click', function(e) {
             e.preventDefault();
-            console.log("masuk");
             let siswaId = $('#pengembalian').find('#id_dsiswa').val();
+            if (!siswaId) {
+                Swal.fire({
+                    icon: 'error',
+                    title: `Gagal!`,
+                    text: 'Siswa harus dipilih',
+                    editConfirmButton: false,
+                    timer: 3000
+                });
+                return;
+            }
             let token = $('meta[name="csrf-token"]').attr('content');
             let denda = $('#pengembalian').find('#trks_denda').val();
             let id_trks = $('#pengembalian').find('#id_trks').val();
@@ -573,6 +582,176 @@
                     }
                 }
             });
+        });
+
+
+        // AJAX Edit
+        $('body').on('click', '.editPeminjaman', function() {
+            let id_trks = $(this).data('id');
+            $.ajax({
+                url: `transaksi/detail/update/${id_trks}`,
+                type: "GET",
+                cache: false,
+                success: function(response) {
+                    $('#editPeminjaman').find('#id_trks').val(id_trks);
+                    $('#editPeminjaman').find('#id_dbuku').val(response[0].id_dbuku);
+                    $('#editPeminjaman').find('#id_dsiswa').text(response[0].dsiswa_nama);
+                    $('#editPeminjaman').find('#id_dpustakawan').val(response[0].id_dpustakawan);
+                    $('#editPeminjaman').find('#trks_tgl_peminjaman').val(response[0]
+                        .trks_tgl_peminjaman.split(' ')[0]);
+                    $('#editPeminjaman').find('#trks_tgl_jatuh_tempo').val(response[0]
+                        .trks_tgl_jatuh_tempo.split(' ')[0]);
+                    $('#editPeminjaman').find('#trks_tgl_pengembalian').val(response[0]
+                        .trks_tgl_pengembalian.split(' ')[0]);
+                    $('#editPeminjaman').find('#trks_denda').val(response[0].trks_denda);
+                    $('#editPeminjaman').find('#trks_status').val(response[0].trks_status);
+                    $('#editPeminjaman').find('#trks_keterangan').val(response[0].trks_keterangan);
+
+                    // Menampilkan modal edit
+                    $('#editPeminjaman').modal('show');
+                },
+                error: function(xhr) {
+                    console.log("Error fetching data:", xhr);
+                }
+            });
+        });
+
+        // Setup CSRF token untuk semua request AJAX
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $('#simpan').click(function(e) {
+            e.preventDefault();
+
+            // Define variable
+            let token = $('meta[name="csrf-token"]').attr('content');
+            let id_trks = $('#editPeminjaman').find('#id_trks').val();
+            console.log(id_trks);
+            let id_dbuku = $('#editPeminjaman').find('#id_dbuku').val(); // Kirim id_dbuku, bukan dbuku_judul
+            let id_dsiswa = $('#editPeminjaman').find('#id_dsiswa').val(); // Kirim id_dsiswa, bukan dsiswa_nama
+            let trks_tgl_peminjaman = $('#editPeminjaman').find('#trks_tgl_peminjaman').val();
+            let trks_tgl_jatuh_tempo = $('#editPeminjaman').find('#trks_tgl_jatuh_tempo').val();
+            let trks_tgl_pengembalian = $('#editPeminjaman').find('#trks_tgl_pengembalian').val();
+            let trks_denda = $('#editPeminjaman').find('#trks_denda').val();
+            let trks_keterangan = $('#editPeminjaman').find('#trks_keterangan').val();
+
+            // Clear error messages
+            $('#editPeminjaman').find('#buku-error').text('');
+            $('#editPeminjaman').find('#siswa-error').text('');
+            $('#editPeminjaman').find('#tgl-pinjam-error').text('');
+            $('#editPeminjaman').find('#tgl-jatuh-tempo-error').text('');
+            $('#editPeminjaman').find('#tgl-pengembalian-error').text('');
+            $('#editPeminjaman').find('#denda-error').text('');
+            $('#editPeminjaman').find('#keterangan-error').text('');
+
+            // Ajax
+            $.ajax({
+                url: `/peminjaman/update/${id_trks}`,
+                type: "PUT",
+                cache: false,
+                data: {
+                    "id_dbuku": id_dbuku, // Kirim id_dbuku
+                    "id_dsiswa": id_dsiswa, // Kirim id_dsiswa
+                    "trks_tgl_peminjaman": trks_tgl_peminjaman,
+                    "trks_tgl_jatuh_tempo": trks_tgl_jatuh_tempo,
+                    "trks_tgl_pengembalian": trks_tgl_pengembalian,
+                    "trks_denda": trks_denda,
+                    "trks_keterangan": trks_keterangan,
+                    "_token": token
+                },
+                success: function(response) {
+                    Swal.fire({
+                        type: 'success',
+                        icon: 'success',
+                        title: `${response.message}`,
+                        editConfirmButton: false,
+                        timer: 3000
+                    });
+                    $('#editPeminjaman').modal('toggle');
+                    $('#tbl_transaksi').DataTable().ajax.reload();
+                },
+                error: function(xhr) {
+                    if (xhr.status === 422) {
+                        var errors = JSON.parse(xhr.responseText).errors;
+                        // Show error messages for each field
+                        if (errors.id_dbuku) {
+                            $('#editPeminjaman').find('#buku-error').text(errors.id_dbuku[0]);
+                        }
+                        if (errors.id_dsiswa) {
+                            $('#editPeminjaman').find('#siswa-error').text(errors.id_dsiswa[0]);
+                        }
+                        if (errors.trks_tgl_peminjaman) {
+                            $('#editPeminjaman').find('#tgl-pinjam-error').text(errors
+                                .trks_tgl_peminjaman[0]);
+                        }
+                        if (errors.trks_tgl_jatuh_tempo) {
+                            $('#editPeminjaman').find('#tgl-jatuh-tempo-error').text(errors
+                                .trks_tgl_jatuh_tempo[0]);
+                        }
+                        if (errors.trks_tgl_pengembalian) {
+                            $('#editPeminjaman').find('#tgl-pengembalian-error').text(errors
+                                .trks_tgl_pengembalian[0]);
+                        }
+                        if (errors.trks_denda) {
+                            $('#editPeminjaman').find('#denda-error').text(errors.trks_denda[0]);
+                        }
+                        if (errors.trks_keterangan) {
+                            $('#editPeminjaman').find('#keterangan-error').text(errors.trks_keterangan[
+                                0]);
+                        }
+                    } else {
+                        console.log("Unexpected error:", xhr);
+                    }
+                }
+            });
+
+
+        });
+
+        $('body').on('click', '#btn-delete', function() {
+
+            let id_trks = $(this).data('id');
+            let token = $("meta[name='csrf-token']").attr("content");
+
+            Swal.fire({
+                title: 'Apakah Kamu Yakin?',
+                text: "ingin menghapus data ini!",
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonText: 'TIDAK',
+                confirmButtonText: 'YA, HAPUS!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    console.log('test');
+
+                    //fetch to delete data
+                    $.ajax({
+
+                        url: `/transaksi/delete/${id_trks}`,
+                        type: "DELETE",
+                        cache: false,
+                        data: {
+                            "_token": token
+                        },
+                        success: function(response) {
+
+                            //show success message
+                            Swal.fire({
+                                type: 'success',
+                                icon: 'success',
+                                title: `${response.message}`,
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
+                            $('#tbl_transaksi').DataTable().ajax.reload()
+                        }
+                    });
+                }
+            })
         });
     </script>
 @endpush
