@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('dbuku_judul');
             $table->integer('id_dpenulis');
             $table->integer('id_dpenerbit');
-            $table->integer('id_dkategori');
-            $table->integer('id_dmapel');
+            $table->integer('id_dkategori')->nullable();
+            $table->integer('id_dmapel')->nullable();
             $table->string('dbuku_thn_terbit');
             $table->string('dbuku_isbn')->unique();
             $table->integer('dbuku_jml_tersedia')->default(0);

@@ -22,7 +22,7 @@
             <td>{{ $item->dpenulis_nama_penulis }}</td>
             <td>{{ $item->dpenerbit_nama_penerbit }}</td>
             <td>{{ $item->dkategori_nama_kategori }}</td>
-            <td>{{ $item->dmapel_nama_mapel }}</td>
+            <td>@if($item->id_dmapel == null) - @else {{ $item->dmapel_nama_mapel }} @endif</td>
             <td>{{ $item->dbuku_thn_terbit }}</td>
         </tr>
     @endforeach

@@ -23,7 +23,7 @@ class LaporanController extends Controller
     {
         $filt ='';
 
-        if ($request->get('status') == '0' || $request->get('status') == '1' || $request->get('status') == '2' || $request->get('status') == '3' || $request->get('status') == '4') {
+        if ($request->get('status') == 'Sudah Lunas' || $request->get('status') == 'Belum Bayar') {
             $filt .= "AND trks_denda.tdenda_status = '" . $request->get('status') . "'";
         }
 
@@ -38,7 +38,7 @@ class LaporanController extends Controller
         if($request->get('tanggal_awal') && $request->get('tanggal_akhir')){
             $filt .= "AND DATE_FORMAT(trks_transaksi.trks_tgl_peminjaman, '%Y-%m-%d') BETWEEN '" . $request->get('tanggal_awal') . "' AND '" . $request->get('tanggal_akhir') . "'";
         }
-    
+        
         $trks = \DB::select(
             "SELECT trks_transaksi.*,
                             dm_buku.dbuku_judul,
@@ -56,7 +56,7 @@ class LaporanController extends Controller
         return DataTables::of($trks)
             ->addIndexColumn()
             ->editColumn('trks_tgl_peminjaman', function ($trks) {
-                return Carbon::parse($trks->trks_tgl_peminjaman)->format('d-m-Y');
+                return Carbon::parse($trks->trks_tgl_peminjaman)->format('d-m-Y H:i');
             })
             ->editColumn('trks_tgl_jatuh_tempo', function ($trks) {
                 return Carbon::parse($trks->trks_tgl_jatuh_tempo)->format('d-m-Y');
@@ -65,7 +65,7 @@ class LaporanController extends Controller
                 if ($trks->trks_tgl_pengembalian == null) {
                     return '-';
                 } else {
-                    return Carbon::parse($trks->trks_tgl_pengembalian)->format('d-m-Y');
+                    return Carbon::parse($trks->trks_tgl_pengembalian)->format('d-m-Y H:i');
                 }
             })
             ->editColumn('tdenda_jumlah', function ($trks) {
