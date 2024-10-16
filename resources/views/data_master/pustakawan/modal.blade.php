@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="modalCreate">Create Pustakawan</h4>
+                <h4 class="modal-title" id="modalCreate">Tambahkan Data Pustakawan</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -24,7 +24,7 @@
                         </div>
                         <div class="col-md-4 col-12">
                             <div class="form-group">
-                                <label for="country-floating">No Telpon</label>
+                                <label for="country-floating">No. Telepon</label>
                                 <input type="text" class="form-control" placeholder="NO. Telpon" name="dpustakawan_no_telp" id="dpustakawan_no_telp">
                                 <span id="telp-error" class="text-danger"></span>
                             </div>
@@ -55,7 +55,7 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="modalEdit">Perbaharui pustakawan</h4>
+                <h4 class="modal-title" id="modalEdit">Perbaharui Data Pustakawan</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -78,7 +78,7 @@
                         </div>
                         <div class="col-md-4 col-12">
                             <div class="form-group">
-                                <label for="country-floating">No Telpon</label>
+                                <label for="country-floating">No. Telepon</label>
                                 <input type="text" class="form-control" placeholder="NO. Telpon" name="dpustakawan_no_telp" id="dpustakawan_no_telp">
                                 <span class="text-danger" id="telp-error"></span>
                             </div>
@@ -113,7 +113,7 @@
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="modalDelete">Detail pustakawan</h4>
+                <h4 class="modal-title" id="modalDelete">Detail Data Pustakawan</h4>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -129,7 +129,7 @@
                 </div>
                 <div class="row justify-content-center">
                     <div class="col-4">
-                        <b>Telpon</b> : <br>
+                        <b>No.Telepon</b> : <br>
                         <p id="dpustakawan_no_telp"></p>
                     </div>
                     <div class="col-4">

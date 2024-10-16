@@ -22,7 +22,7 @@
                                     <th>No</th>
                                     <th>Nama</th>
                                     <th>Email</th>
-                                    <th>No.Telp</th>
+                                    <th>No.Telepon</th>
                                     <th>Alamat</th>
                                     <th>Status</th>
                                     <th>Aksi</th>
@@ -69,9 +69,9 @@
                         data: 'dpustakawan_status',
                         render: function(data) {
                             if (data == 1) {
-                                return '<p class = "text-success" > Aktif </p>';
+                                return '<p class = "badge bg-success" > Aktif </p>';
                             } else {
-                                return '<p class = "text-danger" > Inaktif </p>'
+                                return '<p class = "badge bg-danger" > Inaktif </p>'
                             }
                         }
                     },

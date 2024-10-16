@@ -58,6 +58,7 @@ Route::prefix('data-master')->group(function () {
     Route::post('/link-export-guru', [App\Http\Controllers\GuruController::class, 'linkExportGuru'])->name('link_export_dm_guru');
     //pdf
     Route::get('/printout-guru', [App\Http\Controllers\GuruController::class, 'printoutGuru'])->name('printout_guru');
+    Route::get('/printout-pustakawan', [App\Http\Controllers\PustakawanController::class, 'printoutPustakawan'])->name('printout_pustakawan');
     Route::post('/link-printout-guru', [App\Http\Controllers\GuruController::class, 'linkPrintoutGuru'])->name('link_printout_guru');
     Route::post('/link-printout-buku', [App\Http\Controllers\BukuController::class, 'linkPrintoutBuku'])->name('link_printout_buku');
     Route::post('/link-printout-pustakawan', [App\Http\Controllers\PustakawanController::class, 'linkPrintoutPustakawan'])->name('link_printout_pustakawan');
