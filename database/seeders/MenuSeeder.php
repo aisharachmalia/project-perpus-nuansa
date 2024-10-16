@@ -28,7 +28,7 @@ class MenuSeeder extends Seeder
         menu::create([
             'menu_nama' => 'Peminjaman dan Pegembalian',
             'menu_parent' => 0,
-            'menu_url' => 'transaksi.transaksi',
+            'menu_url' => 'transaksi',
             'menu_icon' => 'bi bi-book-half',
             'menu_urut' => 2,
             'menu_stat' => 1

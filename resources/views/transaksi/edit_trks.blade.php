@@ -7,7 +7,7 @@
                 <h5 class="modal-title" id="exampleModalCenterTitle">Edit Peminjaman</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            
+
             <!-- Form -->
             <form class="form" data-action="{{ route('peminjaman.update', ':id') }}" method="POST" id="form-edit-peminjaman">
                 @csrf
@@ -21,6 +21,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="id_dbuku">Judul Buku</label>
+                                        <input type="hidden" id="id_trks" name="id_trks">
                                         <select id="id_dbuku" name="id_dbuku" class="form-select shadow-sm rounded-pill">
                                             <option value="">Pilih Buku</option>
                                             @foreach ($buku as $data)
@@ -36,16 +37,9 @@
                                 <!-- Siswa -->
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="id_dsiswa">Nama Siswa</label>
-                                        <select id="id_dsiswa" name="id_dsiswa" class="form-select shadow-sm rounded-pill">
-                                            <option value="">Pilih Siswa</option>
-                                            @foreach ($siswa as $data)
-                                                <option value="{{ Crypt::encryptString($data->id_dsiswa) }}">
-                                                    {{ $data->dsiswa_nama }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                        <span id="siswa-error" class="text-danger small"></span>
+                                        <label for="city-column">Nama Siswa</label>
+                                        <p id="id_dsiswa" class="form-control" name="id_dsiswa">Nama Siswa</p>
+                                        <span id="siswa-error" class="text-danger"></span>
                                     </div>
                                 </div>
 
@@ -84,7 +78,7 @@
                                         <span id="denda-error" class="text-danger small"></span>
                                     </div>
                                 </div>
-                        
+
                                 <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="edit_status">Status</label>
@@ -113,7 +107,7 @@
                 <!-- Footer -->
                 <div class="modal-footer border-top-0">
                     <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Tutup</button>
-                    <button type="submit" class="btn btn-primary rounded-pill">Simpan Perubahan</button>
+                    <button type="submit" class="btn btn-primary rounded-pill" id="simpan">Simpan Perubahan</button>
                 </div>
             </form>
         </div>

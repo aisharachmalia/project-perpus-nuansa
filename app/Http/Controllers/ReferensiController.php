@@ -409,7 +409,7 @@ class ReferensiController extends Controller
         }
     }
 
-    public function exportRefensi(Request $request)
+    public function exportReferensi(Request $request)
     {
         try {
             return (new PenulisExport)->dataExport($request->all())->download('Rekap Penulis.xlsx');
