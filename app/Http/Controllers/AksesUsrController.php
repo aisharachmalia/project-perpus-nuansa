@@ -13,9 +13,8 @@ class AksesUsrController extends Controller
 {
     public function index()
     {
-        $usr = User::all();
-        $menu = DB::table('menus')->get();
-        return view('setting.akses-users.index', compact('usr', 'menu'));
+        $usr = User::whereNull('deleted_at')->get();
+        return view('setting.akses-users.index', compact('usr'));
     }
 
     public function detail($id = null)
