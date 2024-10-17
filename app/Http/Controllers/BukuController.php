@@ -299,7 +299,7 @@ class BukuController extends Controller
             $img = asset('storage/cover/default.jpg');
         }
 
-        $slc1 = '';
+        $slc1 = '<option value="">Pilih Mapel</option>';
         foreach ($mpl as $key => $value) {
             $slc1 .= '<option value="' . $value->id_mapel . '" ' . ($value->id_mapel == $bk[0]->id_dmapel ? 'selected' : '') . '>' . $value->dmapel_nama_mapel . '</option>';
         }
@@ -407,12 +407,7 @@ class BukuController extends Controller
             TCPDF::setPrintHeader(false);
             TCPDF::setPrintFooter(false);
             TCPDF::SetPageOrientation('L');
-            TCPDF::SetMargins(4, 3, 3, true);
-
-            $code = 'https://tcpdf.org/examples/example_050/';
-
             TCPDF::AddPage();
-            TCPDF::write2DBarcode($code, 'QRCODE,Q', 240, 150, 44, 35, false, 'P');
             TCPDF::writeHTML($html, true, false, true, false, '');
 
             return TCPDF::Output($filename, 'I');
