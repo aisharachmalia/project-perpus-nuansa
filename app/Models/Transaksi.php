@@ -12,6 +12,8 @@ class Transaksi extends Model
     protected $table = 'trks_transaksi';
     protected $primaryKey = 'id_trks';
 
+
+
     protected $fillable = [
         'id_dbuku',
         'id_dsiswa',

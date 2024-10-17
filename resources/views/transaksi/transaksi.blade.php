@@ -408,6 +408,7 @@
             let token = $('meta[name="csrf-token"]').attr('content');
             let denda = $('#pengembalian').find('#trks_denda').val();
             let id_trks = $('#pengembalian').find('#id_trks').val();
+            console.log(id_trks);
             let keterangan = $('#pengembalian').find('#trks_keterangan').val();
             let buku = $('#pengembalian').find('#id_dbuku').val();
             let jatuh_tempo = $('#pengembalian').find('#trks_tgl_jatuh_tempo').val();
@@ -455,7 +456,7 @@
                     $('#pengembalian').find('#siswa-error').text('');
 
                     $('#pengembalian').modal('toggle');
-                    $('#tbl_peminjaman').DataTable().ajax.reload();
+                    $('#tbl_transaksi').DataTable().ajax.reload();
                 },
                 error: function(xhr) {
                     if (xhr.status === 422) {
@@ -597,12 +598,9 @@
                     $('#editPeminjaman').find('#id_dbuku').val(response[0].id_dbuku);
                     $('#editPeminjaman').find('#id_dsiswa').text(response[0].dsiswa_nama);
                     $('#editPeminjaman').find('#id_dpustakawan').val(response[0].id_dpustakawan);
-                    $('#editPeminjaman').find('#trks_tgl_peminjaman').val(response[0]
-                        .trks_tgl_peminjaman.split(' ')[0]);
-                    $('#editPeminjaman').find('#trks_tgl_jatuh_tempo').val(response[0]
-                        .trks_tgl_jatuh_tempo.split(' ')[0]);
-                    $('#editPeminjaman').find('#trks_tgl_pengembalian').val(response[0]
-                        .trks_tgl_pengembalian.split(' ')[0]);
+                    $('#editPeminjaman').find('#trks_tgl_peminjaman').val(response[0].trks_tgl_peminjaman.split(' ')[0]);
+                    $('#editPeminjaman').find('#trks_tgl_jatuh_tempo').val(response[0].trks_tgl_jatuh_tempo.split(' ')[0]);
+                    $('#editPeminjaman').find('#trks_tgl_pengembalian').val(response[0].trks_tgl_pengembalian.split(' ')[0]);
                     $('#editPeminjaman').find('#trks_denda').val(response[0].trks_denda);
                     $('#editPeminjaman').find('#trks_status').val(response[0].trks_status);
                     $('#editPeminjaman').find('#trks_keterangan').val(response[0].trks_keterangan);
@@ -610,18 +608,10 @@
                     // Menampilkan modal edit
                     $('#editPeminjaman').modal('show');
                 },
-                error: function(xhr) {
-                    console.log("Error fetching data:", xhr);
-                }
+
             });
         });
 
-        // Setup CSRF token untuk semua request AJAX
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
 
         $('#simpan').click(function(e) {
             e.preventDefault();
@@ -629,7 +619,6 @@
             // Define variable
             let token = $('meta[name="csrf-token"]').attr('content');
             let id_trks = $('#editPeminjaman').find('#id_trks').val();
-            console.log(id_trks);
             let id_dbuku = $('#editPeminjaman').find('#id_dbuku').val(); // Kirim id_dbuku, bukan dbuku_judul
             let id_dsiswa = $('#editPeminjaman').find('#id_dsiswa').val(); // Kirim id_dsiswa, bukan dsiswa_nama
             let trks_tgl_peminjaman = $('#editPeminjaman').find('#trks_tgl_peminjaman').val();
@@ -637,6 +626,8 @@
             let trks_tgl_pengembalian = $('#editPeminjaman').find('#trks_tgl_pengembalian').val();
             let trks_denda = $('#editPeminjaman').find('#trks_denda').val();
             let trks_keterangan = $('#editPeminjaman').find('#trks_keterangan').val();
+            let trks_status = $('#editPeminjaman').find('#trks_status').val();
+
 
             // Clear error messages
             $('#editPeminjaman').find('#buku-error').text('');
@@ -660,6 +651,7 @@
                     "trks_tgl_pengembalian": trks_tgl_pengembalian,
                     "trks_denda": trks_denda,
                     "trks_keterangan": trks_keterangan,
+                    "trks_status": trks_status,
                     "_token": token
                 },
                 success: function(response) {

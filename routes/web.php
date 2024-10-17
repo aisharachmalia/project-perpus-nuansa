@@ -186,3 +186,4 @@ Route::get('/transaksi/detailBuku/{id}/{id2}/{id3?}', [TransaksiController::clas
 Route::delete('/transaksi/delete/{id}', [TransaksiController::class, 'delete'])->name('transaksi.delete');
 Route::get('/transaksi/detail/update/{id}', [TransaksiController::class, 'showModalEdit']);
 
+
