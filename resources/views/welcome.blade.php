@@ -4,15 +4,15 @@
         <div class="container2">
             <h1>Perpustakaan SMK</h1>
             <p>Selamat datang di halam perpustakaan SMK!<p>
-<button class="button">Learn More</button>
+<button class="button">Cari Tahu Lebih Banyak</button>
         </div>
     </section>
 
     <section class="search">
         <div class="container4">
             <form>
-                <input type="text" placeholder="Search books" />
-                <button type="submit">Search</button>
+                <input type="text" placeholder="Cari Buku" />
+                <button type="submit">Cari</button>
             </form>
         </div>
     </section>

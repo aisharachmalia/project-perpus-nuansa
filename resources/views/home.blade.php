@@ -306,7 +306,7 @@
 
     <div class="card" >
         <div class="card-header">
-            <h4>Buku Terbanyak Terpinjam</h4>
+           <center><h4>Buku Favorit</h4>
         </div>
         <div class="card-body">
             <div class="table-responsive">
