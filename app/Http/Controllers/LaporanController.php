@@ -24,8 +24,8 @@ class LaporanController extends Controller
 
         $filt = '';
 
-        if ($request->get('status') == 'Sudah Lunas' || $request->get('status') == 'Belum Bayar' || $request->get('status') == 'Belum Dikembalikan') {
-            $filt .= "AND trks_denda.tdenda_status = '" . $request->get('status') . "'";
+        if ($request->get('status') == '1' || $request->get('status') == '2' || $request->get('status') == '3') {
+            $filt .= "AND trks_transaksi.trks_status = '" . $request->get('status') . "' ";
         }
 
         if ($request->get('buku')) {
@@ -43,18 +43,17 @@ class LaporanController extends Controller
         if ($request->get('tanggal_awal') && $request->get('tanggal_akhir')) {
             $filt .= "AND DATE_FORMAT(trks_transaksi.trks_tgl_peminjaman, '%Y-%m-%d') BETWEEN '" . $request->get('tanggal_awal') . "' AND '" . $request->get('tanggal_akhir') . "'";
         }
-    
+
         $trks = \DB::select(
             "SELECT trks_transaksi.*,
-                    dm_buku.dbuku_judul,
-                    dm_siswas.dsiswa_nama,
-                    trks_denda.tdenda_jumlah,
-                    trks_denda.tdenda_status
-            FROM trks_transaksi
-            LEFT JOIN dm_buku ON trks_transaksi.id_dbuku = dm_buku.id_dbuku
-            LEFT JOIN dm_siswas ON trks_transaksi.id_dsiswa = dm_siswas.id_dsiswa
-            RIGHT JOIN trks_denda ON trks_transaksi.id_trks = trks_denda.id_trks
-            WHERE trks_transaksi.deleted_at IS NULL $filt"
+                            dm_buku.dbuku_judul,
+                            dm_siswas.dsiswa_nama,
+                            trks_denda.tdenda_jumlah
+                    FROM trks_transaksi
+                    LEFT JOIN dm_buku ON trks_transaksi.id_dbuku = dm_buku.id_dbuku
+                    LEFT JOIN dm_siswas ON trks_transaksi.id_dsiswa = dm_siswas.id_dsiswa
+                    LEFT JOIN trks_denda ON trks_transaksi.id_trks = trks_denda.id_trks
+                    WHERE trks_transaksi.deleted_at IS NULL $filt"
         );
 
         if ($request->ajax()) {
@@ -113,16 +112,14 @@ class LaporanController extends Controller
 
             $trks = \DB::select(
                 "SELECT trks_transaksi.*,
-                                dm_buku.dbuku_judul,
-                                dm_siswas.dsiswa_nama,
-                                trks_denda.tdenda_jumlah,
-                                trks_denda.tdenda_status
-                        FROM trks_transaksi
-                        LEFT JOIN dm_buku ON trks_transaksi.id_dbuku = dm_buku.id_dbuku
-                        LEFT JOIN dm_siswas ON trks_transaksi.id_dsiswa = dm_siswas.id_dsiswa
-                        RIGHT JOIN trks_denda ON trks_transaksi.id_trks = trks_denda.id_trks
-                        WHERE trks_transaksi.deleted_at IS NULL
-            "
+                            dm_buku.dbuku_judul,
+                            dm_siswas.dsiswa_nama,
+                            trks_denda.tdenda_jumlah
+                    FROM trks_transaksi
+                    LEFT JOIN dm_buku ON trks_transaksi.id_dbuku = dm_buku.id_dbuku
+                    LEFT JOIN dm_siswas ON trks_transaksi.id_dsiswa = dm_siswas.id_dsiswa
+                    LEFT JOIN trks_denda ON trks_transaksi.id_trks = trks_denda.id_trks
+                    WHERE trks_transaksi.deleted_at IS NULL"
             );
 
             $html = \View::make('pdf.pdf_laporan_transaksi', [

@@ -18,11 +18,13 @@
             <tr>
                 <td style="text-align: center; background-color: #fefe76;" width="5%">{{ $key + 1 }}</td>
                 <td style="text-align: left;">{{ $item->dbuku_judul }}</td>
-                <td style="text-align: center;"  width="10%">{{ $item->dsiswa_nama }}</td>
-                <td style="text-align: center;"  width="15%">{{ \Carbon\Carbon::parse($item->trks_tgl_peminjaman)->format('d-m-Y') }}</td>
-                <td style="text-align: center;"  width="15%">{{ \Carbon\Carbon::parse($item->trks_tgl_jatuh_tempo)->format('d-m-Y') }}</td>
-                <td style="text-align: center;"  width="15%">
-                    @if($item->trks_tgl_pengembalian)
+                <td style="text-align: center;" width="10%">{{ $item->dsiswa_nama }}</td>
+                <td style="text-align: center;" width="15%">
+                    {{ \Carbon\Carbon::parse($item->trks_tgl_peminjaman)->format('d-m-Y') }}</td>
+                <td style="text-align: center;" width="15%">
+                    {{ \Carbon\Carbon::parse($item->trks_tgl_jatuh_tempo)->format('d-m-Y') }}</td>
+                <td style="text-align: center;" width="15%">
+                    @if ($item->trks_tgl_pengembalian)
                         {{ \Carbon\Carbon::parse($item->trks_tgl_pengembalian)->format('d-m-Y') }}
                     @else
                         -
@@ -30,18 +32,12 @@
                 </td>
                 <td style="text-align: center;">{{ number_format($item->tdenda_jumlah, 0, ',', '.') }}</td>
                 <td style="text-align: center;">
-                    @if($item->tdenda_status == 0)
-                        Lunas
-                    @elseif($item->tdenda_status == 1)
-                        Sudah Dikembalikan
-                    @elseif($item->tdenda_status == 2)
-                        Dikembalikan
-                    @elseif($item->tdenda_status == 3)
+                    @if ($item->trks_status == 1)
                         Dipinjam
-                    @elseif($item->tdenda_status == 4)
-                        Belum Dikembalikan
+                    @elseif($item->trks_status == 2)
+                        Dikembalikan
                     @else
-                        Denda
+                        Belum Dikembalikan
                     @endif
                 </td>
             </tr>

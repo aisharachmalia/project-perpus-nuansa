@@ -24,18 +24,12 @@
             <td>{{ $item->trks_tgl_pengembalian }}</td>
             <td>{{ $item->tdenda_jumlah }}</td>
             <td style="text-align: center;">
-                @if($item->tdenda_status == 0)
-                    Lunas
-                @elseif($item->tdenda_status == 1)
-                    Sudah Dikembalikan
-                @elseif($item->tdenda_status == 2)
-                    Dikembalikan
-                @elseif($item->tdenda_status == 3)
+                @if($item->trks_status == 1)
                     Dipinjam
-                @elseif($item->tdenda_status == 4)
-                    Belum Dikembalikan
+                @elseif($item->trks_status == 2)
+                    Dikembalikan
                 @else
-                    Denda
+                    Belum Dikembalikan
                 @endif
             </td>
         </tr>
