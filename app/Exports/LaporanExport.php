@@ -25,12 +25,11 @@ class LaporanExport implements FromView
             "SELECT trks_transaksi.*,
                             dm_buku.dbuku_judul,
                             dm_siswas.dsiswa_nama,
-                            trks_denda.tdenda_jumlah,
-                            trks_denda.tdenda_status
+                            trks_denda.tdenda_jumlah
                     FROM trks_transaksi
                     LEFT JOIN dm_buku ON trks_transaksi.id_dbuku = dm_buku.id_dbuku
                     LEFT JOIN dm_siswas ON trks_transaksi.id_dsiswa = dm_siswas.id_dsiswa
-                    RIGHT JOIN trks_denda ON trks_transaksi.id_trks = trks_denda.id_trks
+                    LEFT JOIN trks_denda ON trks_transaksi.id_trks = trks_denda.id_trks
                     WHERE trks_transaksi.deleted_at IS NULL"
         );
 

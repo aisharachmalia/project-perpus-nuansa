@@ -68,9 +68,9 @@
                                 <span>Status</span>
                                 <select id="filter-status" class="form-control">
                                     <option value="">All</option>
-                                    <option value="Sudah Lunas">Sudah Lunas</option>
-                                    <option value="Belum Bayar">Belum Bayar</option>
-                                    <option value="Belum Dikembalikan">Belum Dikembalikan</option>
+                                    <option value="1">Dipinjam</option>
+                                    <option value="2">Dikembalikan</option>
+                                    <option value="3">Belum Dikembalikan</option>
                                 </select>
                             </div>
 
@@ -220,19 +220,21 @@
                         data: 'trks_tgl_jatuh_tempo'
                     },
                     {
+                        class: "text-center",
                         data: 'trks_tgl_pengembalian'
                     },
                     {
+                        class: "text-center",
                         data: 'tdenda_jumlah'
                     },
                     {
                         class: "text-center",
-                        data: 'tdenda_status',
+                        data: 'trks_status',
                         render: function(data) {
-                            if (data == 'Sudah Lunas') {
-                                return '<span class="badge bg-light-success">' + data + '</span>';
-                            } else if (data == 'Belum Bayar') {
-                                return '<span class="badge bg-light-danger">' + data + '</span>';
+                            if (data == '1') {
+                                return '<span class="badge bg-light-info"> Dipinjam </span>';
+                            } else if (data == '2') {
+                                return '<span class="badge bg-light-success"> Dikembalikan </span>';
                             } else {
                                 return '<span class="badge bg-light-warning"> Belum Dikembalikan </span>';
                             }
