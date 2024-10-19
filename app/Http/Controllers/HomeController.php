@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Dm_buku;
 use App\Models\Dm_siswa;
-use app\Models\dm_kategori;
+use App\Models\dm_kategori;
 use App\Models\Transaksi;
 use App\Models\Trks_denda;
 use Illuminate\Http\Request;
@@ -12,28 +12,17 @@ use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         $this->middleware('auth');
     }
 
-    /**
-     * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
-     */
     public function index(Request $request)
     {
-        // Ambil bulan dan tahun dari request
         $bulan = $request->input('bulan');
         $tahun = $request->input('tahun');
 
-        // Query peminjaman terbanyak tanpa relasi dengan join manual
+        // Query peminjaman terbanyak
         $peminjaman_terbanyak = DB::table('trks_transaksi')
             ->join('dm_siswas', 'trks_transaksi.id_dsiswa', '=', 'dm_siswas.id_dsiswa')
             ->select('dm_siswas.dsiswa_nama', DB::raw('COUNT(trks_transaksi.id_dbuku) as total_bacaan'))
@@ -48,32 +37,34 @@ class HomeController extends Controller
             ->take(5)
             ->get();
 
-        // Query buku yang paling banyak dipinjam dengan filter
+        // Query buku yang paling banyak dipinjam
         $bukuTerbanyakDipinjam = DB::table('trks_transaksi')
             ->join('dm_buku', 'trks_transaksi.id_dbuku', '=', 'dm_buku.id_dbuku')
             ->select('dm_buku.dbuku_judul', DB::raw('COUNT(trks_transaksi.id_dbuku) as total_peminjaman'))
-            ->when($bulan, function ($query) use ($bulan, $tahun) {
-                return $query->whereMonth('trks_tgl_peminjaman', $bulan)
-                    ->when($tahun, function ($query) use ($tahun) {
-                        return $query->whereYear('trks_tgl_peminjaman', $tahun);
-                    });
+            ->when($bulan, function ($query) use ($bulan) {
+                return $query->whereMonth('trks_tgl_peminjaman', $bulan);
+            })
+            ->when($tahun, function ($query) use ($tahun) {
+                return $query->whereYear('trks_tgl_peminjaman', $tahun);
             })
             ->groupBy('dm_buku.id_dbuku', 'dm_buku.dbuku_judul')
             ->orderBy('total_peminjaman', 'desc')
             ->take(5)
             ->get();
 
-        // Mengambil statistik peminjaman bulanan dengan filter
-        $statistikPeminjaman = Transaksi::select(DB::raw('MONTH(trks_tgl_peminjaman) as bulan'), DB::raw('COUNT(*) as total'))
-            ->when($bulan, function ($query) use ($bulan, $tahun) {
-                return $query->whereMonth('trks_tgl_peminjaman', $bulan)
-                    ->when($tahun, function ($query) use ($tahun) {
-                        return $query->whereYear('trks_tgl_peminjaman', $tahun);
-                    });
-            })
-            ->groupBy('bulan')
-            ->orderBy('bulan')
-            ->get();
+        // Statistik peminjaman bulanan
+        $statistikPeminjaman = DB::table('trks_transaksi')
+        ->select(DB::raw('MONTH(trks_tgl_peminjaman) as bulan'), DB::raw('COUNT(*) as total'))
+        ->when($bulan, function ($query) use ($bulan) {
+            return $query->whereMonth('trks_tgl_peminjaman', $bulan);
+        })
+        ->when($tahun, function ($query) use ($tahun) {
+            return $query->whereYear('trks_tgl_peminjaman', $tahun);
+        })
+        ->groupBy('bulan')
+        ->orderBy('bulan')
+        ->get();
+    
         // Query kategori yang paling banyak dipinjam
         $kategoriData = DB::table('trks_transaksi')
             ->join('dm_buku', 'trks_transaksi.id_dbuku', '=', 'dm_buku.id_dbuku')
@@ -87,14 +78,15 @@ class HomeController extends Controller
             })
             ->groupBy('dm_kategoris.dkategori_nama_kategori')
             ->get();
-// Format data untuk Highcharts
-$chartData = [];
-foreach ($kategoriData as $kategori) {
-    $chartData[] = [
-        'name' => $kategori->dkategori_nama_kategori,
-        'y' => $kategori->total_peminjaman,
-    ];
-}
+
+        // Format data untuk Highcharts
+        $chartData = [];
+        foreach ($kategoriData as $kategori) {
+            $chartData[] = [
+                'name' => $kategori->dkategori_nama_kategori,
+                'y' => $kategori->total_peminjaman,
+            ];
+        }
 
         // Mempersiapkan data untuk Highcharts
         $data = [];
@@ -105,16 +97,17 @@ foreach ($kategoriData as $kategori) {
 
         // Hitung total siswa, buku, peminjaman, dan denda
         $totalSiswa = Dm_siswa::whereNull('deleted_at')->count();
-        $totalBuku = Dm_buku::whereNull('deleted_at') // Jika Anda menggunakan soft delete
+
+        $totalBuku = DB::table('dm_buku')->whereNull('deleted_at')
             ->when($bulan, function ($query) use ($bulan) {
-                return $query->whereMonth('created_at', $bulan); // Sesuaikan dengan kolom tanggal yang ada
+                return $query->whereMonth('created_at', $bulan);
             })
             ->when($tahun, function ($query) use ($tahun) {
-                return $query->whereYear('created_at', $tahun); // Sesuaikan dengan kolom tanggal yang ada
+                return $query->whereYear('created_at', $tahun);
             })
             ->sum('dbuku_jml_total');
 
-        $totalPeminjaman = Transaksi::whereNull('deleted_at')
+        $totalPeminjaman = DB::table('trks_transaksi')->whereNull('deleted_at')
             ->when($bulan, function ($query) use ($bulan) {
                 return $query->whereMonth('trks_tgl_peminjaman', $bulan);
             })
@@ -123,18 +116,17 @@ foreach ($kategoriData as $kategori) {
             })
             ->count();
 
-        $totalDenda = Trks_denda::whereNull('deleted_at')
+        $totalDenda = DB::table('trks_denda')->whereNull('deleted_at')
             ->when($bulan, function ($query) use ($bulan) {
-                return $query->whereMonth('tdenda_tgl_bayar', $bulan); // Sesuaikan dengan kolom tanggal yang ada
+                return $query->whereMonth('tdenda_tgl_bayar', $bulan);
             })
             ->when($tahun, function ($query) use ($tahun) {
                 return $query->whereYear('tdenda_tgl_bayar', $tahun);
             })
-            ->count(); // Pastikan kolom 'denda' memang digunakan untuk menyimpan nilai denda
+            ->sum('tdenda_jumlah'); // Pastikan kolom 'tdenda_jumlah' digunakan untuk menyimpan nilai denda
 
         // Kirim hasil ke view
-        return view('home', compact('totalSiswa', 'totalBuku', 'totalPeminjaman', 'totalDenda', 'peminjaman_terbanyak', 'statistikPeminjaman', 'data', 'bukuTerbanyakDipinjam', 'chartData'));
+        return view('home', compact('totalSiswa', 'totalBuku', 'totalPeminjaman', 'totalDenda', 'peminjaman_terbanyak', 'statistikPeminjaman', 'data', 'bukuTerbanyakDipinjam', 'chartData', 'bulan', 'tahun'));
 
     }
-
 }

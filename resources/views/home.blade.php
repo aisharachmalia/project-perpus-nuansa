@@ -80,6 +80,22 @@
     font-style: italic;
     padding: 20px 0;
 }
+.form-group {
+        display: inline-block; /* Membiarkan form-group berdampingan */
+        text-align: left; /* Menjaga label sejajar dengan dropdown */
+    }
+    .form-control {
+        width: 200px; /* Mengatur lebar dropdown */
+    }
+    .btn {
+        transition: background-color 0.3s ease; /* Animasi untuk tombol */
+    }
+    .btn:hover {
+        background-color: #0056b3; /* Mengubah warna saat hover */
+    }
+    h5 {
+        font-weight: bold; /* Membuat judul lebih menonjol */
+    }
 
 </style>
 
@@ -100,38 +116,39 @@
 <div class="page-heading">
     <h3>Dashboard Perpustakaan</h3>
 </div>
+
+
 <div class="row mb-4">
-    <div class="col-6">
-        <form action="{{ route('home') }}" method="GET" class="form-inline">
-            <div class="form-group">
+    <div class="col-12">
+        <form action="{{ route('home') }}" method="GET" class="form-inline justify-content-center">
+            <div class="form-group mx-2">
                 <label for="bulan">Bulan:</label>
-                <select name="bulan" id="bulan" class="form-control mx-2" onchange="this.form.submit()">
-                    <option value="">-- Pilih Bulan --</option>
-                    @foreach (['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'] as $index => $bulan)
-                        <option value="{{ $index + 1 }}" {{ request('bulan') == ($index + 1) ? 'selected' : '' }}>{{ $bulan }}</option>
-                    @endforeach
-                </select>
+                <div class="mt-1">
+                    <select name="bulan" id="bulan" class="form-control">
+                        <option value="">-- Pilih Bulan --</option>
+                        @foreach (['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'] as $index => $bulan)
+                            <option value="{{ $index + 1 }}" {{ request('bulan') == ($index + 1) ? 'selected' : '' }}>{{ $bulan }}</option>
+                        @endforeach
+                    </select>
+                </div>
             </div>
-        </form>
-        
-    </div>
-    <div class="col-6">
-        <form action="{{ route('home') }}" method="GET" class="form-inline"> 
-           
-            <div class="form-group">
+            <div class="form-group mx-2">
                 <label for="tahun">Tahun:</label>
-                <select name="tahun" id="tahun" class="form-control mx-2" onchange="this.form.submit()">
-                    <option value="">-- Pilih Tahun --</option>
-                    @for ($tahun = date('Y'); $tahun >= 2000; $tahun--)
-                        <option value="{{ $tahun }}" {{ request('tahun') == $tahun ? 'selected' : '' }}>{{ $tahun }}</option>
-                    @endfor
-                </select>
+                <div class="mt-1">
+                    <select name="tahun" id="tahun" class="form-control">
+                        <option value="">-- Pilih Tahun --</option>
+                        @for ($tahun = date('Y'); $tahun >= 2000; $tahun--)
+                            <option value="{{ $tahun }}" {{ request('tahun') == $tahun ? 'selected' : '' }}>{{ $tahun }}</option>
+                        @endfor
+                    </select>
+                </div>
+            </div>
+            <div class="form-group mx-2 mt-1">
+                <button type="submit" class="btn btn-primary">Filter</button>
             </div>
         </form>
     </div>
 </div>
-
-
 <div class="page-content">
     <section class="row">
         <div class="col-12 col-lg-9">
@@ -193,7 +210,7 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="stats-icon red">
-                                            <i class="fas fa-coins"></i>
+                                            <i class="fas fa-exclamation-circle"></i>
                                         </div>
                                     </div>
                                     <div class="col-md-8">
@@ -274,7 +291,7 @@
                 <div class="card-body px-3 py-4-5">
                     <div class="row">
                         <div class="col-md-4">
-                            <div class="stats-icon red">
+                            <div class="stats-icon bg-warning">
                                 <i class="fas fa-coins"></i>
                             </div>
                         </div>
@@ -372,8 +389,8 @@ Highcharts.chart('chart_profile', {
     title: { text: null },
     chart: {
         type: 'pie',
-        height: 280,
-        width: 280 // Sesuaikan dengan height card
+        height: 300,
+        width: 320 // Sesuaikan dengan height card
     },
     series: [{
         name: 'Kategori',
@@ -396,3 +413,4 @@ Highcharts.chart('chart_profile', {
 </script>
 
 @endpush
+
