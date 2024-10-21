@@ -22,6 +22,8 @@ return new class extends Migration
             $table->text('dsiswa_alamat')->nullable();
             $table->tinyInteger('dsiswa_sts')->default(1);
             $table->integer('id_dkelas');
+            $table->tinyInteger('dsiswa_flag')->default(0);
+            $table->integer('id_usr');
             $table->timestamps();
             $table->softDeletes();
         });
