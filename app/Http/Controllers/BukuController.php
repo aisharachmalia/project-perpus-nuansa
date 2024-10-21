@@ -22,15 +22,11 @@ class BukuController extends Controller
     {
         try {
             $buku = \DB::select("SELECT dm_buku.*, 
-                                            dm_mapels.dmapel_nama_mapel, 
                                             dm_penulis.dpenulis_nama_penulis, 
-                                            dm_penerbits.dpenerbit_nama_penerbit, 
-                                            dm_kategoris.dkategori_nama_kategori 
+                                            dm_penerbits.dpenerbit_nama_penerbit
                                     FROM dm_buku 
                                     LEFT JOIN dm_penulis ON dm_buku.id_dpenulis = dm_penulis.id_dpenulis 
                                     LEFT JOIN dm_penerbits ON dm_buku.id_dpenerbit = dm_penerbits.id_dpenerbit 
-                                    LEFT JOIN dm_kategoris ON dm_buku.id_dkategori = dm_kategoris.id_dkategori 
-                                    LEFT JOIN dm_mapels ON dm_buku.id_dmapel = dm_mapels.id_mapel 
                                     WHERE dm_buku.deleted_at IS NULL;
                                 ");
 
@@ -84,15 +80,7 @@ class BukuController extends Controller
                     'dbuku_edisi' => 'required',
                     'id_dpenulis' => 'required',
                     'id_dpenerbit' => 'required',
-                    'id_dkategori' => 'required',
-                    'id_dmapel' => 'nullable',
                 ];
-
-                if ($request->id_dkategori == '1') {
-                    $rules['id_dmapel'] = 'required';
-                } else {
-                    $rules['id_dmapel'] = 'nullable';
-                }
 
                 $messages = [
                     'dbuku_cover.required' => 'Cover Buku harus diisi!',
@@ -110,8 +98,6 @@ class BukuController extends Controller
                     'dbuku_jml_total.required' => 'Jumlah harus diisi!',
                     'id_dpenulis.required' => 'Penulis harus diisi!',
                     'id_dpenerbit.required' => 'Penerbit harus diisi!',
-                    'id_dkategori.required' => 'Kategori harus diisi!',
-                    'id_dmapel.required' => 'Mata Pelajaran harus diisi untuk Buku Paket!',
                 ];
 
                 // Lakukan validasi
@@ -136,15 +122,16 @@ class BukuController extends Controller
                 }
 
                 // Create the transaction with mapel ID
+                $penerbit = Crypt::decryptString($request->id_dpenerbit);
+                $penulis = Crypt::decryptString($request->id_dpenulis);
 
+                // Update data
                 dm_buku::where('id_dbuku', $id_bk->id_dbuku)->update([
                     'dbuku_cover' => $cover,
                     'dbuku_judul' => $request->dbuku_judul,
                     'dbuku_isbn' => $request->dbuku_isbn,
-                    'id_dpenulis' => $request->id_dpenulis,
-                    'id_dpenerbit' => $request->id_dpenerbit,
-                    'id_dkategori' => $request->id_dkategori,
-                    'id_dmapel' => $request->id_dmapel,
+                    'id_dpenulis' => $penulis,
+                    'id_dpenerbit' => $penerbit,
                     'dbuku_thn_terbit' => $request->dbuku_thn_terbit,
                     'dbuku_lokasi_rak' => $request->dbuku_lokasi_rak,
                     'dbuku_bahasa' => $request->dbuku_bahasa,
@@ -171,15 +158,8 @@ class BukuController extends Controller
                     'dbuku_edisi' => 'required',
                     'id_dpenulis' => 'required',
                     'id_dpenerbit' => 'required',
-                    'id_dkategori' => 'required',
-                    'id_dmapel' => 'nullable',
                 ];
 
-                if ($request->id_dkategori == '1') {
-                    $rules['id_dmapel'] = 'required';
-                } else {
-                    $rules['id_dmapel'] = 'nullable';
-                }
 
                 $messages = [
                     'dbuku_cover.required' => 'Cover Buku harus diisi!',
@@ -197,8 +177,6 @@ class BukuController extends Controller
                     'dbuku_jml_total.required' => 'Jumlah harus diisi!',
                     'id_dpenulis.required' => 'Penulis harus diisi!',
                     'id_dpenerbit.required' => 'Penerbit harus diisi!',
-                    'id_dkategori.required' => 'Kategori harus diisi!',
-                    'id_dmapel.required' => 'Mata Pelajaran harus diisi untuk Buku Paket!',
                 ];
 
                 // Lakukan validasi
@@ -227,10 +205,8 @@ class BukuController extends Controller
                     'dbuku_cover' => $cover,
                     'dbuku_judul' => $request->dbuku_judul,
                     'dbuku_isbn' => $request->dbuku_isbn,
-                    'id_dpenulis' => $request->id_dpenulis,
-                    'id_dpenerbit' => $request->id_dpenerbit,
-                    'id_dkategori' => $request->id_dkategori,
-                    'id_dmapel' => $request->id_dmapel,
+                    'id_dpenulis' => Crypt::decryptString($request->id_dpenulis),
+                    'id_dpenerbit' => Crypt::decryptString($request->id_dpenerbit),
                     'dbuku_thn_terbit' => $request->dbuku_thn_terbit,
                     'dbuku_lokasi_rak' => $request->dbuku_lokasi_rak,
                     'dbuku_bahasa' => $request->dbuku_bahasa,
@@ -247,7 +223,7 @@ class BukuController extends Controller
                 $success = true;
                 $errors = [];
                 $sts_kode = 200;
-            } else if($request->isMethod('delete')) {
+            } else if ($request->isMethod('delete')) {
                 $idb = Crypt::decryptString($id);
 
                 $b = dm_buku::find($idb);
@@ -274,23 +250,17 @@ class BukuController extends Controller
     public function showBuku($id = null)
     {
         $id_bk = Crypt::decryptString($id);
-        $bk = \DB::select("SELECT dm_buku.*, 
-                                            dm_mapels.dmapel_nama_mapel, 
+        $bk = \DB::select("SELECT dm_buku.*,                                         
                                             dm_penulis.dpenulis_nama_penulis, 
-                                            dm_penerbits.dpenerbit_nama_penerbit, 
-                                            dm_kategoris.dkategori_nama_kategori 
+                                            dm_penerbits.dpenerbit_nama_penerbit
                                     FROM dm_buku 
                                     LEFT JOIN dm_penulis ON dm_buku.id_dpenulis = dm_penulis.id_dpenulis 
                                     LEFT JOIN dm_penerbits ON dm_buku.id_dpenerbit = dm_penerbits.id_dpenerbit 
-                                    LEFT JOIN dm_kategoris ON dm_buku.id_dkategori = dm_kategoris.id_dkategori 
-                                    LEFT JOIN dm_mapels ON dm_buku.id_dmapel = dm_mapels.id_mapel 
                                     WHERE dm_buku.id_dbuku = $id_bk;
                             ");
 
         $pnls = \DB::select("SELECT * FROM dm_penulis");
         $pnb = \DB::select("SELECT * FROM dm_penerbits");
-        $ktr = \DB::select("SELECT * FROM dm_kategoris");
-        $mpl = \DB::table('dm_mapels')->get();
 
         $img = '';
         if ($bk[0]->dbuku_cover != null) {
@@ -299,24 +269,14 @@ class BukuController extends Controller
             $img = asset('storage/cover/default.jpg');
         }
 
-        $slc1 = '<option value="">Pilih Mapel</option>';
-        foreach ($mpl as $key => $value) {
-            $slc1 .= '<option value="' . $value->id_mapel . '" ' . ($value->id_mapel == $bk[0]->id_dmapel ? 'selected' : '') . '>' . $value->dmapel_nama_mapel . '</option>';
-        }
-
-        $slc2 = '';
-        foreach ($ktr as $key => $value) {
-            $slc2 .= '<option value="' . $value->id_dkategori . '" ' . ($value->id_dkategori == $bk[0]->id_dkategori ? 'selected' : '') . '>' . $value->dkategori_nama_kategori . '</option>';
-        }
-
         $slc3 = '';
         foreach ($pnb as $key => $value) {
-            $slc3 .= '<option value="' . $value->id_dpenerbit . '" ' . ($value->id_dpenerbit == $bk[0]->id_dpenerbit ? 'selected' : '') . '>' . $value->dpenerbit_nama_penerbit . '</option>';
+            $slc3 .= '<option value="' . Crypt::encryptString($value->id_dpenerbit) . '" ' . ($value->id_dpenerbit == $bk[0]->id_dpenerbit ? 'selected' : '') . '>' . $value->dpenerbit_nama_penerbit . '</option>';
         }
 
         $slc4 = '';
         foreach ($pnls as $key => $value) {
-            $slc4 .= '<option value="' . $value->id_dpenulis . '" ' . ($value->id_dpenulis == $bk[0]->id_dpenulis ? 'selected' : '') . '>' . $value->dpenulis_nama_penulis . '</option>';
+            $slc4 .= '<option value="' . Crypt::encryptString($value->id_dpenulis) . '" ' . ($value->id_dpenulis == $bk[0]->id_dpenulis ? 'selected' : '') . '>' . $value->dpenulis_nama_penulis . '</option>';
         }
 
         $tahunMulai = 2000;
@@ -348,7 +308,7 @@ class BukuController extends Controller
         }
 
 
-        return response()->json(['bk' => $bk, 'img' => $img, 'slc1' => $slc1, 'slc2' => $slc2, 'slc3' => $slc3, 'slc4' => $slc4, 'slc5' => $slc5, 'slc6' => $slc6, 'slc7' => $slc7, 'slc8' => $slc8]);
+        return response()->json(['bk' => $bk, 'img' => $img, 'slc3' => $slc3, 'slc4' => $slc4, 'slc5' => $slc5, 'slc6' => $slc6, 'slc7' => $slc7, 'slc8' => $slc8]);
     }
     //
     public function linkExportBuku(Request $request)
@@ -387,15 +347,11 @@ class BukuController extends Controller
 
 
             $buku = \DB::select("SELECT dm_buku.*, 
-                                                dm_mapels.dmapel_nama_mapel, 
                                                 dm_penulis.dpenulis_nama_penulis, 
-                                                dm_penerbits.dpenerbit_nama_penerbit, 
-                                                dm_kategoris.dkategori_nama_kategori 
+                                                dm_penerbits.dpenerbit_nama_penerbit
                                         FROM dm_buku 
                                         LEFT JOIN dm_penulis ON dm_buku.id_dpenulis = dm_penulis.id_dpenulis 
                                         LEFT JOIN dm_penerbits ON dm_buku.id_dpenerbit = dm_penerbits.id_dpenerbit 
-                                        LEFT JOIN dm_kategoris ON dm_buku.id_dkategori = dm_kategoris.id_dkategori 
-                                        LEFT JOIN dm_mapels ON dm_buku.id_dmapel = dm_mapels.id_mapel 
                                         WHERE dm_buku.deleted_at IS NULL;
                                     ");
 

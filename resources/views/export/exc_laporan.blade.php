@@ -22,7 +22,7 @@
             <td>{{ $item->trks_tgl_peminjaman }}</td>
             <td>{{ $item->trks_tgl_jatuh_tempo }}</td>
             <td>{{ $item->trks_tgl_pengembalian }}</td>
-            <td>{{ $item->tdenda_jumlah }}</td>
+            <td>Rp.{{ $number_format($item->trks_denda, 0, ',', '.') }}</td>
             <td style="text-align: center;">
                 @if($item->trks_status == 1)
                     Dipinjam

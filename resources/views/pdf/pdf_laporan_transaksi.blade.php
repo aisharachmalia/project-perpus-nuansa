@@ -30,7 +30,7 @@
                         -
                     @endif
                 </td>
-                <td style="text-align: center;">{{ number_format($item->tdenda_jumlah, 0, ',', '.') }}</td>
+                <td style="text-align: center;">Rp. {{ number_format($item->tdenda_jumlah, 0, ',', '.') }}</td>
                 <td style="text-align: center;">
                     @if ($item->trks_status == 1)
                         Dipinjam
