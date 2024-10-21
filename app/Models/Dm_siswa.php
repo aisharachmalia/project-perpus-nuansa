@@ -21,5 +21,7 @@ class Dm_siswa extends Model
         'dsiswa_alamat',
         'dsiswa_sts',
         'id_dkelas',
+        'dsiswa_flag',
+        'id_usr',
     ];
 }

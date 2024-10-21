@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('trks_transaksi', function (Blueprint $table) {
             $table->increments('id_trks');
             $table->integer('id_dbuku');
+            $table->integer('id_dsbuku');
             $table->integer('id_dsiswa');
             $table->integer('id_dpustakawan');
             $table->dateTime('trks_tgl_peminjaman');
