@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Dm_buku;
 use App\Models\Dm_siswa;
 use App\Models\dm_kategori;
+use App\Models\dm_penulis;
 use App\Models\Transaksi;
 use App\Models\Trks_denda;
 use Illuminate\Http\Request;
@@ -38,19 +39,27 @@ class HomeController extends Controller
             ->get();
 
         // Query buku yang paling banyak dipinjam
-        $bukuTerbanyakDipinjam = DB::table('trks_transaksi')
-            ->join('dm_buku', 'trks_transaksi.id_dbuku', '=', 'dm_buku.id_dbuku')
-            ->select('dm_buku.dbuku_judul', DB::raw('COUNT(trks_transaksi.id_dbuku) as total_peminjaman'))
-            ->when($bulan, function ($query) use ($bulan) {
-                return $query->whereMonth('trks_tgl_peminjaman', $bulan);
-            })
-            ->when($tahun, function ($query) use ($tahun) {
-                return $query->whereYear('trks_tgl_peminjaman', $tahun);
-            })
-            ->groupBy('dm_buku.id_dbuku', 'dm_buku.dbuku_judul')
-            ->orderBy('total_peminjaman', 'desc')
-            ->take(5)
-            ->get();
+       // Query buku yang paling banyak dipinjam dengan cover dan penulis
+$bukuTerbanyakDipinjam = DB::table('trks_transaksi')
+->join('dm_buku', 'trks_transaksi.id_dbuku', '=', 'dm_buku.id_dbuku')
+->join('dm_penulis', 'dm_buku.id_dpenulis', '=', 'dm_penulis.id_dpenulis') // Join dengan tabel penulis
+->select(
+    'dm_buku.dbuku_judul', 
+    'dm_buku.dbuku_cover',  // Ambil data cover buku
+    'dm_penulis.dpenulis_nama_penulis', // Ambil nama penulis
+    DB::raw('COUNT(trks_transaksi.id_dbuku) as total_peminjaman')
+)
+->when($bulan, function ($query) use ($bulan) {
+    return $query->whereMonth('trks_tgl_peminjaman', $bulan);
+})
+->when($tahun, function ($query) use ($tahun) {
+    return $query->whereYear('trks_tgl_peminjaman', $tahun);
+})
+->groupBy('dm_buku.id_dbuku', 'dm_buku.dbuku_judul', 'dm_buku.dbuku_cover', 'dm_penulis.dpenulis_nama_penulis') // Group by sesuai data yang diambil
+->orderBy('total_peminjaman', 'desc')
+->take(5)
+->get();
+
 
         // Statistik peminjaman bulanan
         $statistikPeminjaman = DB::table('trks_transaksi')
@@ -126,7 +135,7 @@ class HomeController extends Controller
             ->sum('tdenda_jumlah'); // Pastikan kolom 'tdenda_jumlah' digunakan untuk menyimpan nilai denda
 
         // Kirim hasil ke view
-        return view('home', compact('totalSiswa', 'totalBuku', 'totalPeminjaman', 'totalDenda', 'peminjaman_terbanyak', 'statistikPeminjaman', 'data', 'bukuTerbanyakDipinjam', 'chartData', 'bulan', 'tahun'));
+        return view('home', compact('totalSiswa', 'totalBuku', 'totalPeminjaman', 'totalDenda', 'peminjaman_terbanyak', 'statistikPeminjaman', 'data', 'bukuTerbanyakDipinjam', 'chartData', 'bulan', 'tahun',));
 
     }
 }
