@@ -342,13 +342,13 @@
                                             @else
                                                 @foreach($bukuTerbanyakDipinjam as $buku)
                                                     <tr>
-                                                        <td>
+                                                        <td class="col-4">
                                                             <!-- Menampilkan gambar cover buku -->
-                                                            <img src="{{ asset('assets/images/' . $buku->dbuku_cover) }}" alt="Cover Buku" style="width: 50px; height: 70px;">
+                                                            <img src="{{ asset('storage/cover/' . $buku->dbuku_cover) }}" alt="Cover Buku" style="width: 50px; height: 70px;">
                                                         </td>
-                                                        <td>{{ $buku->dbuku_judul }}</td>
-                                                        <td>{{ $buku->dpenulis_nama_penulis }}</td> <!-- Menampilkan nama penulis -->
-                                                        <td>{{ $buku->total_peminjaman }}</td>
+                                                        <td class="col-3">{{ $buku->dbuku_judul }}</td>
+                                                        <td class="col-3">{{ $buku->dpenulis_nama_penulis }}</td> <!-- Menampilkan nama penulis -->
+                                                        <td class="col-2">{{ $buku->total_peminjaman }}</td>
                                                     </tr>
                                                 @endforeach
                                             @endif

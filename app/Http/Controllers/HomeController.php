@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Dm_buku;
 use App\Models\Dm_siswa;
-use App\Models\dm_kategori;
-use App\Models\dm_penulis;
+use App\Models\Dm_penulis;
 use App\Models\Transaksi;
 use App\Models\Trks_denda;
 use Illuminate\Http\Request;
@@ -20,10 +19,11 @@ class HomeController extends Controller
 
     public function index(Request $request)
     {
+        // Ambil input bulan dan tahun dari request
         $bulan = $request->input('bulan');
         $tahun = $request->input('tahun');
 
-        // Query peminjaman terbanyak
+        // Query untuk peminjaman terbanyak
         $peminjaman_terbanyak = DB::table('trks_transaksi')
             ->join('dm_siswas', 'trks_transaksi.id_dsiswa', '=', 'dm_siswas.id_dsiswa')
             ->select('dm_siswas.dsiswa_nama', DB::raw('COUNT(trks_transaksi.id_dbuku) as total_bacaan'))
@@ -39,42 +39,40 @@ class HomeController extends Controller
             ->get();
 
         // Query buku yang paling banyak dipinjam
-       // Query buku yang paling banyak dipinjam dengan cover dan penulis
-$bukuTerbanyakDipinjam = DB::table('trks_transaksi')
-->join('dm_buku', 'trks_transaksi.id_dbuku', '=', 'dm_buku.id_dbuku')
-->join('dm_penulis', 'dm_buku.id_dpenulis', '=', 'dm_penulis.id_dpenulis') // Join dengan tabel penulis
-->select(
-    'dm_buku.dbuku_judul', 
-    'dm_buku.dbuku_cover',  // Ambil data cover buku
-    'dm_penulis.dpenulis_nama_penulis', // Ambil nama penulis
-    DB::raw('COUNT(trks_transaksi.id_dbuku) as total_peminjaman')
-)
-->when($bulan, function ($query) use ($bulan) {
-    return $query->whereMonth('trks_tgl_peminjaman', $bulan);
-})
-->when($tahun, function ($query) use ($tahun) {
-    return $query->whereYear('trks_tgl_peminjaman', $tahun);
-})
-->groupBy('dm_buku.id_dbuku', 'dm_buku.dbuku_judul', 'dm_buku.dbuku_cover', 'dm_penulis.dpenulis_nama_penulis') // Group by sesuai data yang diambil
-->orderBy('total_peminjaman', 'desc')
-->take(5)
-->get();
+        $bukuTerbanyakDipinjam = DB::table('trks_transaksi')
+            ->join('dm_buku', 'trks_transaksi.id_dbuku', '=', 'dm_buku.id_dbuku')
+            ->join('dm_penulis', 'dm_buku.id_dpenulis', '=', 'dm_penulis.id_dpenulis') // Join dengan tabel penulis
+            ->select(
+                'dm_buku.dbuku_judul',
+                'dm_buku.dbuku_cover',
+                'dm_penulis.dpenulis_nama_penulis',
+                DB::raw('COUNT(trks_transaksi.id_dbuku) as total_peminjaman')
+            )
+            ->when($bulan, function ($query) use ($bulan) {
+                return $query->whereMonth('trks_tgl_peminjaman', $bulan);
+            })
+            ->when($tahun, function ($query) use ($tahun) {
+                return $query->whereYear('trks_tgl_peminjaman', $tahun);
+            })
+            ->groupBy('dm_buku.id_dbuku', 'dm_buku.dbuku_judul', 'dm_buku.dbuku_cover', 'dm_penulis.dpenulis_nama_penulis')
+            ->orderBy('total_peminjaman', 'desc')
+            ->take(5)
+            ->get();
 
-
-        // Statistik peminjaman bulanan
+        // Query statistik peminjaman bulanan
         $statistikPeminjaman = DB::table('trks_transaksi')
-        ->select(DB::raw('MONTH(trks_tgl_peminjaman) as bulan'), DB::raw('COUNT(*) as total'))
-        ->when($bulan, function ($query) use ($bulan) {
-            return $query->whereMonth('trks_tgl_peminjaman', $bulan);
-        })
-        ->when($tahun, function ($query) use ($tahun) {
-            return $query->whereYear('trks_tgl_peminjaman', $tahun);
-        })
-        ->groupBy('bulan')
-        ->orderBy('bulan')
-        ->get();
-    
-        // Query kategori yang paling banyak dipinjam
+            ->select(DB::raw('MONTH(trks_tgl_peminjaman) as bulan'), DB::raw('COUNT(*) as total'))
+            ->when($bulan, function ($query) use ($bulan) {
+                return $query->whereMonth('trks_tgl_peminjaman', $bulan);
+            })
+            ->when($tahun, function ($query) use ($tahun) {
+                return $query->whereYear('trks_tgl_peminjaman', $tahun);
+            })
+            ->groupBy('bulan')
+            ->orderBy('bulan')
+            ->get();
+
+        // Query kategori buku yang paling banyak dipinjam
         $kategoriData = DB::table('trks_transaksi')
             ->join('dm_buku', 'trks_transaksi.id_dbuku', '=', 'dm_buku.id_dbuku')
             ->join('dm_kategoris', 'dm_buku.id_dkategori', '=', 'dm_kategoris.id_dkategori')
@@ -88,7 +86,7 @@ $bukuTerbanyakDipinjam = DB::table('trks_transaksi')
             ->groupBy('dm_kategoris.dkategori_nama_kategori')
             ->get();
 
-        // Format data untuk Highcharts
+        // Format data kategori untuk Highcharts
         $chartData = [];
         foreach ($kategoriData as $kategori) {
             $chartData[] = [
@@ -97,11 +95,11 @@ $bukuTerbanyakDipinjam = DB::table('trks_transaksi')
             ];
         }
 
-        // Mempersiapkan data untuk Highcharts
+        // Format data statistik peminjaman bulanan untuk Highcharts
         $data = [];
         for ($i = 1; $i <= 12; $i++) {
             $total = $statistikPeminjaman->where('bulan', $i)->first();
-            $data[] = $total ? $total->total : 0; // Mengisi dengan 0 jika tidak ada peminjaman
+            $data[] = $total ? $total->total : 0; // Isi dengan 0 jika tidak ada peminjaman
         }
 
         // Hitung total siswa, buku, peminjaman, dan denda
@@ -132,10 +130,13 @@ $bukuTerbanyakDipinjam = DB::table('trks_transaksi')
             ->when($tahun, function ($query) use ($tahun) {
                 return $query->whereYear('tdenda_tgl_bayar', $tahun);
             })
-            ->sum('tdenda_jumlah'); // Pastikan kolom 'tdenda_jumlah' digunakan untuk menyimpan nilai denda
+            ->sum('tdenda_jumlah');
 
         // Kirim hasil ke view
-        return view('home', compact('totalSiswa', 'totalBuku', 'totalPeminjaman', 'totalDenda', 'peminjaman_terbanyak', 'statistikPeminjaman', 'data', 'bukuTerbanyakDipinjam', 'chartData', 'bulan', 'tahun',));
-
+        return view('home', compact(
+            'totalSiswa', 'totalBuku', 'totalPeminjaman', 'totalDenda', 
+            'peminjaman_terbanyak', 'statistikPeminjaman', 'data', 
+            'bukuTerbanyakDipinjam', 'chartData', 'bulan', 'tahun'
+        ));
     }
 }
