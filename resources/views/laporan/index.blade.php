@@ -225,7 +225,14 @@
                     },
                     {
                         class: "text-center",
-                        data: 'tdenda_jumlah'
+                        data: 'tdenda_jumlah',
+                        render : function(data) {
+                            if (data == null) {
+                                return 'Rp.0';
+                            } else {
+                                return 'Rp.' + number_format(data, 0, ',', '.');
+                            }
+                        }
                     },
                     {
                         class: "text-center",
