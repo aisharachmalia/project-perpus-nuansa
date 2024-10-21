@@ -13,18 +13,25 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('trks_denda', function (Blueprint $table) {
-            $table->increments('id_tdenda');
-            $table->integer('id_trks');
+        Schema::create('pembayarans', function (Blueprint $table) {
+            $table->increments('id_pembayaran');
+            $table->integer('id_usr');
+            $table->integer('id_tdenda');
             $table->double('jumlah');
+            $table->dateTime('tgl_pembayar');
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
             $table->softDeletes();
         });
     }
 
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
     public function down()
     {
-        Schema::dropIfExists('trks_denda');
+        Schema::dropIfExists('pembayarans');
     }
 };

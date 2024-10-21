@@ -16,7 +16,6 @@ class DendaController extends Controller
     public function index()
     {
         $siswa = Trks_denda::join('trks_transaksi', 'trks_denda.id_trks', '=', 'trks_transaksi.id_trks')
-            ->whereNull('trks_denda.tdenda_tgl_bayar')
             ->whereNotNull('trks_transaksi.trks_tgl_pengembalian')
             ->join('dm_siswas', 'trks_transaksi.id_dsiswa', '=', 'dm_siswas.id_dsiswa')
             ->select('dm_siswas.dsiswa_nama', 'dm_siswas.id_dsiswa')
@@ -32,11 +31,11 @@ class DendaController extends Controller
             ->join('dm_buku', 'trks_transaksi.id_dbuku', '=', 'dm_buku.id_dbuku')
             ->join('trks_denda', 'trks_denda.id_trks', '=', 'trks_transaksi.id_trks')
             ->orderBy('trks_denda.id_tdenda', 'desc')
-            ->select('dm_buku.dbuku_judul', 'trks_denda.tdenda_tgl_bayar', 'trks_denda.tdenda_jumlah', 'trks_denda.tdenda_status',  'dm_siswas.dsiswa_nama')
+            ->select('dm_buku.dbuku_judul', 'trks_denda.jumlah', 'trks_denda.status',  'dm_siswas.dsiswa_nama')
             ->get();
         return DataTables::of($denda)
             ->addIndexColumn()
-            ->editColumn('tdenda_jumlah', function ($row) {
+            ->editColumn('jumlah', function ($row) {
                 return 'Rp. ' . number_format($row->tdenda_jumlah, 0, ',', '.');
             })
             ->make(true);
