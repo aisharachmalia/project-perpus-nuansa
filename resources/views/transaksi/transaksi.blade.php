@@ -348,7 +348,7 @@
                             '<option value="">Pilih Buku</option>');
                         $.each(response, function(index, value) {
                             $('#pengembalian').find('#id_dbuku').append(
-                                '<option value="' + value.id_dbuku + '">' +
+                                '<option value="' + value.id_trks + '">' +
                                 value.dbuku_judul + '</option>');
                         });
                     }
@@ -366,12 +366,11 @@
         });
 
         $('#pengembalian').find('#id_dbuku').on('change', function() {
-            var bukuId = $(this).val();
-            var siswaId = $('#pengembalian').find('#id_dsiswa').val();
+            var trksId = $(this).val();
             var tanggalKembali = $('#pengembalian').find('#trks_tgl_pengembalian').val();
-            if (bukuId) {
+            if (trksId) {
                 $.ajax({
-                    url: `/transaksi/detailBuku/${bukuId}/${siswaId}/${tanggalKembali}`,
+                    url: `/transaksi/detailBuku/${trksId}/${tanggalKembali}`,
                     type: 'GET',
                     success: function(response) {
                         $('#pengembalian').find('#id_dpustakawan').text(response['buku']

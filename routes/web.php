@@ -166,7 +166,7 @@ Route::prefix('setting')->group(function () {
 // route denda
 Route::get('/denda', [App\Http\Controllers\DendaController::class, 'index'])->name('denda');
 Route::get('/denda-detail/{id?}', [App\Http\Controllers\DendaController::class, 'detail'])->name('detail_denda');
-Route::get('/denda-buku-detail/{id?}/{id2?}', [App\Http\Controllers\DendaController::class, 'datailBuku']);
+Route::get('/denda-buku-detail/{id?}', [App\Http\Controllers\DendaController::class, 'datailBuku']);
 Route::post('/denda-bayar/{id?}', [App\Http\Controllers\DendaController::class, 'bayar'])->name('bayar_denda');
 Route::get('/table-denda', [App\Http\Controllers\DendaController::class, 'table']);
 
@@ -182,7 +182,7 @@ Route::post('/pengembalian/{id?}', [TransaksiController::class, 'pengembalian'])
 Route::put('/peminjaman/update/{id}', [TransaksiController::class, 'editPeminjaman'])->name('peminjaman.update');
 // Route::put('/pengembalian/update/{id}', [TransaksiController::class, 'editPengembalian'])->name('pengembalian.update');
 Route::get('/transaksi/detail/{id}', [TransaksiController::class, 'show']);
-Route::get('/transaksi/detailBuku/{id}/{id2}/{id3?}', [TransaksiController::class, 'detailBuku']);
+Route::get('/transaksi/detailBuku/{id}/{id2?}', [TransaksiController::class, 'detailBuku']);
 Route::delete('/transaksi/delete/{id}', [TransaksiController::class, 'delete'])->name('transaksi.delete');
 Route::get('/transaksi/detail/update/{id}', [TransaksiController::class, 'showModalEdit']);
 

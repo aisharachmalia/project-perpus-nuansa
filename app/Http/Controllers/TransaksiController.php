@@ -220,7 +220,7 @@ class TransaksiController extends Controller
                 'trks_keterangan' => $request->keterangan,
                 'trks_status' => 2,
             ]);
-            $siswaDet = Transaksi::where('id_trks', $id)->join('dm_buku', 'trks_transaksi.id_dbuku', '=', 'dm_buku.id_dbuku')->join('dm_siswas', 'trks_transaksi.id_dsiswa', '=', 'dm_siswas.id_dsiswa')->select('dm_siswas.dsiswa_email','dm_buku.dbuku_judul', 'dm_siswas.dsiswa_nama')->first();
+            $siswaDet = Transaksi::where('id_trks', $id)->join('dm_buku', 'trks_transaksi.id_dbuku', '=', 'dm_buku.id_dbuku')->join('dm_siswas', 'trks_transaksi.id_dsiswa', '=', 'dm_siswas.id_dsiswa')->select('dm_siswas.dsiswa_email', 'dm_buku.dbuku_judul', 'dm_siswas.dsiswa_nama')->first();
 
             $array = [
                 'receive' => $siswaDet->dsiswa_email,  // Gunakan email siswa yang sudah diambil dari database
@@ -265,32 +265,28 @@ class TransaksiController extends Controller
                 'trks_transaksi.trks_tgl_jatuh_tempo',
                 'trks_transaksi.trks_tgl_pengembalian',
                 'dm_buku.dbuku_judul',
-                'dm_buku.id_dbuku',
+                'trks_transaksi.id_trks',
                 'dm_siswas.dsiswa_nama',
                 'dm_pustakawan.dpustakawan_nama'
             )
             ->get()
             ->map(function ($transaksi) {
                 // Enkripsi ID buku
-                $transaksi->id_dbuku = Crypt::encryptString($transaksi->id_dbuku);
+                $transaksi->id_trks = Crypt::encryptString($transaksi->id_trks);
                 return $transaksi;
             });
         return response()->json($transaksi);
     }
 
 
-    public function detailBuku($id = null, $id2 = null, $tanggalKembali = null)
+    public function detailBuku($id = null, $tanggalKembali = null)
     {
         try {
-
-            $idBuku = Crypt::decryptString($id);
-            $idSiswa = Crypt::decryptString($id2);
-
+            $idTrks = Crypt::decryptString($id);
             $data['buku'] = Transaksi::join('dm_buku', 'trks_transaksi.id_dbuku', '=', 'dm_buku.id_dbuku')
                 ->join('dm_siswas', 'trks_transaksi.id_dsiswa', '=', 'dm_siswas.id_dsiswa')
                 ->join('dm_pustakawan', 'trks_transaksi.id_dpustakawan', '=', 'dm_pustakawan.id_dpustakawan')
-                ->where('trks_transaksi.id_dbuku', $idBuku)
-                ->where('trks_transaksi.id_dsiswa', $idSiswa)
+                ->where('trks_transaksi.id_trks', $idTrks)
                 ->whereNull('trks_transaksi.deleted_at')
                 ->select('trks_transaksi.trks_tgl_peminjaman', 'trks_transaksi.trks_tgl_jatuh_tempo', 'dm_pustakawan.dpustakawan_nama', 'trks_transaksi.id_trks')
                 ->first();
