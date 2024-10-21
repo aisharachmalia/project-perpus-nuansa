@@ -54,9 +54,10 @@
             .icon-input i {
                 position: absolute;
                 left: 10px;
-                top: 30px;
+                top: 33px;
                 color: #8b4513;
             }
+
 
             .icon-input input {
                 padding-left: 35px;
@@ -71,16 +72,6 @@
                 padding-left: 35px;
             }
 
-
-            input[type="number"] {
-                -moz-appearance: textfield;
-            }
-
-            input[type="number"]::-webkit-outer-spin-button,
-            input[type="number"]::-webkit-inner-spin-button {
-                -webkit-appearance: none;
-                margin: 0;
-            }
         </style>
     @endpush
 
@@ -106,7 +97,7 @@
                 <div class="form-group">
                     <label for="buku">Judul Buku</label>
                     <i class="bi bi-book-fill"></i>
-                    <select id="buku" name="buku" class="form-control">
+                    <select id="buku" name="buku" class="form-control selectBuku">
                         <option value="">Pilih Buku</option>
                     </select>
                     <span id="buku_error" class="text-danger"></span>
@@ -184,6 +175,10 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function() {
+            $('.selectBuku').select2({
+                placeholder: "Pilih Buku",
+                allowClear: true
+            });
             var table = $('#tbl_denda').DataTable({
                 serverSide: true,
                 ajax: '{{ url('/table-denda') }}',
@@ -202,7 +197,7 @@
                         class: 'text-center'
                     },
                     {
-                        data: 'trks_denda',
+                        data: 'tdenda_jumlah',
                         class: 'text-center'
                     },
                     {
@@ -210,7 +205,7 @@
                         class: 'text-center',
                         render: function(data) {
                             if (data == null) {
-                                return '<span class="badge bg-danger">Belum bayar</span>';
+                                return '<span>Belum bayar</span>';
                             } else {
                                 return new Date(data).toISOString().slice(0, 10);
                             }
@@ -237,7 +232,7 @@
                         url: `/denda-detail/${siswaId}`,
                         type: 'GET',
                         success: function(response) {
-                            $('#pembayaran').find('#id_denda').val(response['denda'][0]
+                            $('#pembayaran').find('#id_denda').val(response['buku'][0]
                                 .id_tdenda);
                             $('#pembayaran').find('#tanggalPembayaran').val(new Date()
                                 .toISOString().slice(0, 10));
@@ -246,7 +241,7 @@
                                 '<option value="">Pilih Buku</option>');
                             $.each(response.buku, function(index, value) {
                                 $('#pembayaran').find('#buku').append(
-                                    '<option value="' + value.id_dbuku + '">' +
+                                    '<option value="' + value.id_tdenda + '">' +
                                     value.dbuku_judul + '</option>');
                             });
                         }
@@ -264,19 +259,17 @@
             });
 
             $('#buku').on('change', function() {
-                var bukuId = $(this).val();
-                var siswaId = $('#siswa').val();
-                if (bukuId) {
+                var dendaId = $(this).val();
+                if (dendaId) {
                     $.ajax({
-                        url: `/denda-buku-detail/${siswaId}/${bukuId}`,
+                        url: `/denda-buku-detail/${dendaId}`,
                         type: 'GET',
                         success: function(response) {
-                            $('#pembayaran').find('#tanggalPeminjaman').text(response['buku'][0]
+                            $('#pembayaran').find('#tanggalPeminjaman').text(response
                                 .trks_tgl_peminjaman.split(' ')[0]);
-                            $('#pembayaran').find('#tanggalJatuhTempo').text(response['buku'][0]
+                            $('#pembayaran').find('#tanggalJatuhTempo').text(response
                                 .trks_tgl_jatuh_tempo.split(' ')[0]);
-                            $('#pembayaran').find('#jumlahDenda').val(response['buku'][0]
-                                .trks_denda);
+                            $('#pembayaran').find('#jumlahDenda').val(response.tdenda_jumlah);
                             $('#pembayaran').find('#buku_error').text('');
                             $('#pembayaran').find('#denda_error').text('');
                             $('#pembayaran').find('#tgl_pembayaran_error').text('');
@@ -343,7 +336,7 @@
                         $('#pembayaran').find('#buku_error').text('');
                         $('#pembayaran').find('#denda_error').text('');
                         $('#pembayaran').find('#tgl_pembayaran_error').text('');
-                        $('#tbl_denda').DataTable().ajax.reload();
+                        location.reload();
                     },
                     error: function(xhr) {
                         if (xhr.status === 422) {

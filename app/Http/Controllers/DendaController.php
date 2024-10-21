@@ -31,39 +31,31 @@ class DendaController extends Controller
             ->join('dm_siswas', 'trks_transaksi.id_dsiswa', '=', 'dm_siswas.id_dsiswa')
             ->join('dm_buku', 'trks_transaksi.id_dbuku', '=', 'dm_buku.id_dbuku')
             ->join('trks_denda', 'trks_denda.id_trks', '=', 'trks_transaksi.id_trks')
-            ->select('dm_buku.dbuku_judul', 'trks_denda.tdenda_tgl_bayar', 'trks_transaksi.trks_denda', 'trks_denda.tdenda_status',  'dm_siswas.dsiswa_nama')
+            ->orderBy('trks_denda.id_tdenda', 'desc')
+            ->select('dm_buku.dbuku_judul', 'trks_denda.tdenda_tgl_bayar', 'trks_denda.tdenda_jumlah', 'trks_denda.tdenda_status',  'dm_siswas.dsiswa_nama')
             ->get();
         return DataTables::of($denda)
             ->addIndexColumn()
+            ->editColumn('tdenda_jumlah', function ($row) {
+                return 'Rp. ' . number_format($row->tdenda_jumlah, 0, ',', '.');
+            })
             ->make(true);
     }
     public function detail($id)
     {
         try {
             $id = Crypt::decryptString($id);
-            $data['denda'] = DB::table('trks_transaksi')
-                ->where('trks_transaksi.id_dsiswa', $id)
-                ->join('dm_buku', 'trks_transaksi.id_dbuku', '=', 'dm_buku.id_dbuku')
-                ->whereNull('trks_denda.tdenda_tgl_bayar')
-                ->join('trks_denda', 'trks_denda.id_trks', '=', 'trks_transaksi.id_trks')
-                ->select('dm_buku.dbuku_judul', 'trks_transaksi.trks_tgl_peminjaman', 'trks_transaksi.trks_tgl_jatuh_tempo', 'trks_transaksi.trks_denda', 'trks_denda.id_tdenda')
-                ->get()
-                ->map(function ($data) {
-                    $data->id_tdenda = Crypt::encryptString($data->id_tdenda);
-                    return $data;
-                });
-
             $data['buku'] = DB::table('trks_transaksi')
                 ->where('trks_transaksi.id_dsiswa', $id)
                 ->whereNotNull('trks_transaksi.trks_tgl_pengembalian')
                 ->join('trks_denda', 'trks_denda.id_trks', '=', 'trks_transaksi.id_trks')
                 ->whereNull('trks_denda.tdenda_tgl_bayar')
                 ->join('dm_buku', 'trks_transaksi.id_dbuku', '=', 'dm_buku.id_dbuku')
-                ->select('dm_buku.id_dbuku', 'dm_buku.dbuku_judul')
+                ->select('trks_denda.id_tdenda', 'dm_buku.dbuku_judul')
                 ->get()
                 ->map(function ($data) {
                     // Enkripsi ID buku
-                    $data->id_dbuku = Crypt::encryptString($data->id_dbuku);
+                    $data->id_tdenda = Crypt::encryptString($data->id_tdenda);
                     return $data;
                 });
             return Response::json($data);
@@ -72,19 +64,15 @@ class DendaController extends Controller
         }
     }
 
-    public function datailBuku($siswaId = null, $bukuId = null)
+    public function datailBuku($id = null)
     {
         try {
-            $buku = Crypt::decryptString($bukuId);
-            $siswa = Crypt::decryptString($siswaId);
-            $data['buku'] = DB::table('trks_transaksi')
-                ->where('trks_transaksi.id_dsiswa', $siswa)
-                ->join('trks_denda', 'trks_denda.id_trks', '=', 'trks_transaksi.id_trks')
-                ->whereNull('trks_denda.tdenda_tgl_bayar')
-                ->where('trks_transaksi.id_dbuku', $buku)
-                ->join('dm_buku', 'trks_transaksi.id_dbuku', '=', 'dm_buku.id_dbuku')
-                ->select('trks_transaksi.trks_denda', 'trks_transaksi.trks_tgl_peminjaman', 'trks_transaksi.trks_tgl_jatuh_tempo')
-                ->get();
+            $dendaId = Crypt::decryptString($id);
+            $data = DB::table('trks_denda')
+                ->where('trks_denda.id_tdenda', $dendaId)
+                ->join('trks_transaksi', 'trks_denda.id_trks', '=', 'trks_transaksi.id_trks')
+                ->select('trks_transaksi.trks_tgl_peminjaman', 'trks_transaksi.trks_tgl_jatuh_tempo', 'trks_denda.tdenda_jumlah')
+                ->first();
             return Response::json($data);
         } catch (\Throwable $th) {
             throw $th;
@@ -126,10 +114,7 @@ class DendaController extends Controller
 
             $validated = $request->validate($rules, $messages);
             $id = Crypt::decryptString($id);
-            $id_buku = Crypt::decryptString($request->buku);
-            $denda = Trks_denda::find($id)->join('trks_transaksi', 'trks_denda.id_trks', '=', 'trks_transaksi.id_trks')
-                ->where('trks_transaksi.id_dbuku', $id_buku)
-                ->first();
+            $denda = Trks_denda::find($id);
             $denda->tdenda_status = 'Sudah Lunas';
             $denda->tdenda_tgl_bayar = $request->tanggal_pembayaran;
             $denda->save();

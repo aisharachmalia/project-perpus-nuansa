@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -96,6 +97,27 @@ class TransaksiController extends Controller
             $transaksi->trks_tgl_jatuh_tempo = $request->trks_tgl_jatuh_tempo;
             $transaksi->save();
 
+            $siswaDet = Dm_siswa::where('id_dsiswa', $siswa)->select('dsiswa_email', 'dsiswa_nama')->first();
+            $namaBuku = DB::table('dm_buku')->where('id_dbuku', $buku)->select('dbuku_judul')->first();
+
+            // Kirim transaksi
+            $array = [
+                'receive' => $siswaDet->dsiswa_email,  // Gunakan email siswa yang sudah diambil dari database
+                'subject' => 'Peminjaman Buku',
+                'data' => [
+                    'dbuku_judul' => $namaBuku->dbuku_judul,
+                    'dsiswa_nama' => $siswaDet->dsiswa_nama,
+                    'trks_tgl_peminjaman' => $transaksi->trks_tgl_peminjaman,
+                    'trks_tgl_jatuh_tempo' => $transaksi->trks_tgl_jatuh_tempo,
+                ],
+            ];
+
+            Mail::send('mail.transaksi_buku', $array, function ($message) use ($array) {
+                $message->to($array['receive'])
+                    ->subject($array['subject']);
+                $message->from('perpustakaansmk@gmail.com', 'Perpustakaan SMK');
+            });
+
             return response()->json(['message' => 'Data transaksi berhasil disimpan']);
         } catch (\Exception $th) {
             throw $th;
@@ -141,6 +163,7 @@ class TransaksiController extends Controller
             'trks_tgl_pengembalian' => $request->trks_tgl_pengembalian,
             'trks_denda' => $request->trks_denda,
             'trks_keterangan' => $request->trks_keterangan,
+            'trks_status' => $request->trks_status,
         ]);
 
         return response()->json([
@@ -183,23 +206,41 @@ class TransaksiController extends Controller
                 'tanggal_pengembalian.after_or_equal' => 'Tanggal pengembalian harus sama atau setelah tanggal peminjaman.',
             ]);
 
-            $id_trks = Crypt::decryptString($id);
             if ($request->denda != 0) {
                 Trks_denda::create([
-                    'id_trks' => $id_trks,
+                    'id_trks' => $id,
                     'tdenda_jumlah' => $request->denda,
                     'tdenda_status' => "Belum Dibayar",
                 ]);
             }
 
-
-            Transaksi::where('id_trks', $id_trks)->update([
+            Transaksi::where('id_trks', $id)->update([
                 'trks_tgl_pengembalian' => $request->tanggal_pengembalian,
                 'trks_denda' => $request->denda,
                 'trks_keterangan' => $request->keterangan,
                 'trks_status' => 2,
             ]);
+            $siswaDet = Transaksi::where('id_trks', $id)->join('dm_buku', 'trks_transaksi.id_dbuku', '=', 'dm_buku.id_dbuku')->join('dm_siswas', 'trks_transaksi.id_dsiswa', '=', 'dm_siswas.id_dsiswa')->select('dm_siswas.dsiswa_email', 'dm_buku.dbuku_judul', 'dm_siswas.dsiswa_nama')->first();
 
+            $array = [
+                'receive' => $siswaDet->dsiswa_email,  // Gunakan email siswa yang sudah diambil dari database
+                'subject' => 'Pengembalian Buku',
+                'data' => [
+                    'dbuku_judul' => $siswaDet->dbuku_judul,
+                    'dsiswa_nama' => $siswaDet->dsiswa_nama,
+                    'trks_tgl_peminjaman' => $request->peminjaman,
+                    'trks_tgl_jatuh_tempo' => $request->jatuh_tempo,
+                    'trks_tgl_pengembalian' => $request->tanggal_pengembalian,
+                    'trks_denda' => $request->denda,
+                    'trks_keterangan' => $request->keterangan,
+                ],
+            ];
+
+            Mail::send('mail.pengembalian_buku', $array, function ($message) use ($array) {
+                $message->to($array['receive'])
+                    ->subject($array['subject']);
+                $message->from('perpustakaansmk@gmail.com', 'Perpustakaan SMK');
+            });
 
             return response()->json([
                 'success' => true,
@@ -218,42 +259,37 @@ class TransaksiController extends Controller
             ->join('dm_pustakawan', 'trks_transaksi.id_dpustakawan', '=', 'dm_pustakawan.id_dpustakawan')
             ->where('dm_siswas.id_dsiswa', $siswaId)
             ->whereNull('trks_transaksi.trks_tgl_pengembalian')
+            ->whereNull('trks_transaksi.deleted_at')
             ->select(
                 'trks_transaksi.trks_tgl_peminjaman',
                 'trks_transaksi.trks_tgl_jatuh_tempo',
                 'trks_transaksi.trks_tgl_pengembalian',
                 'dm_buku.dbuku_judul',
-                'dm_buku.id_dbuku',
+                'trks_transaksi.id_trks',
                 'dm_siswas.dsiswa_nama',
                 'dm_pustakawan.dpustakawan_nama'
             )
             ->get()
             ->map(function ($transaksi) {
                 // Enkripsi ID buku
-                $transaksi->id_dbuku = Crypt::encryptString($transaksi->id_dbuku);
+                $transaksi->id_trks = Crypt::encryptString($transaksi->id_trks);
                 return $transaksi;
             });
         return response()->json($transaksi);
     }
 
 
-    public function detailBuku($id = null, $id2 = null, $tanggalKembali = null)
+    public function detailBuku($id = null, $tanggalKembali = null)
     {
         try {
-
-            $idBuku = Crypt::decryptString($id);
-            $idSiswa = Crypt::decryptString($id2);
-
+            $idTrks = Crypt::decryptString($id);
             $data['buku'] = Transaksi::join('dm_buku', 'trks_transaksi.id_dbuku', '=', 'dm_buku.id_dbuku')
                 ->join('dm_siswas', 'trks_transaksi.id_dsiswa', '=', 'dm_siswas.id_dsiswa')
                 ->join('dm_pustakawan', 'trks_transaksi.id_dpustakawan', '=', 'dm_pustakawan.id_dpustakawan')
-                ->where('trks_transaksi.id_dbuku', $idBuku)
-                ->where('trks_transaksi.id_dsiswa', $idSiswa)
+                ->where('trks_transaksi.id_trks', $idTrks)
+                ->whereNull('trks_transaksi.deleted_at')
                 ->select('trks_transaksi.trks_tgl_peminjaman', 'trks_transaksi.trks_tgl_jatuh_tempo', 'dm_pustakawan.dpustakawan_nama', 'trks_transaksi.id_trks')
                 ->first();
-
-            $data['buku']->id_trks = Crypt::encryptString($data['buku']->id_trks);
-
             if ($tanggalKembali > $data['buku']->trks_tgl_jatuh_tempo) {
                 $data['denda'] = 10000;
             } else {
@@ -293,7 +329,8 @@ class TransaksiController extends Controller
                 'dm_siswas.dsiswa_nama',
                 'dm_pustakawan.dpustakawan_nama',
                 'trks_transaksi.trks_denda',
-                'trks_transaksi.trks_keterangan'
+                'trks_transaksi.trks_keterangan',
+                'trks_transaksi.trks_status'
             )
             ->get()
             ->map(function ($transaksi) {
