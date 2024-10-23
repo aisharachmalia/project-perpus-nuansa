@@ -18,8 +18,8 @@ return new class extends Migration
             $table->integer('id_usr');
             $table->integer('id_tdenda');
             $table->double('jumlah');
-            $table->dateTime('tgl_pembayar');
-            $table->tinyInteger('status')->default(1);
+            $table->dateTime('tgl_pembayaran');
+            $table->tinyInteger('status')->default(-1);
             $table->timestamps();
             $table->softDeletes();
         });

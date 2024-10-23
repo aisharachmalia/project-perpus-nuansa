@@ -14,8 +14,7 @@ class Trks_denda extends Model
     protected $fillable = [
         'id_tdenda',
         'id_trks',
-        'tdenda_jumlah',
-        'tdenda_tgl_bayar',
-        'tdenda_status',
+        'jumlah',
+        'status',
     ];
 }

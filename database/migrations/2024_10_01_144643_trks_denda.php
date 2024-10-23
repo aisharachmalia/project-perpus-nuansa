@@ -17,7 +17,7 @@ return new class extends Migration
             $table->increments('id_tdenda');
             $table->integer('id_trks');
             $table->double('jumlah');
-            $table->tinyInteger('status')->default(1);
+            $table->tinyInteger('status')->default(0);
             $table->timestamps();
             $table->softDeletes();
         });

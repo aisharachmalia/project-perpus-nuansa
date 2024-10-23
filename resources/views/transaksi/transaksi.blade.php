@@ -25,11 +25,10 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Judul Buku</th>
-                                    <th>Nama Siswa</th>
+                                    <th>Nama Peminjam</th>
                                     <th>Tanggal Peminjaman & Tanggal Jatuh Tempo</th>
-                                    <th>Tanggal Pengembalian </th>
+                                    <th>Tanggal Pengembalian & Status Pengembalian </th>
                                     <th>Denda</th>
-                                    <th>Status</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -72,31 +71,42 @@
                             </div>
                             <div class="col-md-4 col-12">
                                 <div class="form-group">
-                                    <label for="last-name-column" class="fw-semibold">Nama Siswa</label>
+                                    <label for="last-name-column" class="fw-semibold">Nama User</label>
                                     <select id="id_dsiswa" name="id_dsiswa" class="form-control shadow-sm rounded-pill">
-                                        <option value="">Pilih Siswa</option>
+                                        <option value="">Pilih Peminjam</option>
                                         @foreach ($siswa2 as $data)
-                                            <option value="{{ Crypt::encryptString($data->id_dsiswa) }}">
-                                                {{ $data->dsiswa_nama }}</option>
+                                            <option value="{{ Crypt::encryptString($data->id_usr) }}">
+                                                {{ $data->usr_nama }}</option>
                                         @endforeach
                                     </select>
                                     <span id="siswa-error" class="text-danger small"></span>
                                 </div>
                             </div>
-                            <div class="col-md-4 col-12">
-                                <div class="form-group">
-                                    <label for="city-column" class="fw-semibold">Nama Pustakawan</label>
-                                    <select id="id_dpustakawan" name="id_dpustakawan"
-                                        class="form-control shadow-sm rounded-pill">
-                                        <option value="">Pilih Pustakawan</option>
-                                        @foreach ($pustakawan as $data)
-                                            <option value="{{ Crypt::encryptString($data->id_dpustakawan) }}">
-                                                {{ $data->dpustakawan_nama }}</option>
-                                        @endforeach
-                                    </select>
-                                    <span id="pustakawan-error" class="text-danger small"></span>
+                            @php
+                                $role = App\Models\akses_usr::join('users', 'akses_usrs.id_usr', 'users.id_usr')
+                                    ->where('users.id_usr', Auth::user()->id_usr)
+                                    ->join('roles', 'akses_usrs.id_role', 'roles.id_role')
+                                    ->first();
+                            @endphp
+                            @if ($role->id_role < 3)
+                                <div class="col-md-4 col-12">
+                                    <div class="form-group">
+                                        <label for="city-column" class="fw-semibold">Nama Pustakawan</label>
+                                        <select id="id_dpustakawan" name="id_dpustakawan"
+                                            class="form-control shadow-sm rounded-pill">
+                                            <option value="">Pilih Pustakawan</option>
+                                            @foreach ($pustakawan as $data)
+                                                <option value="{{ Crypt::encryptString($data->id_dpustakawan) }}">
+                                                    {{ $data->dpustakawan_nama }}</option>
+                                            @endforeach
+                                        </select>
+                                        <span id="pustakawan-error" class="text-danger small"></span>
+                                    </div>
                                 </div>
-                            </div>
+                            @else
+                                <input type="hidden" name="id_dpustakawan"
+                                    value="{{ \Crypt::encryptString(Auth::user()->id_usr) }}">
+                            @endif
                             <div class="col-md-4 col-12">
                                 <div class="form-group">
                                     <label for="country-floating" class="fw-semibold">Tanggal Peminjaman</label>
@@ -142,10 +152,10 @@
                     <div class="row">
                         <div class="col-md-4 col-12">
                             <div class="form-group">
-                                <label for="last-name-column">Nama Siswa</label>
+                                <label for="last-name-column">Nama User</label>
                                 <input type="hidden" name="id_trks" id="id_trks">
                                 <select id="id_dsiswa" name="id_dsiswa" class="form-control">
-                                    <option value="">Pilih Siswa</option>
+                                    <option value="">Pilih Peminjam</option>
                                     @foreach ($siswa as $data)
                                         <option value="{{ Crypt::encryptString($data->id_dsiswa) }}">
                                             {{ $data->dsiswa_nama }}</option>
@@ -161,13 +171,6 @@
                                     <option value="">Pilih Buku</option>
                                 </select>
                                 <span id="buku-error" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="col-md-4 col-12">
-                            <div class="form-group">
-                                <label for="city-column">Nama Pustakawan</label>
-                                <p id="id_dpustakawan" class="form-control" name="id_dpustakawan">Nama Pustakawan</p>
-                                <span id="pustakawan-error" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-md-4 col-12">
@@ -241,13 +244,11 @@
                     },
                     {
                         class: "text-center",
-                        data: 'dbuku_judul',
-                        name: 'dbuku_judul'
+                        data: 'dbuku_judul'
                     },
                     {
                         class: "text-center",
-                        data: 'dsiswa_nama',
-                        name: 'dsiswa_nama'
+                        data: 'usr_nama',
                     },
                     {
                         class: "text-center",
@@ -261,13 +262,22 @@
                     },
                     {
                         class: "text-center",
-                        data: 'trks_tgl_pengembalian',
-                        render: function(data) {
-                            if (data == null) {
-                                return 'Belum dikembalikan';
-                            } else {
-                                return new Date(data).toISOString().slice(0, 10);
+                        data: null,
+                        render: function(data, type, row) {
+                            let pengembalian = row.trks_tgl_pengembalian == null ?
+                                'Belum dikembalikan' :
+                                new Date(data).toISOString().slice(0, 10);
+                            let status = '';
+                            if (row.trks_status == -1) {
+                                status = 'Dibatalkan';
                             }
+                            if (row.trks_status == 0) {
+                                status = 'Dipinjam';
+                            }
+                            if (row.trks_status == 1) {
+                                status = 'Dikembalikan';
+                            }
+                            return pengembalian + '  <br>' + status;
                         }
                     },
                     {
@@ -278,18 +288,6 @@
                                 return '0';
                             } else {
                                 return data;
-                            }
-                        }
-                    },
-                    {
-                        data: 'trks_status',
-                        className: 'dt-body-center',
-                        render: function(data) {
-                            if (data == 1) {
-                                return '<span class="badge bg-warning">Dipinjam</span>';
-                            }
-                            if (data == 2) {
-                                return '<span class="badge bg-success">Dikembalikan</span>';
                             }
                         }
                     },
@@ -534,14 +532,21 @@
                 contentType: false,
                 processData: false,
                 success: function(response) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: `${response.message}`,
-                        showConfirmButton: false,
-                        timer: 3000
-                    });
-                    $('#tambahPeminjaman').modal('toggle');
-                    $('#tbl_transaksi').DataTable().ajax.reload();
+                    if (response.status === 'error') {
+                        Swal.fire({
+                            icon: 'error',
+                            title: `${response.message}`,
+                            timer: 3000
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'success',
+                            title: `${response.message}`,
+                            timer: 3000
+                        });
+                        $('#tambahPeminjaman').modal('toggle');
+                        $('#tbl_transaksi').DataTable().ajax.reload();
+                    }
                 },
                 error: function(xhr) {
                     if (xhr.status === 422) {
@@ -597,9 +602,12 @@
                     $('#editPeminjaman').find('#id_dbuku').val(response[0].id_dbuku);
                     $('#editPeminjaman').find('#id_dsiswa').text(response[0].dsiswa_nama);
                     $('#editPeminjaman').find('#id_dpustakawan').val(response[0].id_dpustakawan);
-                    $('#editPeminjaman').find('#trks_tgl_peminjaman').val(response[0].trks_tgl_peminjaman.split(' ')[0]);
-                    $('#editPeminjaman').find('#trks_tgl_jatuh_tempo').val(response[0].trks_tgl_jatuh_tempo.split(' ')[0]);
-                    $('#editPeminjaman').find('#trks_tgl_pengembalian').val(response[0].trks_tgl_pengembalian.split(' ')[0]);
+                    $('#editPeminjaman').find('#trks_tgl_peminjaman').val(response[0]
+                        .trks_tgl_peminjaman.split(' ')[0]);
+                    $('#editPeminjaman').find('#trks_tgl_jatuh_tempo').val(response[0]
+                        .trks_tgl_jatuh_tempo.split(' ')[0]);
+                    $('#editPeminjaman').find('#trks_tgl_pengembalian').val(response[0]
+                        .trks_tgl_pengembalian.split(' ')[0]);
                     $('#editPeminjaman').find('#trks_denda').val(response[0].trks_denda);
                     $('#editPeminjaman').find('#trks_status').val(response[0].trks_status);
                     $('#editPeminjaman').find('#trks_keterangan').val(response[0].trks_keterangan);
