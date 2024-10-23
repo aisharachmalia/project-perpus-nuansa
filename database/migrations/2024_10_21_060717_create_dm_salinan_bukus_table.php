@@ -17,6 +17,7 @@ return new class extends Migration
             $table->increments('id_dsbuku');
             $table->integer('id_dbuku');
             $table->string('dsbuku_no_salinan');
+            $table->string('dsbuku_kondisi')->default("Baik");
             $table->tinyInteger('dsbuku_status')->default(0);
             $table->tinyInteger('dsbuku_flag')->default(0);
             $table->timestamps();

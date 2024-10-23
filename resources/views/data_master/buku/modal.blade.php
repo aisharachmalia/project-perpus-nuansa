@@ -43,7 +43,7 @@
                                 <select class="form-control" name="id_dpenulis">
                                     <option value="" selected disabled>Pilih Penulis</option>
                                     @foreach ($pnls as $item)
-                                        <option value="{{ Crypt::encrypt($item->id_dpenulis) }}">
+                                        <option value="{{ Crypt::encryptString($item->id_dpenulis) }}">
                                             {{ $item->dpenulis_nama_penulis }}
                                         </option>
                                     @endforeach
@@ -71,7 +71,7 @@
                         <div class="col-4">
                             <div class="form-group">
                                 <label>Tahun Terbit</label>
-                                <select class="form-control" name="dbuku_thn_terbit">
+                                <select class="choices form-control" name="dbuku_thn_terbit">
                                     <option value="" selected disabled>Pilih Tahun Terbit</option>
                                     @php
                                         $tahunMulai = 2000;
@@ -212,7 +212,7 @@
                         </div>
                         <div class="col-md-4 mb-3">
                             <label>Tahun Terbit</label>
-                            <select class="form-control" name="dbuku_thn_terbit" id="dbuku_thn_terbit">
+                            <select class="choices form-control" name="dbuku_thn_terbit" id="dbuku_thn_terbit">
                                 <option value="" selected disabled>Pilih Tahun Terbit</option>
                             </select>
                             <span id="thn_terbit-error" class="text-danger"></span>
