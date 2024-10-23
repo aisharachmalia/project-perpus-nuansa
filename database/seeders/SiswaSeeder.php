@@ -23,6 +23,8 @@ class SiswaSeeder extends Seeder
             'dsiswa_alamat' => 'rancamanyar',
             'dsiswa_sts' => '1',
             'id_dkelas' => '3',
+            'dsiswa_flag' => '1',
+            'id_usr' => '1'
         ]);
 
     }
