@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\dm_salinan_buku;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Carbon\Carbon;
@@ -33,7 +34,12 @@ class BukuController extends Controller
             return Datatables::of($buku)
                 ->addIndexColumn()
                 ->addColumn('aksi', function ($row) {
-                    $btn = '<div class="d-flex mr-2">
+                    $btn = '
+                    <div class="d-flex mr-2">
+                                <a href="' . route('pageDmSalinanBuku', Crypt::encryptString($row->id_dbuku)) . '" class="btn btn-info btn-sm">
+                                    <i class="bi bi-book"></i>
+                                </a>
+                                |
                                 <a href="javascript:void(0)" data-id="' . Crypt::encryptString($row->id_dbuku) . '" class="btn btn-warning btn-sm modalEdit mr-2" data-bs-toggle="modal" data-bs-target="#edit">
                                     <i class="bi bi-pencil"></i>
                                 </a>
@@ -110,6 +116,7 @@ class BukuController extends Controller
                     ], 422);
                 }
 
+                $oldTotal = $id_bk->dbuku_jml_total;
                 $cover = $id_bk->dbuku_cover; // Ambil cover lama
 
                 // Jika file cover baru di-upload
@@ -124,6 +131,7 @@ class BukuController extends Controller
                 // Create the transaction with mapel ID
                 $penerbit = Crypt::decryptString($request->id_dpenerbit);
                 $penulis = Crypt::decryptString($request->id_dpenulis);
+
 
                 // Update data
                 dm_buku::where('id_dbuku', $id_bk->id_dbuku)->update([
@@ -141,16 +149,53 @@ class BukuController extends Controller
                     'dbuku_status' => 1,
                     'updated_at' => now(),
                 ]);
+
+                if ($request->dbuku_jml_total > $oldTotal) {
+                    $new = $request->dbuku_jml_total - $oldTotal;
+
+                    for ($i = 1; $i <= $new; $i++) {
+                        // Generate potential dsbuku_no_salinan
+                        $newCopyNumber = $oldTotal + $i;
+                        $no_salinan = $request->dbuku_judul . str_pad($newCopyNumber, 5, '0', STR_PAD_LEFT);
+
+                        // Ensure uniqueness of dsbuku_no_salinan
+                        while (dm_salinan_buku::where('dsbuku_no_salinan', $no_salinan)->exists()) {
+                            $newCopyNumber++;
+                            $no_salinan = $request->dbuku_judul . str_pad($newCopyNumber, 5, '0', STR_PAD_LEFT);
+                        }
+
+                        // Create new salinan buku
+                        dm_salinan_buku::create([
+                            'id_dbuku' => $id_bk->id_dbuku,
+                            'dsbuku_no_salinan' => $no_salinan,
+                            'dsbuku_kondisi' => 'Baik',
+                            'dsbuku_status' => 0,
+                            'created_at' => Carbon::now(),
+                        ]);
+                    }
+                } else if ($request->dbuku_jml_total < $oldTotal) {
+                    $excessCopies = $id_bk->dbuku_jml_total - $request->dbuku_jml_total;
+                    \DB::table('dm_salinan_bukus')
+                        ->where('id_dbuku', $id_bk->id_dbuku)
+                        ->orderBy('created_at', 'desc')
+                        ->take($excessCopies)
+                        ->update(['dsbuku_status' => 0, 'deleted_at' => Carbon::now()]);
+                } else {
+
+                }
+
+
                 // Return success response
                 return response()->json([
                     'success' => true,
                     'message' => 'Data Berhasil Disimpan!',
                 ]);
+
             } else if ($request->isMethod('post') && !isset($request->id_bk)) {
                 $rules = [
                     'dbuku_cover' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
                     'dbuku_judul' => 'required',
-                    'dbuku_isbn' => 'required|unique:dm_buku,dbuku_isbn|numeric|digits:13',
+                    'dbuku_isbn' => 'required|unique:dm_buku,dbuku_isbn|numeric|digits:13|min:1',
                     'dbuku_thn_terbit' => 'required',
                     'dbuku_lokasi_rak' => 'required',
                     'dbuku_bahasa' => 'required',
@@ -217,7 +262,17 @@ class BukuController extends Controller
                     'created_at' => Carbon::now(),
                 ];
 
-                \DB::table('dm_buku')->insert($buku);
+                $newBook = dm_buku::create($buku);
+
+                for ($i = 1; $i <= $request->dbuku_jml_total; $i++) {
+                    dm_salinan_buku::create([
+                        'id_dbuku' => $newBook->id_dbuku,
+                        'dsbuku_no_salinan' => $request->dbuku_judul . str_pad($i, 5, '0', STR_PAD_LEFT),
+                        'dsbuku_kondisi' => 'Baik',
+                        'dsbuku_status' => 0,
+                        'created_at' => Carbon::now(),
+                    ]);
+                }
 
                 $message = 'Berhasil menyimpan buku';
                 $success = true;

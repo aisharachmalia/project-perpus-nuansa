@@ -17,8 +17,6 @@ class dm_buku extends Model
         'dbuku_judul',
         'id_dpenulis',
         'id_dpenerbit',
-        'id_dkategori',
-        'id_dmapel',
         'dbuku_thn_terbit',
         'dbuku_isbn',
         'dbuku_jml_tersedia',
