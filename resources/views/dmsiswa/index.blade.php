@@ -401,7 +401,7 @@
         $('body').on('click', '#btn-delete', function() {
             let id_siswa = $(this).data('id');
             let token = $("meta[name='csrf-token']").attr("content");
-
+    
             Swal.fire({
                 title: 'Apakah Kamu Yakin?',
                 text: "ingin menghapus data ini!",
@@ -419,19 +419,37 @@
                             "_token": token
                         },
                         success: function(response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: `${response.message}`,
+                                    showConfirmButton: false,
+                                    timer: 3000
+                                });
+                                $('#tbl_list').DataTable().ajax.reload();
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal!',
+                                    text: `${response.message}`,
+                                    showConfirmButton: true,
+                                });
+                            }
+                        },
+                        error: function(xhr, status, error) {
                             Swal.fire({
-                                icon: 'success',
-                                title: `${response.message}`,
-                                showConfirmButton: false,
-                                timer: 3000
+                                icon: 'error',
+                                title: 'Terjadi Kesalahan!',
+                                text: 'Tidak dapat menghapus data.',
+                                showConfirmButton: true,
                             });
-                            $('#tbl_list').DataTable().ajax.reload()
                         }
                     });
                 }
-            })
+            });
         });
     </script>
+    
 
     {{-- create --}}
     <script>

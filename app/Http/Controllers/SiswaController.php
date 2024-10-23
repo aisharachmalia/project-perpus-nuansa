@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Dm_siswa;
+use App\Models\Transaksi;
 use App\Models\Dm_Kelas;
 use App\Models\User;
 use Yajra\DataTables\Facades\DataTables;
@@ -104,24 +105,24 @@ class SiswaController extends Controller
         ], 422);
     }
 
-    dm_siswa::create([
-        'id_dkelas' => $request->id_dkelas,
-        'dsiswa_nama' => $request->dsiswa_nama,
-        'dsiswa_nis' => $request->dsiswa_nis,
-        'dsiswa_email' => $request->dsiswa_email,
-        'dsiswa_no_telp' => $request->dsiswa_no_telp,
-        'dsiswa_alamat' => $request->dsiswa_alamat,
-    ]);
+    // Buat data di tabel users terlebih dahulu
+        $user = User::create([
+            'usr_nama' => $request->dsiswa_nama,
+            'usr_username' => $request->dsiswa_nama, 
+            'usr_email' => $request->dsiswa_email,
+            'password' => bcrypt('password_default'), 
+        ]);
 
-    // Simpan ke tabel users
-    User::create([
-        'usr_nama' => $request->dsiswa_nama,
-        'usr_username' => strtolower($request->dsiswa_nama), // Misalnya username berdasarkan nama dalam huruf kecil
-        'usr_email' => $request->dsiswa_email,
-        'password' => Hash::make($request->dsiswa_password), // Password hash
-        'role' => 'Siswa', // Role untuk siswa
-        'status' => 'Aktif', // Menyesuaikan dengan status di gambar
-    ]);
+ 
+        dm_siswa::create([
+            'id_dkelas' => $request->id_dkelas,
+            'dsiswa_nama' => $request->dsiswa_nama,
+            'dsiswa_nis' => $request->dsiswa_nis,
+            'dsiswa_email' => $request->dsiswa_email,
+            'dsiswa_no_telp' => $request->dsiswa_no_telp,
+            'dsiswa_alamat' => $request->dsiswa_alamat,
+            'id_usr' => $user->id_usr,
+        ]);
 
 
     return response()->json([
@@ -195,21 +196,32 @@ public function update($id = null, Request $request)
 
 
 
-    public function destroy($id = null)
-    {
+        public function destroy($id = null)
+        {
+            $id_dsiswa = Crypt::decryptString($id);
+            $siswa = Dm_siswa::find($id_dsiswa);
 
-        $id_dsiswa = Crypt::decryptString($id);
-        $siswa = dm_siswa::find($id_dsiswa);
-        
-        $siswa->deleted_at = Carbon::now();
-        $siswa->save();
+            // Cek apakah siswa sudah melakukan transaksi
+            $hasTransaksi = Transaksi::where('id_dsiswa', $id_dsiswa)->exists();
 
-        //return response
-        return response()->json([
-            'success' => true,
-            'message' => 'Data Berhasil Dihapus!.',
-        ]);
-    }
+            if ($hasTransaksi) {
+                // Jika siswa memiliki transaksi, kembalikan pesan error
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Siswa ini sudah melakukan transaksi dan tidak dapat dihapus!',
+                ]);
+            }
+
+            // Jika tidak ada transaksi, hapus siswa
+            $siswa->deleted_at = Carbon::now();
+            $siswa->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data siswa berhasil dihapus!',
+            ]);
+        }
+
 
     public function linkExportSiswa(Request $request)
     {
