@@ -105,6 +105,7 @@
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script type="text/javascript">
         //Salinan Buku
         $(document).ready(function() {
@@ -177,7 +178,7 @@
                     console.log(response);
                     $('#editSalinan').find('#id_dsbk').val(id_dsbk);
                     $('#editSalinan').find('#dsbuku_no_salinan').val(response.dsbk[0]
-                    .dsbuku_no_salinan);
+                        .dsbuku_no_salinan);
                     $('#editSalinan').find('#dsbuku_kondisi').html(response.slc1);
                 },
                 error: function(error) {
@@ -187,16 +188,18 @@
         });
 
         //action update post
-        $('#updateS').click(function(e) {
+        $(document).on('click', '#updateS', function(e) {
             e.preventDefault();
 
             //define variable
-            var form = $("#form_salinan_buku_upd")[0];
+            var form = $("#form_buku_salinan_upd")[0];
             var id_dsbk = $('#id_dsbk').val();
             var data = new FormData(form);
+
             let url = "{{ route('crud_dm_salinan_buku', ':id') }}";
             url = url.replace(':id', id_dsbk);
 
+            console.log(data);
             //ajax
             $.ajax({
                 headers: {
@@ -220,7 +223,7 @@
                         editConfirmButton: false,
                         timer: 3000
                     });
-                    $('#edit').modal('toggle');
+                    $('#editSalinan').modal('toggle');
                     $('#TableSalinan').DataTable().ajax.reload()
                 },
                 error: function(xhr) {
@@ -280,6 +283,18 @@
                                 timer: 3000
                             });
                             location.reload();
+                        },
+                        error: function(xhr) {
+                            // Parse the response text to get the error message
+                            let response = JSON.parse(xhr.responseText);
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: `${response.message}`,
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
                         }
                     });
                 }
