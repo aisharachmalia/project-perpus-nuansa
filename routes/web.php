@@ -72,6 +72,11 @@ Route::prefix('data-master')->group(function () {
     Route::match(['post','put','delete'],'/crud-buku/{id?}',[App\Http\Controllers\BukuController::class, 'crudBuku'])->name('crud_dm_buku');
     Route::get('/buku/show/{id}',[App\Http\Controllers\BukuController::class, 'showBuku'])->name('data_master.buku.show');
 
+    Route::get('/salinan-buku/{id}', [App\Http\Controllers\DmSalinanBukuController::class, 'pageDmSalinanBuku'])->name('pageDmSalinanBuku');
+    Route::get('/table-salinan-buku/{id}', [App\Http\Controllers\DmSalinanBukuController::class, 'tableDmSalinanBuku'])->name('table_dm_salinan_buku');
+    Route::get('/buku-salinan/{id}', [App\Http\Controllers\DmSalinanBukuController::class, 'salinanDetail'])->name('buku-salinan');
+    Route::match(['post','put','delete'],'/crud-salinan-buku/{id?}', [App\Http\Controllers\DmSalinanBukuController::class, 'crudSalinanBuku'])->name('crud_dm_salinan_buku');
+
     Route::post('/link-export-buku',[App\Http\Controllers\BukuController::class, 'linkExportBuku'])->name('link_export_buku');
     Route::get('/export-buku',[App\Http\Controllers\BukuController::class, 'exportBuku'])->name('export_buku');
 
@@ -189,4 +194,5 @@ Route::get('/transaksi/detailBuku/{id}/{id2?}', [TransaksiController::class, 'de
 Route::delete('/transaksi/delete/{id}', [TransaksiController::class, 'delete'])->name('transaksi.delete');
 Route::get('/transaksi/detail/update/{id}', [TransaksiController::class, 'showModalEdit']);
 
-
+Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'index'])->name('profile');
+Route::post('/profile' , [App\Http\Controllers\ProfileController::class, 'updateProfile'])->name('update_profile');

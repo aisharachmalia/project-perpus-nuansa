@@ -9,8 +9,6 @@
             <th style="text-align: center;">ISBN</th>
             <th>Nama Penulis</th>
             <th>Nama Penerbit</th>
-            <th style="text-align: center;">Kategori</th>
-            <th>Mata Pelajaran</th>
             <th style="text-align: center;">Tahun Terbit</th>
         </tr>
     </thead>
@@ -25,8 +23,6 @@
                 <td style="text-align: start;">{{ $item->dbuku_isbn }}</td>
                 <td>{{ $item->dpenulis_nama_penulis }}</td>
                 <td>{{ $item->dpenerbit_nama_penerbit }}</td>
-                <td>{{ $item->dkategori_nama_kategori }}</td>
-                <td style="text-align: center;">@if($item->id_dmapel == null) - @else {{ $item->dmapel_nama_mapel }} @endif</td>
                 <td style="text-align: center;">{{ $item->dbuku_thn_terbit }}</td>
             </tr>
         @endforeach

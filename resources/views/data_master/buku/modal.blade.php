@@ -43,7 +43,8 @@
                                 <select class="form-control" name="id_dpenulis">
                                     <option value="" selected disabled>Pilih Penulis</option>
                                     @foreach ($pnls as $item)
-                                        <option value="{{ $item->id_dpenulis }}">{{ $item->dpenulis_nama_penulis }}
+                                        <option value="{{ Crypt::encryptString($item->id_dpenulis) }}">
+                                            {{ $item->dpenulis_nama_penulis }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -59,7 +60,8 @@
                                 <select class="form-control" name="id_dpenerbit">
                                     <option value="" selected disabled>Pilih Penerbit</option>
                                     @foreach ($pnb as $item)
-                                        <option value="{{ $item->id_dpenerbit }}">{{ $item->dpenerbit_nama_penerbit }}
+                                        <option value="{{ Crypt::encryptString($item->id_dpenerbit) }}">
+                                            {{ $item->dpenerbit_nama_penerbit }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -68,39 +70,8 @@
                         </div>
                         <div class="col-4">
                             <div class="form-group">
-                                <label>Kategori</label>
-                                @php
-                                    $ktr = DB::select('SELECT * FROM dm_kategoris');
-                                @endphp
-                                <select class="form-control" name="id_dkategori" id="kategori">
-                                    <option value="" selected disabled>Pilih Kategori</option>
-                                    @foreach ($ktr as $item)
-                                        <option value="{{ $item->id_dkategori }}">{{ $item->dkategori_nama_kategori }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                <span id="kategori-error" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="form-group">
-                                <label>Mata Pelajaran</label>
-                                @php
-                                    $mpl = DB::select('SELECT * FROM dm_mapels');
-                                @endphp
-                                <select class="form-control" name="id_dmapel" id="mapel">
-                                    <option value="" selected disabled>Pilih Mata Pelajaran</option>
-                                    @foreach ($mpl as $item)
-                                        <option value="{{ $item->id_mapel }}">{{ $item->dmapel_nama_mapel }}</option>
-                                    @endforeach
-                                </select>
-                                <span id="mapel-error" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="form-group">
                                 <label>Tahun Terbit</label>
-                                <select class="form-control" name="dbuku_thn_terbit">
+                                <select class="choices form-control" name="dbuku_thn_terbit">
                                     <option value="" selected disabled>Pilih Tahun Terbit</option>
                                     @php
                                         $tahunMulai = 2000;
@@ -240,22 +211,8 @@
                             <span id="penerbit-error" class="text-danger"></span>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label>Kategori</label>
-                            <select class="form-control" name="id_dkategori" id="id_kategori">
-                                <option value="" selected disabled>Pilih Kategori</option>
-                            </select>
-                            <span id="kategori-error" class="text-danger"></span>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label>Mata Pelajaran</label>
-                            <select class="form-control" name="id_dmapel" id="id_mapel">
-                                <option value="" selected disabled>Pilih Mata Pelajaran</option>
-                            </select>
-                            <span id="mapel-error" class="text-danger"></span>
-                        </div>
-                        <div class="col-md-4 mb-3">
                             <label>Tahun Terbit</label>
-                            <select class="form-control" name="dbuku_thn_terbit" id="dbuku_thn_terbit">
+                            <select class="choices form-control" name="dbuku_thn_terbit" id="dbuku_thn_terbit">
                                 <option value="" selected disabled>Pilih Tahun Terbit</option>
                             </select>
                             <span id="thn_terbit-error" class="text-danger"></span>
@@ -309,7 +266,8 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-4">
-                        <img id="dbuku_cover" alt="Book Cover" style="width: 100%; height: 100%; object-fit: cover; object-position: center">
+                        <img id="dbuku_cover" alt="Book Cover"
+                            style="width: 100%; height: 100%; object-fit: cover; object-position: center">
                     </div>
                     <div class="col-md-8">
                         <h2 id="dbuku_judul"></h2>
@@ -319,16 +277,6 @@
                                 <td>Penerbit</td>
                                 <td>:</td>
                                 <td id="id_penerbit"></td>
-                            </tr>
-                            <tr>
-                                <td>Kategori</td>
-                                <td>:</td>
-                                <td id="id_kategori"></td>
-                            </tr>
-                            <tr>
-                                <td>Mata Pelajaran</td>
-                                <td>:</td>
-                                <td id="id_mapel"></td>
                             </tr>
                             <tr>
                                 <td>Tahun Terbit</td>
@@ -365,23 +313,23 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const kategoriSelect = document.querySelector('select[name="id_dkategori"]');
-            const mapelSelect = document.querySelector('select[name="id_dmapel"]');
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     const kategoriSelect = document.querySelector('select[name="id_dkategori"]');
+        //     const mapelSelect = document.querySelector('select[name="id_dmapel"]');
 
-            kategoriSelect.addEventListener('change', function() {
-                if (this.value === '1') {
-                    console.log(this.value)
-                    mapelSelect.disabled = false;
-                } else {
-                    mapelSelect.value = '';
-                    mapelSelect.disabled = true;
-                }
-            });
+        //     kategoriSelect.addEventListener('change', function() {
+        //         if (this.value === '1') {
+        //             console.log(this.value)
+        //             mapelSelect.disabled = false;
+        //         } else {
+        //             mapelSelect.value = '';
+        //             mapelSelect.disabled = true;
+        //         }
+        //     });
 
 
-            kategoriSelect.dispatchEvent(new Event('change'));
-        });
+        //     kategoriSelect.dispatchEvent(new Event('change'));
+        // });
     </script>
 
     <script>

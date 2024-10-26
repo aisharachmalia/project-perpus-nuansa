@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Dm_siswa;
 use App\Models\Dm_Kelas;
+use App\Models\User;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Carbon\Carbon;
 use App\Exports\SiswaExport;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -110,6 +112,17 @@ class SiswaController extends Controller
         'dsiswa_no_telp' => $request->dsiswa_no_telp,
         'dsiswa_alamat' => $request->dsiswa_alamat,
     ]);
+
+    // Simpan ke tabel users
+    User::create([
+        'usr_nama' => $request->dsiswa_nama,
+        'usr_username' => strtolower($request->dsiswa_nama), // Misalnya username berdasarkan nama dalam huruf kecil
+        'usr_email' => $request->dsiswa_email,
+        'password' => Hash::make($request->dsiswa_password), // Password hash
+        'role' => 'Siswa', // Role untuk siswa
+        'status' => 'Aktif', // Menyesuaikan dengan status di gambar
+    ]);
+
 
     return response()->json([
         'success' => true,

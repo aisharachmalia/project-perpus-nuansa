@@ -58,7 +58,6 @@
                 color: #8b4513;
             }
 
-
             .icon-input input {
                 padding-left: 35px;
             }
@@ -71,24 +70,21 @@
             .icon-input select {
                 padding-left: 35px;
             }
-
         </style>
     @endpush
-
 
     <div class="container mb-5">
         <h2><i class="fas fa-book-reader"></i> Pembayaran Denda Perpustakaan</h2>
         <div id="pembayaran">
             <div class="mb-3 icon-input">
                 <div class="form-group">
-                    <label for="siswa">Nama Siswa</label>
-                    <input type="hidden" id="id_denda">
+                    <label for="siswa">Nama Peminjam</label>
                     <i class="bi bi-person-fill"></i>
                     <select id="siswa" name="siswa" class="form-control">
-                        <option value="">Pilih Siswa</option>
-                        @foreach ($siswa as $data)
-                            <option value="{{ Crypt::encryptString($data->id_dsiswa) }}">
-                                {{ $data->dsiswa_nama }}</option>
+                        <option value="">Pilih Peminjam</option>
+                        @foreach ($peminjam as $data)
+                            <option value="{{ Crypt::encryptString($data->id_usr) }}">
+                                {{ $data->usr_nama }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -97,7 +93,7 @@
                 <div class="form-group">
                     <label for="buku">Judul Buku</label>
                     <i class="bi bi-book-fill"></i>
-                    <select id="buku" name="buku" class="form-control selectBuku">
+                    <select id="buku" name="buku" class="form-control">
                         <option value="">Pilih Buku</option>
                     </select>
                     <span id="buku_error" class="text-danger"></span>
@@ -121,9 +117,16 @@
             </div>
             <div class="mb-3 icon-input">
                 <div class="form-group">
-                    <label for="denda">Jumlah Denda</label>
+                    <label for="denda">Jumlah Denda anda</label>
                     <i class="bi bi-cash-stack"></i>
-                    <input type="number" class="form-control" id="jumlahDenda" placeholder="Jumlah Denda" required>
+                    <p class="form-control">Rp. <span id="jumlahDenda">0</span></p>
+                </div>
+            </div>
+            <div class="mb-3 icon-input">
+                <div class="form-group">
+                    <label for="denda">Jumlah Pembayaran Rp.</label>
+                    <i class="bi bi-cash-coin"></i>
+                    <input type="number" class="form-control" id="uang_pembayaran" placeholder="Pembayaran" required>
                     <span id="denda_error" class="text-danger"></span>
                 </div>
             </div>
@@ -154,11 +157,12 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Nama Siswa</th>
+                                    <th>Nama Peminjam</th>
                                     <th>Buku</th>
                                     <th>Jumlah Denda</th>
                                     <th>Tanggal Pembayaran</th>
-                                    <th>Status</th>
+                                    <th>Status Denda</th>
+                                    <th>Status Pembayaran</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -175,9 +179,13 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function() {
-            $('.selectBuku').select2({
+            $('#buku').select2({
                 placeholder: "Pilih Buku",
-                allowClear: true
+                allowClear: true,
+            });
+            $('#siswa').select2({
+                placeholder: "Pilih Peminjam",
+                allowClear: true,
             });
             var table = $('#tbl_denda').DataTable({
                 serverSide: true,
@@ -189,7 +197,7 @@
                         class: "text-center"
                     },
                     {
-                        data: 'dsiswa_nama',
+                        data: 'usr_nama',
                         class: 'text-center'
                     },
                     {
@@ -197,34 +205,48 @@
                         class: 'text-center'
                     },
                     {
-                        data: 'tdenda_jumlah',
+                        data: 'jumlah',
                         class: 'text-center'
                     },
                     {
-                        data: 'tdenda_tgl_bayar',
+                        data: 'tgl_pembayaran',
                         class: 'text-center',
                         render: function(data) {
                             if (data == null) {
-                                return '<span>Belum bayar</span>';
+                                return '-';
                             } else {
                                 return new Date(data).toISOString().slice(0, 10);
                             }
                         }
                     },
                     {
-                        data: 'tdenda_status',
+                        data: 'status_denda',
                         render: function(data) {
-                            if (data != null) {
-                                return data;
+                            if (data == 1) {
+                                return 'Sudah bayar';
                             } else {
                                 return 'Belum bayar';
+                            }
+                        },
+                        class: 'text-center'
+                    },
+                    {
+                        data: 'status',
+                        render: function(data) {
+                            if (data == 0) {
+                                return 'Belum Lunas';
+                            } else if (data == 1) {
+                                return 'Lunas';
+                            } else {
+                                return 'Belum Bayar';
                             }
                         },
                         class: 'text-center'
                     }
                 ]
             });
-
+            $('#pembayaran').find('#tanggalPembayaran').val('');
+            $('#pembayaran').find('#uang_pembayaran').val('');
             $('#siswa').on('change', function() {
                 var siswaId = $(this).val();
                 if (siswaId) {
@@ -232,14 +254,12 @@
                         url: `/denda-detail/${siswaId}`,
                         type: 'GET',
                         success: function(response) {
-                            $('#pembayaran').find('#id_denda').val(response['buku'][0]
-                                .id_tdenda);
                             $('#pembayaran').find('#tanggalPembayaran').val(new Date()
                                 .toISOString().slice(0, 10));
                             $('#pembayaran').find('#buku').empty();
                             $('#pembayaran').find('#buku').append(
                                 '<option value="">Pilih Buku</option>');
-                            $.each(response.buku, function(index, value) {
+                            $.each(response, function(index, value) {
                                 $('#pembayaran').find('#buku').append(
                                     '<option value="' + value.id_tdenda + '">' +
                                     value.dbuku_judul + '</option>');
@@ -249,12 +269,10 @@
                 } else {
                     $('#pembayaran').find('#buku').val('');
                     $('#pembayaran').find('#tanggalPeminjaman').text('Tanggal Pinjam');
-                    $('#pembayaran').find('#id_denda').val('');
                     $('#pembayaran').find('#tanggalJatuhTempo').text('Jatuh Tempo');
-                    $('#pembayaran').find('#jumlahDenda').val('');
+                    $('#pembayaran').find('#jumlahDenda').text('0');
                     $('#pembayaran').find('#tanggalPembayaran').val('');
                     $('#pembayaran').find('#buku').empty();
-                    $('#pembayaran').find('#buku').append('<option value="">Pilih Buku</option>');
                 }
             });
 
@@ -266,10 +284,14 @@
                         type: 'GET',
                         success: function(response) {
                             $('#pembayaran').find('#tanggalPeminjaman').text(response
-                                .trks_tgl_peminjaman.split(' ')[0]);
+                                .trks_tgl_peminjaman == null ? new Date()
+                                .toISOString().slice(0, 10) :
+                                response.trks_tgl_peminjaman.split(' ')[0]);
                             $('#pembayaran').find('#tanggalJatuhTempo').text(response
-                                .trks_tgl_jatuh_tempo.split(' ')[0]);
-                            $('#pembayaran').find('#jumlahDenda').val(response.tdenda_jumlah);
+                                .trks_tgl_jatuh_tempo == null ? new Date()
+                                .toISOString().slice(0, 10) : response.trks_tgl_jatuh_tempo
+                                .split(' ')[0]);
+                            $('#pembayaran').find('#jumlahDenda').text(response.jumlah);
                             $('#pembayaran').find('#buku_error').text('');
                             $('#pembayaran').find('#denda_error').text('');
                             $('#pembayaran').find('#tgl_pembayaran_error').text('');
@@ -278,7 +300,7 @@
                 } else {
                     $('#pembayaran').find('#tanggalPeminjaman').text('Tanggal Peminjaman');
                     $('#pembayaran').find('#tanggalJatuhTempo').text('Tanggal Jatuh Tempo');
-                    $('#pembayaran').find('#jumlahDenda').val('');
+                    $('#pembayaran').find('#jumlahDenda').text('0');
 
 
                     $('#pembayaran').find('#buku_error').text('');
@@ -294,25 +316,26 @@
                     Swal.fire({
                         icon: 'error',
                         title: `Gagal!`,
-                        text: 'Siswa harus dipilih',
+                        text: 'Siswa harus dipilih terlebih dahulu!',
                         editConfirmButton: false,
                         timer: 3000
                     });
                     return;
                 }
                 let token = $('meta[name="csrf-token"]').attr('content');
-                let denda = $('#pembayaran').find('#jumlahDenda').val();
-                let id_denda = $('#pembayaran').find('#id_denda').val();
+                let uang_pembayaran = $('#pembayaran').find('#uang_pembayaran').val();
+                let id_denda = $('#pembayaran').find('#buku').val();
+                let buku = $('#pembayaran').find('#buku').val();
                 let tanggal_pembayaran = $('#pembayaran').find('#tanggalPembayaran').val();
-                let id_buku = $('#pembayaran').find('#buku').val();
                 $.ajax({
                     url: `/denda-bayar/${id_denda}`,
                     type: "POST",
                     cache: false,
                     data: {
                         "_token": token,
-                        "buku": id_buku,
-                        "denda": denda,
+                        "denda": uang_pembayaran,
+                        "buku": buku,
+                        "user": siswaId,
                         "tanggal_pembayaran": tanggal_pembayaran
                     },
                     success: function(response) {
@@ -321,22 +344,22 @@
                             icon: 'success',
                             title: `${response.message}`,
                             editConfirmButton: false,
-                            timer: 3000
+                            timer: 3000,
                         });
                         $('#pembayaran').find('#siswa').val('');
                         $('#pembayaran').find('#tanggalPeminjaman').text('Tanggal Peminjaman');
-                        $('#pembayaran').find('#id_denda').val('');
                         $('#pembayaran').find('#tanggalJatuhTempo').text('Tanggal Jatuh Tempo');
                         $('#pembayaran').find('#jumlahDenda').val('');
                         $('#pembayaran').find('#tanggalPembayaran').val('');
                         $('#pembayaran').find('#buku').empty();
-                        $('#pembayaran').find('#buku').append(
-                            '<option value="">Pilih Buku</option>');
                         // kosongin span err
                         $('#pembayaran').find('#buku_error').text('');
                         $('#pembayaran').find('#denda_error').text('');
                         $('#pembayaran').find('#tgl_pembayaran_error').text('');
-                        location.reload();
+
+                        setTimeout(function() {
+                            location.reload();
+                        }, 2000);
                     },
                     error: function(xhr) {
                         if (xhr.status === 422) {
