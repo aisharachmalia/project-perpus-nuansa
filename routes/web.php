@@ -17,7 +17,10 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 //
-Route::get('/', [App\Http\Controllers\WebController::class, 'pageWeb'])->name('page_web');
+Route::get('/', [App\Http\Controllers\WebController::class, 'berandaPage'])->name('beranda');
+Route::get('/tentang', [App\Http\Controllers\WebController::class, 'pageTentang'])->name('tentang');
+Route::get('/halaman-buku', [App\Http\Controllers\WebController::class, 'pageBuku'])->name('buku');
+Route::get('/panduan', [App\Http\Controllers\WebController::class, 'pagePanduan'])->name('panduan');
 
 //Login
 Route::get('/login-usr', [App\Http\Controllers\WebController::class, 'pageLogin'])->name('login-usr');

@@ -272,17 +272,17 @@
 
                 <!-- Kategori dan Peminjaman Terbanyak -->
                 <div class="row">
-                    <div class="col-12 col-xl-5">
+                    {{-- <div class="col-12 col-xl-5">
                         <div class="card chart-container">
                             <div class="card-body">
                                 <h4>Kategori Favorit</h4>
                                 <div id="chart_profile"></div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                     <!-- Peminjam Terbanyak -->
-                    <div class="col-12 col-xl-7">
-                        <div class="card">
+                    <div class="col-12 col-xl-12">
+                        <div class="card"><hr class="new5">
                             <div class="card-header">
                                 <h4>Peminjam Terbanyak</h4>
                             </div>
@@ -319,9 +319,9 @@
                 </div>
                 <div class="row">
                     <div class="col-12">
-                        <div class="card">
-                            <div class="card-header">
-                                <center><h4>Buku Favorit</h4></center>
+                        <div class="card"><hr class="new5">
+                            <div class="card-header text-center">
+                                <h4>Buku Favorit</h4>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -342,13 +342,13 @@
                                             @else
                                                 @foreach($bukuTerbanyakDipinjam as $buku)
                                                     <tr>
-                                                        <td class="col-4">
-                                                            <!-- Menampilkan gambar cover buku -->
-                                                            <img src="{{ asset('storage/cover/' . $buku->dbuku_cover) }}" alt="Cover Buku" style="width: 50px; height: 70px;">
+                                                        <td class="col-4 text-center">
+                                                            <!-- Menampilkan gambar cover buku dengan ukuran yang proporsional -->
+                                                            <img src="{{ asset('storage/cover/' . $buku->dbuku_cover) }}" alt="Cover Buku" style="width: 50px; height: 70px; object-fit: cover;">
                                                         </td>
                                                         <td class="col-3">{{ $buku->dbuku_judul }}</td>
                                                         <td class="col-3">{{ $buku->dpenulis_nama_penulis }}</td> <!-- Menampilkan nama penulis -->
-                                                        <td class="col-2">{{ $buku->total_peminjaman }}</td>
+                                                        <td class="col-2 text-center">{{ $buku->total_peminjaman }}</td>
                                                     </tr>
                                                 @endforeach
                                             @endif
@@ -358,8 +358,8 @@
                             </div>
                         </div>
                     </div>
-                    
                 </div>
+                
 
             </div>
     </div>

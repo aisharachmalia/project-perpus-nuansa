@@ -13,3 +13,10 @@
 
 
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+hr.new5 {
+    margin: 0; border-top: 2px;
+    border: 10px solid blue;
+    border-radius: 5px;
+  }
+</style>
