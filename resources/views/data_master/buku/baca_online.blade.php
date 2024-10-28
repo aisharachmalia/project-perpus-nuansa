@@ -168,6 +168,8 @@
             <button id="nextPage">Berikutnya <i class="fa fa-chevron-right"></i></button>
         </div>
 
+        <!-- Kontrol PDF Gaya Komiku -->
+        
         <!-- Container untuk menampilkan PDF -->
         <div id="viewerContainer" style="width: 100%; text-align: center;">
             <canvas id="pdf-canvas" style="border:1px solid #ddd; max-width: 100%;"></canvas>

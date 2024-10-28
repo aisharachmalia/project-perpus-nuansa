@@ -18,11 +18,11 @@
         <tr>
             <td style="text-align: center">{{ $key+1 }}</td>
             <td>{{ $item->dbuku_judul }}</td>
-            <td>{{ $item->dsiswa_nama }}</td>
+            <td>{{ $item->usr_nama }}</td>
             <td>{{ $item->trks_tgl_peminjaman }}</td>
             <td>{{ $item->trks_tgl_jatuh_tempo }}</td>
             <td>{{ $item->trks_tgl_pengembalian }}</td>
-            <td>Rp.{{ $number_format($item->trks_denda, 0, ',', '.') }}</td>
+            <td>Rp.{{ $number_format($item->jumlah, 0, ',', '.') }}</td>
             <td style="text-align: center;">
                 @if($item->trks_status == 1)
                     Dipinjam
