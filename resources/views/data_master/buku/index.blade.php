@@ -1,4 +1,7 @@
 @extends('master')
+<style>
+    
+</style>
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
@@ -25,6 +28,7 @@
                                     <th width="10%">cover</th>
                                     <th>ISBN<br>Judul</th>
                                     <th>Penerbit<br>Penulis</th>
+                                    <th width="10%">Jumlah Buku</th>
                                     <th width="10%">
                                         <center>Aksi</center>
                                     </th>
@@ -88,6 +92,10 @@
                                 '-';
                             return '<strong>' + penerbit + '</strong><br>' + penulis;
                         }
+                    },
+                    {
+                        class: "text-center",
+                        data: 'dbuku_jml_total',
                     },
                     {
                         data: 'aksi',
@@ -187,7 +195,7 @@
         $('body').on('click', '.modalCreate', function() {
             $('#createBuku').find('input, textarea, select').val('');
             $('#createBuku').find('img').attr('src', '');
-
+            $('#createBuku').find('#file-error').text('');
             $('#createBuku').find('#cover-error').text('');
             $('#createBuku').find('#isbn-error').text('');
             $('#createBuku').find('#judul-error').text('');
@@ -246,6 +254,9 @@
                         if (errors.dbuku_bahasa) {
                             $('#createBuku').find('#bahasa-error').text(errors.dbuku_bahasa[0]);
                         }
+                        if (errors.dbuku_file){
+                            $('#createBuku').find('#file-error').text(errors.dbuku_file[0]);
+                        }
                         if (errors.dbuku_lokasi_rak) {
                             $('#createBuku').find('#lokasi_rak-error').text(errors.dbuku_lokasi_rak[0]);
                         }
@@ -282,6 +293,7 @@
             $('#edit').find('input, textarea, select').val('');
             $('#edit').find('img').attr('src', '');
             // Clear previous error messages
+            $('#edit').find('#file-error').text('');
             $('#edit').find('#cover-error').text('');
             $('#edit').find('#isbn-error').text('');
             $('#edit').find('#judul-error').text('');         
@@ -299,7 +311,6 @@
                 type: "GET",
                 cache: false,
                 success: function(response) {
-                    console.log(response.img);
 
                     // Fill data into the modal
                     $('#edit').find('#id_bk').val(id_bk);
@@ -313,7 +324,7 @@
                     $('#edit').find('#dbuku_lokasi_rak').html(response.slc7);
                     $('#edit').find('#dbuku_edisi').html(response.slc8);
                     $('#edit').find('#dbuku_jml_total').val(response.bk[0].dbuku_jml_total); // Available quantity
-
+                    $('#edit').find('#dbuku_file').attr("src", response.bk[0].dbuku_file); 
                 },
                 error: function(error) {
                     console.log("Error:", error);
@@ -376,6 +387,9 @@
                         }
                         if (errors.dbuku_bahasa) {
                             $('#edit').find('#bahasa-error').text(errors.dbuku_bahasa[0]);
+                        }
+                        if (errors.dbuku_file){
+                            $('#edit').find('#file-error').text(errors.dbuku_file[0]);
                         }
                         if (errors.dbuku_lokasi_rak) {
                             $('#edit').find('#lokasi_rak-error').text(errors.dbuku_lokasi_rak[0]);

@@ -202,5 +202,7 @@ Route::put('/transaksi/update/{id}', [TransaksiController::class, 'editTransaksi
 // Route::get('/pengembalian/detail/update/{id}', [TransaksiController::class, 'showEditPengembalian']);
 // Route::put('/pengembalian/update/{id}', [TransaksiController::class, 'editPengembalian'])->name('pengembalian.update');
 
+Route::get('/document/{id}', [App\Http\Controllers\BacaOnlineController::class, 'documentDetail'])->name('document.detail');
+
 Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'index'])->name('profile');
 Route::post('/profile' , [App\Http\Controllers\ProfileController::class, 'updateProfile'])->name('update_profile');
