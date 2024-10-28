@@ -38,7 +38,7 @@
 
         <div class="row">
             <div class="column">
-                <span class="label">Nama Siswa:</span>
+                <span class="label">Nama Peminjam:</span>
                 <span class="value">{{ $data['dsiswa_nama'] }}</span>
             </div>
             <div class="column">
@@ -67,7 +67,7 @@
 
         <p>
             @if ($data['trks_denda'] > 0)
-                Anda terlambat mengembalikan buku dan dikenakan denda sebesar Rp {{ $data['trks_denda'] }}. Mohon untuk
+                Anda terlambat mengembalikan buku dan dikenakan denda sebesar Rp. {{ $data['trks_denda'] }}. Mohon untuk
                 segera melunasi denda tersebut pada saat kunjungan Anda berikutnya ke perpustakaan.
             @else
                 Terima kasih telah meminjam buku di perpustakaan SMK Assalaam Bandung. Anda mengembalikan buku tepat
