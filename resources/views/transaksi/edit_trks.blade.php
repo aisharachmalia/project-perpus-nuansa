@@ -27,11 +27,6 @@
                                         <select id="id_dbuku" name="id_dbuku"
                                             class="form-select shadow-sm rounded-pill">
                                             <option value="">Pilih Buku</option>
-                                            @foreach ($buku as $data)
-                                                <option value="{{ Crypt::encryptString($data->id_dbuku) }}">
-                                                    {{ $data->dbuku_judul }}
-                                                </option>
-                                            @endforeach
                                         </select>
                                         <span id="buku-error" class="text-danger small"></span>
                                     </div>
@@ -44,11 +39,6 @@
                                         <select id="id_dsiswa" name="id_dsiswa"
                                             class="form-select shadow-sm rounded-pill">
                                             <option value="">Pilih Peminjam</option>
-                                            @foreach ($siswa2 as $data)
-                                                <option value="{{ Crypt::encryptString($data->id_usr) }}">
-                                                    {{ $data->usr_nama }}
-                                                </option>
-                                            @endforeach
                                         </select>
                                         <span id="siswa-error" class="text-danger"></span>
                                     </div>
@@ -61,16 +51,12 @@
                                             <select id="id_dpustakawan" name="id_dpustakawan"
                                                 class="form-select shadow-sm rounded-pill">
                                                 <option value="">Pilih Pustakawan</option>
-                                                @foreach ($pustakawan as $data)
-                                                    <option value="{{ Crypt::encryptString($data->id_dpustakawan) }}">
-                                                        {{ $data->dpustakawan_nama }}</option>
-                                                @endforeach
                                             </select>
                                             <span id="pustakawan-error" class="text-danger small"></span>
                                         </div>
                                     </div>
                                 @else
-                                    <input type="hidden" name="id_dpustakawan"
+                                    <input type="hidden" name="id_dpustakawan" id="id_dpustakawan"
                                         value="{{ \Crypt::encryptString(Auth::user()->id_usr) }}">
                                 @endif
 
@@ -102,7 +88,7 @@
                 <!-- Footer -->
                 <div class="modal-footer border-top-0">
                     <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Tutup</button>
-                    <button type="submit" class="btn btn-primary rounded-pill" id="simpan">Simpan Perubahan</button>
+                    <button type="button" class="btn btn-primary rounded-pill" id="simpanTransaksi">Simpan Perubahan</button>
                 </div>
             </form>
         </div>
@@ -138,11 +124,6 @@
                                         <select id="id_dbuku" name="id_dbuku"
                                             class="form-select shadow-sm rounded-pill">
                                             <option value="">Pilih Buku</option>
-                                            @foreach ($buku as $data)
-                                                <option value="{{ Crypt::encryptString($data->id_dbuku) }}">
-                                                    {{ $data->dbuku_judul }}
-                                                </option>
-                                            @endforeach
                                         </select>
                                         <span id="buku-error" class="text-danger small"></span>
                                     </div>
@@ -155,11 +136,6 @@
                                         <select id="id_dsiswa" name="id_dsiswa"
                                             class="form-select shadow-sm rounded-pill">
                                             <option value="">Pilih Peminjam</option>
-                                            @foreach ($siswa2 as $data)
-                                                <option value="{{ Crypt::encryptString($data->id_usr) }}">
-                                                    {{ $data->usr_nama }}
-                                                </option>
-                                            @endforeach
                                         </select>
                                         <span id="siswa-error" class="text-danger"></span>
                                     </div>
@@ -173,16 +149,12 @@
                                             <select id="id_dpustakawan" name="id_dpustakawan"
                                                 class="form-select shadow-sm rounded-pill">
                                                 <option value="">Pilih Pustakawan</option>
-                                                @foreach ($pustakawan as $data)
-                                                    <option value="{{ Crypt::encryptString($data->id_dpustakawan) }}">
-                                                        {{ $data->dpustakawan_nama }}</option>
-                                                @endforeach
                                             </select>
                                             <span id="pustakawan-error" class="text-danger small"></span>
                                         </div>
                                     </div>
                                 @else
-                                    <input type="hidden" name="id_dpustakawan"
+                                    <input type="hidden" name="id_dpustakawan" id="id_dpustakawan"
                                         value="{{ \Crypt::encryptString(Auth::user()->id_usr) }}">
                                 @endif
 
@@ -245,7 +217,7 @@
                 <!-- Footer -->
                 <div class="modal-footer border-top-0">
                     <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Tutup</button>
-                    <button type="submit" class="btn btn-primary rounded-pill" id="simpan">Simpan
+                    <button type="button" class="btn btn-primary rounded-pill" id="simpanTransaksi">Simpan
                         Perubahan</button>
                 </div>
             </form>
