@@ -18,7 +18,7 @@
             <tr>
                 <td style="text-align: center; background-color: #fefe76;" width="5%">{{ $key + 1 }}</td>
                 <td style="text-align: left;">{{ $item->dbuku_judul }}</td>
-                <td style="text-align: center;" width="10%">{{ $item->dsiswa_nama }}</td>
+                <td style="text-align: center;" width="10%">{{ $item->usr_nama }}</td>
                 <td style="text-align: center;" width="15%">
                     {{ \Carbon\Carbon::parse($item->trks_tgl_peminjaman)->format('d-m-Y') }}</td>
                 <td style="text-align: center;" width="15%">
@@ -30,7 +30,7 @@
                         -
                     @endif
                 </td>
-                <td style="text-align: center;">Rp. {{ number_format($item->tdenda_jumlah, 0, ',', '.') }}</td>
+                <td style="text-align: center;">Rp. {{ number_format($item->jumlah, 0, ',', '.') }}</td>
                 <td style="text-align: center;">
                     @if ($item->trks_status == 1)
                         Dipinjam
