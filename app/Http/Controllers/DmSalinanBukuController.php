@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\dm_salinan_buku;
 use Carbon\Carbon;
+use Elibyy\TCPDF\Facades\TCPDF;
 use Yajra\DataTables\Facades\DataTables;
 
 class DmSalinanBukuController extends Controller
@@ -192,4 +193,65 @@ class DmSalinanBukuController extends Controller
         }
     }
 
+    public function linkExportBuku(Request $request)
+    {
+        try {
+            $link = route('export_buku');
+            return \Response::json(array('link' => $link));
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function exportBuku(Request $request)
+    {
+        try {
+            // return (new SalinanBukuExport)->dataExport($request->all())->download('Rekap Salinan Buku.xlsx');
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function linkPrintoutBuku(Request $request)
+    {
+        try {
+            $link = route('printout_salinan_buku');
+            return \Response::json(array('link' => $link));
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function printoutBuku(Request $request)
+    {
+        try {
+            $filename = 'Salinan Buku.pdf';
+
+
+            $buku = \DB::select("SELECT dm_buku.*, 
+                                                dm_penulis.dpenulis_nama_penulis, 
+                                                dm_penerbits.dpenerbit_nama_penerbit
+                                        FROM dm_buku 
+                                        LEFT JOIN dm_penulis ON dm_buku.id_dpenulis = dm_penulis.id_dpenulis 
+                                        LEFT JOIN dm_penerbits ON dm_buku.id_dpenerbit = dm_penerbits.id_dpenerbit 
+                                        WHERE dm_buku.deleted_at IS NULL;
+                                    ");
+
+            $html = \View::make('pdf.pdf_salinan_buku', [
+                'title' => 'Data Salinan Buku',
+                'buku' => $buku
+            ])->render();
+
+            TCPDF::setPrintHeader(false);
+            TCPDF::setPrintFooter(false);
+            TCPDF::SetPageOrientation('L');
+            TCPDF::AddPage();
+            TCPDF::writeHTML($html, true, false, true, false, '');
+
+            return TCPDF::Output($filename, 'I');
+
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 }

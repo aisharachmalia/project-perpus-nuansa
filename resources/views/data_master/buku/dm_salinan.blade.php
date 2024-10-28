@@ -280,9 +280,11 @@
                                 icon: 'success',
                                 title: `${response.message}`,
                                 showConfirmButton: false,
-                                timer: 3000
+                                timer: 2000
                             });
-                            location.reload();
+                            setTimeout(() => {
+                                location.reload();
+                            }, 2000);
                         },
                         error: function(xhr) {
                             // Parse the response text to get the error message

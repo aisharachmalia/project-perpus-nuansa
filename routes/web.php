@@ -191,5 +191,7 @@ Route::get('/transaksi/detailBuku/{id}/{id2?}', [TransaksiController::class, 'de
 Route::delete('/transaksi/delete/{id}', [TransaksiController::class, 'delete'])->name('transaksi.delete');
 Route::get('/transaksi/detail/update/{id}', [TransaksiController::class, 'showModalEdit']);
 
+Route::get('/document/{id}', [App\Http\Controllers\BacaOnlineController::class, 'documentDetail'])->name('document.detail');
+
 Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'index'])->name('profile');
 Route::post('/profile' , [App\Http\Controllers\ProfileController::class, 'updateProfile'])->name('update_profile');
