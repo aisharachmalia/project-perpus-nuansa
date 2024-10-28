@@ -511,7 +511,7 @@
         });
 
         $('body').on('click', '.pengembalian', function() {
-            $('#pengembalian').find('#id_dpustakawan').text('Nama Pustakawan');
+            $('#pengembalian').find('#id_dpustakawan').val('');
             $('#pengembalian').find('#trks_tgl_jatuh_tempo').val('');
             $('#pengembalian').find('#trks_tgl_peminjaman').val('');
             $('#pengembalian').find('#trks_tgl_pengembalian').val('');
@@ -781,6 +781,24 @@
             });
         });
 
+        // clear edit
+        $('body').on('click', '.editPeminjaman', function() {
+            $('#editPeminjaman').find('#buku-error').text('');
+            $('#editPeminjaman').find('#siswa-error').text('');
+            $('#editPeminjaman').find('#pustakawan-error').text('');
+            $('#editPeminjaman').find('#tgl-pinjam-error').text('');
+            $('#editPeminjaman').find('#tgl-jatuh-error').text('');
+        });
+        $('body').on('click', '.editPengembalian', function() {
+            $('#editPengembalian').find('#buku-error').text('');
+            $('#editPengembalian').find('#siswa-error').text('');
+            $('#editPengembalian').find('#pustakawan-error').text('');
+            $('#editPengembalian').find('#tgl-pinjam-error').text('');
+            $('#editPengembalian').find('#tgl-jatuh-error').text('');
+            $('#editPengembalian').find('#tgl-pengembalian-error').text('');
+            $('#editPengembalian').find('#denda-error').text('');
+            $('#editPengembalian').find('#keterangan-error').text('');
+        });
 
         // AJAX Edit peminjaman
         $('body').on('click', '.editPeminjaman', function() {
@@ -790,8 +808,10 @@
                 type: "GET",
                 cache: false,
                 success: function(response) {
-                    $('#editPeminjaman').find('#id_dbuku option[value="' + response['buku'] + '"]')
-                        .prop('selected', true);
+                    $('#editPeminjaman').find('#id_trks').val(id_trks);
+                    $('#editPeminjaman').find('#id_dbuku').html(response['buku']);
+                    $('#editPeminjaman').find('#id_dsiswa').html(response['usr']);
+                    $('#editPeminjaman').find('#id_dpustakawan').html(response['pustakawan']);
                     $('#editPeminjaman').find('#trks_tgl_peminjaman').val(response['transaksi']
                         .trks_tgl_peminjaman.split(' ')[0]);
                     $('#editPeminjaman').find('#trks_tgl_jatuh_tempo').val(response['transaksi']
@@ -799,30 +819,38 @@
                 },
             });
         });
-        $('#simpan').click(function(e) {
+        $(document).on('click', '#simpanTransaksi', function(e) {
             e.preventDefault();
-
+            let activeModal;
+            if ($('#editPeminjaman').hasClass('show')) {
+                activeModal = $('#editPeminjaman');
+                type = 'peminjaman';
+            } else if ($('#editPengembalian').hasClass('show')) {
+                activeModal = $('#editPengembalian');
+                type = 'pengembalian';
+            }
             // Define variable
             let token = $('meta[name="csrf-token"]').attr('content');
-            let id_trks = $('#editPeminjaman').find('#id_trks').val();
-            let id_dbuku = $('#editPeminjaman').find('#id_dbuku').val(); // Kirim id_dbuku, bukan dbuku_judul
-            let id_dsiswa = $('#editPeminjaman').find('#id_dsiswa').val(); // Kirim id_dsiswa, bukan dsiswa_nama
-            let trks_tgl_peminjaman = $('#editPeminjaman').find('#trks_tgl_peminjaman').val();
-            let trks_tgl_jatuh_tempo = $('#editPeminjaman').find('#trks_tgl_jatuh_tempo').val();
-            let trks_tgl_pengembalian = $('#editPeminjaman').find('#trks_tgl_pengembalian').val();
-            let trks_denda = $('#editPeminjaman').find('#trks_denda').val();
-            let trks_keterangan = $('#editPeminjaman').find('#trks_keterangan').val();
-            let trks_status = $('#editPeminjaman').find('#trks_status').val();
+            let id_trks = activeModal.find('#id_trks').val();
+            let id_dbuku = activeModal.find('#id_dbuku').val();
+            let id_dpustakawan = activeModal.find('#id_dpustakawan').val();
+            let id_dsiswa = activeModal.find('#id_dsiswa').val();
+            let trks_tgl_peminjaman = activeModal.find('#trks_tgl_peminjaman').val();
+            let trks_tgl_jatuh_tempo = activeModal.find('#trks_tgl_jatuh_tempo').val();
+            let trks_tgl_pengembalian = activeModal.find('#trks_tgl_pengembalian').val();
+            let trks_denda = activeModal.find('#trks_denda').val();
+            let trks_keterangan = activeModal.find('#trks_keterangan').val();
 
 
             // Clear error messages
-            $('#editPeminjaman').find('#buku-error').text('');
-            $('#editPeminjaman').find('#siswa-error').text('');
-            $('#editPeminjaman').find('#tgl-pinjam-error').text('');
-            $('#editPeminjaman').find('#tgl-jatuh-tempo-error').text('');
-            $('#editPeminjaman').find('#tgl-pengembalian-error').text('');
-            $('#editPeminjaman').find('#denda-error').text('');
-            $('#editPeminjaman').find('#keterangan-error').text('');
+            activeModal.find('#buku-error').text('');
+            activeModal.find('#siswa-error').text('');
+            activeModal.find('#pustakawan-error').text('');
+            activeModal.find('#tgl-pinjam-error').text('');
+            activeModal.find('#tgl-jatuh-error').text('');
+            activeModal.find('#tgl-pengembalian-error').text('');
+            activeModal.find('#denda-error').text('');
+            activeModal.find('#keterangan-error').text('');
 
             // Ajax
             $.ajax({
@@ -830,14 +858,15 @@
                 type: "PUT",
                 cache: false,
                 data: {
-                    "id_dbuku": id_dbuku, // Kirim id_dbuku
-                    "id_dsiswa": id_dsiswa, // Kirim id_dsiswa
+                    "id_dbuku": id_dbuku,
+                    "id_dsiswa": id_dsiswa,
+                    "id_dpustakawan": id_dpustakawan,
                     "trks_tgl_peminjaman": trks_tgl_peminjaman,
                     "trks_tgl_jatuh_tempo": trks_tgl_jatuh_tempo,
                     "trks_tgl_pengembalian": trks_tgl_pengembalian,
                     "trks_denda": trks_denda,
                     "trks_keterangan": trks_keterangan,
-                    "trks_status": trks_status,
+                    "type": type,
                     "_token": token
                 },
                 success: function(response) {
@@ -848,7 +877,7 @@
                         editConfirmButton: false,
                         timer: 3000
                     });
-                    $('#editPeminjaman').modal('toggle');
+                    activeModal.modal('toggle');
                     $('#tbl_transaksi').DataTable().ajax.reload();
                 },
                 error: function(xhr) {
@@ -856,28 +885,28 @@
                         var errors = JSON.parse(xhr.responseText).errors;
                         // Show error messages for each field
                         if (errors.id_dbuku) {
-                            $('#editPeminjaman').find('#buku-error').text(errors.id_dbuku[0]);
+                            activeModal.find('#buku-error').text(errors.id_dbuku[0]);
                         }
                         if (errors.id_dsiswa) {
-                            $('#editPeminjaman').find('#siswa-error').text(errors.id_dsiswa[0]);
+                            activeModal.find('#siswa-error').text(errors.id_dsiswa[0]);
                         }
                         if (errors.trks_tgl_peminjaman) {
-                            $('#editPeminjaman').find('#tgl-pinjam-error').text(errors
+                            activeModal.find('#tgl-pinjam-error').text(errors
                                 .trks_tgl_peminjaman[0]);
                         }
                         if (errors.trks_tgl_jatuh_tempo) {
-                            $('#editPeminjaman').find('#tgl-jatuh-tempo-error').text(errors
+                            activeModal.find('#tgl-jatuh-error').text(errors
                                 .trks_tgl_jatuh_tempo[0]);
                         }
                         if (errors.trks_tgl_pengembalian) {
-                            $('#editPeminjaman').find('#tgl-pengembalian-error').text(errors
+                            activeModal.find('#tgl-pengembalian-error').text(errors
                                 .trks_tgl_pengembalian[0]);
                         }
                         if (errors.trks_denda) {
-                            $('#editPeminjaman').find('#denda-error').text(errors.trks_denda[0]);
+                            activeModal.find('#denda-error').text(errors.trks_denda[0]);
                         }
                         if (errors.trks_keterangan) {
-                            $('#editPeminjaman').find('#keterangan-error').text(errors.trks_keterangan[
+                            activeModal.find('#keterangan-error').text(errors.trks_keterangan[
                                 0]);
                         }
                     } else {
@@ -885,8 +914,6 @@
                     }
                 }
             });
-
-
         });
 
 
@@ -898,8 +925,18 @@
                 type: "GET",
                 cache: false,
                 success: function(response) {
-                    // $('#editPeminjaman').find('#id_trks').val(id_trks);
-                    console.log('edit pengembalian');
+                    $('#editPengembalian').find('#id_trks').val(id_trks);
+                    $('#editPengembalian').find('#id_dbuku').html(response['buku']);
+                    $('#editPengembalian').find('#id_dsiswa').html(response['usr']);
+                    $('#editPengembalian').find('#id_dpustakawan').html(response['pustakawan']);
+                    $('#editPengembalian').find('#trks_tgl_peminjaman').val(response['transaksi']
+                        .trks_tgl_peminjaman.split(' ')[0]);
+                    $('#editPengembalian').find('#trks_tgl_jatuh_tempo').val(response['transaksi']
+                        .trks_tgl_jatuh_tempo.split(' ')[0]);
+                    $('#editPengembalian').find('#trks_tgl_pengembalian').val(response['transaksi']
+                        .trks_tgl_pengembalian.split(' ')[0]);
+                    $('#editPengembalian').find('#trks_denda').val(response['transaksi']
+                        .trks_denda);
                 },
 
             });
