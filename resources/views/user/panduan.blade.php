@@ -120,9 +120,7 @@
     <ul>
         <li><a href="#peminjaman">Peminjaman Buku</a></li>
         <li><a href="#pengembalian">Pengembalian Buku</a></li>
-        <li><a href="#fasilitas">Fasilitas</a></li>
         <li><a href="#aturan">Aturan & Etika</a></li>
-        <li><a href="#jadwal">Jadwal</a></li>
     </ul>
 </nav>
 
