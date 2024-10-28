@@ -7,12 +7,12 @@
                     <div class="card-header">
                         <div class="row">
                             <div class="col-12 d-flex justify-content-start">
-                                <a href="javascript:void(0)" class="btn btn-custom btn-success mb-2 modalCreate"
+                                <a href="javascript:void(0)" class="btn btn-custom btn-primary mb-2 modalCreate"
                                     data-bs-toggle="modal" data-bs-target="#tambahPeminjaman">
                                     Peminjaman
                                 </a>
                                 &nbsp; &nbsp;
-                                <a href="javascript:void(0)" class="btn btn-custom btn-danger mb-2 pengembalian"
+                                <a href="javascript:void(0)" class="btn btn-custom btn-success mb-2 pengembalian"
                                     data-bs-toggle="modal" data-bs-target="#pengembalian">
                                     Pengembalian
                                 </a>
@@ -40,6 +40,46 @@
             </div>
         </div>
     </div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-12 d-flex justify-content-start">
+                                <a href="javascript:void(0)" class="btn btn-custom btn-primary mb-2 reservasi"
+                                    data-bs-toggle="modal" data-bs-target="#reservasi">
+                                    Reservasi
+                                </a>
+                                &nbsp; &nbsp;
+                                <a href="javascript:void(0)" class="btn btn-custom btn-success mb-2 pengembalian"
+                                    data-bs-toggle="modal" data-bs-target="#pengembalian">
+                                    Pengambilan
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table id="tbl_reservasi" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Judul Buku</th>
+                                    <th>Nama Peminjam</th>
+                                    <th>Tanggal Peminjaman & Tanggal Jatuh Tempo</th>
+                                    <th>Tanggal Pengembalian & Status Pengembalian </th>
+                                    <th>Denda</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
     <!-- Modal untuk Tambah Peminjaman -->
@@ -48,15 +88,13 @@
             <div class="modal-content shadow-lg rounded-4 border-0"> <!-- Tambahkan shadow, rounded, border-0 -->
                 <div class="modal-header bg-gradient-primary text-white rounded-top-4">
                     <!-- Gradient background untuk header -->
-                    <h4 class="modal-title fw-bold" id="modalCreate">Tambah Peminjaman</h4>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
+                    <h4 class="modal-title fw-bold" id="modalCreate">Peminjaman Buku</h4>
                 </div>
                 <div class="modal-body">
                     <form class="form" data-action="{{ route('pinjam.store') }}" method="POST" id="pinjamanForm">
                         @csrf
                         <div class="row g-4"> <!-- Tambahkan gap untuk ruang antar kolom -->
-                            <div class="col-md-4 col-12">
+                            <div class="col-md-6 col-12">
                                 <div class="form-group">
                                     <label for="first-name-column" class="fw-semibold">Judul Buku</label>
                                     <select id="id_dbuku" name="id_dbuku" class="form-control shadow-sm rounded-pill">
@@ -69,9 +107,104 @@
                                     <span id="buku-error" class="text-danger small"></span>
                                 </div>
                             </div>
+                            <div class="col-md-6 col-12">
+                                <div class="form-group">
+                                    <label for="last-name-column" class="fw-semibold">Nama Peminjam</label>
+                                    <select id="id_dsiswa" name="id_dsiswa" class="form-control shadow-sm rounded-pill">
+                                        <option value="">Pilih Peminjam</option>
+                                        @foreach ($siswa2 as $data)
+                                            <option value="{{ Crypt::encryptString($data->id_usr) }}">
+                                                {{ $data->usr_nama }}</option>
+                                        @endforeach
+                                    </select>
+                                    <span id="siswa-error" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            @php
+                                $role = App\Models\akses_usr::join('users', 'akses_usrs.id_usr', 'users.id_usr')
+                                    ->where('users.id_usr', Auth::user()->id_usr)
+                                    ->join('roles', 'akses_usrs.id_role', 'roles.id_role')
+                                    ->first();
+                            @endphp
+                            @if ($role->id_role < 3)
+                                <div class="col-md-6 col-12">
+                                    <div class="form-group">
+                                        <label for="city-column" class="fw-semibold">Nama Pustakawan</label>
+                                        <select id="id_dpustakawan" name="id_dpustakawan"
+                                            class="form-control shadow-sm rounded-pill">
+                                            <option value="">Pilih Pustakawan</option>
+                                            @foreach ($pustakawan as $data)
+                                                <option value="{{ Crypt::encryptString($data->id_dpustakawan) }}">
+                                                    {{ $data->dpustakawan_nama }}</option>
+                                            @endforeach
+                                        </select>
+                                        <span id="pustakawan-error" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                            @else
+                                <input type="hidden" name="id_dpustakawan"
+                                    value="{{ \Crypt::encryptString(Auth::user()->id_usr) }}">
+                            @endif
+                            <div class="col-md-6 col-12">
+                                <div class="form-group">
+                                    <label for="country-floating" class="fw-semibold">Tanggal Peminjaman</label>
+                                    <input type="date" class="form-control shadow-sm rounded-pill"
+                                        placeholder="tanggal pinjam" name="trks_tgl_peminjaman" id="trks_tgl_peminjaman">
+                                    <span id="tgl-pinjam-error" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="form-group">
+                                    <label for="country-floating" class="fw-semibold">Tanggal Jatuh Tempo</label>
+                                    <input type="date" class="form-control shadow-sm rounded-pill"
+                                        placeholder="tanggal jatuh tempo" name="trks_tgl_jatuh_tempo"
+                                        id="trks_tgl_jatuh_tempo">
+                                    <span id="tgl-jatuh-tempo-error" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-top-0">
+                    <button type="button" class="btn btn-danger rounded-pill" data-bs-dismiss="modal">Tutup</button>
+                    <button type="submit" class="btn btn-primary rounded-pill" id="storePinjaman">Simpan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- end modal peminjaman --}}
+
+
+
+    <!-- Modal untuk Tambah reservasi -->
+    <div class="modal fade text-left" id="reservasi" tabindex="-1" role="dialog" aria-labelledby="modalCreate1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+            <div class="modal-content shadow-lg rounded-4 border-0"> <!-- Tambahkan shadow, rounded, border-0 -->
+                <div class="modal-header bg-gradient-primary text-white rounded-top-4">
+                    <!-- Gradient background untuk header -->
+                    <h4 class="modal-title fw-bold" id="modalCreate">Reservasi Buku</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form" data-action="{{ route('pinjam.store') }}" method="POST" id="pinjamanForm">
+                        @csrf
+                        <div class="row g-4"> <!-- Tambahkan gap untuk ruang antar kolom -->
                             <div class="col-md-4 col-12">
                                 <div class="form-group">
-                                    <label for="last-name-column" class="fw-semibold">Nama User</label>
+                                    <label class="fw-semibold">Judul Buku</label>
+                                    <select id="id_dbuku" name="id_dbuku" class="form-control shadow-sm rounded-pill">
+                                        <option value="">Pilih Buku</option>
+                                        @foreach ($buku as $data)
+                                            <option value="{{ Crypt::encryptString($data->id_dbuku) }}">
+                                                {{ $data->dbuku_judul }}</option>
+                                        @endforeach
+                                    </select>
+                                    <span id="buku-error" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-12">
+                                <div class="form-group">
+                                    <label class="fw-semibold">Nama Peminjam</label>
                                     <select id="id_dsiswa" name="id_dsiswa" class="form-control shadow-sm rounded-pill">
                                         <option value="">Pilih Peminjam</option>
                                         @foreach ($siswa2 as $data)
@@ -109,15 +242,15 @@
                             @endif
                             <div class="col-md-4 col-12">
                                 <div class="form-group">
-                                    <label for="country-floating" class="fw-semibold">Tanggal Peminjaman</label>
+                                    <label class="fw-semibold">Tanggal Reservasi</label><br>
                                     <input type="date" class="form-control shadow-sm rounded-pill"
-                                        placeholder="tanggal pinjam" name="trks_tgl_peminjaman" id="trks_tgl_peminjaman">
+                                        name="trks_tgl_peminjaman" id="trks_tgl_reservasi">
                                     <span id="tgl-pinjam-error" class="text-danger small"></span>
                                 </div>
                             </div>
                             <div class="col-md-4 col-12">
                                 <div class="form-group">
-                                    <label for="country-floating" class="fw-semibold">Tanggal Jatuh Tempo</label>
+                                    <label class="fw-semibold">Tanggal Kadaluarsa</label><br>
                                     <input type="date" class="form-control shadow-sm rounded-pill"
                                         placeholder="tanggal jatuh tempo" name="trks_tgl_jatuh_tempo"
                                         id="trks_tgl_jatuh_tempo">
@@ -128,14 +261,14 @@
                     </form>
                 </div>
                 <div class="modal-footer border-top-0">
-                    <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-danger rounded-pill" data-bs-dismiss="modal">Tutup</button>
                     <button type="submit" class="btn btn-primary rounded-pill" id="storePinjaman">Simpan</button>
                 </div>
             </div>
         </div>
     </div>
 
-    {{-- end modal peminjaman --}}
+    {{-- end modal reservasi --}}
 
     @include('transaksi.edit_trks')
 
@@ -145,20 +278,19 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="modalPengembalian">Pengembalian</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h4 class="modal-title" id="modalPengembalian">Pengembalian Buku</h4>
                 </div>
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-4 col-12">
                             <div class="form-group">
-                                <label for="last-name-column">Nama User</label>
+                                <label for="last-name-column">Nama Peminjam</label>
                                 <input type="hidden" name="id_trks" id="id_trks">
                                 <select id="id_dsiswa" name="id_dsiswa" class="form-control">
                                     <option value="">Pilih Peminjam</option>
                                     @foreach ($siswa as $data)
-                                        <option value="{{ Crypt::encryptString($data->id_dsiswa) }}">
-                                            {{ $data->dsiswa_nama }}</option>
+                                        <option value="{{ Crypt::encryptString($data->id_usr) }}">
+                                            {{ $data->usr_nama }}</option>
                                     @endforeach
                                 </select>
                                 <span id="siswa-error" class="text-danger"></span>
@@ -205,7 +337,7 @@
                                 <span id="denda-error" class="text-danger"></span>
                             </div>
                         </div>
-                        <div class="col-md-8 col-12">
+                        <div class="col-md-12 col-12">
                             <div class="form-group">
                                 <label for="country-floating">Keterangan</label>
                                 <textarea name="trks_keterangan" id="trks_keterangan" name="trks_keterangan" cols="10" rows="5"
@@ -216,6 +348,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
                     <button type="button" class="btn btn-custom btn-primary ml-1" id="simpan">
                         <i class="bx bx-check d-block d-sm-none"></i>
                         <span class="d-none d-sm-block">Simpan</span>
@@ -266,7 +399,7 @@
                         render: function(data, type, row) {
                             let pengembalian = row.trks_tgl_pengembalian == null ?
                                 'Belum dikembalikan' :
-                                new Date(data).toISOString().slice(0, 10);
+                                new Date(row.trks_tgl_pengembalian).toISOString().slice(0, 10);
                             let status = '';
                             if (row.trks_status == -1) {
                                 status = 'Dibatalkan';
@@ -288,6 +421,67 @@
                                 return '0';
                             } else {
                                 return data;
+                            }
+                        }
+                    },
+                    {
+                        data: 'aksi',
+                        orderable: false
+                    }
+                ]
+            });
+            var table = $('#tbl_reservasi').DataTable({
+                serverSide: true,
+                ajax: '{{ route('reservasi-table') }}',
+                columns: [{
+                        data: 'DT_RowIndex',
+                        orderable: false,
+                        searchable: false,
+                        class: "text-center"
+                    },
+                    {
+                        class: "text-center",
+                        data: 'dbuku_judul'
+                    },
+                    {
+                        class: "text-center",
+                        data: 'usr_nama',
+                    },
+                    {
+                        class: "text-center",
+                        data: null,
+                        render: function(data, type, row) {
+                            return '<strong>' + new Date(row.trsv_tgl_reservasi).toISOString()
+                                .slice(0, 10) + '</strong><br>' +
+                                new Date(row.trsv_tgl_kadaluarsa).toISOString().slice(0, 10);
+                        }
+
+                    },
+                    {
+                        class: "text-center",
+                        data: null,
+                        render: function(data, type, row) {
+                            let pemberitahuan = row.trsv_tgl_pemberitahuan == null ?
+                                'Belum dikembalikan' :
+                                new Date(row.trsv_tgl_pemberitahuan).toISOString().slice(0, 10);
+                            let pengambilan = row.trsv_tgl_pengambilan == null ?
+                                'Belum dikembalikan' :
+                                new Date(row.trsv_tgl_pengambilan).toISOString().slice(0, 10);
+                            return pemberitahuan + '  <br>' + pengambilan;
+                        }
+                    },
+                    {
+                        class: "text-center",
+                        data: 'trsv_status',
+                        render: function(data) {
+                            if (data == 0) {
+                                return 'Kadaluarsa';
+                            }
+                            if (data == 1) {
+                                'Aktif'
+                            }
+                            if (data == 2) {
+                                'Selesai'
                             }
                         }
                     },
@@ -352,7 +546,6 @@
                     }
                 });
             } else {
-                $('#pengembalian').find('#id_dpustakawan').text('Nama Pustakawan');
                 $('#pengembalian').find('#trks_tgl_peminjaman').val('');
                 $('#pengembalian').find('#trks_tgl_jatuh_tempo').val('');
                 $('#pengembalian').find('#trks_denda').val('')
@@ -371,8 +564,6 @@
                     url: `/transaksi/detailBuku/${trksId}/${tanggalKembali}`,
                     type: 'GET',
                     success: function(response) {
-                        $('#pengembalian').find('#id_dpustakawan').text(response['buku']
-                            .dpustakawan_nama);
                         $('#pengembalian').find('#trks_tgl_peminjaman').val(response['buku']
                             .trks_tgl_peminjaman.split(' ')[0]);
                         $('#pengembalian').find('#trks_tgl_jatuh_tempo').val(response['buku']
@@ -382,7 +573,6 @@
                     }
                 });
             } else {
-                $('#pengembalian').find('#id_dpustakawan').text('Nama Pustakawan');
                 $('#pengembalian').find('#trks_tgl_peminjaman').val('');
                 $('#pengembalian').find('#trks_tgl_jatuh_tempo').val('');
                 $('#pengembalian').find('#trks_denda').val('')
@@ -405,13 +595,11 @@
             let token = $('meta[name="csrf-token"]').attr('content');
             let denda = $('#pengembalian').find('#trks_denda').val();
             let id_trks = $('#pengembalian').find('#id_trks').val();
-            console.log(id_trks);
             let keterangan = $('#pengembalian').find('#trks_keterangan').val();
             let buku = $('#pengembalian').find('#id_dbuku').val();
             let jatuh_tempo = $('#pengembalian').find('#trks_tgl_jatuh_tempo').val();
             let peminjaman = $('#pengembalian').find('#trks_tgl_peminjaman').val();
             let tanggal_pengembalian = $('#pengembalian').find('#trks_tgl_pengembalian').val();
-            console.log(id_trks);
             $.ajax({
                 url: `/pengembalian/${id_trks}`,
                 type: "POST",
@@ -453,7 +641,9 @@
                     $('#pengembalian').find('#siswa-error').text('');
 
                     $('#pengembalian').modal('toggle');
-                    $('#tbl_transaksi').DataTable().ajax.reload();
+                    setTimeout(() => {
+                        location.reload();
+                    }, 2000);
                 },
                 error: function(xhr) {
                     if (xhr.status === 422) {
@@ -545,7 +735,9 @@
                             timer: 3000
                         });
                         $('#tambahPeminjaman').modal('toggle');
-                        $('#tbl_transaksi').DataTable().ajax.reload();
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
                     }
                 },
                 error: function(xhr) {
@@ -590,7 +782,7 @@
         });
 
 
-        // AJAX Edit
+        // AJAX Edit peminjaman
         $('body').on('click', '.editPeminjaman', function() {
             let id_trks = $(this).data('id');
             $.ajax({
@@ -598,28 +790,15 @@
                 type: "GET",
                 cache: false,
                 success: function(response) {
-                    $('#editPeminjaman').find('#id_trks').val(id_trks);
-                    $('#editPeminjaman').find('#id_dbuku').val(response[0].id_dbuku);
-                    $('#editPeminjaman').find('#id_dsiswa').text(response[0].dsiswa_nama);
-                    $('#editPeminjaman').find('#id_dpustakawan').val(response[0].id_dpustakawan);
-                    $('#editPeminjaman').find('#trks_tgl_peminjaman').val(response[0]
+                    $('#editPeminjaman').find('#id_dbuku option[value="' + response['buku'] + '"]')
+                        .prop('selected', true);
+                    $('#editPeminjaman').find('#trks_tgl_peminjaman').val(response['transaksi']
                         .trks_tgl_peminjaman.split(' ')[0]);
-                    $('#editPeminjaman').find('#trks_tgl_jatuh_tempo').val(response[0]
+                    $('#editPeminjaman').find('#trks_tgl_jatuh_tempo').val(response['transaksi']
                         .trks_tgl_jatuh_tempo.split(' ')[0]);
-                    $('#editPeminjaman').find('#trks_tgl_pengembalian').val(response[0]
-                        .trks_tgl_pengembalian.split(' ')[0]);
-                    $('#editPeminjaman').find('#trks_denda').val(response[0].trks_denda);
-                    $('#editPeminjaman').find('#trks_status').val(response[0].trks_status);
-                    $('#editPeminjaman').find('#trks_keterangan').val(response[0].trks_keterangan);
-
-                    // Menampilkan modal edit
-                    $('#editPeminjaman').modal('show');
                 },
-
             });
         });
-
-
         $('#simpan').click(function(e) {
             e.preventDefault();
 
@@ -647,7 +826,7 @@
 
             // Ajax
             $.ajax({
-                url: `/peminjaman/update/${id_trks}`,
+                url: `/transaksi/update/${id_trks}`,
                 type: "PUT",
                 cache: false,
                 data: {
@@ -710,48 +889,21 @@
 
         });
 
-        $('body').on('click', '#btn-delete', function() {
 
+        //Ajax edit pengembalian
+        $('body').on('click', '.editPengembalian', function(e) {
             let id_trks = $(this).data('id');
-            let token = $("meta[name='csrf-token']").attr("content");
+            $.ajax({
+                url: `transaksi/detail/update/${id_trks}`,
+                type: "GET",
+                cache: false,
+                success: function(response) {
+                    // $('#editPeminjaman').find('#id_trks').val(id_trks);
+                    console.log('edit pengembalian');
+                },
 
-            Swal.fire({
-                title: 'Apakah Kamu Yakin?',
-                text: "ingin menghapus data ini!",
-                icon: 'warning',
-                showCancelButton: true,
-                cancelButtonText: 'TIDAK',
-                confirmButtonText: 'YA, HAPUS!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-
-                    console.log('test');
-
-                    //fetch to delete data
-                    $.ajax({
-
-                        url: `/transaksi/delete/${id_trks}`,
-                        type: "DELETE",
-                        cache: false,
-                        data: {
-                            "_token": token
-                        },
-                        success: function(response) {
-
-                            //show success message
-                            Swal.fire({
-                                type: 'success',
-                                icon: 'success',
-                                title: `${response.message}`,
-                                showConfirmButton: false,
-                                timer: 3000
-                            });
-                            $('#tbl_transaksi').DataTable().ajax.reload()
-                        }
-                    });
-                }
-            })
-        });
+            });
+        })
     </script>
 @endpush
 <style>
