@@ -5,16 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Trks_denda extends Model
+class pembayaran extends Model
 {
     use HasFactory;
-    protected $table = 'trks_denda';
-    protected $primaryKey = 'id_tdenda';
+    protected $table = 'pembayarans';
+    protected $primaryKey = 'id_pembayaran';
 
     protected $fillable = [
+        'id_pembayaran',
+        'id_usr',
         'id_tdenda',
-        'id_trks',
         'jumlah',
         'status',
+        'tgl_pembayaran',
     ];
 }

@@ -106,24 +106,24 @@ class SiswaController extends Controller
     }
 
     // Buat data di tabel users terlebih dahulu
-        $user = User::create([
-            'usr_nama' => $request->dsiswa_nama,
-            'usr_username' => $request->dsiswa_nama, 
-            'usr_email' => $request->dsiswa_email,
-            'password' => bcrypt('password_default'), 
-        ]);
+    $user = User::create([
+        'usr_nama' => $request->dsiswa_nama,
+        'usr_username' => $request->dsiswa_nama, 
+        'usr_email' => $request->dsiswa_email,
+        'password' => bcrypt('password_default'), 
+    ]);
 
- 
-        dm_siswa::create([
-            'id_dkelas' => $request->id_dkelas,
-            'dsiswa_nama' => $request->dsiswa_nama,
-            'dsiswa_nis' => $request->dsiswa_nis,
-            'dsiswa_email' => $request->dsiswa_email,
-            'dsiswa_no_telp' => $request->dsiswa_no_telp,
-            'dsiswa_alamat' => $request->dsiswa_alamat,
-            'id_usr' => $user->id_usr,
-        ]);
-
+    // Simpan data siswa
+    dm_siswa::create([
+        'id_dkelas' => $request->id_dkelas,
+        'dsiswa_nama' => $request->dsiswa_nama,
+        'dsiswa_nis' => $request->dsiswa_nis,
+        'dsiswa_email' => $request->dsiswa_email,
+        'dsiswa_no_telp' => $request->dsiswa_no_telp,
+        'dsiswa_alamat' => $request->dsiswa_alamat,
+        'id_usr' => $user->id_usr,
+        'dsiswa_flag' => 0,  // Default flag untuk siswa baru
+    ]);
 
     return response()->json([
         'success' => true,
@@ -196,32 +196,64 @@ public function update($id = null, Request $request)
 
 
 
-        public function destroy($id = null)
-        {
-            $id_dsiswa = Crypt::decryptString($id);
-            $siswa = Dm_siswa::find($id_dsiswa);
-
-            // Cek apakah siswa sudah melakukan transaksi
-            $hasTransaksi = Transaksi::where('id_dsiswa', $id_dsiswa)->exists();
-
-            if ($hasTransaksi) {
-                // Jika siswa memiliki transaksi, kembalikan pesan error
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Siswa ini sudah melakukan transaksi dan tidak dapat dihapus!',
-                ]);
-            }
-
-            // Jika tidak ada transaksi, hapus siswa
-            $siswa->deleted_at = Carbon::now();
-            $siswa->save();
-
+public function destroy($id = null)
+{
+    try {
+        // Cek apakah ID ada atau valid
+        if (is_null($id)) {
             return response()->json([
-                'success' => true,
-                'message' => 'Data siswa berhasil dihapus!',
-            ]);
+                'success' => false,
+                'message' => 'ID siswa tidak valid!',
+            ], 400);
         }
 
+        // Decrypt ID siswa
+        $id_dsiswa = Crypt::decryptString($id);
+
+        // Temukan siswa berdasarkan ID
+        $siswa = Dm_siswa::find($id_dsiswa);
+
+        // Cek apakah siswa ditemukan
+        if (!$siswa) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Siswa tidak ditemukan!',
+            ], 404);
+        }
+
+        // Cek apakah siswa sudah melakukan transaksi berdasarkan id_usr
+        $transaksiCount = Transaksi::where('id_usr', $siswa->id_usr)->count();
+
+        if ($transaksiCount > 0) {
+            $siswa->dsiswa_flag = 1;
+            $siswa->save();
+            return response()->json([
+                'success' => false,
+                'message' => 'Siswa ini tidak dapat dihapus karena sudah melakukan transaksi!',
+            ], 403);
+        }
+
+        // Hapus data dari tabel users berdasarkan id_usr di tabel dm_siswas
+        $user = User::where('id_usr', $siswa->id_usr)->first();
+        if ($user) {
+            $user->delete();
+        }
+
+        // Hapus data siswa
+        $siswa->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data siswa dan pengguna berhasil dihapus!',
+        ], 200);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+        ], 500);
+    }
+}
 
     public function linkExportSiswa(Request $request)
     {
