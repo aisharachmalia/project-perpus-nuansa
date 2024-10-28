@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Dm_siswa;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
@@ -28,7 +29,17 @@ class UserController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         }
-        return view('setting.users.index');
+
+        $siswa = User::join('dm_siswas', 'users.id_usr', '=', 'dm_siswas.id_usr')
+        ->select(
+            'dm_siswas.dsiswa_nama as usr_nama', 
+            'dm_siswas.dsiswa_nama as usr_username', 
+            'dm_siswas.dsiswa_email as usr_email'
+
+        )
+        ->get();
+
+    return view('setting.users.index', compact('siswa'));
     }
 
     public function detail($id = null)
