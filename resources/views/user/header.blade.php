@@ -30,3 +30,16 @@
         </nav>
     </div>
 </header>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var dropdownToggles = document.querySelectorAll('.dropdown-toggle');
+    dropdownToggles.forEach(function(toggle) {
+        toggle.addEventListener('click', function(event) {
+            event.preventDefault();
+            var menu = this.nextElementSibling;
+            menu.classList.toggle('show');
+        });
+    });
+});
+
+</script>

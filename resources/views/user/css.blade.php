@@ -630,7 +630,9 @@ footer p {
 
 
 /* HALAMAN PANDUAN */
-
+.navbar a:hover {
+    color: #ffcc00;
+}
 /* Library Navigation */
 .library-nav {
     background: linear-gradient(45deg, #2c5030, #2abb4c);

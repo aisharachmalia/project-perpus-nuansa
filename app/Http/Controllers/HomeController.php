@@ -24,19 +24,21 @@ class HomeController extends Controller
         $tahun = $request->input('tahun');
 
         // Query untuk peminjaman terbanyak
-        $peminjaman_terbanyak = DB::table('trks_transaksi')
-            ->join('dm_siswas', 'trks_transaksi.id_dsiswa', '=', 'dm_siswas.id_dsiswa')
-            ->select('dm_siswas.dsiswa_nama', DB::raw('COUNT(trks_transaksi.id_dbuku) as total_bacaan'))
-            ->when($bulan, function ($query) use ($bulan) {
-                return $query->whereMonth('trks_tgl_peminjaman', $bulan);
-            })
-            ->when($tahun, function ($query) use ($tahun) {
-                return $query->whereYear('trks_tgl_peminjaman', $tahun);
-            })
-            ->groupBy('dm_siswas.dsiswa_nama')
-            ->orderBy('total_bacaan', 'desc')
-            ->take(5)
-            ->get();
+   // Query for most frequent borrowers
+$peminjaman_terbanyak = DB::table('trks_transaksi')
+->join('users', 'trks_transaksi.id_usr', '=', 'users.id_usr')
+->select('users.usr_nama', DB::raw('COUNT(trks_transaksi.id_dbuku) as total_bacaan'))
+->when($bulan, function ($query) use ($bulan) {
+    return $query->whereMonth('trks_tgl_peminjaman', $bulan);
+})
+->when($tahun, function ($query) use ($tahun) {
+    return $query->whereYear('trks_tgl_peminjaman', $tahun);
+})
+->groupBy('users.usr_nama')
+->orderBy('total_bacaan', 'desc')
+->take(5)
+->get();
+
 
         // Query buku yang paling banyak dipinjam
         $bukuTerbanyakDipinjam = DB::table('trks_transaksi')
@@ -123,14 +125,16 @@ class HomeController extends Controller
             })
             ->count();
 
-        $totalDenda = DB::table('trks_denda')->whereNull('deleted_at')
+            $totalDenda = DB::table('pembayarans')
+            ->whereNull('deleted_at')
             ->when($bulan, function ($query) use ($bulan) {
-                return $query->whereMonth('tdenda_tgl_bayar', $bulan);
+                return $query->whereMonth('tgl_pembayaran', $bulan);
             })
             ->when($tahun, function ($query) use ($tahun) {
-                return $query->whereYear('tdenda_tgl_bayar', $tahun);
+                return $query->whereYear('tgl_pembayaran', $tahun);
             })
-            ->sum('tdenda_jumlah');
+            ->sum('jumlah');
+        
 
         // Kirim hasil ke view
         return view('home', compact(
