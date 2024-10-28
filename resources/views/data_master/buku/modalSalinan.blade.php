@@ -7,11 +7,11 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form class="form" id="form_buku_upd" method="PUT" enctype="multipart/form-data">
+                <form class="form" id="form_buku_salinan_upd" method="PUT" enctype="multipart/form-data">
                     <div class="row justify-content-around">
                         <div class="col-md-4">
                             <label>Nama Buku Salinan</label>
-                            <input type="hidden" id="id_dsbuku">
+                            <input type="hidden" id="id_dsbk" name="id_dsbk">
                             <input type="text" id="dsbuku_no_salinan" class="form-control" placeholder="Nama Buku Salinan"
                                 name="dsbuku_no_salinan">
                             <span id="no-error" class="text-danger"></span>

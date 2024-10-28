@@ -75,9 +75,12 @@ class DmSalinanBukuController extends Controller
             'Hilang' => 'Hilang',
         ];
 
+        $selectedKondisi = $dsbk[0]->dsbuku_kondisi ?? '';
+
         $slc1 = '';
         foreach ($kondisi as $kds) {
-            $slc1 .= '<option value="' . $kds . '">' . $kds . '</option>';
+            $selected = ($kds == $selectedKondisi) ? 'selected' : ''; // Jika kondisi sebelumnya cocok, tambahkan atribut selected
+            $slc1 .= '<option value="' . $kds . '" ' . $selected . '>' . $kds . '</option>';
         }
 
         return response()->json([
@@ -89,20 +92,19 @@ class DmSalinanBukuController extends Controller
     public function crudSalinanBuku ($id = null, Request $request){
         try {
 
-            if ($request->isMethod('post') && isset($request->id_dsbk)) {
+            if ($request->isMethod('post') && $id) {
                 try {
-                    $id = \Crypt::decryptString($id);
-                $id_dsbk = \Crypt::decryptString($id);
+                    $id_dsbk = \Crypt::decryptString($id);
                 
                 $rules = [
-                    'dsbk_no_salinan' => 'required|unique:dm_salinan_bukus,dsbk_no_salinan,' . $id_dsbk . ',id_dsbk',
-                    'dsbk_kondisi' => 'required',
+                    'dsbuku_no_salinan' => 'required|unique:dm_salinan_bukus,dsbuku_no_salinan,' . $id_dsbk . ',id_dsbuku',
+                    'dsbuku_kondisi' => 'required',
                 ];
 
                 $messages = [
-                    'dsbk_no_salinan.required' => 'No. Salinan harus diisi!',
-                    'dsbk_no_salinan.unique' => 'No. Salinan sudah terdaftar!',
-                    'dsbk_kondisi.required' => 'Kondisi harus diisi!',
+                    'dsbuku_no_salinan.required' => 'No. Salinan harus diisi!',
+                    'dsbuku_no_salinan.unique' => 'No. Salinan sudah terdaftar!',
+                    'dsbuku_kondisi.required' => 'Kondisi harus diisi!',
                 ];
 
                 // Lakukan validasi
@@ -115,9 +117,9 @@ class DmSalinanBukuController extends Controller
                     ], 422);
                 }
 
-                dm_salinan_buku::where('id_dsbk', $id_dsbk)->update([
-                    'dsbk_no_salinan' => $request->dsbk_no_salinan,
-                    'dsbk_kondisi' => $request->dsbk_kondisi,
+                dm_salinan_buku::where('id_dsbuku', $id_dsbk)->update([
+                    'dsbuku_no_salinan' => $request->dsbuku_no_salinan,
+                    'dsbuku_kondisi' => $request->dsbuku_kondisi,
                     'dsbuku_status' => 0 ,
                     'updated_at' => now(),
                 ]);
@@ -144,19 +146,28 @@ class DmSalinanBukuController extends Controller
 
             
                     if ($salinan) {
+                        // Check if dsbuku_flag is 1
+                        if ($salinan->dsbuku_flag == 1) {
+                            return response()->json([
+                                'success' => false,
+                                'message' => 'Salinan Buku tidak bisa dihapus Karena Buku sedang di pinjam!',
+                            ], 403); // Forbidden
+                        }
+                
+                        // Proceed with deletion
                         $salinan->deleted_at = Carbon::now();
                         $salinan->save();
-            
+                
                         // Decrease the total book count in dm_buku
                         \DB::table('dm_buku')
                             ->where('id_dbuku', $salinan->id_dbuku)
                             ->decrement('dbuku_jml_total');
-            
-                        // Optionally, you can also update the available count if necessary
+                
+                        // Optionally, update the available count if necessary
                         \DB::table('dm_buku')
                             ->where('id_dbuku', $salinan->id_dbuku)
                             ->decrement('dbuku_jml_tersedia');
-            
+                
                         return response()->json([
                             'success' => true,
                             'message' => 'Salinan Buku Berhasil Dihapus!',
@@ -180,47 +191,5 @@ class DmSalinanBukuController extends Controller
             throw $th;
         }
     }
-
-    public function deleteSalinan(Request $request, $id = null){
-    try {
-        // Decrypt the salinan ID
-        $id_salinan = \Crypt::decryptString($id);
-
-        // Find the salinan entry
-        $salinan = dm_salinan_buku::find($id_salinan);
-
-        if ($salinan) {
-            // Soft delete the salinan entry
-            $salinan->deleted_at = Carbon::now();
-            $salinan->save();
-
-            // Decrease the total book count in dm_buku
-            \DB::table('dm_buku')
-                ->where('id_dbuku', $salinan->id_dbuku)
-                ->decrement('dbuku_jml_total');
-
-            // Optionally, you can also update the available count if necessary
-            \DB::table('dm_buku')
-                ->where('id_dbuku', $salinan->id_dbuku)
-                ->decrement('dbuku_jml_tersedia');
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Salinan Buku Berhasil Dihapus!',
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Salinan Buku tidak ditemukan!',
-            ], 404);
-        }
-    } catch (\Throwable $th) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Terjadi kesalahan!',
-            'error' => $th->getMessage(),
-        ], 500);
-    }
-}
 
 }
