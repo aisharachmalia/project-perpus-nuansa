@@ -17,5 +17,6 @@ class dm_pustakawan extends Model
         'dpustakawan_no_telp',
         'dpustakawan_alamat',
         'dpustakawan_status',
+        'dpustakawan_flag'
     ];
 }

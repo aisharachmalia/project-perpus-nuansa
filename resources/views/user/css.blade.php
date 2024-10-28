@@ -15,7 +15,7 @@ body {
         font-family: 'Poppins', sans-serif;
     }
 header {
-position: fixed;
+/* position: fixed; */
 width: 100%;
 top: 0;
 left: 0;
