@@ -28,8 +28,7 @@
                                             class="fas fa-file-excel"></i></span>
                                 </a>
                                 <a href="javascript:void(0)" class="dropdown-item mb-2 text-start" id="printout">
-                                    <span class="badge bg-light-danger">Printout Pdf <i
-                                            class="fas fa-file-pdf"></i></span>
+                                    <span class="badge bg-light-danger">Printout Pdf <i class="fas fa-file-pdf"></i></span>
                                 </a>
                             </div>
                         </div>
@@ -44,7 +43,8 @@
                                         $buku = DB::table('dm_buku')->get();
                                     @endphp
                                     @foreach ($buku as $item)
-                                        <option value="{{ Crypt::encrypt($item->id_dbuku) }}">{{ $item->dbuku_judul }}</option>
+                                        <option value="{{ Crypt::encrypt($item->id_dbuku) }}">{{ $item->dbuku_judul }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -55,11 +55,12 @@
                                 <select id="filter-siswa" class="form-control">
                                     <option value="">All</option>
                                     @php
-                                        $siswa = DB::table('dm_siswas')->get();
+                                        $siswa = DB::table('users')->where('id_usr', '>=', 4)->get();
                                     @endphp
                                     @foreach ($siswa as $item)
-                                        <option value="{{ Crypt::encrypt($item->id_dsiswa)}}">{{ $item->dsiswa_nama }}</option>
+                                        <option value="{{ Crypt::encrypt($item->id_usr) }}">{{ $item->usr_nama }}</option>
                                     @endforeach
+
                                 </select>
                             </div>
 
@@ -88,7 +89,7 @@
                             </div>
 
                             <!-- Export and Print Buttons Section -->
-                            
+
                         </div>
                     </div>
 
@@ -211,7 +212,7 @@
                         data: 'dbuku_judul'
                     },
                     {
-                        data: 'dsiswa_nama'
+                        data: 'usr_nama'
                     },
                     {
                         data: 'trks_tgl_peminjaman'
@@ -225,8 +226,8 @@
                     },
                     {
                         class: "text-center",
-                        data: 'tdenda_jumlah',
-                        render : function(data) {
+                        data: 'jumlah',
+                        render: function(data) {
                             if (data == null) {
                                 return 'Rp.0';
                             } else {

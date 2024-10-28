@@ -21,7 +21,7 @@ class BacaOnlineController extends Controller
         
         "
         );
-        ;
+        
         return view(
             'data_master.buku.baca_online',
             ['bk' => $bk[0],]

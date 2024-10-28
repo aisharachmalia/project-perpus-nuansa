@@ -24,11 +24,11 @@ class LaporanExport implements FromView
         $trks = \DB::select(
             "SELECT trks_transaksi.*,
                             dm_buku.dbuku_judul,
-                            dm_siswas.dsiswa_nama,
-                            trks_denda.tdenda_jumlah
+                            users.usr_nama,
+                            trks_denda.jumlah
                     FROM trks_transaksi
                     LEFT JOIN dm_buku ON trks_transaksi.id_dbuku = dm_buku.id_dbuku
-                    LEFT JOIN dm_siswas ON trks_transaksi.id_dsiswa = dm_siswas.id_dsiswa
+                    LEFT JOIN users ON trks_transaksi.id_usr = users.id_usr
                     LEFT JOIN trks_denda ON trks_transaksi.id_trks = trks_denda.id_trks
                     WHERE trks_transaksi.deleted_at IS NULL"
         );
