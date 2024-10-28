@@ -305,7 +305,7 @@
                                                 @foreach ($peminjaman_terbanyak->take(5) as $key => $peminjam)
                                                     <tr>
                                                         <td>{{ $key + 1 }}</td>
-                                                        <td>{{ $peminjam->dsiswa_nama }}</td>
+                                                        <td>{{ $peminjam->usr_nama }}</td>
                                                         <td>{{ $peminjam->total_bacaan }}</td>
                                                     </tr>
                                                 @endforeach
