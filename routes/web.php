@@ -180,16 +180,24 @@ Route::post('/lupa-password', [ForgotPasswordController::class, 'lupaPassword'])
 Route::get('/reset-password/{id?}', [App\Http\Controllers\WebController::class, 'pageResetPassword'])->name('form_reset_password');
 Route::post('/reset-Password', [ForgotPasswordController::class, 'storePassword'])->name('reset_pass');
 
+// route reservasi
+route::get('/reservasi/table,',[\App\Http\Controllers\ReservasiController::class,'index'])->name('reservasi-table');
 
+// route transaksi
 Route::get('/transaksi', [TransaksiController::class, 'index'])->name('transaksi');
 Route::post('/peminjaman/add', [TransaksiController::class, 'createPeminjaman'])->name('pinjam.store');
 Route::post('/pengembalian/{id?}', [TransaksiController::class, 'pengembalian']);
-Route::put('/peminjaman/update/{id}', [TransaksiController::class, 'editPeminjaman'])->name('peminjaman.update');
-// Route::put('/pengembalian/update/{id}', [TransaksiController::class, 'editPengembalian'])->name('pengembalian.update');
-Route::get('/transaksi/detail/{id}', [TransaksiController::class, 'show']);
+Route::get('/transaksi/detail/{id}', [TransaksiController::class, 'detail']);
 Route::get('/transaksi/detailBuku/{id}/{id2?}', [TransaksiController::class, 'detailBuku']);
 Route::delete('/transaksi/delete/{id}', [TransaksiController::class, 'delete'])->name('transaksi.delete');
-Route::get('/transaksi/detail/update/{id}', [TransaksiController::class, 'showModalEdit']);
+
+// edit peminjaman transaksi
+Route::get('/transaksi/detail/update/{id}', [TransaksiController::class, 'showEditTransaksi']);
+Route::put('/transaksi/update/{id}', [TransaksiController::class, 'editTransaksi'])->name('transaksi.update');
+
+// edit pengembalian transaksi
+// Route::get('/pengembalian/detail/update/{id}', [TransaksiController::class, 'showEditPengembalian']);
+// Route::put('/pengembalian/update/{id}', [TransaksiController::class, 'editPengembalian'])->name('pengembalian.update');
 
 Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'index'])->name('profile');
 Route::post('/profile' , [App\Http\Controllers\ProfileController::class, 'updateProfile'])->name('update_profile');
