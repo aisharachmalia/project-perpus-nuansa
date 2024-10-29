@@ -582,7 +582,8 @@
             $('#tambahPeminjaman').find('#id_dbuku').val('');
             $('#tambahPeminjaman').find('#id_dsiswa').val('');
             $('#tambahPeminjaman').find('#id_dpustakawan').val('');
-            $('#tambahPeminjaman').find('#trks_tgl_peminjaman').val('');
+            $('#tambahPeminjaman').find('#trks_tgl_peminjaman').val(new Date()
+            .toISOString().slice(0, 10));
             $('#tambahPeminjaman').find('#trks_tgl_jatuh_tempo').val('');
 
         });
@@ -662,8 +663,7 @@
             if (!siswaId) {
                 Swal.fire({
                     icon: 'error',
-                    title: `Gagal!`,
-                    text: 'Siswa harus dipilih',
+                    text: 'Siswa harus dipilih terlebih dahulu',
                     editConfirmButton: false,
                     timer: 3000
                 });

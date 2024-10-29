@@ -44,6 +44,9 @@ class TransaksiController extends Controller
                     return $btn;
                 })
                 ->rawColumns(['aksi'])
+                ->editColumn('trks_denda', function ($row) {
+                    return 'Rp. ' . number_format($row->trks_denda, 0, ',', '.');
+                })
                 ->make(true);
         }
         $buku = dm_buku::select('dm_buku.id_dbuku', 'dm_buku.dbuku_judul')->groupBy('dm_buku.id_dbuku')->join('dm_salinan_bukus', 'dm_buku.id_dbuku', '=', 'dm_salinan_bukus.id_dbuku')->whereNull('dm_salinan_bukus.deleted_at')->get();
@@ -145,7 +148,7 @@ class TransaksiController extends Controller
     {
         $id_trks = Crypt::decryptString($id);
 
-        if ($request->type=='peminjaman') {
+        if ($request->type == 'peminjaman') {
             $rules = [
                 'id_dbuku' => 'required',
                 'id_dsiswa' => 'required',
@@ -161,7 +164,7 @@ class TransaksiController extends Controller
                 'trks_tgl_peminjaman.required' => 'Tanggal pinjam harus diisi!',
                 'trks_tgl_jatuh_tempo.required' => 'Tanggal jatuh tempo harus diisi!',
             ];
-        }else{
+        } else {
             $rules = [
                 'id_dbuku' => 'required',
                 'id_dsiswa' => 'required',
@@ -331,7 +334,8 @@ class TransaksiController extends Controller
                 ->select('trks_transaksi.trks_tgl_peminjaman', 'trks_transaksi.trks_tgl_jatuh_tempo', 'trks_transaksi.id_trks')
                 ->first();
             if ($tanggalKembali > $data['buku']->trks_tgl_jatuh_tempo) {
-                $data['denda'] = 10000;                                  
+                $denda = Carbon::parse($data['buku']->trks_tgl_jatuh_tempo)->diffInDays($tanggalKembali, false);
+                $data['denda'] = 2000 * $denda;
             } else {
                 $data['denda'] = 0;
             }
