@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class trks_reservasi extends Model
+class trks_reservasis extends Model
 {
     use HasFactory;
-    protected $table = 'trks_reservasi';
+    protected $table = 'trks_reservasis';
     protected $primaryKey = 'id_trsv';
 
     protected $fillable = [
@@ -18,7 +18,7 @@ class trks_reservasi extends Model
         'trsv_tgl_reservasi',
         'trsv_tgl_kadaluarsa',
         'trsv_tgl_pemberitahuan',
-        'trsv_tgl_pengembalian',
+        'trsv_tgl_pengambilan',
         'trsv_status',
     ];
 }
