@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TransaksiController;
+use App\Http\Controllers\ReservasiController;
 use App\Http\Controllers\SiswaController;
 use Illuminate\Support\Facades\Auth;
 
@@ -204,3 +205,7 @@ Route::put('/transaksi/update/{id}', [TransaksiController::class, 'editTransaksi
 
 Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'index'])->name('profile');
 Route::post('/profile' , [App\Http\Controllers\ProfileController::class, 'updateProfile'])->name('update_profile');
+
+// reservasi
+Route::post('/reservasi/store', [ReservasiController::class, 'createReservasi'])->name('reservasi.store');
+Route::post('/pengambilan/store', [ReservasiController::class, 'createPengambilan'])->name('pengambilan.store');

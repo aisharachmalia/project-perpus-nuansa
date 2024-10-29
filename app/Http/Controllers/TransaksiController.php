@@ -308,7 +308,7 @@ class TransaksiController extends Controller
                 ->select('trks_transaksi.trks_tgl_peminjaman', 'trks_transaksi.trks_tgl_jatuh_tempo', 'trks_transaksi.id_trks')
                 ->first();
             if ($tanggalKembali > $data['buku']->trks_tgl_jatuh_tempo) {
-                $data['denda'] = 10000;
+                $data['denda'] = 10000;                                  
             } else {
                 $data['denda'] = 0;
             }
