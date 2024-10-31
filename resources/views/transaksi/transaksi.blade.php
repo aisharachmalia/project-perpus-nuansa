@@ -344,7 +344,7 @@
                                         <label for="country-floating" class="fw-semibold">Tanggal Pengambilan</label>
                                         <input type="date" class="form-control shadow-sm rounded-pill"
                                             placeholder="tanggal pengambilan" name="trsv_tgl_pengambilan"
-                                            id="trsv_tgl_pengambilan">
+                                             id="trsv_tgl_pengambilan">
                                         <span id="tgl-pengambilan-error" class="text-danger small"></span>
                                     </div>
                                 </div>
@@ -353,7 +353,7 @@
                     </div>
                     <div class="modal-footer border-top-0">
                         <button type="button" class="btn btn-danger rounded-pill" data-bs-dismiss="modal">Tutup</button>
-                        <button type="submit" class="btn btn-primary rounded-pill" id="storePengambilan">Simpan</button>
+                        <button type="submit" class="btn btn-primary rounded-pill" id="storePengambilan    ">Simpan</button>
                     </div>
                 </div>
             </div>

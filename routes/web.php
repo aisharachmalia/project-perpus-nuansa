@@ -208,4 +208,4 @@ Route::post('/profile' , [App\Http\Controllers\ProfileController::class, 'update
 
 // reservasi
 Route::post('/reservasi/store', [ReservasiController::class, 'createReservasi'])->name('reservasi.store');
-Route::post('/pengambilan/store', [ReservasiController::class, 'createPengambilan'])->name('pengambilan.store');
+Route::post('/pengambilan/store', [ReservasiController::class, 'createPengambilan'])->name('pengambilan.store');     

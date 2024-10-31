@@ -67,6 +67,7 @@ class SiswaController extends Controller
 
         return response()->json(['siswa' => $siswa, 'slc' => $slc]);
     }
+
     public function store(Request $request)
 {
     $rules = [
@@ -131,12 +132,12 @@ class SiswaController extends Controller
     ], 200);
 }
 
-public function update($id = null, Request $request)
+public function update($id, Request $request)
 {
     try {
-        // Decrypt ID siswa
+        // Dekripsi ID siswa
         $id_dsiswa = Crypt::decryptString($id);
-        
+
         // Rules untuk validasi
         $rules = [
             'dsiswa_nama' => 'required',
