@@ -1,6 +1,6 @@
 @extends('master')
 <style>
-    
+
 </style>
 @section('content')
     <div class="container">
@@ -191,7 +191,7 @@
                 }
             });
         });
-    
+
         $('body').on('click', '.modalCreate', function() {
             $('#createBuku').find('input, textarea, select').val('');
             $('#createBuku').find('img').attr('src', '');
@@ -240,7 +240,6 @@
                     if (xhr.status === 422) {
                         // Parse the JSON response
                         var response = JSON.parse(xhr.responseText);
-                        console.log(response.errors);
                         var errors = response.errors;
                         if (errors.dbuku_cover) {
                             $('#createBuku').find('#cover-error').text(errors.dbuku_cover[0]);
@@ -254,7 +253,7 @@
                         if (errors.dbuku_bahasa) {
                             $('#createBuku').find('#bahasa-error').text(errors.dbuku_bahasa[0]);
                         }
-                        if (errors.dbuku_file){
+                        if (errors.dbuku_file) {
                             $('#createBuku').find('#file-error').text(errors.dbuku_file[0]);
                         }
                         if (errors.dbuku_lokasi_rak) {
@@ -293,17 +292,7 @@
             $('#edit').find('input, textarea, select').val('');
             $('#edit').find('img').attr('src', '');
             // Clear previous error messages
-            $('#edit').find('#file-error').text('');
-            $('#edit').find('#cover-error').text('');
-            $('#edit').find('#isbn-error').text('');
-            $('#edit').find('#judul-error').text('');         
-            $('#edit').find('#penerbit-error').text('');
-            $('#edit').find('#penulis-error').text('');
-            $('#edit').find('#thn_terbit-error').text('');
-            $('#edit').find('#jml_total-error').text('');
-            $('#edit').find('#bahasa-error').text('');
-            $('#edit').find('#edisi-error').text('');
-            $('#edit').find('#lokasi_rak-error').text('');
+            $('#edit').find('span').text('');
 
             // Fetch detail post with ajax
             $.ajax({
@@ -315,7 +304,8 @@
                     // Fill data into the modal
                     $('#edit').find('#id_bk').val(id_bk);
                     $('#edit').find('#dbuku_isbn').val(response.bk[0].dbuku_isbn);
-                    $('#edit').find('#dbuku_cover').attr("src", response.img); // Assuming dbuku_cover is an image URL
+                    $('#edit').find('#dbuku_cover').attr("src", response
+                        .img); // Assuming dbuku_cover is an image URL
                     $('#edit').find('#dbuku_judul').val(response.bk[0].dbuku_judul);
                     $('#edit').find('#id_penerbit').html(response.slc3);
                     $('#edit').find('#id_penulis').html(response.slc4);
@@ -323,8 +313,9 @@
                     $('#edit').find('#dbuku_bahasa').html(response.slc6);
                     $('#edit').find('#dbuku_lokasi_rak').html(response.slc7);
                     $('#edit').find('#dbuku_edisi').html(response.slc8);
-                    $('#edit').find('#dbuku_jml_total').val(response.bk[0].dbuku_jml_total); // Available quantity
-                    $('#edit').find('#dbuku_file').attr("src", response.bk[0].dbuku_file); 
+                    $('#edit').find('#dbuku_jml_total').val(response.bk[0]
+                        .dbuku_jml_total); // Available quantity
+                    $('#edit').find('#dbuku_file').attr("src", response.bk[0].dbuku_file);
                 },
                 error: function(error) {
                     console.log("Error:", error);
@@ -369,50 +360,38 @@
                     $('#tbl_dmbuku').DataTable().ajax.reload()
                 },
                 error: function(xhr) {
-                    console.log(xhr.status);
                     if (xhr.status === 422) {
                         // Parse the JSON response
                         var response = JSON.parse(xhr.responseText);
-                        console.log(response.errors);
+                        if (response.message) {
+
+                            $('#edit').find('#global-error').text(response.message);
+                        }
+
                         var errors = response.errors;
-                        console.log(errors.dbuku_edisi);
-                        if (errors.dbuku_cover) {
-                            $('#edit').find('#cover-error').text(errors.dbuku_cover[0]);
+
+                        if (errors) { // Check if errors is defined and not null
+                            var errorMapping = {
+                                dbuku_cover: '#cover-error',
+                                dbuku_isbn: '#isbn-error',
+                                dbuku_judul: '#judul-error',
+                                dbuku_bahasa: '#bahasa-error',
+                                dbuku_file: '#file-error',
+                                dbuku_lokasi_rak: '#lokasi_rak-error',
+                                dbuku_thn_terbit: '#thn_terbit-error',
+                                dbuku_edisi: '#edisi-error',
+                                dbuku_jml_total: '#jml_total-error',
+                                id_dpenerbit: '#penerbit-error',
+                                id_dpenulis: '#penulis-error'
+                            };
+
+                            // Loop through the errors and display them
+                            Object.keys(errors).forEach(function(field) {
+                                if (errorMapping[field]) {
+                                    $('#edit').find(errorMapping[field]).text(errors[field][0]);
+                                }
+                            });
                         }
-                        if (errors.dbuku_isbn) {
-                            $('#edit').find('#isbn-error').text(errors.dbuku_isbn[0]);
-                        }
-                        if (errors.dbuku_judul) {
-                            $('#edit').find('#judul-error').text(errors.dbuku_judul[0]);
-                        }
-                        if (errors.dbuku_bahasa) {
-                            $('#edit').find('#bahasa-error').text(errors.dbuku_bahasa[0]);
-                        }
-                        if (errors.dbuku_file){
-                            $('#edit').find('#file-error').text(errors.dbuku_file[0]);
-                        }
-                        if (errors.dbuku_lokasi_rak) {
-                            $('#edit').find('#lokasi_rak-error').text(errors.dbuku_lokasi_rak[0]);
-                        }
-                        if (errors.dbuku_thn_terbit) {
-                            $('#edit').find('#thn_terbit-error').text(errors.dbuku_thn_terbit[0]);
-                        }
-                        if (errors.dbuku_edisi) {
-                            $('#edit').find('#edisi-error').text(errors.dbuku_edisi[0]);
-                        }
-                        if (errors.dbuku_jml_total) {
-                            $('#edit').find('#jml_total-error').text(errors.dbuku_jml_total[0]);
-                        }
-                        if (errors.dbuku_edisi) {
-                            $('#edit').find('#edisi-error').text(errors.dbuku_edisi[0]);
-                        }
-                        if (errors.id_dpenerbit) {
-                            $('#edit').find('#penerbit-error').text(errors.id_dpenerbit[0]);
-                        }
-                        if (errors.id_dpenulis) {
-                            $('#edit').find('#penulis-error').text(errors.id_dpenulis[0]);
-                        }
-                        // Continue handling other fields similarly...
                     } else {
                         console.log("Unexpected error structure:", xhr);
                     }
@@ -458,6 +437,18 @@
                                 timer: 3000
                             });
                             $('#tbl_dmbuku').DataTable().ajax.reload()
+                        },
+                        error: function(xhr) {
+                            // Parse the response text to get the error message
+                            let response = JSON.parse(xhr.responseText);
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: `${response.message}`,
+                                showConfirmButton: false,
+                                timer: 3000
+                            });
                         }
                     });
                 }

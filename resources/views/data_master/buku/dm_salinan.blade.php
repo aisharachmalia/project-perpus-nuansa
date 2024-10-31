@@ -17,6 +17,7 @@
 
                         <!-- Book Details -->
                         <div class="col-md-6 p-4">
+                           
                             <h2 id="dbuku_judul">{{ $bk->dbuku_judul }}</h2>
                             <b class="text-muted">ISBN: <label id="dbuku_isbn">{{ $bk->dbuku_isbn }}</label></b>
                             <table class="table-borderless table-sm mb-3 mt-2">
@@ -51,10 +52,11 @@
                                     <td id="dbuku_edisi">{{ $bk->dbuku_edisi }}</td>
                                 </tr>
                             </table>
+                            <a href="{{ route('data_master.buku') }}" class="icon icon-left" style="text-decoration: none"><i class="bi bi-arrow-left"></i> Kembali</a>
                         </div>
                     </div>
                     <!-- Book Cover -->
-
+                    
                 </div>
             </div>
         </div>
@@ -62,8 +64,8 @@
     </div>
 
     <!-- Salinan Buku Table -->
-    <h3 class="mt-5">Salinan Buku</h3>
     <div class="container">
+        <h3 class="mt-5">Salinan Buku</h3>
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
@@ -160,6 +162,67 @@
                     }
                 ]
             });
+
+            var link_export = "{{ route('link_export_salinan_buku') }}";
+            var link_printout = "{{ route('link_printout_salinan_buku') }}";
+
+            var bookId = '{{ $bk->id_dbuku }}';
+
+            $(document).on('click', '#export', function() {
+                var value_table = $('#TableSalinan').DataTable().data().count();
+                if (value_table > 0) {
+                    $.ajax({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        type: 'POST',
+                        url: link_export,
+                        data: {
+                            "id": bookId
+                        },
+                        dataType: 'json',
+                        success: function(data) {
+                            window.open(data.link, '_blank');
+                        },
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        html: 'Tidak terdapat Data yang akan dicetak',
+                        showCloseButton: true,
+                        focusConfirm: false,
+                        confirmButtonText: '<i class="fa fa-thumbs-up"></i> OK',
+                    });
+                }
+            });
+
+            $(document).on('click', '#printout', function() {
+                var value_table = $('#TableSalinan').DataTable().data().count();
+                if (value_table > 0) {
+                    $.ajax({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        type: 'POST',
+                        url: link_printout,
+                        dataType: 'json',
+                        data: {
+                            "id": bookId
+                        },
+                        success: function(data) {
+                            window.open(data.link, '_blank');
+                        },
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'warning',
+                        html: 'Tidak terdapat Data yang akan dicetak',
+                        showCloseButton: true,
+                        focusConfirm: false,
+                        confirmButtonText: '<i class="fa fa-thumbs-up"></i> OK',
+                    });
+                }
+            });
         });
 
         $('body').on('click', '.modalEditSalinan', function() {
@@ -198,8 +261,6 @@
 
             let url = "{{ route('crud_dm_salinan_buku', ':id') }}";
             url = url.replace(':id', id_dsbk);
-
-            console.log(data);
             //ajax
             $.ajax({
                 headers: {
@@ -225,12 +286,23 @@
                     });
                     $('#editSalinan').modal('toggle');
                     $('#TableSalinan').DataTable().ajax.reload()
+                    setTimeout(() => {
+                        location.reload();
+                    }, 1500);
                 },
                 error: function(xhr) {
-                    console.log(xhr.status);
+                    console.log(xhr);
                     if (xhr.status === 422) {
                         // Parse the JSON response
                         var response = JSON.parse(xhr.responseText);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: `${response.message}`,
+                            editConfirmButton: false,
+                            timer: 3000
+                        });
+
                         console.log(response.errors);
                         var errors = response.errors;
                         if (errors.dsbuku_no_salinan) {
