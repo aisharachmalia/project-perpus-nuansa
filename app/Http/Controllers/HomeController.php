@@ -24,20 +24,20 @@ class HomeController extends Controller
         $tahun = $request->input('tahun');
 
         // Query untuk peminjaman terbanyak
-   // Query for most frequent borrowers
-$peminjaman_terbanyak = DB::table('trks_transaksi')
-->join('users', 'trks_transaksi.id_usr', '=', 'users.id_usr')
-->select('users.usr_nama', DB::raw('COUNT(trks_transaksi.id_dbuku) as total_bacaan'))
-->when($bulan, function ($query) use ($bulan) {
-    return $query->whereMonth('trks_tgl_peminjaman', $bulan);
-})
-->when($tahun, function ($query) use ($tahun) {
-    return $query->whereYear('trks_tgl_peminjaman', $tahun);
-})
-->groupBy('users.usr_nama')
-->orderBy('total_bacaan', 'desc')
-->take(5)
-->get();
+        // Query for most frequent borrowers
+        $peminjaman_terbanyak = DB::table('trks_transaksi')
+            ->join('users', 'trks_transaksi.id_usr', '=', 'users.id_usr')
+            ->select('users.usr_nama', DB::raw('COUNT(trks_transaksi.id_dbuku) as total_bacaan'))
+            ->when($bulan, function ($query) use ($bulan) {
+                return $query->whereMonth('trks_tgl_peminjaman', $bulan);
+            })
+            ->when($tahun, function ($query) use ($tahun) {
+                return $query->whereYear('trks_tgl_peminjaman', $tahun);
+            })
+            ->groupBy('users.usr_nama')
+            ->orderBy('total_bacaan', 'desc')
+            ->take(5)
+            ->get();
 
 
         // Query buku yang paling banyak dipinjam
@@ -125,7 +125,7 @@ $peminjaman_terbanyak = DB::table('trks_transaksi')
             })
             ->count();
 
-            $totalDenda = DB::table('pembayarans')
+        $totalDenda = DB::table('pembayarans')
             ->whereNull('deleted_at')
             ->when($bulan, function ($query) use ($bulan) {
                 return $query->whereMonth('tgl_pembayaran', $bulan);
@@ -134,13 +134,21 @@ $peminjaman_terbanyak = DB::table('trks_transaksi')
                 return $query->whereYear('tgl_pembayaran', $tahun);
             })
             ->sum('jumlah');
-        
+
 
         // Kirim hasil ke view
         return view('home', compact(
-            'totalSiswa', 'totalBuku', 'totalPeminjaman', 'totalDenda', 
-            'peminjaman_terbanyak', 'statistikPeminjaman', 'data', 
-            'bukuTerbanyakDipinjam', 'chartData', 'bulan', 'tahun'
+            'totalSiswa',
+            'totalBuku',
+            'totalPeminjaman',
+            'totalDenda',
+            'peminjaman_terbanyak',
+            'statistikPeminjaman',
+            'data',
+            'bukuTerbanyakDipinjam',
+            'chartData',
+            'bulan',
+            'tahun'
         ));
     }
 }

@@ -439,7 +439,7 @@
                         error: function(xhr, status, error) {
                             Swal.fire({
                                 icon: 'error',
-                                title: 'Terjadi Kesalahan!',
+                                title: 'Siswa ini sudah melakukan transaksi!',
                                 text: 'Tidak dapat menghapus data.',
                                 showConfirmButton: true,
                             });

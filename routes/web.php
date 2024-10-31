@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TransaksiController;
+use App\Http\Controllers\ReservasiController;
 use App\Http\Controllers\SiswaController;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,6 +24,9 @@ Route::get('/halaman-buku', [App\Http\Controllers\WebController::class, 'pageBuk
 Route::get('/panduan', [App\Http\Controllers\WebController::class, 'pagePanduan'])->name('panduan');
 
 //Login
+Route::get('/login', function () {
+    return redirect('/login-usr');
+});
 Route::get('/login-usr', [App\Http\Controllers\WebController::class, 'pageLogin'])->name('login-usr');
 
 
@@ -182,7 +186,7 @@ Route::prefix('setting')->group(function () {
 Route::get('/denda', [App\Http\Controllers\DendaController::class, 'index'])->name('denda');
 Route::get('/denda-detail/{id?}', [App\Http\Controllers\DendaController::class, 'detail'])->name('detail_denda');
 Route::get('/denda-buku-detail/{id?}', [App\Http\Controllers\DendaController::class, 'datailBuku']);
-Route::post('/denda-bayar/{id?}', [App\Http\Controllers\DendaController::class, 'bayar'])->name('bayar_denda');
+Route::post('/denda-bayar', [App\Http\Controllers\DendaController::class, 'bayar'])->name('bayar_denda');
 Route::get('/table-denda', [App\Http\Controllers\DendaController::class, 'table']);
 
 Route::get('/forgot-password', [App\Http\Controllers\WebController::class, 'pageForgotPassword'])->name('forgot_password');
@@ -205,11 +209,14 @@ Route::delete('/transaksi/delete/{id}', [TransaksiController::class, 'delete'])-
 Route::get('/transaksi/detail/update/{id}', [TransaksiController::class, 'showEditTransaksi']);
 Route::put('/transaksi/update/{id}', [TransaksiController::class, 'editTransaksi'])->name('transaksi.update');
 
-// edit pengembalian transaksi
-// Route::get('/pengembalian/detail/update/{id}', [TransaksiController::class, 'showEditPengembalian']);
-// Route::put('/pengembalian/update/{id}', [TransaksiController::class, 'editPengembalian'])->name('pengembalian.update');
+
 
 Route::get('/document/{id}', [App\Http\Controllers\BacaOnlineController::class, 'documentDetail'])->name('document.detail');
 
 Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'index'])->name('profile');
 Route::post('/profile', [App\Http\Controllers\ProfileController::class, 'updateProfile'])->name('update_profile');
+
+// reservasi
+Route::post('/reservasi/store', [ReservasiController::class, 'createReservasi'])->name('reservasi.store');
+Route::post('/pengambilan/store', [ReservasiController::class, 'createPengambilan'])->name('pengambilan.store');
+Route::get('/reservasi/detail', [ReservasiController::class, 'detailReservasi'])->name('reservasi.detail');
