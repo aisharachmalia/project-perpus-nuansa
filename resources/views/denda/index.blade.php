@@ -181,7 +181,7 @@
                             if (data == null) {
                                 return '-';
                             } else {
-                                return new Date(data).toISOString().slice(0, 10);
+                                return new Date(data) .toLocaleDateString('id-ID');
                             }
                         }
                     },
@@ -220,8 +220,7 @@
                         url: `/denda-detail/${siswaId}`,
                         type: 'GET',
                         success: function(response) {
-                            $('#pembayaran').find('#tanggalPembayaran').val(new Date()
-                                .toISOString().slice(0, 10));
+                            $('#pembayaran').find('#tanggalPembayaran').val(new Date().toISOString().slice(0, 10));
                             $('#pembayaran').find('#buku').empty();
                             $('#pembayaran').find('#buku').append(
                                 '<option value="">Pilih Buku</option>');
@@ -250,13 +249,9 @@
                         type: 'GET',
                         success: function(response) {
                             $('#pembayaran').find('#tanggalPeminjaman').text(response
-                                .trks_tgl_peminjaman == null ? new Date()
-                                .toISOString().slice(0, 10) :
-                                response.trks_tgl_peminjaman.split(' ')[0]);
+                                .trks_tgl_peminjaman == null ? new Date().toLocaleDateString('id-ID') : response.trks_tgl_peminjaman.split(' ')[0]);
                             $('#pembayaran').find('#tanggalJatuhTempo').text(response
-                                .trks_tgl_jatuh_tempo == null ? new Date()
-                                .toISOString().slice(0, 10) : response.trks_tgl_jatuh_tempo
-                                .split(' ')[0]);
+                                .trks_tgl_jatuh_tempo == null ? new Date().toLocaleDateString('id-ID') : response.trks_tgl_jatuh_tempo.split(' ')[0]);
                             $('#pembayaran').find('#jumlahDenda').text(response.jumlah);
                             $('#pembayaran').find('#buku_error').text('');
                             $('#pembayaran').find('#denda_error').text('');
