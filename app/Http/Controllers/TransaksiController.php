@@ -8,6 +8,7 @@ use App\Models\dm_salinan_buku;
 use App\Models\Dm_siswa;
 use App\Models\Transaksi;
 use App\Models\Trks_denda;
+use App\Models\trks_reservasis;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -44,16 +45,27 @@ class TransaksiController extends Controller
                     return $btn;
                 })
                 ->rawColumns(['aksi'])
+                ->editColumn('trks_denda', function ($row) {
+                    return 'Rp. ' . number_format($row->trks_denda, 0, ',', '.');
+                })
                 ->make(true);
         }
-        $buku = dm_buku::select('dm_buku.id_dbuku', 'dm_buku.dbuku_judul')->join('dm_salinan_bukus', 'dm_buku.id_dbuku', '=', 'dm_salinan_bukus.id_dbuku')->whereNull('dm_salinan_bukus.deleted_at')->get();
+        $buku = dm_buku::select('dm_buku.id_dbuku', 'dm_buku.dbuku_judul')->groupBy('dm_buku.id_dbuku')->join('dm_salinan_bukus', 'dm_buku.id_dbuku', '=', 'dm_salinan_bukus.id_dbuku')->whereNull('dm_salinan_bukus.deleted_at')->where('dm_buku.dbuku_jml_tersedia', '!=', 0)->get();
+        $bukuReservasi = dm_buku::select('dm_buku.id_dbuku', 'dm_buku.dbuku_judul')->groupBy('dm_buku.id_dbuku')->join('dm_salinan_bukus', 'dm_buku.id_dbuku', '=', 'dm_salinan_bukus.id_dbuku')->whereNull('dm_salinan_bukus.deleted_at')->get();
         $siswa = User::join('trks_transaksi', 'users.id_usr', '=', 'trks_transaksi.id_usr')
             ->whereNull('trks_transaksi.trks_tgl_pengembalian')
             ->groupBy('users.id_usr')
             ->select('users.id_usr', 'users.usr_nama')->get();
         $siswa2 = User::select('id_usr', 'usr_nama')->get();
+
+        $reservasi = User::join('trks_reservasis', 'users.id_usr', '=', 'trks_reservasis.id_usr')
+            ->selectRaw('users.usr_nama, MIN(users.id_usr) as id_usr')
+            ->whereNull('trks_reservasis.deleted_at')
+            ->where('trks_reservasis.trsv_status', 1)
+            ->groupBy('users.id_usr')
+            ->get();
         $pustakawan = dm_pustakawan::select('id_dpustakawan', 'dpustakawan_nama')->get();
-        return view('transaksi.transaksi', compact('buku', 'siswa', 'pustakawan', 'siswa2'));
+        return view('transaksi.transaksi', compact('buku', 'siswa', 'pustakawan', 'siswa2', 'bukuReservasi', 'reservasi'));
     }
 
     // Fungsi untuk create peminjaman
@@ -91,28 +103,27 @@ class TransaksiController extends Controller
             $buku = Crypt::decryptString($request->id_dbuku);
             $siswa = Crypt::decryptString($request->id_dsiswa);
             $pustakawan = Crypt::decryptString($request->id_dpustakawan);
-            $dsbuku = dm_salinan_buku::where('id_dbuku', $buku)->get();
-            $id_dsbuku = $dsbuku->where('dsbuku_status', 0)->first();
-            if ($id_dsbuku) {
-                // transaksi
-                $transaksi = new Transaksi();
-                $transaksi->id_dbuku = $buku;
-                $transaksi->id_dsbuku = $id_dsbuku->id_dsbuku;
-                $transaksi->id_usr = $siswa;
-                $transaksi->id_dpustakawan = $pustakawan;
-                $transaksi->trks_tgl_peminjaman = $request->trks_tgl_peminjaman;
-                $transaksi->trks_tgl_jatuh_tempo = $request->trks_tgl_jatuh_tempo;
-                $transaksi->save();
-                // dsbuku
-                $id_dsbuku->dsbuku_status = 1;
-                $id_dsbuku->dsbuku_flag = 1;
-                $id_dsbuku->save();
-            } else {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Buku sedang dipinjam!',
-                ]);
-            }
+            $dsbuku = dm_salinan_buku::where('id_dbuku', $buku)->first();
+
+            // transaksi
+            $transaksi = new Transaksi();
+            $transaksi->id_dbuku = $buku;
+            $transaksi->id_dsbuku = $dsbuku->id_dsbuku;
+            $transaksi->id_usr = $siswa;
+            $transaksi->id_dpustakawan = $pustakawan;
+            $transaksi->trks_tgl_peminjaman = $request->trks_tgl_peminjaman;
+            $transaksi->trks_tgl_jatuh_tempo = $request->trks_tgl_jatuh_tempo;
+            $transaksi->save();
+            // dsbuku
+            $dsbuku->dsbuku_status = 1;
+            $dsbuku->dsbuku_flag = 1;
+            $dsbuku->save();
+            // dm_buku
+            $dm_buku = dm_buku::find($buku);
+            $dm_buku->dbuku_jml_tersedia = $dm_buku->dbuku_jml_tersedia - 1;
+            $dm_buku->save();
+
+
             // $siswaDet = User::where('id_usr', $siswa)->select('usr_email', 'usr_nama')->first();
             // $namaBuku = DB::table('dm_buku')->where('id_dbuku', $buku)->select('dbuku_judul')->first();
 
@@ -145,23 +156,43 @@ class TransaksiController extends Controller
     {
         $id_trks = Crypt::decryptString($id);
 
-        $rules = [
-            'id_dbuku' => 'required',
-            'trks_tgl_peminjaman' => 'required|date',
-            'trks_tgl_jatuh_tempo' => 'required|date',
-            'trks_tgl_pengembalian' => 'required|date',
-            'trks_denda' => 'required|numeric',
-            'trks_keterangan' => 'required',
-        ];
+        if ($request->type == 'peminjaman') {
+            $rules = [
+                'id_dbuku' => 'required',
+                'id_dsiswa' => 'required',
+                'id_dpustakawan' => 'required',
+                'trks_tgl_peminjaman' => 'required|date',
+                'trks_tgl_jatuh_tempo' => 'required|date',
+            ];
 
-        $messages = [
-            'id_dbuku.required' => 'Buku harus dipilih!',
-            'trks_tgl_peminjaman.required' => 'Tanggal pinjam harus diisi!',
-            'trks_tgl_jatuh_tempo.required' => 'Tanggal jatuh tempo harus diisi!',
-            'trks_tgl_pengembalian.required' => 'Tanggal pengembalian harus diisi!',
-            'trks_denda.required' => 'Nominal denda harus diisi!',
-            'trks_keterangan.required' => 'Keterangan harus diisi!',
-        ];
+            $messages = [
+                'id_dbuku.required' => 'Buku harus dipilih!',
+                'id_dsiswa.required' => 'Siswa harus dipilih!',
+                'id_dpustakawan.required' => 'Pustakawan harus dipilih!',
+                'trks_tgl_peminjaman.required' => 'Tanggal pinjam harus diisi!',
+                'trks_tgl_jatuh_tempo.required' => 'Tanggal jatuh tempo harus diisi!',
+            ];
+        } else {
+            $rules = [
+                'id_dbuku' => 'required',
+                'id_dsiswa' => 'required',
+                'id_dpustakawan' => 'required',
+                'trks_tgl_peminjaman' => 'required|date',
+                'trks_tgl_jatuh_tempo' => 'required|date',
+                'trks_tgl_pengembalian' => 'required|date',
+                'trks_denda' => 'required|numeric',
+            ];
+
+            $messages = [
+                'id_dbuku.required' => 'Buku harus dipilih!',
+                'id_dsiswa.required' => 'Siswa harus dipilih!',
+                'id_dpustakawan.required' => 'Pustakawan harus dipilih!',
+                'trks_tgl_peminjaman.required' => 'Tanggal pinjam harus diisi!',
+                'trks_tgl_jatuh_tempo.required' => 'Tanggal jatuh tempo harus diisi!',
+                'trks_tgl_pengembalian.required' => 'Tanggal pengembalian harus diisi!',
+                'trks_denda.required' => 'Nominal denda harus diisi!',
+            ];
+        }
 
         $validator = Validator::make($request->all(), $rules, $messages);
 
@@ -172,14 +203,28 @@ class TransaksiController extends Controller
             ], 422);
         }
         $id_dbuku = Crypt::decryptString($request->id_dbuku);
+        $id_dsiswa = Crypt::decryptString($request->id_dsiswa);
+        $id_dpustakawan = Crypt::decryptString($request->id_dpustakawan);
+        $denda = Trks_denda::where('id_trks', $id_trks)->first();
+
+        if ($request->trks_denda > 0) {
+            if (!$denda) {
+                Trks_denda::create([
+                    'id_trks' => $id_trks,
+                    'jumlah' => $request->trks_denda,
+                    'status' => 0,
+                ]);
+            }
+        }
         Transaksi::where('id_trks', $id_trks)->update([
             'id_dbuku' => $id_dbuku,
+            'id_usr' => $id_dsiswa,
+            'id_dpustakawan' => $id_dpustakawan,
             'trks_tgl_peminjaman' => $request->trks_tgl_peminjaman,
             'trks_tgl_jatuh_tempo' => $request->trks_tgl_jatuh_tempo,
             'trks_tgl_pengembalian' => $request->trks_tgl_pengembalian,
             'trks_denda' => $request->trks_denda,
             'trks_keterangan' => $request->trks_keterangan,
-            'trks_status' => $request->trks_status,
         ]);
 
         return response()->json([
@@ -237,10 +282,23 @@ class TransaksiController extends Controller
                 'trks_status' => 1,
             ]);
             $transaksi = Transaksi::where('id_trks', $id)->first();
-            dm_salinan_buku::where('id_dsbuku', $transaksi->id_dsbuku)->update([
-                'dsbuku_status' => 0,
-                'dsbuku_flag' => 0
-            ]);
+            $reservasi = trks_reservasis::join('dm_buku', 'trks_reservasis.id_dbuku', '=', 'dm_buku.id_dbuku')->whereRaw("DATE_FORMAT(trks_reservasis.trsv_tgl_reservasi, '%Y-%m-%d') >= ?", $request->tanggal_pengembalian)->where('trsv_status', 1)->get();
+            if (!$reservasi) {
+                dm_salinan_buku::where('id_dsbuku', $transaksi->id_dsbuku)->update([
+                    'dsbuku_status' => 0,
+                    'dsbuku_flag' => 0
+                ]);
+                $dm_buku = dm_buku::find($transaksi->id_dbuku);
+                $dm_buku->dbuku_jml_tersedia = $dm_buku->dbuku_jml_tersedia + 1;
+                $dm_buku->save();
+            } else {
+                dm_salinan_buku::where('id_dsbuku', $transaksi->id_dsbuku)->update([
+                    'dsbuku_status' => 2,
+                    'dsbuku_flag' => 1
+                ]);
+            }
+
+
             // $siswaDet = Transaksi::where('id_trks', $id)->join('dm_buku', 'trks_transaksi.id_dbuku', '=', 'dm_buku.id_dbuku')->join('users', 'trks_transaksi.id_usr', '=', 'users.id_usr')->select('users.usr_email', 'dm_buku.dbuku_judul', 'users.usr_nama')->first();
 
             // $array = [
@@ -308,7 +366,8 @@ class TransaksiController extends Controller
                 ->select('trks_transaksi.trks_tgl_peminjaman', 'trks_transaksi.trks_tgl_jatuh_tempo', 'trks_transaksi.id_trks')
                 ->first();
             if ($tanggalKembali > $data['buku']->trks_tgl_jatuh_tempo) {
-                $data['denda'] = 10000;                                  
+                $denda = Carbon::parse($data['buku']->trks_tgl_jatuh_tempo)->diffInDays($tanggalKembali, false);
+                $data['denda'] = 2000 * $denda;
             } else {
                 $data['denda'] = 0;
             }
@@ -328,9 +387,35 @@ class TransaksiController extends Controller
             ->where('trks_transaksi.id_trks', $transaksiId)
             ->join('dm_pustakawan', 'trks_transaksi.id_dpustakawan', '=', 'dm_pustakawan.id_dpustakawan')
             ->join('users', 'trks_transaksi.id_usr', '=', 'users.id_usr')
-            ->select('trks_transaksi.trks_denda', 'trks_transaksi.trks_tgl_peminjaman', 'trks_transaksi.trks_tgl_jatuh_tempo', 'trks_transaksi.trks_tgl_pengembalian', 'dm_buku.id_dbuku', 'dm_pustakawan.dpustakawan_nama', 'users.usr_nama')->first();
-            
-        $transaksi['buku'] = Crypt::encryptString($transaksi['transaksi']->id_dbuku);
+            ->select('trks_transaksi.trks_denda', 'users.id_usr', 'trks_transaksi.trks_tgl_pengembalian', 'trks_transaksi.trks_tgl_peminjaman', 'trks_transaksi.trks_tgl_jatuh_tempo', 'trks_transaksi.trks_tgl_pengembalian', 'dm_buku.dbuku_judul', 'dm_buku.id_dbuku', 'dm_pustakawan.id_dpustakawan', 'dm_pustakawan.dpustakawan_nama', 'users.usr_nama')
+            ->first();
+
+        $db['buku'] = dm_buku::select('dm_buku.id_dbuku', 'dm_buku.dbuku_judul')->join('dm_salinan_bukus', 'dm_buku.id_dbuku', '=', 'dm_salinan_bukus.id_dbuku')->groupBy('dm_buku.id_dbuku')->get();
+        $db['pustakawan'] = dm_pustakawan::select('dm_pustakawan.id_dpustakawan', 'dm_pustakawan.dpustakawan_nama')->get();
+        $db['usr'] = User::select('users.id_usr', 'users.usr_nama')->get();
+
+        $options['pustakawan'] = '';
+        $options['buku'] = '';
+        $options['usr'] = '';
+
+        foreach ($db['buku'] as $buku) {
+            $selected = ($buku->id_dbuku == $transaksi['transaksi']->id_dbuku) ? 'selected' : '';
+            $options['buku'] .= '<option value="' . Crypt::encryptString($buku->id_dbuku) . '" ' . $selected . '>' . $buku->dbuku_judul . '</option>';
+        }
+        foreach ($db['pustakawan'] as $pustakawan) {
+            $selected = ($pustakawan->id_dpustakawan == $transaksi['transaksi']->id_dpustakawan) ? 'selected' : '';
+            $options['pustakawan'] .= '<option value="' . Crypt::encryptString($pustakawan->id_dpustakawan) . '" ' . $selected . '>' . $pustakawan->dpustakawan_nama . '</option>';
+        }
+        foreach ($db['usr'] as $usr) {
+            $selected = ($usr->id_usr == $transaksi['transaksi']->id_usr) ? 'selected' : '';
+            $options['usr'] .= '<option value="' . Crypt::encryptString($usr->id_usr) . '" ' . $selected . '>' . $usr->usr_nama . '</option>';
+        }
+
+
+        $transaksi['usr'] = $options['usr'];
+        $transaksi['pustakawan'] = $options['pustakawan'];
+        $transaksi['buku'] = $options['buku'];
+
         return response()->json($transaksi);
     }
 }

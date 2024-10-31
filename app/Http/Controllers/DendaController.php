@@ -34,13 +34,16 @@ class DendaController extends Controller
             ->join('trks_denda', 'trks_denda.id_trks', '=', 'trks_transaksi.id_trks')
             ->leftJoin('pembayarans', 'trks_denda.id_tdenda', '=', 'pembayarans.id_tdenda')
             ->orderBy('trks_denda.id_tdenda', 'desc')
-            ->select('dm_buku.dbuku_judul', 'trks_denda.jumlah', 'pembayarans.status', 'trks_denda.status as status_denda', 'users.usr_nama', 'pembayarans.tgl_pembayaran')
+            ->select('dm_buku.dbuku_judul', 'trks_denda.jumlah', 'pembayarans.status', 'trks_denda.status as status_denda', 'pembayarans.jumlah as jumlah_bayar', 'users.usr_nama', 'pembayarans.tgl_pembayaran')
             ->get();
 
         return DataTables::of($denda)
             ->addIndexColumn()
             ->editColumn('jumlah', function ($row) {
                 return 'Rp. ' . number_format($row->jumlah, 0, ',', '.');
+            })
+            ->editColumn('jumlah_bayar', function ($row) {
+                return 'Rp. ' . number_format($row->jumlah_bayar, 0, ',', '.');
             })
             ->make(true);
     }
@@ -83,12 +86,15 @@ class DendaController extends Controller
             throw $th;
         }
     }
-    public function bayar(Request $request, $id = null)
+    public function bayar(Request $request)
     {
         try {
             // Validasi
             $rules = [
                 'buku' => [
+                    'required',
+                ],
+                'user' => [
                     'required',
                 ],
                 'denda' => [
@@ -119,7 +125,7 @@ class DendaController extends Controller
             ];
 
             $validated = $request->validate($rules, $messages);
-            $id = Crypt::decryptString($id);
+            $id = Crypt::decryptString($request->id_denda);
             $id_usr = Crypt::decryptString($request->user);
             $denda = Trks_denda::find($id);
             $pemabayaran = pembayaran::where('id_tdenda', $id)->first();

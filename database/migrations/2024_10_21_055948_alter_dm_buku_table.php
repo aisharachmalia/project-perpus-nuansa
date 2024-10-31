@@ -15,6 +15,8 @@ return new class extends Migration
     {
         Schema::table('dm_buku', function (Blueprint $table) {
             $table->tinyInteger('dbuku_flag')->default(0)->after('dbuku_status');
+            $table->string('dbuku_file')->nullable()->after('dbuku_bahasa');
+            $table->string('dbuku_link')->nullable()->after('dbuku_bahasa');
         });
     }
 

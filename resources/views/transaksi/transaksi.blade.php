@@ -52,7 +52,7 @@
                                     Reservasi
                                 </a>
                                 &nbsp; &nbsp;
-                                <a href="javascript:void(0)" class="btn btn-custom btn-success mb-2 pengembalian"
+                                <a href="javascript:void(0)" class="btn btn-custom btn-success mb-2 pengambilan"
                                     data-bs-toggle="modal" data-bs-target="#pengambilan">
                                     Pengambilan
                                 </a>
@@ -141,7 +141,7 @@
                                     </div>
                                 </div>
                             @else
-                                <input type="hidden" name="id_dpustakawan"
+                                <input type="hidden" name="id_dpustakawan" id="id_dpustakawan"
                                     value="{{ \Crypt::encryptString(Auth::user()->id_usr) }}">
                             @endif
                             <div class="col-md-6 col-12">
@@ -193,7 +193,7 @@
                                     <label class="fw-semibold">Judul Buku</label>
                                     <select id="id_dbuku" name="id_dbuku" class="form-control shadow-sm rounded-pill">
                                         <option value="">Pilih Buku</option>
-                                        @foreach ($buku as $data)
+                                        @foreach ($bukuReservasi as $data)
                                             <option value="{{ Crypt::encryptString($data->id_dbuku) }}">
                                                 {{ $data->dbuku_judul }}</option>
                                         @endforeach
@@ -214,31 +214,6 @@
                                     <span id="siswa-error" class="text-danger small"></span>
                                 </div>
                             </div>
-                            @php
-                                $role = App\Models\akses_usr::join('users', 'akses_usrs.id_usr', 'users.id_usr')
-                                    ->where('users.id_usr', Auth::user()->id_usr)
-                                    ->join('roles', 'akses_usrs.id_role', 'roles.id_role')
-                                    ->first();
-                            @endphp
-                            @if ($role->id_role < 3)
-                                {{-- <div class="col-md-4 col-12">
-                                    <div class="form-group">
-                                        <label for="city-column" class="fw-semibold">Nama Pustakawan</label>
-                                        <select id="id_dpustakawan" name="id_dpustakawan"
-                                            class="form-control shadow-sm rounded-pill">
-                                            <option value="">Pilih Pustakawan</option>
-                                            @foreach ($pustakawan as $data)
-                                                <option value="{{ Crypt::encryptString($data->id_dpustakawan) }}">
-                                                    {{ $data->dpustakawan_nama }}</option>
-                                            @endforeach
-                                        </select>
-                                        <span id="pustakawan-error" class="text-danger small"></span>
-                                    </div>
-                                </div>
-                            @else
-                                <input type="hidden" name="id_dpustakawan"
-                                    value="{{ \Crypt::encryptString(Auth::user()->id_usr) }}"> --}}
-                            @endif
                             <div class="col-md-4 col-12">
                                 <div class="form-group">
                                     <label class="fw-semibold">Tanggal Reservasi</label><br>
@@ -268,97 +243,106 @@
     </div>
 
     <!-- Modal untuk Tambah pengambilan-->
-     <div class="modal fade text-left" id="pengambilan" tabindex="-1" role="dialog" aria-labelledby="modalCreate1">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
-                <div class="modal-content shadow-lg rounded-4 border-0"> <!-- Tambahkan shadow, rounded, border-0 -->
-                    <div class="modal-header bg-gradient-primary text-white rounded-top-4">
-                        <!-- Gradient background untuk header -->
-                        <h4 class="modal-title fw-bold" id="modalCreate">Pengambilan Buku</h4>
-                    </div>
-                    <div class="modal-body">
-                        <form class="form" data-action="{{ route('pengambilan.store') }}" method="POST" id="pengambilanForm">
-                            @csrf
-                            <div class="row g-4"> <!-- Tambahkan gap untuk ruang antar kolom -->
-                                <div class="col-md-4 col-12">
-                                    <div class="form-group">
-                                        <label class="fw-semibold">Judul Buku</label>
-                                        <select id="id_dbuku" name="id_dbuku" class="form-control shadow-sm rounded-pill">
-                                            <option value="">Pilih Buku</option>
-                                            @foreach ($buku as $data)
-                                                <option value="{{ Crypt::encryptString($data->id_dbuku) }}">
-                                                    {{ $data->dbuku_judul }}</option>
-                                            @endforeach
-                                        </select>
-                                        <span id="buku-error" class="text-danger small"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-12">
-                                    <div class="form-group">
-                                        <label class="fw-semibold">Nama Peminjam</label>
-                                        <select id="id_dsiswa" name="id_dsiswa" class="form-control shadow-sm rounded-pill">
-                                            <option value="">Pilih Peminjam</option>
-                                            @foreach ($siswa2 as $data)
-                                                <option value="{{ Crypt::encryptString($data->id_usr) }}">
-                                                    {{ $data->usr_nama }}</option>
-                                            @endforeach
-                                        </select>
-                                        <span id="siswa-error" class="text-danger small"></span>
-                                    </div>
-                                </div>
-                                @php
-                                    $role = App\Models\akses_usr::join('users', 'akses_usrs.id_usr', 'users.id_usr')
-                                        ->where('users.id_usr', Auth::user()->id_usr)
-                                        ->join('roles', 'akses_usrs.id_role', 'roles.id_role')
-                                        ->first();
-                                @endphp
-                                @if ($role->id_role < 3)
-
-                                @endif
-                                <div class="col-md-4 col-12">
-                                    <div class="form-group">
-                                        <label class="fw-semibold">Tanggal Reservasi</label><br>
-                                        <input type="date" class="form-control shadow-sm rounded-pill"
-                                            name="trks_tgl_reservasi" id="trks_tgl_reservasi">
-                                        <span id="tgl-reservasi-error" class="text-danger small"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 col-12">
-                                    <div class="form-group">
-                                        <label class="fw-semibold">Tanggal Kadaluarsa</label><br>
-                                        <input type="date" class="form-control shadow-sm rounded-pill"
-                                            placeholder="tanggal jatuh tempo" name="trsv_tgl_kadaluarsa"
-                                            id="trsv_tgl_kadaluarsa">
-                                        <span id="tgl-kadaluarsa-error" class="text-danger small"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-12">
-                                    <div class="form-group">
-                                        <label for="country-floating" class="fw-semibold">Tanggal Pemberitahuan</label>
-                                        <input type="date" class="form-control shadow-sm rounded-pill"
-                                            placeholder="tanggal pemberitahuan" name="trsv_tgl_pemberitahuan" id="trsv_tgl_pemberitahuan">
-                                        <span id="tgl-pemberitahuan-error" class="text-danger small"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-12">
-                                    <div class="form-group">
-                                        <label for="country-floating" class="fw-semibold">Tanggal Pengambilan</label>
-                                        <input type="date" class="form-control shadow-sm rounded-pill"
-                                            placeholder="tanggal pengambilan" name="trsv_tgl_pengambilan"
-                                             id="trsv_tgl_pengambilan">
-                                        <span id="tgl-pengambilan-error" class="text-danger small"></span>
-                                    </div>
+    <div class="modal fade text-left" id="pengambilan" tabindex="-1" role="dialog" aria-labelledby="modalCreate1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+            <div class="modal-content shadow-lg rounded-4 border-0"> <!-- Tambahkan shadow, rounded, border-0 -->
+                <div class="modal-header bg-gradient-primary text-white rounded-top-4">
+                    <!-- Gradient background untuk header -->
+                    <h4 class="modal-title fw-bold" id="modalCreate">Pengambilan Buku</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="form" data-action="{{ route('pengambilan.store') }}" method="POST"
+                        id="pengambilanForm">
+                        @csrf
+                        <div class="row g-4">
+                            <div class="col-md-4 col-12">
+                                <div class="form-group">
+                                    <label class="fw-semibold">Nama Peminjam</label>
+                                    <input type="hidden" id="id_buku">
+                                    <select id="id_dsiswa" name="id_dsiswa" class="form-control shadow-sm rounded-pill">
+                                        <option value="">Pilih Peminjam</option>
+                                        @foreach ($reservasi as $data)
+                                            <option value="{{ Crypt::encryptString($data->id_usr) }}">
+                                                {{ $data->usr_nama }}</option>
+                                        @endforeach
+                                    </select>
+                                    <span id="siswa-error" class="text-danger small"></span>
                                 </div>
                             </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer border-top-0">
-                        <button type="button" class="btn btn-danger rounded-pill" data-bs-dismiss="modal">Tutup</button>
-                        <button type="submit" class="btn btn-primary rounded-pill" id="storePengambilan    ">Simpan</button>
-                    </div>
+                            <div class="col-md-4 col-12">
+                                <div class="form-group">
+                                    <label class="fw-semibold">Judul Buku</label>
+                                    <select id="id_dbuku" name="id_dbuku" class="form-control shadow-sm rounded-pill">
+                                        <option value="">Pilih Buku</option>
+
+                                    </select>
+                                    <span id="buku-error" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            @if ($role->id_role < 3)
+                                <div class="col-md-4 col-12">
+                                    <div class="form-group">
+                                        <label for="city-column" class="fw-semibold">Nama Pustakawan</label>
+                                        <select id="id_dpustakawan" name="id_dpustakawan"
+                                            class="form-control shadow-sm rounded-pill">
+                                            <option value="">Pilih Pustakawan</option>
+                                            @foreach ($pustakawan as $data)
+                                                <option value="{{ Crypt::encryptString($data->id_dpustakawan) }}">
+                                                    {{ $data->dpustakawan_nama }}</option>
+                                            @endforeach
+                                        </select>
+                                        <span id="pustakawan-error" class="text-danger small"></span>
+                                    </div>
+                                </div>
+                            @else
+                                <input type="hidden" name="id_dpustakawan" id="id_dpustakawan"
+                                    value="{{ \Crypt::encryptString(Auth::user()->id_usr) }}">
+                            @endif
+                            <div class="col-md-4 col-12">
+                                <div class="form-group">
+                                    <label class="fw-semibold">Tanggal Reservasi</label><br>
+                                    <input type="date" class="form-control shadow-sm rounded-pill"
+                                        name="trks_tgl_reservasi" id="trsv_tgl_reservasi">
+                                    <span id="tgl-reservasi-error" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-12">
+                                <div class="form-group">
+                                    <label class="fw-semibold">Tanggal Kadaluarsa</label><br>
+                                    <input type="date" class="form-control shadow-sm rounded-pill"
+                                        placeholder="tanggal jatuh tempo" name="trsv_tgl_kadaluarsa"
+                                        id="trsv_tgl_kadaluarsa">
+                                    <span id="tgl-kadaluarsa-error" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-12">
+                                <div class="form-group">
+                                    <label for="country-floating" class="fw-semibold">Tanggal Pengambilan</label>
+                                    <input type="date" class="form-control shadow-sm rounded-pill"
+                                        placeholder="tanggal pengambilan" name="trsv_tgl_pengambilan"
+                                        id="trsv_tgl_pengambilan">
+                                    <span id="tgl-pengambilan-error" class="text-danger small"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4 col-12">
+                                <div class="form-group">
+                                    <label for="country-floating" class="fw-semibold">Tanggal Jatuh Tempo</label>
+                                    <input type="date" class="form-control shadow-sm rounded-pill"
+                                        placeholder="tanggal jatuh tempo" name="trsv_jatuh_tempo" id="trsv_jatuh_tempo">
+                                    <span id="trsv-jatuh-tempo-error" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-top-0">
+                    <button type="button" class="btn btn-danger rounded-pill" data-bs-dismiss="modal">Tutup</button>
+                    <button type="submit" class="btn btn-primary rounded-pill" id="storePengambilan">Simpan</button>
                 </div>
             </div>
         </div>
-    
+    </div>
+
 
     {{-- end modal reservasi --}}
 
@@ -479,9 +463,9 @@
                         class: "text-center",
                         data: null,
                         render: function(data, type, row) {
-                            return '<strong>' + new Date(row.trks_tgl_peminjaman).toISOString()
-                                .slice(0, 10) + '</strong><br>' +
-                                new Date(row.trks_tgl_jatuh_tempo).toISOString().slice(0, 10);
+                            return '<strong>' + new Date(row.trks_tgl_peminjaman)
+                                .toLocaleDateString('id-ID') + '</strong><br>' +
+                                new Date(row.trks_tgl_jatuh_tempo).toLocaleDateString('id-ID');
                         }
 
                     },
@@ -491,7 +475,7 @@
                         render: function(data, type, row) {
                             let pengembalian = row.trks_tgl_pengembalian == null ?
                                 'Belum dikembalikan' :
-                                new Date(row.trks_tgl_pengembalian).toISOString().slice(0, 10);
+                                new Date(row.trks_tgl_pengembalian).toLocaleDateString('id-ID');
                             let status = '';
                             if (row.trks_status == -1) {
                                 status = 'Dibatalkan';
@@ -543,9 +527,9 @@
                         class: "text-center",
                         data: null,
                         render: function(data, type, row) {
-                            return '<strong>' + new Date(row.trsv_tgl_reservasi).toISOString()
-                                .slice(0, 10) + '</strong><br>' +
-                                new Date(row.trsv_tgl_kadaluarsa).toISOString().slice(0, 10);
+                            return '<strong>' + new Date(row.trsv_tgl_reservasi).toLocaleDateString(
+                                    'id-ID') + '</strong><br>' +
+                                new Date(row.trsv_tgl_kadaluarsa).toLocaleDateString('id-ID');
                         }
 
                     },
@@ -555,10 +539,10 @@
                         render: function(data, type, row) {
                             let pemberitahuan = row.trsv_tgl_pemberitahuan == null ?
                                 'Belum dikembalikan' :
-                                new Date(row.trsv_tgl_pemberitahuan).toISOString().slice(0, 10);
+                                new Date(row.trsv_tgl_pemberitahuan).toLocaleDateString('id-ID');
                             let pengambilan = row.trsv_tgl_pengambilan == null ?
                                 'Belum dikembalikan' :
-                                new Date(row.trsv_tgl_pengambilan).toISOString().slice(0, 10);
+                                new Date(row.trsv_tgl_pengambilan).toLocaleDateString('id-ID');
                             return pemberitahuan + '  <br>' + pengambilan;
                         }
                     },
@@ -582,13 +566,14 @@
             $('#tambahPeminjaman').find('#id_dbuku').val('');
             $('#tambahPeminjaman').find('#id_dsiswa').val('');
             $('#tambahPeminjaman').find('#id_dpustakawan').val('');
-            $('#tambahPeminjaman').find('#trks_tgl_peminjaman').val('');
+            $('#tambahPeminjaman').find('#trks_tgl_peminjaman').val(new Date()
+                .toISOString().slice(0, 10));
             $('#tambahPeminjaman').find('#trks_tgl_jatuh_tempo').val('');
 
         });
 
         $('body').on('click', '.pengembalian', function() {
-            $('#pengembalian').find('#id_dpustakawan').text('Nama Pustakawan');
+            $('#pengembalian').find('#id_dpustakawan').val('');
             $('#pengembalian').find('#trks_tgl_jatuh_tempo').val('');
             $('#pengembalian').find('#trks_tgl_peminjaman').val('');
             $('#pengembalian').find('#trks_tgl_pengembalian').val('');
@@ -662,8 +647,7 @@
             if (!siswaId) {
                 Swal.fire({
                     icon: 'error',
-                    title: `Gagal!`,
-                    text: 'Siswa harus dipilih',
+                    text: 'Siswa harus dipilih terlebih dahulu',
                     editConfirmButton: false,
                     timer: 3000
                 });
@@ -858,6 +842,24 @@
             });
         });
 
+        // clear edit
+        $('body').on('click', '.editPeminjaman', function() {
+            $('#editPeminjaman').find('#buku-error').text('');
+            $('#editPeminjaman').find('#siswa-error').text('');
+            $('#editPeminjaman').find('#pustakawan-error').text('');
+            $('#editPeminjaman').find('#tgl-pinjam-error').text('');
+            $('#editPeminjaman').find('#tgl-jatuh-error').text('');
+        });
+        $('body').on('click', '.editPengembalian', function() {
+            $('#editPengembalian').find('#buku-error').text('');
+            $('#editPengembalian').find('#siswa-error').text('');
+            $('#editPengembalian').find('#pustakawan-error').text('');
+            $('#editPengembalian').find('#tgl-pinjam-error').text('');
+            $('#editPengembalian').find('#tgl-jatuh-error').text('');
+            $('#editPengembalian').find('#tgl-pengembalian-error').text('');
+            $('#editPengembalian').find('#denda-error').text('');
+            $('#editPengembalian').find('#keterangan-error').text('');
+        });
 
         // AJAX Edit peminjaman
         $('body').on('click', '.editPeminjaman', function() {
@@ -867,8 +869,10 @@
                 type: "GET",
                 cache: false,
                 success: function(response) {
-                    $('#editPeminjaman').find('#id_dbuku option[value="' + response['buku'] + '"]')
-                        .prop('selected', true);
+                    $('#editPeminjaman').find('#id_trks').val(id_trks);
+                    $('#editPeminjaman').find('#id_dbuku').html(response['buku']);
+                    $('#editPeminjaman').find('#id_dsiswa').html(response['usr']);
+                    $('#editPeminjaman').find('#id_dpustakawan').html(response['pustakawan']);
                     $('#editPeminjaman').find('#trks_tgl_peminjaman').val(response['transaksi']
                         .trks_tgl_peminjaman.split(' ')[0]);
                     $('#editPeminjaman').find('#trks_tgl_jatuh_tempo').val(response['transaksi']
@@ -876,30 +880,38 @@
                 },
             });
         });
-        $('#simpan').click(function(e) {
+        $(document).on('click', '#simpanTransaksi', function(e) {
             e.preventDefault();
-
+            let activeModal;
+            if ($('#editPeminjaman').hasClass('show')) {
+                activeModal = $('#editPeminjaman');
+                type = 'peminjaman';
+            } else if ($('#editPengembalian').hasClass('show')) {
+                activeModal = $('#editPengembalian');
+                type = 'pengembalian';
+            }
             // Define variable
             let token = $('meta[name="csrf-token"]').attr('content');
-            let id_trks = $('#editPeminjaman').find('#id_trks').val();
-            let id_dbuku = $('#editPeminjaman').find('#id_dbuku').val(); // Kirim id_dbuku, bukan dbuku_judul
-            let id_dsiswa = $('#editPeminjaman').find('#id_dsiswa').val(); // Kirim id_dsiswa, bukan dsiswa_nama
-            let trks_tgl_peminjaman = $('#editPeminjaman').find('#trks_tgl_peminjaman').val();
-            let trks_tgl_jatuh_tempo = $('#editPeminjaman').find('#trks_tgl_jatuh_tempo').val();
-            let trks_tgl_pengembalian = $('#editPeminjaman').find('#trks_tgl_pengembalian').val();
-            let trks_denda = $('#editPeminjaman').find('#trks_denda').val();
-            let trks_keterangan = $('#editPeminjaman').find('#trks_keterangan').val();
-            let trks_status = $('#editPeminjaman').find('#trks_status').val();
+            let id_trks = activeModal.find('#id_trks').val();
+            let id_dbuku = activeModal.find('#id_dbuku').val();
+            let id_dpustakawan = activeModal.find('#id_dpustakawan').val();
+            let id_dsiswa = activeModal.find('#id_dsiswa').val();
+            let trks_tgl_peminjaman = activeModal.find('#trks_tgl_peminjaman').val();
+            let trks_tgl_jatuh_tempo = activeModal.find('#trks_tgl_jatuh_tempo').val();
+            let trks_tgl_pengembalian = activeModal.find('#trks_tgl_pengembalian').val();
+            let trks_denda = activeModal.find('#trks_denda').val();
+            let trks_keterangan = activeModal.find('#trks_keterangan').val();
 
 
             // Clear error messages
-            $('#editPeminjaman').find('#buku-error').text('');
-            $('#editPeminjaman').find('#siswa-error').text('');
-            $('#editPeminjaman').find('#tgl-pinjam-error').text('');
-            $('#editPeminjaman').find('#tgl-jatuh-tempo-error').text('');
-            $('#editPeminjaman').find('#tgl-pengembalian-error').text('');
-            $('#editPeminjaman').find('#denda-error').text('');
-            $('#editPeminjaman').find('#keterangan-error').text('');
+            activeModal.find('#buku-error').text('');
+            activeModal.find('#siswa-error').text('');
+            activeModal.find('#pustakawan-error').text('');
+            activeModal.find('#tgl-pinjam-error').text('');
+            activeModal.find('#tgl-jatuh-error').text('');
+            activeModal.find('#tgl-pengembalian-error').text('');
+            activeModal.find('#denda-error').text('');
+            activeModal.find('#keterangan-error').text('');
 
             // Ajax
             $.ajax({
@@ -907,14 +919,15 @@
                 type: "PUT",
                 cache: false,
                 data: {
-                    "id_dbuku": id_dbuku, // Kirim id_dbuku
-                    "id_dsiswa": id_dsiswa, // Kirim id_dsiswa
+                    "id_dbuku": id_dbuku,
+                    "id_dsiswa": id_dsiswa,
+                    "id_dpustakawan": id_dpustakawan,
                     "trks_tgl_peminjaman": trks_tgl_peminjaman,
                     "trks_tgl_jatuh_tempo": trks_tgl_jatuh_tempo,
                     "trks_tgl_pengembalian": trks_tgl_pengembalian,
                     "trks_denda": trks_denda,
                     "trks_keterangan": trks_keterangan,
-                    "trks_status": trks_status,
+                    "type": type,
                     "_token": token
                 },
                 success: function(response) {
@@ -925,7 +938,7 @@
                         editConfirmButton: false,
                         timer: 3000
                     });
-                    $('#editPeminjaman').modal('toggle');
+                    activeModal.modal('toggle');
                     $('#tbl_transaksi').DataTable().ajax.reload();
                 },
                 error: function(xhr) {
@@ -933,28 +946,28 @@
                         var errors = JSON.parse(xhr.responseText).errors;
                         // Show error messages for each field
                         if (errors.id_dbuku) {
-                            $('#editPeminjaman').find('#buku-error').text(errors.id_dbuku[0]);
+                            activeModal.find('#buku-error').text(errors.id_dbuku[0]);
                         }
                         if (errors.id_dsiswa) {
-                            $('#editPeminjaman').find('#siswa-error').text(errors.id_dsiswa[0]);
+                            activeModal.find('#siswa-error').text(errors.id_dsiswa[0]);
                         }
                         if (errors.trks_tgl_peminjaman) {
-                            $('#editPeminjaman').find('#tgl-pinjam-error').text(errors
+                            activeModal.find('#tgl-pinjam-error').text(errors
                                 .trks_tgl_peminjaman[0]);
                         }
                         if (errors.trks_tgl_jatuh_tempo) {
-                            $('#editPeminjaman').find('#tgl-jatuh-tempo-error').text(errors
+                            activeModal.find('#tgl-jatuh-error').text(errors
                                 .trks_tgl_jatuh_tempo[0]);
                         }
                         if (errors.trks_tgl_pengembalian) {
-                            $('#editPeminjaman').find('#tgl-pengembalian-error').text(errors
+                            activeModal.find('#tgl-pengembalian-error').text(errors
                                 .trks_tgl_pengembalian[0]);
                         }
                         if (errors.trks_denda) {
-                            $('#editPeminjaman').find('#denda-error').text(errors.trks_denda[0]);
+                            activeModal.find('#denda-error').text(errors.trks_denda[0]);
                         }
                         if (errors.trks_keterangan) {
-                            $('#editPeminjaman').find('#keterangan-error').text(errors.trks_keterangan[
+                            activeModal.find('#keterangan-error').text(errors.trks_keterangan[
                                 0]);
                         }
                     } else {
@@ -962,8 +975,6 @@
                     }
                 }
             });
-
-
         });
 
 
@@ -975,180 +986,295 @@
                 type: "GET",
                 cache: false,
                 success: function(response) {
-                    // $('#editPeminjaman').find('#id_trks').val(id_trks);
-                    console.log('edit pengembalian');
+                    $('#editPengembalian').find('#id_trks').val(id_trks);
+                    $('#editPengembalian').find('#id_dbuku').html(response['buku']);
+                    $('#editPengembalian').find('#id_dsiswa').html(response['usr']);
+                    $('#editPengembalian').find('#id_dpustakawan').html(response['pustakawan']);
+                    $('#editPengembalian').find('#trks_tgl_peminjaman').val(response['transaksi']
+                        .trks_tgl_peminjaman.split(' ')[0]);
+                    $('#editPengembalian').find('#trks_tgl_jatuh_tempo').val(response['transaksi']
+                        .trks_tgl_jatuh_tempo.split(' ')[0]);
+                    $('#editPengembalian').find('#trks_tgl_pengembalian').val(response['transaksi']
+                        .trks_tgl_pengembalian.split(' ')[0]);
+                    $('#editPengembalian').find('#trks_denda').val(response['transaksi']
+                        .trks_denda);
                 },
 
             });
         })
 
-        
+
         // ajax Create Reservasi
-                $('#storeReservasi').off('click').on('click', function(e) {
-                    e.preventDefault();
+        $('#storeReservasi').off('click').on('click', function(e) {
+            e.preventDefault();
+            // Ambil nilai dari form
+            let id_dbuku = $('#reservasi').find('#id_dbuku').val();
+            let id_dsiswa = $('#reservasi').find('#id_dsiswa').val();
+            let trks_tgl_reservasi = $('#reservasi').find('#trks_tgl_reservasi').val();
+            let trsv_tgl_kadaluarsa = $('#reservasi').find('#trsv_tgl_kadaluarsa').val();
+            let token = $("meta[name='csrf-token']").attr("content");
 
-                    // Ambil nilai dari form
-                    let id_dbuku = $('#reservasi').find('#id_dbuku').val();
-                    let id_dsiswa = $('#reservasi').find('#id_dsiswa').val();
-                    // let id_dpustakawan = $('#reservasi').find('#id_dpustakawan').val() || "{{ \Crypt::encryptString(Auth::user()->id_usr) }}";
-                    let trks_tgl_reservasi = $('#reservasi').find('#trks_tgl_reservasi').val();
-                    let trsv_tgl_kadaluarsa = $('#reservasi').find('#trsv_tgl_kadaluarsa').val();
-                    let token = $("meta[name='csrf-token']").attr("content");
+            // Proses AJAX
+            $.ajax({
+                url: `reservasi/store`, // URL untuk store data
+                type: "POST",
+                cache: false,
+                data: {
+                    "id_dbuku": id_dbuku,
+                    "id_dsiswa": id_dsiswa,
+                    "trks_tgl_reservasi": trks_tgl_reservasi,
+                    "trsv_tgl_kadaluarsa": trsv_tgl_kadaluarsa,
+                    "_token": token
+                },
+                success: function(response) {
+                    if (response.success === true) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Reservasi Berhasil',
+                            html: `<p>${response.message}</p>`,
+                            confirmButtonText: 'Ok',
+                            timer: 3000,
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Terjadi Kesalahan',
+                            html: `<p>${response.message}</p>`,
+                            confirmButtonText: 'Tutup',
+                            timer: 3000,
+                        });
+                    }
 
-                    // Reset error message
-                    $('#buku-error').text('');
-                    $('#siswa-error').text('');
-                    // $('#pustakawan-error').text('');
-                    $('#tgl-reservasi-error').text('');
-                    $('#tgl-kadaluarsa-error').text('');
 
-                    // Event untuk reset modal ketika ditutup
-                    $('#reservasi').on('hidden.bs.modal', function () {
-                        $(this).find('form')[0].reset();
-                    });
+                    // Tutup modal dan reload DataTable
+                    $('#reservasi').modal('toggle');
+                    $('#tbl_reservasi').DataTable().ajax.reload();
 
-                    // Proses AJAX
-                    $.ajax({
-                        url: `reservasi/store`, // URL untuk store data
-                        type: "POST",
-                        cache: false,
-                        data: {
-                            "id_dbuku": id_dbuku,
-                            "id_dsiswa": id_dsiswa,
-                            // "id_dpustakawan": id_dpustakawan,
-                            "trks_tgl_reservasi": trks_tgl_reservasi,
-                            "trsv_tgl_kadaluarsa": trsv_tgl_kadaluarsa,
-                            "_token": token
-                        },
-                        success: function(response) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: `${response.message}`,
-                                showConfirmButton: false,
-                                timer: 3000
-                            });
-                            
-                            // Tutup modal dan reload DataTable
-                            $('#reservasi').modal('toggle');
-                            $('#tbl_reservasi').DataTable().ajax.reload();
+                    // Kosongkan form setelah berhasil disimpan
+                    $('#reservasi').find('input, select').val('');
+                },
+                error: function(xhr) {
+                    if (xhr.status === 422) {
+                        var error = $.parseJSON(xhr.responseText);
+                        var errors = error.errors;
 
-                            // Kosongkan form setelah berhasil disimpan
-                            $('#reservasi').find('input, select').val('');
-                        },
-                        error: function(xhr) {
-                            if (xhr.status === 422) {
-                                var errors = xhr.responseJSON.errors;
-
-                                // Menampilkan pesan error di bawah input yang sesuai
-                                if (errors.id_dbuku) {
-                                    $('#buku-error').text(errors.id_dbuku[0]);
-                                }
-                                if (errors.id_dsiswa) {
-                                    $('#siswa-error').text(errors.id_dsiswa[0]);
-                                }
-                                // if (errors.id_dpustakawan) {
-                                //     $('#pustakawan-error').text(errors.id_dpustakawan[0]);
-                                // }
-                                if (errors.trks_tgl_reservasi) {
-                                    $('#tgl-reservasi-error').text(errors.trks_tgl_reservasi[0]);
-                                }
-                                if (errors.trsv_tgl_kadaluarsa) {
-                                    $('#tgl-kadaluarsa-error').text(errors.trsv_tgl_kadaluarsa[0]);
-                                }
-                            } else {
-                                console.log("Unexpected error:", xhr);
-                            }
+                        if (errors.id_dbuku) {
+                            $('#reservasi').find('#buku-error').text(errors.id_dbuku[0]);
+                        } else {
+                            $('#reservasi').find('#buku-error').text('');
                         }
-                    });
-                });
 
-
-                 // ajax Create Pengambilan
-                 $('#storePengambilan').off('click').on('click', function(e) {
-                    e.preventDefault();
-
-                    // Ambil nilai dari form
-                    let id_dbuku = $('#pengambilan').find('#id_dbuku').val();
-                    let id_dsiswa = $('#pengambilan').find('#id_dsiswa').val();
-                    let trks_tgl_reservasi = $('#pengambilan').find('#trks_tgl_reservasi').val();
-                    let trsv_tgl_kadaluarsa = $('#pengambilan').find('#trsv_tgl_kadaluarsa').val();
-                    let trsv_tgl_pemberitahuan = $('#pengambilan').find('#trsv_tgl_pemberitahuan').val();
-                    let trsv_tgl_pengambilan = $('#pengambilan').find('#trsv_tgl_pengambilan').val();
-                    let token = $("meta[name='csrf-token']").attr("content");
-
-                    // Reset error message
-                    $('#buku-error').text('');
-                    $('#siswa-error').text('');
-                    $('#tgl-reservasi-error').text('');
-                    $('#tgl-kadaluarsa-error').text('');
-
-                    // Event untuk reset modal ketika ditutup
-                    $('#pengambilan').on('hidden.bs.modal', function () {
-                        $(this).find('form')[0].reset();
-                    });
-
-                    // Proses AJAX
-                    $.ajax({
-                        url: `pengambilan/store`, // URL untuk store data
-                        type: "POST",
-                        cache: false,
-                        data: {
-                            "id_dbuku": id_dbuku,
-                            "id_dsiswa": id_dsiswa,
-                            "trks_tgl_reservasi": trks_tgl_reservasi,
-                            "trsv_tgl_kadaluarsa": trsv_tgl_kadaluarsa,
-                            "trsv_tgl_pemberitahuan": trsv_tgl_pemberitahuan,
-                            "trsv_tgl_pengambilan": trsv_tgl_pengambilan,
-                            "_token": token
-                        },
-                        success: function(response) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: `${response.message}`,
-                                showConfirmButton: false,
-                                timer: 3000
-                            });
-                            
-                            // Tutup modal dan reload DataTable
-                            $('#pengambilan').modal('toggle');
-                            $('#tbl_reservasi').DataTable().ajax.reload();
-
-                            // Kosongkan form setelah berhasil disimpan
-                            $('#pengambilan').find('input, select').val('');
-                        },
-                        error: function(xhr) {
-                            if (xhr.status === 422) {
-                                var errors = xhr.responseJSON.errors;
-
-                                // Menampilkan pesan error di bawah input yang sesuai
-                                if (errors.id_dbuku) {
-                                    $('#buku-error').text(errors.id_dbuku[0]);
-                                }
-                                if (errors.id_dsiswa) {
-                                    $('#siswa-error').text(errors.id_dsiswa[0]);
-                                }
-                                if (errors.trks_tgl_reservasi) {
-                                    $('#tgl-reservasi-error').text(errors.trks_tgl_reservasi[0]);
-                                }
-                                if (errors.trsv_tgl_kadaluarsa) {
-                                    $('#tgl-kadaluarsa-error').text(errors.trsv_tgl_kadaluarsa[0]);
-                                }
-                                if (errors.trks_tgl_pemberitahuan) {
-                                    $('#tgl-pemberitahuan-error').text(errors.trks_tgl_pemberitahuan[0]);
-                                }
-                                if (errors.trsv_tgl_pengambilan) {
-                                    $('#tgl-pengambilan-error').text(errors.trsv_tgl_pengambilan[0]);
-                                }
-                            } else {
-                                console.log("Unexpected error:", xhr);
-                            }
+                        if (errors.id_dsiswa) {
+                            $('#reservasi').find('#siswa-error').text(errors.id_dsiswa[0]);
+                        } else {
+                            $('#reservasi').find('#siswa-error').text('');
                         }
-                    });
-                });
 
+                        if (errors.trks_tgl_reservasi) {
+                            $('#reservasi').find('#tgl-reservasi-error').text(errors.trks_tgl_reservasi[
+                                0]);
+                        } else {
+                            $('#reservasi').find('#tgl-reservasi-error').text('');
+                        }
+
+                        if (errors.trsv_tgl_kadaluarsa) {
+                            $('#reservasi').find('#tgl-kadaluarsa-error').text(errors
+                                .trsv_tgl_kadaluarsa[0]);
+                        } else {
+                            $('#reservasi').find('#tgl-kadaluarsa-error').text('');
+                        }
+
+                    }
+                }
+            });
+        });
+
+
+        // clear modal reservasi
+        $('.pengambilan').on('click', function() {
+            $('#pengambilan').find('input, select').val('');
+            $('#pengambilan').find('span').text('');
+            $('#pengambilan').find('#trsv_tgl_pengambilan').val(new Date().toISOString().slice(0, 10));
+
+        });
+        $('.reservasi').on('click', function() {
+            $('#reservasi').find('input, select').val('');
+            $('#reservasi').find('span').text('');
+        });
+
+        // reservasi ajax
+        $('#pengambilan').find('#id_dsiswa').on('change', function() {
+            let id_dsiswa = $(this).val();
+            let token = $("meta[name='csrf-token']").attr("content");
+            if (id_dsiswa == '') {
+                $('#pengambilan').find('#trsv_tgl_reservasi').val('');
+                $('#pengambilan').find('#trsv_tgl_kadaluarsa').val('');
+
+            } else {
+                $.ajax({
+                    url: `reservasi/detail`,
+                    type: "GET",
+                    cache: false,
+                    data: {
+                        "id_peminjam": id_dsiswa,
+                        'type': 'peminjam',
+                        "_token": token
+                    },
+                    success: function(response) {
+                        $.each(response, function(index, value) {
+                            $('#pengambilan').find('#id_dbuku').append(
+                                '<option value="' + value.id_trsv + '">' +
+                                value.dbuku_judul + '</option>');
+                        });
+                    }
+                });
+            }
+
+        });
+        $('#pengambilan').find('#id_dbuku').on('change', function() {
+            let id_dbuku = $(this).val();
+            let token = $("meta[name='csrf-token']").attr("content");
+            if (id_dbuku == '') {
+                $('#pengambilan').find('#trsv_tgl_reservasi').val('');
+                $('#pengambilan').find('#trsv_tgl_kadaluarsa').val('');
+                $('#pengambilan').find('#id_buku').val('');
+            } else {
+                $.ajax({
+                    url: `reservasi/detail`,
+                    type: "GET",
+                    cache: false,
+                    data: {
+                        "id_trsv": id_dbuku,
+                        'type': 'buku',
+                        "_token": token
+                    },
+                    success: function(response) {
+                        $('#pengambilan').find('#trsv_tgl_reservasi').val(response.trsv_tgl_reservasi
+                            .split(' ')[0]);
+                        $('#pengambilan').find('#trsv_tgl_kadaluarsa').val(response.trsv_tgl_kadaluarsa
+                            .split(' ')[0]);
+                        $('#pengambilan').find('#id_buku').val(response.id_dbuku);
+                    }
+                });
+            }
+
+        });
+        // ajax Create Pengambilan
+        $('#storePengambilan').off('click').on('click', function(e) {
+            e.preventDefault();
+
+            // Ambil nilai dari form
+            let id_trsv = $('#pengambilan').find('#id_dbuku').val();
+            let id_dsiswa = $('#pengambilan').find('#id_dsiswa').val();
+            let trks_tgl_reservasi = $('#pengambilan').find('#trsv_tgl_reservasi').val();
+            let trsv_tgl_kadaluarsa = $('#pengambilan').find('#trsv_tgl_kadaluarsa').val();
+            let trsv_tgl_pengambilan = $('#pengambilan').find('#trsv_tgl_pengambilan').val();
+            let trks_tgl_jth_tempo = $('#pengambilan').find('#trsv_jatuh_tempo').val();
+            let token = $("meta[name='csrf-token']").attr("content");
+            // Proses AJAX
+            $.ajax({
+                url: `pengambilan/store`,
+                type: "POST",
+                cache: false,
+                data: {
+                    "id_dbuku": $('#pengambilan').find('#id_buku').val(),
+                    "id_trsv": id_trsv,
+                    "id_dpustakawan": $('#pengambilan').find('#id_dpustakawan').val(),
+                    "id_peminjam": id_dsiswa,
+                    "trks_tgl_reservasi": trks_tgl_reservasi,
+                    "trks_tgl_jth_tempo": trks_tgl_jth_tempo,
+                    "trsv_tgl_kadaluarsa": trsv_tgl_kadaluarsa,
+                    "trsv_tgl_pengambilan": trsv_tgl_pengambilan,
+                    "_token": token
+                },
+                success: function(response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: `${response.message}`,
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+
+                    // Tutup modal dan reload DataTable
+                    $('#pengambilan').modal('toggle');
+                    $('#tbl_reservasi').DataTable().ajax.reload();
+
+                },
+                error: function(xhr) {
+                    if (xhr.status === 422) {
+                        var error = $.parseJSON(xhr.responseText);
+                        var errors = error.errors;
+                        // Menampilkan pesan error di bawah input yang sesuai
+                        if (errors.id_dbuku) {
+                            $('#pengambilan').find('#buku-error').text(errors.id_dbuku[0]);
+                        } else {
+                            $('#pengambilan').find('#buku-error').text('');
+                        }
+
+                        if (errors.id_peminjam) {
+                            $('#pengambilan').find('#siswa-error').text(errors.id_peminjam[0]);
+                        } else {
+                            $('#pengambilan').find('#siswa-error').text('');
+                        }
+
+                        if (errors.trks_tgl_reservasi) {
+                            $('#pengambilan').find('#tgl-reservasi-error').text(errors
+                                .trks_tgl_reservasi[0]);
+                        } else {
+                            $('#pengambilan').find('#tgl-reservasi-error').text('');
+                        }
+
+                        if (errors.trsv_tgl_kadaluarsa) {
+                            $('#pengambilan').find('#tgl-kadaluarsa-error').text(errors
+                                .trsv_tgl_kadaluarsa[0]);
+                        } else {
+                            $('#pengambilan').find('#tgl-kadaluarsa-error').text('');
+                        }
+
+                        if (errors.trks_tgl_pemberitahuan) {
+                            $('#pengambilan').find('#tgl-pemberitahuan-error').text(errors
+                                .trks_tgl_pemberitahuan[0]);
+                        } else {
+                            $('#pengambilan').find('#tgl-pemberitahuan-error').text('');
+                        }
+
+                        if (errors.trsv_tgl_pengambilan) {
+                            $('#pengambilan').find('#tgl-pengambilan-error').text(errors
+                                .trsv_tgl_pengambilan[0]);
+                        } else {
+                            $('#pengambilan').find('#tgl-pengambilan-error').text('');
+                        }
+                        if (errors.trks_tgl_jth_tempo) {
+                            $('#pengambilan').find('#trsv-jatuh-tempo-error').text(errors
+                                .trks_tgl_jth_tempo[0]);
+                        } else {
+                            $('#pengambilan').find('#trsv-jatuh-tempo-error').text('');
+                        }
+                        if (errors.id_dpustakawan) {
+                            $('#pengambilan').find('#pustakawan-error').text(errors
+                                .id_dpustakawan[0]);
+                        } else {
+                            $('#pengambilan').find('#pustakawan-error').text('');
+                        }
+
+                    }
+                }
+            });
+        });
     </script>
 @endpush
 <style>
+    .swal2-html {
+        font-size: 14px;
+        /* Atur ukuran font */
+        line-height: 1.5;
+        /* Atur tinggi baris untuk spacing */
+        max-width: 400px;
+        /* Atur lebar maksimum */
+        word-wrap: break-word;
+        /* Memungkinkan teks panjang terputus */
+    }
+
     .modal-content {
         background: linear-gradient(135deg, #f3f4f6, #e2e8f0);
         /* Gradasi warna lembut */
