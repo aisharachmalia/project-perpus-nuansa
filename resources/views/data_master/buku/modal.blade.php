@@ -189,10 +189,6 @@
                                 <img id="dbuku_cover" style="width: 150px; height: auto;">
                                 <input type="hidden" id="id_bk" name="id_bk">
                             </div>
-                            <div class="col-md-6 mb-3">
-                                <label>File pdf Sebelumnya</label>
-                                <span class="badge bg-danger" id="dbuku_file"></span>
-                            </div>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label for="dbuku_cover">Ubah Cover</label>
@@ -262,6 +258,7 @@
                             <input type="number" name="dbuku_jml_total" class="form-control" placeholder="Jumlah"
                                 id="dbuku_jml_total" min="0">
                             <span id="jml_total-error" class="text-danger"></span>
+                            <span id="global-error" class="text-danger"></span>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label>Edisi Buku</label>

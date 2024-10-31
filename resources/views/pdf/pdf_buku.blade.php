@@ -1,30 +1,46 @@
-<h1 style="text-align:center">Rekap Buku</h1>
+<style>
+    .book-entry {
+        display: flex;
+        align-items: center; 
+        margin-bottom: 20px;
+        padding: 20px;
+        border: 1px solid #ccc;
+        page-break-after: always;
+    }
 
-<table border="1" cellpadding="5" cellspacing="0" style="width: 100%; border-collapse: collapse; ">
-    <thead>
-        <tr style="background-color: #f2f2f2;">
-            <th style="text-align: center" width="5%">No</th>
-            <th style="text-align: center;">cover</th>
-            <th width="20%" style="text-align: center;">Judul Buku</th>
-            <th style="text-align: center;">ISBN</th>
-            <th>Nama Penulis</th>
-            <th>Nama Penerbit</th>
-            <th style="text-align: center;">Tahun Terbit</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach ($buku as $key => $item)
-            <tr>
-                <td style="text-align: center;background-color: #fefe76" width="5%">{{ $key + 1 }}</td>
-                <td style="height: 100%; object-fit: cover; object-position: center">
-                    <img src="storage/cover/{{ $item->dbuku_cover }}" alt="Book Cover">
-                </td>
-                <td width="20%">{{ $item->dbuku_judul }}</td>
-                <td style="text-align: start;">{{ $item->dbuku_isbn }}</td>
-                <td>{{ $item->dpenulis_nama_penulis }}</td>
-                <td>{{ $item->dpenerbit_nama_penerbit }}</td>
-                <td style="text-align: center;">{{ $item->dbuku_thn_terbit }}</td>
-            </tr>
-        @endforeach
-    </tbody>
-</table>
+    .cover {
+        width: 300px;
+        height: auto;
+        object-fit: cover;
+        margin-right: 20px;
+    }
+
+    .deskripsi {
+        flex: 1; 
+        display: flex;
+        flex-direction: column;
+    }
+
+    .deskripsi h2,
+    .deskripsi p {
+        margin: 5px 0;
+    }
+</style>
+
+<h1 style="text-align: center;margin-bottom: 20px">Rekap Buku</h1>
+
+@foreach ($buku as $item)
+    <div class="book-entry">
+        <!-- Book Cover Image on the Left -->
+        <img src="{{ asset('storage/cover/' . $item->dbuku_cover) }}" alt="Book Cover" class="cover">
+        
+        <!-- Description Section on the Right -->
+        <div class="deskripsi">
+            <h2>{{ $item->dbuku_judul }}</h2>
+            <p><strong>ISBN:</strong> {{ $item->dbuku_isbn }}</p>
+            <p><strong>Nama Penulis:</strong> {{ $item->dpenulis_nama_penulis }}</p>
+            <p><strong>Nama Penerbit:</strong> {{ $item->dpenerbit_nama_penerbit }}</p>
+            <p><strong>Tahun Terbit:</strong> {{ $item->dbuku_thn_terbit }}</p>
+        </div>
+    </div>
+@endforeach

@@ -87,6 +87,13 @@ Route::prefix('data-master')->group(function () {
     Route::post('/link-printout-buku', [App\Http\Controllers\BukuController::class, 'linkPrintoutBuku'])->name('link_printout_buku');
     Route::get('/printout-buku', [App\Http\Controllers\BukuController::class, 'printoutBuku'])->name('printout_buku');
 
+    Route::post('/link-export-salinan-buku', [App\Http\Controllers\DmSalinanBukuController::class, 'linkExportBuku'])->name('link_export_salinan_buku');
+    Route::get('/export-salinan-buku', [App\Http\Controllers\DmSalinanBukuController::class, 'exportBuku'])->name('export_salinan_buku');
+
+
+    Route::post('/link-printout-salinan-buku', [App\Http\Controllers\DmSalinanBukuController::class, 'linkPrintoutBuku'])->name('link_printout_salinan_buku');
+    Route::get('/printout-salinan-buku', [App\Http\Controllers\DmSalinanBukuController::class, 'printoutBuku'])->name('printout_salinan_buku');
+
     // PUSTAKAWAN
     Route::get('/pustakawan', [App\Http\Controllers\PustakawanController::class, 'pagePustakawan'])->name('data_master.pustakawan');
     Route::get('/pustakawan/show/{id}', [App\Http\Controllers\PustakawanController::class, 'showPustakawan'])->name('data_master.pustakawan.show');

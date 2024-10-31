@@ -69,7 +69,7 @@ class LaporanController extends Controller
                     return $trks->trks_tgl_pengembalian ? Carbon::parse($trks->trks_tgl_pengembalian)->format('d-m-Y H:i') : '-';
                 })
                 ->editColumn('jumlah', function ($trks) {
-                    return $trks->jumlah ? $trks->jumlah : '0';
+                    return 'Rp. ' . number_format($trks->jumlah ,0, ',', '.') ? $trks->jumlah : '0';
                 })
                 ->make(true);
         }
