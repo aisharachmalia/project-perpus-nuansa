@@ -1,97 +1,56 @@
 @extends('master')
 
 @section('content')
-    @push('css')
-        <style>
-            .container {
-                background-color: #fff;
-                border-radius: 15px;
-                box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-                padding: 30px;
-                margin-top: 50px;
-            }
+    <style>
+        .container {
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
 
-            h2 {
-                color: #8b4513;
-                text-align: center;
-                margin-bottom: 30px;
-            }
+        .select2-container--default .select2-selection--single {
+            height: calc(2.25rem + 2px);
+            padding: .375rem .75rem;
+            border: 0.1px solid #ced4da;
+            border-radius: .375rem;
+        }
+        .form-control{
+            border: 0.1px solid #ced4da;
+        }
 
-            th {
-                color: #8b4513;
-            }
+        .select2-selection__rendered {
+            line-height: 1.5;
+        }
 
-            .form-control {
-                border-color: #d2b48c;
-            }
+        .select2-selection__arrow {
+            height: calc(2.25rem + 2px);
+        }
 
-            .form-control:focus {
-                border-color: #8b4513;
-                box-shadow: 0 0 0 0.2rem rgba(139, 69, 19, 0.25);
-            }
-
-            .btn-primary {
-                background-color: #8b4513;
-                border-color: #8b4513;
-            }
-
-            .btn-primary:hover {
-                background-color: #a0522d;
-                border-color: #a0522d;
-            }
-
-            .btn-primary:focus {
-                background-color: #a0522d;
-                border-color: #a0522d;
-                box-shadow: 0 0 0 0.2rem rgba(139, 69, 19, 0.25);
-            }
-
-            .icon-input {
-                position: relative;
-                margin: 0;
-            }
-
-            .icon-input i {
-                position: absolute;
-                left: 10px;
-                top: 33px;
-                color: #8b4513;
-            }
-
-            .icon-input input {
-                padding-left: 35px;
-            }
-
-            .icon-input p {
-                padding-left: 35px;
-                margin: 0;
-            }
-
-            .icon-input select {
-                padding-left: 35px;
-            }
-        </style>
-    @endpush
-
+        .select2-container .select2-selection--single {
+            padding-left: 5px;
+        }
+    </style>
     <div class="container mb-5">
-        <h2><i class="fas fa-book-reader"></i> Pembayaran Denda Perpustakaan</h2>
+        <h2 class="text-center mb-3"><i class="fas fa-book-reader"></i> Pembayaran Denda Perpustakaan</h2>
         <div id="pembayaran">
-            <div class="mb-3 icon-input">
+            <div class="mb-3">
                 <div class="form-group">
-                    <label for="siswa">Nama Peminjam</label>
+                    <label for="siswa">Nama Peminjam</label>&nbsp;
                     <i class="bi bi-person-fill"></i>
-                    <select id="siswa" name="siswa" class="form-control">
+                    <select id="siswa" name="siswa" class="form-control choices">
                         <option value="">Pilih Peminjam</option>
                         @foreach ($peminjam as $data)
                             <option value="{{ Crypt::encryptString($data->id_usr) }}">
                                 {{ $data->usr_nama }}</option>
                         @endforeach
                     </select>
+                    <span id="user_error" class="text-danger"></span>
                 </div>
             </div>
-            <div class="mb-3 icon-input">
-                <div class="form-group">
-                    <label for="buku">Judul Buku</label>
+            <div class="mb-3">
+                <div class="form-group position-relative has-icon-left">
+                    <label for="buku">Judul Buku</label>&nbsp;
                     <i class="bi bi-book-fill"></i>
                     <select id="buku" name="buku" class="form-control">
                         <option value="">Pilih Buku</option>
@@ -99,40 +58,40 @@
                     <span id="buku_error" class="text-danger"></span>
                 </div>
             </div>
-            <div class="mb-3 icon-input">
+            <div class="mb-3">
                 <div class="form-group">
-                    <label for="tanggalPeminjaman">Tanggal Pinjam</label>
+                    <label for="tanggalPeminjaman">Tanggal Pinjam</label>&nbsp;
                     <i class="bi bi-calendar-plus"></i>
                     <p class="form-control" id="tanggalPeminjaman">Tanggal Pinjam</p>
                     <span id="peminjaman_error" class="text-danger"></span>
                 </div>
             </div>
-            <div class=" mb-3 icon-input">
+            <div class=" mb-3">
                 <div class="form-group">
-                    <label for="tanggalJatuhTempo">Tanggal Jatuh Tempo</label>
+                    <label for="tanggalJatuhTempo">Tanggal Jatuh Tempo</label>&nbsp;
                     <i class="bi bi-calendar-x-fill"></i>
                     <p class="form-control" id="tanggalJatuhTempo">Jatuh Tempo</p>
                     <span id="jatuh_tempo_error" class="text-danger"></span>
                 </div>
             </div>
-            <div class="mb-3 icon-input">
+            <div class="mb-3">
                 <div class="form-group">
-                    <label for="denda">Jumlah Denda anda</label>
+                    <label for="denda">Jumlah Denda anda</label>&nbsp;
                     <i class="bi bi-cash-stack"></i>
                     <p class="form-control">Rp. <span id="jumlahDenda">0</span></p>
                 </div>
             </div>
-            <div class="mb-3 icon-input">
+            <div class="mb-3">
                 <div class="form-group">
-                    <label for="denda">Jumlah Pembayaran Rp.</label>
+                    <label for="denda">Jumlah Pembayaran</label>&nbsp;
                     <i class="bi bi-cash-coin"></i>
-                    <input type="number" class="form-control" id="uang_pembayaran" placeholder="Pembayaran" required>
+                    <input type="number" class="form-control" id="uang_pembayaran" placeholder="Rp. 0" required>
                     <span id="denda_error" class="text-danger"></span>
                 </div>
             </div>
-            <div class="mb-3 icon-input">
+            <div class="mb-3">
                 <div class="form-group">
-                    <label for="tanggalPembayaran">Tanggal Pembayaran</label>
+                    <label for="tanggalPembayaran">Tanggal Pembayaran</label>&nbsp;
                     <i class="bi bi-calendar-check"></i>
                     <input type="date" class="form-control" id="tanggalPembayaran" required>
                     <span id="tgl_pembayaran_error" class="text-danger"></span>
@@ -160,6 +119,7 @@
                                     <th>Nama Peminjam</th>
                                     <th>Buku</th>
                                     <th>Jumlah Denda</th>
+                                    <th>Jumlah Pembayaran</th>
                                     <th>Tanggal Pembayaran</th>
                                     <th>Status Denda</th>
                                     <th>Status Pembayaran</th>
@@ -187,6 +147,8 @@
                 placeholder: "Pilih Peminjam",
                 allowClear: true,
             });
+
+
             var table = $('#tbl_denda').DataTable({
                 serverSide: true,
                 ajax: '{{ url('/table-denda') }}',
@@ -209,13 +171,17 @@
                         class: 'text-center'
                     },
                     {
+                        data: 'jumlah_bayar',
+                        class: 'text-center'
+                    },
+                    {
                         data: 'tgl_pembayaran',
                         class: 'text-center',
                         render: function(data) {
                             if (data == null) {
                                 return '-';
                             } else {
-                                return new Date(data).toISOString().slice(0, 10);
+                                return new Date(data) .toLocaleDateString('id-ID');
                             }
                         }
                     },
@@ -254,8 +220,7 @@
                         url: `/denda-detail/${siswaId}`,
                         type: 'GET',
                         success: function(response) {
-                            $('#pembayaran').find('#tanggalPembayaran').val(new Date()
-                                .toISOString().slice(0, 10));
+                            $('#pembayaran').find('#tanggalPembayaran').val(new Date().toISOString().slice(0, 10));
                             $('#pembayaran').find('#buku').empty();
                             $('#pembayaran').find('#buku').append(
                                 '<option value="">Pilih Buku</option>');
@@ -284,13 +249,9 @@
                         type: 'GET',
                         success: function(response) {
                             $('#pembayaran').find('#tanggalPeminjaman').text(response
-                                .trks_tgl_peminjaman == null ? new Date()
-                                .toISOString().slice(0, 10) :
-                                response.trks_tgl_peminjaman.split(' ')[0]);
+                                .trks_tgl_peminjaman == null ? new Date().toLocaleDateString('id-ID') : response.trks_tgl_peminjaman.split(' ')[0]);
                             $('#pembayaran').find('#tanggalJatuhTempo').text(response
-                                .trks_tgl_jatuh_tempo == null ? new Date()
-                                .toISOString().slice(0, 10) : response.trks_tgl_jatuh_tempo
-                                .split(' ')[0]);
+                                .trks_tgl_jatuh_tempo == null ? new Date().toLocaleDateString('id-ID') : response.trks_tgl_jatuh_tempo.split(' ')[0]);
                             $('#pembayaran').find('#jumlahDenda').text(response.jumlah);
                             $('#pembayaran').find('#buku_error').text('');
                             $('#pembayaran').find('#denda_error').text('');
@@ -312,27 +273,19 @@
             $('#bayar').click(function(e) {
                 e.preventDefault();
                 let siswaId = $('#siswa').val();
-                if (!siswaId) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: `Gagal!`,
-                        text: 'Siswa harus dipilih terlebih dahulu!',
-                        editConfirmButton: false,
-                        timer: 3000
-                    });
-                    return;
-                }
                 let token = $('meta[name="csrf-token"]').attr('content');
                 let uang_pembayaran = $('#pembayaran').find('#uang_pembayaran').val();
                 let id_denda = $('#pembayaran').find('#buku').val();
                 let buku = $('#pembayaran').find('#buku').val();
                 let tanggal_pembayaran = $('#pembayaran').find('#tanggalPembayaran').val();
                 $.ajax({
-                    url: `/denda-bayar/${id_denda}`,
+                    url: `/denda-bayar`,
                     type: "POST",
                     cache: false,
                     data: {
                         "_token": token,
+                        "id_denda": id_denda,
+                        "user": siswaId,
                         "denda": uang_pembayaran,
                         "buku": buku,
                         "user": siswaId,
@@ -355,6 +308,7 @@
                         // kosongin span err
                         $('#pembayaran').find('#buku_error').text('');
                         $('#pembayaran').find('#denda_error').text('');
+                        $('#pembayaran').find('#user_error').text('');
                         $('#pembayaran').find('#tgl_pembayaran_error').text('');
 
                         setTimeout(function() {
@@ -373,14 +327,23 @@
                             }
                             if (errors.denda) {
                                 $('#pembayaran').find('#denda_error').text(errors.denda[0]);
+
                             } else {
                                 $('#pembayaran').find('#denda_error').text('');
                             }
                             if (errors.tanggal_pembayaran) {
                                 $('#pembayaran').find('#tgl_pembayaran_error').text(errors
                                     .tanggal_pembayaran[0]);
+
                             } else {
                                 $('#pembayaran').find('#tgl_pembayaran_error').text('');
+                            }
+                            if (errors.user) {
+                                $('#pembayaran').find('#user_error').text(errors
+                                    .user[0]);
+
+                            } else {
+                                $('#pembayaran').find('#user_error').text('');
                             }
                         }
                     }

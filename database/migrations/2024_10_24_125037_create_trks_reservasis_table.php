@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('trks_reservasi', function (Blueprint $table) {
+        Schema::create('trks_reservasis', function (Blueprint $table) {
             $table->increments('id_trsv');
             $table->integer('id_usr');
             $table->integer('id_dbuku');
@@ -21,7 +21,7 @@ return new class extends Migration
             $table->dateTime('trsv_tgl_reservasi')->nullable();
             $table->dateTime('trsv_tgl_kadaluarsa')->nullable();
             $table->dateTime('trsv_tgl_pemberitahuan')->nullable();
-            $table->dateTime('trsv_tgl_pengembalian')->nullable();
+            $table->dateTime('trsv_tgl_pengambilan')->nullable();
             $table->tinyInteger('trsv_status')->default(1);
             $table->timestamps();
             $table->softDeletes();

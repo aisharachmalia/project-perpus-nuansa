@@ -23,6 +23,8 @@ class HomeController extends Controller
         $tanggalAkhir = $request->input('tanggal_akhir'); // Tanggal akhir dari input
 
         // Query untuk peminjam terbanyak
+        // Query untuk peminjaman terbanyak
+        // Query for most frequent borrowers
         $peminjaman_terbanyak = DB::table('trks_transaksi')
             ->join('users', 'trks_transaksi.id_usr', '=', 'users.id_usr')
             ->select('users.usr_nama', DB::raw('COUNT(trks_transaksi.id_dbuku) as total_bacaan'))
@@ -92,6 +94,48 @@ class HomeController extends Controller
         return view('home', compact(
             'totalSiswa', 'peminjaman_terbanyak', 'statistikPeminjaman', 'data',
             'bukuTerbanyakDipinjam', 'bulan', 'tahun'
+        $totalBuku = DB::table('dm_buku')->whereNull('deleted_at')
+            ->when($bulan, function ($query) use ($bulan) {
+                return $query->whereMonth('created_at', $bulan);
+            })
+            ->when($tahun, function ($query) use ($tahun) {
+                return $query->whereYear('created_at', $tahun);
+            })
+            ->sum('dbuku_jml_total');
+
+        $totalPeminjaman = DB::table('trks_transaksi')->whereNull('deleted_at')
+            ->when($bulan, function ($query) use ($bulan) {
+                return $query->whereMonth('trks_tgl_peminjaman', $bulan);
+            })
+            ->when($tahun, function ($query) use ($tahun) {
+                return $query->whereYear('trks_tgl_peminjaman', $tahun);
+            })
+            ->count();
+
+        $totalDenda = DB::table('pembayarans')
+            ->whereNull('deleted_at')
+            ->when($bulan, function ($query) use ($bulan) {
+                return $query->whereMonth('tgl_pembayaran', $bulan);
+            })
+            ->when($tahun, function ($query) use ($tahun) {
+                return $query->whereYear('tgl_pembayaran', $tahun);
+            })
+            ->sum('jumlah');
+
+
+        // Kirim hasil ke view
+        return view('home', compact(
+            'totalSiswa',
+            'totalBuku',
+            'totalPeminjaman',
+            'totalDenda',
+            'peminjaman_terbanyak',
+            'statistikPeminjaman',
+            'data',
+            'bukuTerbanyakDipinjam',
+            'chartData',
+            'bulan',
+            'tahun'
         ));
         if (!$tanggalAwal || !$tanggalAkhir) {
             return response()->json(['error' => 'Tanggal tidak valid'], 400);

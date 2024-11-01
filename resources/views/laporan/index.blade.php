@@ -227,24 +227,17 @@
                     {
                         class: "text-center",
                         data: 'jumlah',
-                        render: function(data) {
-                            if (data == null) {
-                                return 'Rp.0';
-                            } else {
-                                return 'Rp.' + number_format(data, 0, ',', '.');
-                            }
-                        }
                     },
                     {
                         class: "text-center",
                         data: 'trks_status',
                         render: function(data) {
-                            if (data == '1') {
+                            if (data == 0) {
                                 return '<span class="badge bg-light-info"> Dipinjam </span>';
-                            } else if (data == '2') {
+                            } else if (data == 1) {
                                 return '<span class="badge bg-light-success"> Dikembalikan </span>';
-                            } else {
-                                return '<span class="badge bg-light-warning"> Belum Dikembalikan </span>';
+                            } else if (data == '-1'){
+                                return '<span class="badge bg-light-danger"> Batal </span>';
                             }
                         }
                     },

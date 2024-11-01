@@ -284,17 +284,17 @@ public function destroy($id = null)
         }
     }
 
-     public function printoutSiswa(Request $request)
-    {
-        try {
-        $pdf = Pdf::loadView('pdf.pdf_siswa', $request->all());
+    public function printoutSiswa(Request $request)
+{
+    try {
+        $siswa = Dm_siswa::all();
+        $pdf = Pdf::loadView('pdf.pdf_siswa', compact('siswa'))->setPaper('a4', 'landscape'); 
         return $pdf->stream('Printout Siswa.pdf');
-        } catch (\Throwable $th) {
-            throw $th;
-        }
-        
+    } catch (\Throwable $th) {
+        throw $th;
+    }
+}
 
-        }
     }
 
 // return $pdf->download('Printout Siswa.pdf');
