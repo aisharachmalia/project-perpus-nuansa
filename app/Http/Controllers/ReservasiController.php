@@ -26,7 +26,7 @@ class ReservasiController extends Controller
                 ->addIndexColumn()
                 ->addColumn('aksi', function ($row) {
                     $btn = '<div class="d-flex mr-2">
-                <a href="javascript:void(0)" class="btn btn-warning btn-sm editPeminjaman mr-2" data-id="' . Crypt::encryptString($row->id_trsv) . '" data-bs-toggle="modal" data-bs-target="#editPeminjaman">
+                <a href="javascript:void(0)" class="btn btn-warning btn-sm editReservasi mr-2" data-id="' . Crypt::encryptString($row->id_trsv) . '" data-bs-toggle="modal" data-bs-target="#editReservasi">
                     <i class="bi bi-pencil"></i>
                 </a>
                     |
@@ -237,4 +237,61 @@ class ReservasiController extends Controller
             throw $th;
         }
     }
+
+
+    public function update(Request $request, $id)
+    {
+        // Validasi input data
+        $request->validate([
+            'id_dsiswa' => 'required|exists:dm_siswas,id',
+            'id_dpustakawan' => 'required|exists:dm_pustakawan,id',
+            'trsv_tgl_reservasi' => 'required|date',
+            'trsv_tgl_kadaluarsa' => 'required|date',
+            'trsv_tgl_pemberitahuan' => 'nullable|date',
+        ]);
+    
+        // Cari data reservasi berdasarkan ID
+        $reservasi = trks_reservasis::find($id); // Sesuaikan dengan model yang digunakan
+        if (!$reservasi) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Data reservasi tidak ditemukan.'
+            ], 404);
+        }
+    
+        // Update data reservasi dengan data yang diberikan
+        $reservasi->id_dsiswa = $request->id_dsiswa;
+        $reservasi->id_dpustakawan = $request->id_dpustakawan;
+        $reservasi->trsv_tgl_reservasi = $request->trsv_tgl_reservasi;
+        $reservasi->trsv_tgl_kadaluarsa = $request->trsv_tgl_kadaluarsa;
+        $reservasi->trsv_tgl_pemberitahuan = $request->trsv_tgl_pemberitahuan;
+        $reservasi->save();
+    
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Data reservasi berhasil diupdate.',
+            'reservasi' => $reservasi
+        ]);
+    }
+    
+    public function edit($id)
+    {
+        // Mencari data reservasi berdasarkan ID
+        $reservasi = trks_reservasis::find($id); // Ganti dengan nama model yang benar
+
+        // Cek apakah data ditemukan
+        if (!$reservasi) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Data reservasi tidak ditemukan.'
+            ], 404);
+        }
+
+        // Mengembalikan data reservasi dalam format JSON
+        return response()->json([
+            'status' => 'success',
+            'reservasi' => $reservasi
+        ]);
+    }
+
 }
