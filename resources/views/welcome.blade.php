@@ -1,5 +1,14 @@
 @extends('userz')
 @section('content')
+<style>
+  body {
+  margin: 0;
+  font-family: 'Muli', sans-serif;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+</style>
+
     <section class="hero">
         <div class="container2">
             <h1 class="aesthetic-title">Perpustakaan SMK</h1>
@@ -61,111 +70,29 @@
             </div>
         </div>
     </section>
-    <section class="author">
-        <div class="container5">
-            <h1 class="penulis">Rekomendasi Buku</h1>
-            <div class="row">
-                <div class="col-4">
-                    <div class="card mb-3" style="max-width: 540px;">
-                        <div class="row g-0">
-                          <div class="col-md-4">
-                            <img src="https://images.ctfassets.net/usf1vwtuqyxm/6S51pK7uwnyhkS9Io9DsAn/320c162c5150f853b8d8568c4715dcef/English_Harry_Potter_7_Epub_9781781100264.jpg?w=914&q=70&fm=jpg" class="img-fluid rounded-start" alt="...">
-                          </div>
-                          <div class="col-md-8">
-                            <div class="card-body">
-                              <h5 class="card-title">Card title</h5>
-                              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                              <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                </div>
-                <div class="col-4">
-                    <div class="card mb-3" style="max-width: 540px;">
-                        <div class="row g-0">
-                          <div class="col-md-4">
-                            <img src="https://mir-s3-cdn-cf.behance.net/project_modules/1400/b468d093312907.5e6139cf2ab03.png" class="img-fluid rounded-start" alt="...">
-                          </div>
-                          <div class="col-md-8">
-                            <div class="card-body">
-                              <h5 class="card-title">Card title</h5>
-                              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                              <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                </div>
-                <div class="col-4">
-                    <div class="card mb-3" style="max-width: 540px;">
-                        <div class="row g-0">
-                          <div class="col-md-4">
-                            <img src="https://berita.99.co/wp-content/uploads/2022/10/kumpulan-novel-dilan.jpg" class="img-fluid rounded-start" alt="...">
-                          </div>
-                          <div class="col-md-8">
-                            <div class="card-body">
-                              <h5 class="card-title">Card title</h5>
-                              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                              <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                </div>
+    
+    <section class="carousel">
+      <h2 class="categories__title">Rekomendasi Buku</h2>
+      <div class="carousel__container">
+        @foreach ($datadepan as $item)
+          <div class="carousel-item">
+            <a href="{{ route('document.detail', ['id' => $item->id_dbuku]) }}">
+            <img class="carousel-item__img" src="{{ asset('storage/cover/' .$item->dbuku_cover) }}" alt="{{ $item->dbuku_judul }}"/>
+            </a>
+            <div class="carousel-item__details">
+              <div class="controls">
+                <span class="fas fa-play-circle"></span>
+                <span class="fas fa-plus-circle"></span>
+              </div>
+              <h5 class="carousel-item__details--title">{{ $item->dbuku_judul }}</h5>
+              <h6 class="carousel-item__details--subtitle">Last updated 3 mins ago</h6>
             </div>
-             <div class="row">
-                <div class="col-4">
-                    <div class="card mb-3" style="max-width: 540px;">
-                        <div class="row g-0">
-                          <div class="col-md-4">
-                            <img src="https://hachette.imgix.net/books/9781474614399.jpg?auto=compress,format" class="img-fluid rounded-start" alt="...">
-                          </div>
-                          <div class="col-md-8">
-                            <div class="card-body">
-                              <h5 class="card-title">Card title</h5>
-                              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                              <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                </div>
-                <div class="col-4">
-                    <div class="card mb-3" style="max-width: 540px;">
-                        <div class="row g-0">
-                          <div class="col-md-4">
-                            <img src="https://0.academia-photos.com/attachment_thumbnails/62366143/mini_magick20200315-4967-ibzmuf.png?1584314950" class="img-fluid rounded-start" alt="...">
-                          </div>
-                          <div class="col-md-8">
-                            <div class="card-body">
-                              <h5 class="card-title">Card title</h5>
-                              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                              <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                </div>
-                <div class="col-4">
-                    <div class="card mb-3" style="max-width: 540px;">
-                        <div class="row g-0">
-                          <div class="col-md-4">
-                            <img src="https://cdn2.penguin.com.au/covers/original/9780241189450.jpg" class="img-fluid rounded-start" alt="...">
-                          </div>
-                          <div class="col-md-8">
-                            <div class="card-body">
-                              <h5 class="card-title">Card title</h5>
-                              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                              <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                </div>
-            </div>
-        </div>
+          </div>
+        @endforeach
+      </div>
     </section>
+    
+  
     <section class="author">
         <div class="container5">
             <h1 class="penulis">Penerbit</h1>

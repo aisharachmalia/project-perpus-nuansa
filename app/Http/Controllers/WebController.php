@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\dm_buku;
 
 class WebController extends Controller
 {
@@ -43,7 +44,8 @@ class WebController extends Controller
     }
     public function pageBuku()
     {
-        return view('user.halaman_buku');
+        $buku = dm_buku::all();
+        return view('user.halaman_buku',compact('buku'));
     }
     public function pagePanduan()
     {

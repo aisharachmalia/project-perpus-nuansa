@@ -14,7 +14,15 @@
             <td>{{$item->dpustakawan_email}}</td>
             <td>{{$item->dpustakawan_no_telp}}</td>
             <td>{{$item->dpustakawan_alamat}}</td>
-            <td>{{$item->dpustakawan_status}}</td>
+            <td style="text-align: center;">
+                @if($item->dpustakawan_status == 1)
+                    Aktif
+                @elseif($item->dpustakawan_status == 2)
+                    Tidak Aktif
+                @else
+                    Tidak Aktif
+                @endif
+            </td>
         </tr>
     @endforeach
 </table>

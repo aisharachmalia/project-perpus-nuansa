@@ -130,43 +130,27 @@
     </header>
 
     <div class="page-heading">
-        <h3>Dashboard Perpustakaan</h3>
+
     </div>
-
-
-    <div class="row mb-4">
-        <div class="col-12">
-            <form action="{{ route('home') }}" method="GET" class="form-inline justify-content-center">
-                <div class="form-group mx-2">
-                    <label for="bulan">Bulan:</label>
-                    <div class="mt-1">
-                        <select name="bulan" id="bulan" class="form-control">
-                            <option value="">-- Pilih Bulan --</option>
-                            @foreach (['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'] as $index => $bulan)
-                                <option value="{{ $index + 1 }}"
-                                    {{ request('bulan') == $index + 1 ? 'selected' : '' }}>{{ $bulan }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+    <div class="containah">
+        <div class="row mb-4 justify-content-end">
+            <div class="col-8 mb-2">
+                <h3 style="text-align: left">Dashboard Perpustakaan</h3>
+            </div>
+            <div class="col-4 mb-2">
+                <div id="daterange" class="float-end"
+                    style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%; text-align: center">
+                    <input type="hidden" id="filter-tanggal-awal">
+                    <input type="hidden" id="filter-tanggal-akhir">
+                    <i class="fa fa-calendar"></i>&nbsp;
+                    <span></span>
+                    <i class="fa fa-caret-down"></i>
                 </div>
-                <div class="form-group mx-2">
-                    <label for="tahun">Tahun:</label>
-                    <div class="mt-1">
-                        <select name="tahun" id="tahun" class="form-control">
-                            <option value="">-- Pilih Tahun --</option>
-                            @for ($tahun = date('Y'); $tahun >= 2000; $tahun--)
-                                <option value="{{ $tahun }}" {{ request('tahun') == $tahun ? 'selected' : '' }}>
-                                    {{ $tahun }}</option>
-                            @endfor
-                        </select>
-                    </div>
-                </div>
-                <div class="form-group mx-2 mt-1">
-                    <button type="submit" class="btn btn-primary">Filter</button>
-                </div>
-            </form>
+            </div>
         </div>
     </div>
+
+
     <div class="page-content">
         <section class="row">
             <div class="col-12 col-lg-12">
@@ -182,7 +166,8 @@
                                     </div>
                                     <div class="col-md-8">
                                         <h6 class="text-muted font-semibold">Total Buku</h6>
-                                        <h6 class="font-extrabold mb-0">{{ $totalBuku }}<h6>
+                                        <h6 id="total_buku" class="font-extrabold mb-0">
+                                            <h6>
                                     </div>
                                 </div>
                             </div>
@@ -199,7 +184,7 @@
                                     </div>
                                     <div class="col-md-8">
                                         <h6 class="text-muted font-semibold">Peminjaman</h6>
-                                        <h6 class="font-extrabold mb-0">{{ $totalPeminjaman }}</h6>
+                                        <h6 id="total_peminjaman" class="font-extrabold mb-0"></h6>
                                     </div>
                                 </div>
                             </div>
@@ -210,13 +195,13 @@
                             <div class="card-body px-3 py-4-5">
                                 <div class="row">
                                     <div class="col-md-4">
-                                            <div class="stats-icon bg-warning">
-                                                <i class="fas fa-coins"></i>
+                                        <div class="stats-icon bg-warning">
+                                            <i class="fas fa-coins"></i>
                                         </div>
                                     </div>
                                     <div class="col-md-8">
                                         <h6 class="text-muted font-semibold">Jumlah Denda</h6>
-                                        <h6 class="font-extrabold mb-0">Rp.{{ $totalDenda }}</h6>
+                                        <h6 id="total_denda" class="font-extrabold mb-0"></h6>
                                     </div>
                                 </div>
                             </div>
@@ -233,13 +218,14 @@
                                     </div>
                                     <div class="col-md-8">
                                         <h6 class="text-muted font-semibold">pelanggaran </h6>
-                                        <h6 class="font-extrabold mb-0">{{ $totalDenda }}</h6>
+                                        <h6 id="total_pelanggaran" class="font-extrabold mb-0"></h6>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
                 <!-- Statistik Peminjaman Buku -->
                 <!-- Statistik Peminjaman Buku -->
                 <div class="row">
@@ -282,50 +268,42 @@
                     </div> --}}
                     <!-- Peminjam Terbanyak -->
                     <div class="col-12 col-xl-12">
-                        <div class="card"><hr class="new5">
+                        <div class="card">
+                            <hr class="new5">
                             <div class="card-header">
-                                <h4>Peminjam Terbanyak</h4>
+                                <h4 class="text-center">Peminjam Terbanyak</h4>
                             </div>
                             <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover">
+                                <div class="table-responsive" id="">
+                                    <table class="table table-hover" id="peminjaman_terbanyak">
                                         <thead>
                                             <tr>
                                                 <th>Peringkat</th>
-                                                <th>Nama</th>
-                                                <th>Total Bacaan</th>
+                                                <th>Nama Pengguna</th>
+                                                <th>Jumlah Peminjaman</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if ($peminjaman_terbanyak->isEmpty())
-                                                <tr>
-                                                    <td colspan="3" class="text-center">Belum ada peminjam.</td>
-                                                </tr>
-                                            @else
-                                                @foreach ($peminjaman_terbanyak->take(5) as $key => $peminjam)
-                                                    <tr>
-                                                        <td>{{ $key + 1 }}</td>
-                                                        <td>{{ $peminjam->dsiswa_nama }}</td>
-                                                        <td>{{ $peminjam->total_bacaan }}</td>
-                                                    </tr>
-                                                @endforeach
-                                            @endif
+                                            <!-- Data akan dimuat oleh AJAX -->
                                         </tbody>
                                     </table>
+
                                 </div>
                             </div>
                         </div>
                     </div>
+
                 </div>
                 <div class="row">
                     <div class="col-12">
-                        <div class="card"><hr class="new5">
+                        <div class="card">
+                            <hr class="new5">
                             <div class="card-header text-center">
                                 <h4>Buku Favorit</h4>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
-                                    <table class="table table-hover">
+                                    <table class="table table-hover" id="buku_terbanyak_dipinjam">
                                         <thead>
                                             <tr>
                                                 <th>Cover</th>
@@ -335,23 +313,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if($bukuTerbanyakDipinjam->isEmpty())
-                                                <tr>
-                                                    <td colspan="4" class="text-center">Belum ada buku yang dipinjam.</td>
-                                                </tr>
-                                            @else
-                                                @foreach($bukuTerbanyakDipinjam as $buku)
-                                                    <tr>
-                                                        <td class="col-4 text-center">
-                                                            <!-- Menampilkan gambar cover buku dengan ukuran yang proporsional -->
-                                                            <img src="{{ asset('storage/cover/' . $buku->dbuku_cover) }}" alt="Cover Buku" style="width: 50px; height: 70px; object-fit: cover;">
-                                                        </td>
-                                                        <td class="col-3">{{ $buku->dbuku_judul }}</td>
-                                                        <td class="col-3">{{ $buku->dpenulis_nama_penulis }}</td> <!-- Menampilkan nama penulis -->
-                                                        <td class="col-2 text-center">{{ $buku->total_peminjaman }}</td>
-                                                    </tr>
-                                                @endforeach
-                                            @endif
+
                                         </tbody>
                                     </table>
                                 </div>
@@ -359,7 +321,7 @@
                         </div>
                     </div>
                 </div>
-                
+
 
             </div>
     </div>
@@ -370,65 +332,108 @@
     </div>
 @endsection
 @push('scripts')
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script src="{{ URL::asset('assets/js/highcharts.js') }}" type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    <script>
-        // Statistik Peminjaman Buku
-        Highcharts.chart('chart_utama', {
-            chart: {
-                type: 'area'
-            },
-            title: {
-                text: null
-            },
-            xAxis: {
-                categories: ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September',
-                    'Oktober', 'November', 'Desember'
-                ]
-            },
-            yAxis: {
-                title: {
-                    text: null
-                }
-            },
-            credits: {
-                enabled: false
-            },
-            series: [{
-                name: 'Total Siswa yang Meminjam Buku',
-                data: {!! json_encode($data) !!} // Mengambil data dari controller
-            }]
-        });
 
-        // Kategori Terbanyak Dibaca
-        var chartData = @json($chartData); // Ambil data dari controller
-
-        Highcharts.chart('chart_profile', {
-            title: {
-                text: null
-            },
-            chart: {
-                type: 'pie',
-                height: 300,
-                width: 320 // Sesuaikan dengan height card
-            },
-            series: [{
-                name: 'Kategori',
-                data: chartData // Data yang sudah diformat
-            }]
-        });
+    // Kategori Terbanyak Dibaca
     </script>
     <script>
-        function hideNotification(element) {
-            element.parentElement.classList.add('hidden'); // Tambahkan kelas hidden
-            checkNotifications(); // Cek apakah semua notifikasi sudah dihapus
-        }
+        $(document).ready(function() {
+            // Date Range Picker Initialization
+            let start = moment().subtract(29, 'days');
+            let end = moment();
+            let token = $("meta[name='csrf-token']").attr("content");
 
-        function checkNotifications() {
-            var visibleNotifications = document.querySelectorAll('#notification .alert:not(.hidden)');
-            if (visibleNotifications.length === 0) {
-                document.getElementById('no-notifications').style.display = 'block'; // Tampilkan placeholder
+            function cb(start, end) {
+                $('#daterange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+                $('#filter-tanggal-awal').val(start.format('YYYY-MM-DD'));
+                $('#filter-tanggal-akhir').val(end.format('YYYY-MM-DD'));
             }
-        }
+
+            $('#daterange').daterangepicker({
+                startDate: start,
+                endDate: end,
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1,
+                        'month').endOf('month')]
+                }
+            }, cb);
+
+            cb(start, end); // Initialize with default range
+
+            // Event listener untuk onchange di daterangepicker
+            $('#daterange').on('apply.daterangepicker', function(ev, picker) {
+                let startDate = picker.startDate.format('YYYY-MM-DD');
+                let endDate = picker.endDate.format('YYYY-MM-DD');
+
+                $('#filter-tanggal-awal').val(startDate);
+                $('#filter-tanggal-akhir').val(endDate);
+
+                // Trigger AJAX call saat tanggal berubah
+                totalDataDashboard(startDate, endDate);
+            });
+
+            var tanggal_awal = $('#filter-tanggal-awal').val();
+            var tanggal_akhir = $('#filter-tanggal-akhir').val();
+            totalDataDashboard(tanggal_awal, tanggal_akhir)
+            // Fungsi AJAX untuk mengambil data berdasarkan tanggal
+
+            function totalDataDashboard(tanggal_awal, tanggal_akhir) {
+
+                $.ajax({
+                    url: `total-data-dashboard`,
+                    type: "GET",
+                    data: {
+                        tanggal_awal: tanggal_awal,
+                        tanggal_akhir: tanggal_akhir,
+                    },
+                    cache: false,
+                    success: function(response) {
+                        console.log(response.statistik_peminjaman);
+                        $('#total_buku').text(response.total_buku);
+                        $('#total_peminjaman').text(response.total_peminjaman);
+                        $('#total_denda').text('Rp ' + new Intl.NumberFormat('id-ID').format(response.total_denda));
+                        $('#total_pelanggaran').text(response.total_pelanggaran);
+                        $('#peminjaman_terbanyak tbody').html(response.peminjaman_terbanyak);
+                        $('#buku_terbanyak_dipinjam tbody').html(response.buku_terbanyak_dipinjam);
+
+                        Highcharts.chart('chart_utama', {
+                            chart: {
+                                type: 'area'
+                            },
+                            title: {
+                                text: null
+                            },
+                            xAxis: {
+                                categories: ['Januari', 'Februari', 'Maret', 'April', 'Mei',
+                                    'Juni', 'Juli', 'Agustus', 'September',
+                                    'Oktober', 'November', 'Desember'
+                                ]
+                            },
+                            yAxis: {
+                                title: {
+                                    text: null
+                                }
+                            },
+                            credits: {
+                                enabled: false
+                            },
+                            series: [{
+                                name: 'Total Siswa yang Meminjam Buku',
+                                data: response.statistik_peminjaman // Mengambil data dari respons
+                            }]
+                        });
+                    }
+                });
+            }
+
+        });
     </script>
 @endpush

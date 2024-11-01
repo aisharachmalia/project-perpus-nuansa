@@ -177,7 +177,7 @@
                 },
                 success: function(response) {
                     // Lakukan sesuatu dengan respons (misal: refresh tabel)
-                    console.log(response);
+                    =le.log(response);
                     // Misal, jika kamu menggunakan DataTables, refresh tabel di sini
                     $('#tbl_trks').DataTable().ajax.reload();
                 },

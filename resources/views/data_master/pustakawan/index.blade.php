@@ -347,48 +347,65 @@
         });
     </script>
     <script>
-        $('body').on('click', '#btn-delete', function() {
+$('body').on('click', '#btn-delete', function() {
 
-            let id_gr = $(this).data('id');
-            let token = $("meta[name='csrf-token']").attr("content");
+let id_gr = $(this).data('id');
+let token = $("meta[name='csrf-token']").attr("content");
 
-            Swal.fire({
-                title: 'Apakah Kamu Yakin?',
-                text: "ingin menghapus data ini!",
-                icon: 'warning',
-                showCancelButton: true,
-                cancelButtonText: 'TIDAK',
-                confirmButtonText: 'YA, HAPUS!'
-            }).then((result) => {
-                if (result.isConfirmed) {
+Swal.fire({
+    title: 'Apakah Kamu Yakin?',
+    text: "ingin menghapus data ini!",
+    icon: 'warning',
+    showCancelButton: true,
+    cancelButtonText: 'TIDAK',
+    confirmButtonText: 'YA, HAPUS!'
+}).then((result) => {
+    if (result.isConfirmed) {
 
-                    console.log('test');
+        console.log('test');
 
-                    //fetch to delete data
-                    $.ajax({
+        //fetch to delete data
+        $.ajax({
 
-                        url: `pustakawan/delete/${id_gr}`,
-                        type: "DELETE",
-                        cache: false,
-                        data: {
-                            "_token": token
-                        },
-                        success: function(response) {
+            url: `pustakawan/delete/${id_gr}`,
+            type: "DELETE",
+            cache: false,
+            data: {
+                "_token": token
+            },
+            success: function(response) {
 
-                            //show success message
-                            Swal.fire({
-                                type: 'success',
-                                icon: 'success',
-                                title: `${response.message}`,
-                                showConfirmButton: false,
-                                timer: 3000
-                            });
-                            $('#tbl_list').DataTable().ajax.reload()
-                        }
+                if (response.success) {
+                    //show success message
+                    Swal.fire({
+                        icon: 'success',
+                        title: response.message,
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+                    $('#tbl_list').DataTable().ajax.reload();
+                } else {
+                    //show error message if deletion is not allowed
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal Menghapus',
+                        text: response.message,
+                        showConfirmButton: true,
                     });
                 }
-            })
+            },
+            error: function(xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Terjadi Kesalahan',
+                    text: 'Tidak dapat menghapus data.',
+                });
+            }
         });
+    }
+})
+});
+
     </script>
     <script>
         
