@@ -91,9 +91,7 @@ class HomeController extends Controller
         $totalSiswa = Dm_siswa::whereNull('deleted_at')->count();
 
         // Kirim hasil ke view
-        return view('home', compact(
-            'totalSiswa', 'peminjaman_terbanyak', 'statistikPeminjaman', 'data',
-            'bukuTerbanyakDipinjam', 'bulan', 'tahun'
+       
         $totalBuku = DB::table('dm_buku')->whereNull('deleted_at')
             ->when($bulan, function ($query) use ($bulan) {
                 return $query->whereMonth('created_at', $bulan);
