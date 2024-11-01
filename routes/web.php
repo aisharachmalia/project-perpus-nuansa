@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\ReservasiController;
 use App\Http\Controllers\SiswaController;
+use App\Http\Controllers\UsePageController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -18,7 +19,8 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 //
-Route::get('/', [App\Http\Controllers\WebController::class, 'berandaPage'])->name('beranda');
+Route::get('/', [App\Http\Controllers\UsePageController::class, 'berandaPage'])->name('beranda');
+Route::get('/popular', [App\Http\Controllers\UsePageController::class, 'berandaPage'])->name('popular-books');
 Route::get('/tentang', [App\Http\Controllers\WebController::class, 'pageTentang'])->name('tentang');
 Route::get('/halaman-buku', [App\Http\Controllers\WebController::class, 'pageBuku'])->name('buku');
 Route::get('/panduan', [App\Http\Controllers\WebController::class, 'pagePanduan'])->name('panduan');
@@ -52,6 +54,9 @@ Route::post('/lupa-password', [App\Http\Controllers\Auth\ForgotPasswordControlle
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/total-data-dashboard',[App\Http\Controllers\HomeController::class, 'totalDataDashboard'])->name('total_data_dashboard');
+Route::get('/data-leaderboard',[App\Http\Controllers\HomeController::class, 'totalDataDashboard'])->name('data-leaderboard');
+Route::post('/update-chart', [App\Http\Controllers\HomeController::class, 'updateChart'])->name('update.chart');
 
 Route::prefix('data-master')->group(function () {
     // guru route
@@ -86,6 +91,13 @@ Route::prefix('data-master')->group(function () {
 
     Route::post('/link-printout-buku', [App\Http\Controllers\BukuController::class, 'linkPrintoutBuku'])->name('link_printout_buku');
     Route::get('/printout-buku', [App\Http\Controllers\BukuController::class, 'printoutBuku'])->name('printout_buku');
+
+    Route::post('/link-export-salinan-buku', [App\Http\Controllers\DmSalinanBukuController::class, 'linkExportBuku'])->name('link_export_salinan_buku');
+    Route::get('/export-salinan-buku', [App\Http\Controllers\DmSalinanBukuController::class, 'exportBuku'])->name('export_salinan_buku');
+
+
+    Route::post('/link-printout-salinan-buku', [App\Http\Controllers\DmSalinanBukuController::class, 'linkPrintoutBuku'])->name('link_printout_salinan_buku');
+    Route::get('/printout-salinan-buku', [App\Http\Controllers\DmSalinanBukuController::class, 'printoutBuku'])->name('printout_salinan_buku');
 
     // PUSTAKAWAN
     Route::get('/pustakawan', [App\Http\Controllers\PustakawanController::class, 'pagePustakawan'])->name('data_master.pustakawan');

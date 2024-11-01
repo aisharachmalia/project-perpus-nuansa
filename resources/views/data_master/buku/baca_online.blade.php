@@ -1,8 +1,10 @@
-@extends('userz')
+@extends('baca_onl')
+@section('content')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <style>
-    .container {
-        padding-top: 20px;
+    .container-baca {
+        margin-top: 70px;
+        padding-top: 30px;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -102,9 +104,7 @@
         background-color: #218838;
     }
 </style>
-
-@section('content')
-    <div class="container">
+    <div class="container-baca">
         <div class="col-10">
             <div class="card1">
                 <div class="row">
@@ -162,17 +162,17 @@
         <h2 class="text-center">Membaca: {{ $bk->dbuku_judul }}</h2>
 
         <!-- Kontrol PDF Gaya Komiku -->
-        
-        <!-- Container untuk menampilkan PDF -->
-        <div id="viewerContainer" style="width: 100%; text-align: center;">
-            <canvas id="pdf-canvas" style="border:1px solid #ddd; max-width: 100%;"></canvas>
-        </div>
-    
-        
         <div class="controls text-center my-3">
             <button id="prevPage"><i class="fa fa-chevron-left"></i> Sebelumnya</button>
             <span>Halaman: <span id="pageNum"></span> / <span id="pageCount"></span></span>
             <button id="nextPage">Berikutnya <i class="fa fa-chevron-right"></i></button>
+        </div>
+
+        <!-- Kontrol PDF Gaya Komiku -->
+        
+        <!-- Container untuk menampilkan PDF -->
+        <div id="viewerContainer" style="width: 100%; text-align: center;">
+            <canvas id="pdf-canvas" style="border:1px solid #ddd; max-width: 100%;"></canvas>
         </div>
 
         <button id="finishReading" class="btn btn-success my-3">Selesai Baca</button>
@@ -185,7 +185,7 @@
         const url = "{{ Storage::url('file/' . $bk->dbuku_file) }}";
         // Tampilkan canvas baca saat tombol 'Mulai Baca' ditekan
         document.getElementById('startReading').addEventListener('click', function() {
-            document.querySelector('.container').style.display = 'none'; // Sembunyikan detail buku
+            document.querySelector('.container-baca').style.display = 'none'; // Sembunyikan detail buku
             document.getElementById('readingCanvas').style.display = 'block'; // Tampilkan canvas baca
             this.style.display = 'none'; // Sembunyikan tombol 'Mulai Baca'
         });
@@ -255,7 +255,7 @@
         });
 
         document.getElementById('startReading').addEventListener('click', function() {
-            document.querySelector('.container').style.display = 'none';
+            document.querySelector('.container-baca').style.display = 'none';
             document.getElementById('readingCanvas').style.display = 'block';
         });
 

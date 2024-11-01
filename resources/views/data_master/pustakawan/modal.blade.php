@@ -25,7 +25,7 @@
                         <div class="col-md-4 col-12">
                             <div class="form-group">
                                 <label for="country-floating">No. Telepon</label>
-                                <input type="text" class="form-control" placeholder="NO. Telpon" name="dpustakawan_no_telp" id="dpustakawan_no_telp">
+                                <input type="text" class="form-control" placeholder="No.Telepon" name="dpustakawan_no_telp" id="dpustakawan_no_telp">
                                 <span id="telp-error" class="text-danger"></span>
                             </div>
                         </div>
@@ -43,7 +43,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary ml-1" id="store">
                     <i class="bx bx-check d-block d-sm-none"></i>
-                    <span class="d-none d-sm-block">Accept</span>
+                    <span class="d-none d-sm-block">Simpan</span>
                 </button>
             </div>
         </div>
@@ -79,7 +79,7 @@
                         <div class="col-md-4 col-12">
                             <div class="form-group">
                                 <label for="country-floating">No. Telepon</label>
-                                <input type="text" class="form-control" placeholder="NO. Telpon" name="dpustakawan_no_telp" id="dpustakawan_no_telp">
+                                <input type="text" class="form-control" placeholder="No. Telepon" name="dpustakawan_no_telp" id="dpustakawan_no_telp">
                                 <span class="text-danger" id="telp-error"></span>
                             </div>
                         </div>

@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('dpustakawan_no_telp')->unique();
             $table->text('dpustakawan_alamat')->nullable();
             $table->tinyInteger('dpustakawan_status')->default(1);
+            $table->tinyInteger('dpustakawan_flag')->default(0);
             $table->timestamps();
             $table->softDeletes();
         });
