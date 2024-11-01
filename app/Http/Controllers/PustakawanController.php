@@ -65,13 +65,13 @@ class PustakawanController extends Controller
             'dpustakawan_email.email' => 'Format email tidak sesuai',
             'dpustakawan_nama.required' => 'Nama harus diisi!',
             'dpustakawan_email.required' => 'Email harus diisi!',
-            'dpustakawan_no_telp.required' => 'No. Telp harus diisi!',
+            'dpustakawan_no_telp.required' => 'No. Telepon harus diisi!',
             'dpustakawan_alamat.required' => 'Alamat harus diisi!',
             'dpustakawan_email.unique' => 'Email sudah terdaftar!',
-            'dpustakawan_no_telp.unique' => 'No. Telp sudah terdaftar!',
-            'dpustakawan_no_telp.regex' => 'No. Telp harus angka!',
-            'dpustakawan_no_telp.min' => 'No. Telp minimal 11 angka!',
-            'dpustakawan_no_telp.max' => 'No. Telp maksimal 13 angka!',
+            'dpustakawan_no_telp.unique' => 'No. Telepon sudah terdaftar!',
+            'dpustakawan_no_telp.regex' => 'No. Telepon harus angka!',
+            'dpustakawan_no_telp.min' => 'No. Telepon minimal 11 angka!',
+            'dpustakawan_no_telp.max' => 'No. Telepon maksimal 13 angka!',
         ];
 
         // Lakukan validasi
@@ -114,12 +114,12 @@ class PustakawanController extends Controller
                 'dpustakawan_email.email' => 'Format email tidak sesuai',
                 'dpustakawan_nama.required' => 'Nama harus diisi!',
                 'dpustakawan_email.required' => 'Email harus diisi!',
-                'dpustakawan_no_telp.required' => 'No. Telp harus diisi!',
+                'dpustakawan_no_telp.required' => 'No. Telepon harus diisi!',
                 'dpustakawan_alamat.required' => 'Alamat harus diisi!',
                 'dpustakawan_email.unique' => 'Email sudah terdaftar!',
-                'dpustakawan_no_telp.unique' => 'No. Telp sudah terdaftar!',
-                'dpustakawan_no_telp.regex' => 'No. Telp harus angka!',
-                'dpustakawan_no_telp.digits_between' => 'No. Telp harus di antara 11 hingga 13 angka!',
+                'dpustakawan_no_telp.unique' => 'No. Telepon sudah terdaftar!',
+                'dpustakawan_no_telp.regex' => 'No. Telepon harus angka!',
+                'dpustakawan_no_telp.digits_between' => 'No. Telepon harus di antara 11 hingga 13 angka!',
             ];
             
             
@@ -160,19 +160,39 @@ class PustakawanController extends Controller
     }
     public function deletePustakawan($id = null)
     {
-
-        $id_dpustakawan = Crypt::decryptString($id);
-
-        $ps = dm_pustakawan::find($id_dpustakawan);
-        $ps->deleted_at = Carbon::now();
-        $ps->save();
-
-        //return response
-        return response()->json([
-            'success' => true,
-            'message' => 'Data Berhasil Dihapus!.',
-        ]);
+        try {
+            $id_dpustakawan = Crypt::decryptString($id);
+    
+            // Check if the pustakawan has lent any books
+            $hasTransactions = \DB::table('trks_transaksi')
+                ->where('id_dpustakawan', $id_dpustakawan)
+                ->exists();
+    
+            if ($hasTransactions) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data pustakawan tidak dapat dihapus karena pustakawan ini sudah meminjamkan buku.',
+                ], 403);
+            }
+    
+            // Proceed with soft deletion if no transactions are found
+            $ps = dm_pustakawan::find($id_dpustakawan);
+            $ps->deleted_at = Carbon::now();
+            $ps->save();
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Data Berhasil Dihapus!',
+            ], 200);
+    
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $th->getMessage(),
+            ], 500);
+        }
     }
+    
     public function linkExportPustakawan(Request $request)
     {
         try {
@@ -221,10 +241,10 @@ class PustakawanController extends Controller
             TCPDF::SetPageOrientation('L');
             TCPDF::SetMargins(4, 3, 3, true);
 
-            $code = 'aisha';
+            // $code = 'aisha';
 
             TCPDF::AddPage();
-            TCPDF::write2DBarcode($code, 'QRCODE,Q', 230, 150, 44, 35, false, 'P');
+            // TCPDF::write2DBarcode($code, 'QRCODE,Q', 230, 150, 44, 35, false, 'P');
             TCPDF::writeHTML($html, true, false, true, false, '');
 
             return TCPDF::Output($filename, 'I');
@@ -233,6 +253,7 @@ class PustakawanController extends Controller
             throw $th;
         }
     }
+    
 }
 
 

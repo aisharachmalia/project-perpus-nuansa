@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\SiswaController;
+use App\Http\Controllers\UsePageController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -17,7 +18,8 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 //
-Route::get('/', [App\Http\Controllers\WebController::class, 'berandaPage'])->name('beranda');
+Route::get('/', [App\Http\Controllers\UsePageController::class, 'berandaPage'])->name('beranda');
+Route::get('/popular', [App\Http\Controllers\UsePageController::class, 'berandaPage'])->name('popular-books');
 Route::get('/tentang', [App\Http\Controllers\WebController::class, 'pageTentang'])->name('tentang');
 Route::get('/halaman-buku', [App\Http\Controllers\WebController::class, 'pageBuku'])->name('buku');
 Route::get('/panduan', [App\Http\Controllers\WebController::class, 'pagePanduan'])->name('panduan');
@@ -48,6 +50,9 @@ Route::post('/lupa-password', [App\Http\Controllers\Auth\ForgotPasswordControlle
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/total-data-dashboard',[App\Http\Controllers\HomeController::class, 'totalDataDashboard'])->name('total_data_dashboard');
+Route::get('/data-leaderboard',[App\Http\Controllers\HomeController::class, 'totalDataDashboard'])->name('data-leaderboard');
+Route::post('/update-chart', [App\Http\Controllers\HomeController::class, 'updateChart'])->name('update.chart');
 
 Route::prefix('data-master')->group(function () {
     // guru route

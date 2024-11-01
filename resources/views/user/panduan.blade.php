@@ -127,7 +127,7 @@
 <section id="peminjaman" class="guide-section">
     <div class="container">
         <h2>Panduan Peminjaman Buku</h2>
-        <p>Langkah-langkah untuk meminjam buku di perpustakaan:</p>
+        {{-- <p>Langkah-langkah untuk meminjam buku di perpustakaan:</p> --}}
         <ul>
             <li>Cari buku yang ingin Anda pinjam melalui katalog online atau langsung di perpustakaan.</li>
             <li>Bawa buku ke meja layanan untuk proses peminjaman. Kartu identitas siswa diperlukan.</li>
@@ -139,7 +139,7 @@
 <section id="pengembalian" class="guide-section">
     <div class="container">
         <h2>Panduan Pengembalian Buku</h2>
-        <p>Ikuti langkah berikut untuk mengembalikan buku yang telah dipinjam:</p>
+        {{-- <p>Ikuti langkah berikut untuk mengembalikan buku yang telah dipinjam:</p> --}}
         <ul>
             <li>Kembalikan buku tepat waktu untuk menghindari denda keterlambatan.</li>
             <li>Buku dapat dikembalikan di meja layanan atau kotak pengembalian (jika tersedia).</li>
