@@ -27,10 +27,37 @@ class UsePageController extends Controller
         ->orderByDesc('datadepan')
         ->take(6)
         ->get();
-
-        $buku = dm_buku::all();
-        return view('welcome', compact('datadepan','buku'));
+        return view('welcome', compact('datadepan'));
     }
     
+    public function showByCategory($kategori)
+{
+    if ($kategori === 'penulis_asing') {
+        // Filter penulis yang bukan dari Indonesia
+        $penulis = DmPenulis::where('dpenulis_kewarganegaraan', '!=', 'Indonesia')
+            ->withCount(['books as borrow_count' => function($query) {
+                $query->select(DB::raw("SUM(peminjaman_count)"));
+            }])
+            ->orderBy('borrow_count', 'desc')
+            ->take(10)
+            ->get();
+    } elseif ($kategori === 'penulis_lokal') {
+        // Filter penulis dari Indonesia
+        $penulis = DmPenulis::where('dpenulis_kewarganegaraan', 'Indonesia')
+            ->withCount(['books as borrow_count' => function($query) {
+                $query->select(DB::raw("SUM(peminjaman_count)"));
+            }])
+            ->orderBy('borrow_count', 'desc')
+            ->take(10)
+            ->get();
+    } elseif ($kategori === 'penulis_terbaru') {
+        // Filter penulis terbaru berdasarkan tanggal lahir atau data tambahan
+        $penulis = DmPenulis::orderBy('dpenulis_tgl_lahir', 'desc')
+            ->take(10)
+            ->get();
+    }
+
+    return response()->json($penulis);
+}
     
 }

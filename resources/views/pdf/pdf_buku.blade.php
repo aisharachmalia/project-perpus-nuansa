@@ -1,24 +1,25 @@
 <style>
     .book-entry {
-        display: flex;
-        align-items: center; 
+        width: 100%;
         margin-bottom: 20px;
-        padding: 20px;
-        border: 1px solid #ccc;
         page-break-after: always;
     }
 
-    .cover {
-        width: 300px;
-        height: auto;
-        object-fit: cover;
-        margin-right: 20px;
+    .book-table {
+        width: 100%;
+        border-collapse: collapse; 
     }
 
-    .deskripsi {
-        flex: 1; 
-        display: flex;
-        flex-direction: column;
+    .cover-cell {
+        width: 300px; 
+        vertical-align: top; 
+        padding-right: 10px; 
+    }
+
+    .cover {
+        width: 300 px;
+        height: auto;
+        object-fit: cover;
     }
 
     .deskripsi h2,
@@ -27,20 +28,28 @@
     }
 </style>
 
-<h1 style="text-align: center;margin-bottom: 20px">Rekap Buku</h1>
+<h1 style="text-align: center; margin-bottom: 20px">Rekap Buku</h1>
 
 @foreach ($buku as $item)
     <div class="book-entry">
-        <!-- Book Cover Image on the Left -->
-        <img src="{{ asset('storage/cover/' . $item->dbuku_cover) }}" alt="Book Cover" class="cover">
-        
-        <!-- Description Section on the Right -->
-        <div class="deskripsi">
-            <h2>{{ $item->dbuku_judul }}</h2>
-            <p><strong>ISBN:</strong> {{ $item->dbuku_isbn }}</p>
-            <p><strong>Nama Penulis:</strong> {{ $item->dpenulis_nama_penulis }}</p>
-            <p><strong>Nama Penerbit:</strong> {{ $item->dpenerbit_nama_penerbit }}</p>
-            <p><strong>Tahun Terbit:</strong> {{ $item->dbuku_thn_terbit }}</p>
-        </div>
+        <table class="book-table">
+            <tr>
+                <!-- Book Cover Image on the Left -->
+                <td class="cover-cell">
+                    <img src="{{ asset('storage/cover/' . $item->dbuku_cover) }}" alt="Book Cover" class="cover">
+                </td>
+                
+                <!-- Description Section on the Right -->
+                <td class="deskripsi">
+                    <h2>{{ $item->dbuku_judul }}</h2>
+                    <p><strong>ISBN:</strong> {{ $item->dbuku_isbn }}</p>
+                    <p><strong>Nama Penulis:</strong> {{ $item->dpenulis_nama_penulis }}</p>
+                    <p><strong>Nama Penerbit:</strong> {{ $item->dpenerbit_nama_penerbit }}</p>
+                    <p><strong>Tahun Terbit:</strong> {{ $item->dbuku_thn_terbit }}</p>
+                </td>
+            </tr>
+        </table>
     </div>
 @endforeach
+
+
