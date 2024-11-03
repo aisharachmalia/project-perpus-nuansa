@@ -23,6 +23,9 @@ Route::get('/', [App\Http\Controllers\UsePageController::class, 'berandaPage'])-
 Route::get('/popular', [App\Http\Controllers\UsePageController::class, 'berandaPage'])->name('popular-books');
 Route::get('/tentang', [App\Http\Controllers\WebController::class, 'pageTentang'])->name('tentang');
 Route::get('/halaman-buku', [App\Http\Controllers\WebController::class, 'pageBuku'])->name('buku');
+Route::get('/halaman-buku/{penerbit?}', [App\Http\Controllers\UsePageController::class, 'pageBukuByPenerbit'])->name('BukuByPenerbit');
+Route::get('/halaman-penulis/favorit', [App\Http\Controllers\UsePageController::class, 'PagePenulsFav'])->name('Page-Penulis-Fav');
+Route::get('/halaman-penulis/lokal', [App\Http\Controllers\UsePageController::class, 'PagePenulisLokal'])->name('Page-Penulis-Lokal');
 Route::get('/panduan', [App\Http\Controllers\WebController::class, 'pagePanduan'])->name('panduan');
 
 //Login
