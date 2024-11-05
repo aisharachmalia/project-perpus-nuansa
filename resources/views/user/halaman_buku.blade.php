@@ -9,12 +9,12 @@
 </section>
 
 <section class="search">
-    <div class="container4">
-        <form>
-            <input type="text" placeholder="Cari Buku" />
-            <button type="submit">Cari</button>
-        </form>
-    </div>
+  <div class="container4">
+      <form action="{{ route('buku.search') }}" method="GET">
+          <input type="text" name="query" placeholder="Cari Buku" />
+          <button type="submit">Cari</button>
+      </form>
+  </div>
 </section>
 <section class="author">
   <div class="container5">

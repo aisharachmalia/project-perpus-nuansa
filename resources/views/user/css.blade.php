@@ -15,16 +15,26 @@ body {
 body {
         font-family: 'Poppins', sans-serif;
     }
-header {
-position: fixed;
-width: 100%;
-top: 0;
-left: 0;
-z-index: 1000;
-background: rgba(0, 0, 0, 0.4);
-padding: 20px 0;
-transition: background 0.3s ease;
+    header {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 10px 0; /* Ubah padding jika perlu */
+    transition: background 0.3s ease;
+    height: 80px; /* Tetapkan tinggi tetap untuk header */
+    display: flex;
+    align-items: center; /* Menjaga konten tetap rata vertikal */
 }
+
+.logo img {
+    width: 150px; /* Sesuaikan ukuran logo */
+    height: auto; /* Agar menjaga proporsi gambar */
+    max-height: 100%; /* Membatasi tinggi logo sesuai header */
+}
+
 
 header.sticky {
 background: rgba(0, 0, 0, 0.7);
@@ -41,10 +51,6 @@ justify-content: space-between;
 
 .logo {
 flex: 1; 
-}
-.logo img {
-    width: 60px; /* Mengubah ukuran lebar logo */
-    height: 50px; /* Menjaga proporsi */
 }
 
 nav {

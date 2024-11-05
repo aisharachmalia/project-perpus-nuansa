@@ -17,14 +17,14 @@
         </div>
     </section>
 
-    <section class="search">
+    {{-- <section class="search">
         <div class="container4">
             <form>
                 <input type="text" placeholder="Cari Buku" />
                 <button type="submit">Cari</button>
             </form>
         </div>
-    </section>
+    </section> --}}
 
     <section class="author">
         <div class="container5">

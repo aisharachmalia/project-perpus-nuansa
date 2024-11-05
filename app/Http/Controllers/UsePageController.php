@@ -12,6 +12,7 @@ class UsePageController extends Controller
 {
     public function berandaPage()
     {
+   
         $datadepan = DB::table('trks_transaksi')
             ->select(
                 'dm_buku.id_dbuku',
@@ -119,4 +120,22 @@ class UsePageController extends Controller
 
         return view('user.halaman_penulis_lokal', compact('pnls', 'bukuByPenulis'));
     }
+    public function pageBuku(Request $request)
+    {
+        $query = $request->input('query');
+    
+        if ($query) {
+            // Search books with titles that match the query
+            $buku = DB::table('dm_buku')
+                ->where('dbuku_judul', 'like', '%' . $query . '%')
+                ->get();
+        } else {
+            // If no query, retrieve all books
+            $buku = dm_buku::all();
+        }
+    
+        return view('user.halaman_buku', compact('buku', 'query'));
+    }
+    
+
 }
