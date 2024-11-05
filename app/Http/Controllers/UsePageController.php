@@ -124,4 +124,37 @@ class UsePageController extends Controller
 
         return view('user.halaman_penulis_lokal', compact('pnls', 'bukuByPenulis'));
     }
+
+    public function PagePenulisAsing()
+    {
+        $pnls = DB::table('dm_penulis')
+            ->select(
+                'dm_penulis.id_dpenulis',
+                'dm_penulis.dpenulis_nama_penulis',
+            )
+            ->where('dm_penulis.deleted_at', null)
+            ->where('dm_penulis.dpenulis_kewarganegaraan',  '!=', 'Indonesia')
+            ->take(5)
+            ->get();
+
+        $bukuByPenulis = [];
+
+        // Loop through each author and get their respective books.
+        foreach ($pnls as $author) {
+            $bukuByPenulis[$author->id_dpenulis] = DB::table('dm_buku')
+                ->select(
+                    'dm_buku.id_dbuku',
+                    'dm_buku.dbuku_judul',
+                    'dm_buku.dbuku_cover',
+                    'dm_penulis.dpenulis_nama_penulis'
+                )
+                ->join('dm_penulis', 'dm_buku.id_dpenulis', '=', 'dm_penulis.id_dpenulis')
+                ->whereNull('dm_penulis.deleted_at')
+                ->where('dm_penulis.dpenulis_kewarganegaraan', '!=', 'Indonesia')
+                ->where('dm_buku.id_dpenulis', $author->id_dpenulis)
+                ->get();
+        }
+
+        return view('user.halaman_penulis_asing', compact('pnls', 'bukuByPenulis'));
+    }
 }
