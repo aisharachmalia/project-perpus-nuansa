@@ -95,13 +95,15 @@
             document.querySelectorAll('.library-nav ul li a').forEach(anchor => {
                 anchor.addEventListener('click', function(e) {
                     e.preventDefault();
-                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    const sectionId = this.getAttribute('href'); // href already includes the #
+                    document.querySelector(sectionId).scrollIntoView({
                         behavior: 'smooth'
                     });
                 });
             });
         </script>
     @endpush
+
 
     </style>
 
@@ -117,7 +119,7 @@
     <nav class="library-nav">
         <ul>
             @foreach ($pnls as $item)
-                <li><a href="#{{ $item->id_dpenulis }}">{{ $item->dpenulis_nama_penulis }}</a></li>
+                <li><a href="{{ $item->id_dpenulis }}">{{ $item->dpenulis_nama_penulis }}</a></li>
             @endforeach
         </ul>
     </nav>
@@ -127,7 +129,7 @@
             <h2 style="text-align: start;margin-bottom: 20px;font-size: 2em;color: #2c5030;margin-left: 20px">
                 {{ $item->dpenulis_nama_penulis }}</h2>
             <ul>
-                @foreach ($bukuByPenulis as $item)
+                @foreach ($bukuByPenulis[$item->id_dpenulis] as $item)
                     <div class="carousel-item">
                         <a href="{{ route('document.detail', ['id' => $item->id_dbuku]) }}">
                             <img class="carousel-item__img" src="{{ asset('storage/cover/' . $item->dbuku_cover) }}"
@@ -145,6 +147,5 @@
                 @endforeach
             </ul>
         </section>
-        
     @endforeach
 @endsection
