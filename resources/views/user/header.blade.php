@@ -1,7 +1,7 @@
 <header>
     <div class="container">
         <div class="logo">
-            <img src="{{ asset('assets/images/logo/nuansa.png')}}" alt="Logo">
+            <img src="{{ asset('assets/images/logo/nuansa_fix.png')}}" alt="Logo">
         </div>
         <nav>
             <ul>
@@ -28,6 +28,9 @@
                 {{-- <li><a href="#"><img src="cart.png" alt="Cart"></a></li> --}}
             </ul>
         </nav>
+        <div>
+          <a class="dropdown-item" href="{{ route('login-usr') }}"><i class="fa-sharp fa-solid fa-right-to-bracket" style="color: white"></i> </a>
+        </div>
     </div>
 </header>
 <script>

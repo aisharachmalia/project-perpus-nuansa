@@ -156,6 +156,7 @@
             <div class="col-12 col-lg-12">
                 <div class="row">
                     <div class="col-6 col-lg-3 col-md-6">
+                        <a href="{{ route('data_master.buku') }}">
                         <div class="card">
                             <div class="card-body px-3 py-4-5">
                                 <div class="row">
@@ -172,8 +173,10 @@
                                 </div>
                             </div>
                         </div>
+                        </a>
                     </div>
                     <div class="col-6 col-lg-3 col-md-6">
+                        <a href="{{route('transaksi')}}">
                         <div class="card">
                             <div class="card-body px-3 py-4-5">
                                 <div class="row">
@@ -189,8 +192,10 @@
                                 </div>
                             </div>
                         </div>
+                    </a>
                     </div>
                     <div class="col-6 col-lg-3 col-md-6">
+                        <a href="{{route('denda')}}">
                         <div class="card">
                             <div class="card-body px-3 py-4-5">
                                 <div class="row">
@@ -206,8 +211,10 @@
                                 </div>
                             </div>
                         </div>
+                    </a>
                     </div>
                     <div class="col-6 col-lg-3 col-md-6">
+                        <a href="{{route('pageLaporan')}}">
                         <div class="card">
                             <div class="card-body px-3 py-4-5">
                                 <div class="row">
@@ -223,6 +230,7 @@
                                 </div>
                             </div>
                         </div>
+                        </a>
                     </div>
                 </div>
 

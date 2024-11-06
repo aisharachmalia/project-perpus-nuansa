@@ -108,9 +108,8 @@
 
     <section class="hero">
         <div class="container2">
-            <h1 class="aesthetic-title">Perpustakaan SMK</h1>
-            <p>Selamat datang di halaman perpustakaan SMK! Temukan Dunia Pengetahuan</p>
-            <button class="button">Cari Tahu Lebih Banyak</button>
+            <h1 class="aesthetic-title">Nuansa Baca</h1>
+            <p>Selamat datang di Nuansa Baca! Temukan Dunia Pengetahuan</p>
         </div>
     </section>
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\dm_pustakawan;
+use App\Models\User;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Crypt;
 use Carbon\Carbon;
@@ -83,6 +84,13 @@ class PustakawanController extends Controller
                 'errors' => $validator->errors()
             ], 422);
         }
+        $password = str()->random(8);
+        $user = User::create([
+            'usr_nama' => $request->dpustakawan_nama,
+            'usr_username' => $request->dpustakawan_nama, 
+            'usr_email' => $request->dpustakawan_email,
+            'password' => bcrypt($password), 
+        ]);
 
         dm_pustakawan::create([
             'dpustakawan_nama' => $request->dpustakawan_nama,

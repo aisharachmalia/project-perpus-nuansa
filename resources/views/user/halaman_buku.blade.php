@@ -2,9 +2,8 @@
 @section('content')
 <section class="hero">
     <div class="container2">
-        <h1 class="aesthetic-title">Perpustakaan SMK</h1>
-        <p>Selamat datang di halaman perpustakaan SMK!</p>
-        <button class="button">Cari Tahu Lebih Banyak</button>
+        <h1 class="aesthetic-title">Nuansa Baca</h1>
+        <p>Selamat datang di Nuansa Baca!</p>
     </div>
 </section>
 

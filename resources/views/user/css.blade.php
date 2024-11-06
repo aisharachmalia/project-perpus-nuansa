@@ -21,7 +21,7 @@ body {
     top: 0;
     left: 0;
     z-index: 1000;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(79, 91, 81, 0.4);
     padding: 10px 0; /* Ubah padding jika perlu */
     transition: background 0.3s ease;
     height: 80px; /* Tetapkan tinggi tetap untuk header */
@@ -37,7 +37,7 @@ body {
 
 
 header.sticky {
-background: rgba(0, 0, 0, 0.7);
+background: rgba(104, 148, 111, 0.7);
 box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
