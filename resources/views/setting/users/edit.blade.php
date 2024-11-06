@@ -47,7 +47,6 @@
                 "_token": token
             },
             success: function(response) {
-
                 //show success message
                 Swal.fire({
                     type: 'success',
@@ -56,6 +55,7 @@
                     showConfirmButton: false,
                     timer: 3000
                 });
+                $('#tbl_list').DataTable().ajax.reload();
                 $('#edit').modal('hide');
                 $('.modal-backdrop').remove();
             },

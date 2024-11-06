@@ -68,6 +68,7 @@
                                     <th>Nama Peminjam</th>
                                     <th>Tanggal Reservasi & Tanggal Kadaluarsa</th>
                                     <th>Tanggal Pengambilan & Tanggal Pemberitahuan </th>
+                                    <th>Status Reservasi </th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
@@ -425,10 +426,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tutup</button>
-                    <button type="button" class="btn btn-custom btn-primary ml-1" id="simpan">
-                        <i class="bx bx-check d-block d-sm-none"></i>
-                        <span class="d-none d-sm-block">Simpan</span>
-                    </button>
+                    <button type="button" class="btn btn-custom btn-primary ml-1" id="simpan">Simpan</button>
                 </div>
             </div>
         </div>
@@ -538,13 +536,35 @@
                         data: null,
                         render: function(data, type, row) {
                             let pemberitahuan = row.trsv_tgl_pemberitahuan == null ?
-                                'Belum dikembalikan' :
+                                'Belum ada pemberitahuan' :
                                 new Date(row.trsv_tgl_pemberitahuan).toLocaleDateString('id-ID');
                             let pengambilan = row.trsv_tgl_pengambilan == null ?
-                                'Belum dikembalikan' :
+                                'Belum diambil' :
                                 new Date(row.trsv_tgl_pengambilan).toLocaleDateString('id-ID');
-                            return pemberitahuan + '  <br>' + pengambilan;
+                            return pengambilan + '<br>' + pemberitahuan;
                         }
+
+                    },
+                    {
+                        class: "text-center",
+                        data: null,
+                        render: function(data, type, row) {
+                            let status = '';
+                            if (row.trsv_status == -1) {
+                                status = 'Dibatalkan';
+                            }
+                            if (row.trsv_status == 0) {
+                                status = 'Kadaluarsa';
+                            }
+                            if (row.trsv_status == 1) {
+                                status = 'Aktif';
+                            }
+                            if (row.trsv_status == 2) {
+                                status = 'Selesai';
+                            }
+                            return status;
+                        }
+
                     },
                     {
                         data: 'aksi',
@@ -557,102 +577,70 @@
 
         // ajax buat pinjaman
         $('body').on('click', '.modalCreate', function() {
-            $('#buku-error').text('');
-            $('#siswa-error').text('');
-            $('#pustakawan-error').text('');
-            $('#tgl-pinjam-error').text('');
-            $('#tgl-jatuh-tempo-error').text('');
-
-            $('#tambahPeminjaman').find('#id_dbuku').val('');
-            $('#tambahPeminjaman').find('#id_dsiswa').val('');
-            $('#tambahPeminjaman').find('#id_dpustakawan').val('');
+            $('#tambahPeminjaman').find('span').text('');
+            $('#tambahPeminjaman').find('input, select').val('');
             $('#tambahPeminjaman').find('#trks_tgl_peminjaman').val(new Date()
                 .toISOString().slice(0, 10));
-            $('#tambahPeminjaman').find('#trks_tgl_jatuh_tempo').val('');
 
         });
 
         $('body').on('click', '.pengembalian', function() {
-            $('#pengembalian').find('#id_dpustakawan').val('');
-            $('#pengembalian').find('#trks_tgl_jatuh_tempo').val('');
-            $('#pengembalian').find('#trks_tgl_peminjaman').val('');
-            $('#pengembalian').find('#trks_tgl_pengembalian').val('');
-            $('#pengembalian').find('#trks_denda').val('');
-            $('#pengembalian').find('#trks_keterangan').val('');
-            $('#pengembalian').find('#id_trks').val('');
-
-
+            $('#pengembalian').find('span').text('');
+            $('#pengembalian').find('input, select').val("");
             $('#pengembalian').find('#id_dbuku').empty();
-            $('#pengembalian').find('#id_dsiswa').val("");
             $('#pengembalian').find('#id_dbuku').append(
                 '<option value="">Pilih Buku</option>');
         });
 
         $('#pengembalian').find('#id_dsiswa').on('change', function() {
-            var siswaId = $(this).val();
-            if (siswaId) {
-                $.ajax({
-                    url: `/transaksi/detail/${siswaId}`,
-                    type: 'GET',
-                    success: function(response) {
-                        $('#pengembalian').find('#trks_tgl_pengembalian').val(new Date()
-                            .toISOString().slice(0, 10));
-                        $('#pengembalian').find('#id_dbuku').empty();
+            var id_usr = $(this).val();
+            $.ajax({
+                url: `/transaksi/detail`,
+                type: 'GET',
+                data: {
+                    "_token": $('meta[name="csrf-token"]').attr('content'),
+                    "id_usr": id_usr
+                },
+                success: function(response) {
+                    $('#pengembalian').find('#trks_tgl_pengembalian').val(new Date()
+                        .toISOString().slice(0, 10));
+                    $('#pengembalian').find('#id_dbuku').empty();
+                    $('#pengembalian').find('#id_dbuku').append(
+                        '<option value="">Pilih Buku</option>');
+                    $.each(response, function(index, value) {
                         $('#pengembalian').find('#id_dbuku').append(
-                            '<option value="">Pilih Buku</option>');
-                        $.each(response, function(index, value) {
-                            $('#pengembalian').find('#id_dbuku').append(
-                                '<option value="' + value.id_trks + '">' +
-                                value.dbuku_judul + '</option>');
-                        });
-                    }
-                });
-            } else {
-                $('#pengembalian').find('#trks_tgl_peminjaman').val('');
-                $('#pengembalian').find('#trks_tgl_jatuh_tempo').val('');
-                $('#pengembalian').find('#trks_denda').val('')
-                $('#pengembalian').find('#trks_tgl_pengembalian').val('');
-                $('#pengembalian').find('#trks_keterangan').val('');
-                $('#pengembalian').find('#id_dbuku').empty();
-                $('#pengembalian').find('#id_dbuku').append('<option value="">Pilih Buku</option>');
-            }
+                            '<option value="' + value.id_trks + '">' +
+                            value.dbuku_judul + '</option>');
+                    });
+                }
+            });
         });
 
         $('#pengembalian').find('#id_dbuku').on('change', function() {
-            var trksId = $(this).val();
+            var id_trks = $(this).val();
             var tanggalKembali = $('#pengembalian').find('#trks_tgl_pengembalian').val();
-            if (trksId) {
-                $.ajax({
-                    url: `/transaksi/detailBuku/${trksId}/${tanggalKembali}`,
-                    type: 'GET',
-                    success: function(response) {
-                        $('#pengembalian').find('#trks_tgl_peminjaman').val(response['buku']
-                            .trks_tgl_peminjaman.split(' ')[0]);
-                        $('#pengembalian').find('#trks_tgl_jatuh_tempo').val(response['buku']
-                            .trks_tgl_jatuh_tempo.split(' ')[0]);
-                        $('#pengembalian').find('#trks_denda').val(response['denda']);
-                        $('#pengembalian').find('#id_trks').val(response['buku'].id_trks);
-                    }
-                });
-            } else {
-                $('#pengembalian').find('#trks_tgl_peminjaman').val('');
-                $('#pengembalian').find('#trks_tgl_jatuh_tempo').val('');
-                $('#pengembalian').find('#trks_denda').val('')
-            }
+            $.ajax({
+                url: `/transaksi/detailBuku`,
+                type: 'GET',
+                data: {
+                    "_token": $('meta[name="csrf-token"]').attr('content'),
+                    "id_trks": id_trks,
+                    "trks_tgl_pengembalian": tanggalKembali
+                },
+                success: function(response) {
+                    $('#pengembalian').find('#trks_tgl_peminjaman').val(response['buku']
+                        .trks_tgl_peminjaman.split(' ')[0]);
+                    $('#pengembalian').find('#trks_tgl_jatuh_tempo').val(response['buku']
+                        .trks_tgl_jatuh_tempo.split(' ')[0]);
+                    $('#pengembalian').find('#trks_denda').val(response['denda']);
+                    $('#pengembalian').find('#id_trks').val(id_trks);
+                }
+            });
         });
 
         $('#pengembalian').find('#simpan').on('click', function(e) {
             e.preventDefault();
-            let siswaId = $('#pengembalian').find('#id_dsiswa').val();
-            if (!siswaId) {
-                Swal.fire({
-                    icon: 'error',
-                    text: 'Siswa harus dipilih terlebih dahulu',
-                    editConfirmButton: false,
-                    timer: 3000
-                });
-                return;
-            }
+            let id_usr = $('#pengembalian').find('#id_dsiswa').val();
             let token = $('meta[name="csrf-token"]').attr('content');
             let denda = $('#pengembalian').find('#trks_denda').val();
             let id_trks = $('#pengembalian').find('#id_trks').val();
@@ -662,12 +650,13 @@
             let peminjaman = $('#pengembalian').find('#trks_tgl_peminjaman').val();
             let tanggal_pengembalian = $('#pengembalian').find('#trks_tgl_pengembalian').val();
             $.ajax({
-                url: `/pengembalian/${id_trks}`,
+                url: `/pengembalian`,
                 type: "POST",
                 cache: false,
                 data: {
                     "_token": token,
-                    "siswa": siswaId,
+                    "id_trks": id_trks,
+                    "id_usr": id_usr,
                     "denda": denda,
                     "buku": buku,
                     "jatuh_tempo": jatuh_tempo,
@@ -677,30 +666,12 @@
                 },
                 success: function(response) {
                     Swal.fire({
-                        type: 'success',
                         icon: 'success',
-                        title: `${response.message}`,
-                        editConfirmButton: false,
-                        timer: 3000
+                        title: 'Pengembalian Berhasil',
+                        html: `<p>${response.message}</p>`,
+                        confirmButtonText: 'Ok',
+                        timer: 3000,
                     });
-                    $('#pengembalian').find('#id_dpustakawan').text('Nama Pustakawan');
-                    $('#pengembalian').find('#trks_tgl_peminjaman').val('');
-                    $('#pengembalian').find('#trks_tgl_jatuh_tempo').val('');
-                    $('#pengembalian').find('#trks_denda').val('')
-                    $('#pengembalian').find('#trks_tgl_pengembalian').val('');
-                    $('#pengembalian').find('#trks_keterangan').val('');
-                    $('#pengembalian').find('#id_dbuku').empty();
-                    $('#pengembalian').find('#id_dbuku').append(
-                        '<option value="">Pilih Buku</option>');
-                    // // kosongin span err
-                    $('#pengembalian').find('#tgl-jatuh-tempo-error').text('');
-                    $('#pengembalian').find('#denda-error').text('');
-                    $('#pengembalian').find('#tgl-pengembalian-error').text('');
-                    $('#pengembalian').find('#keterangan-error').text('');
-                    $('#pengembalian').find('#tgl-pinjam-error').text('');
-                    $('#pengembalian').find('#buku-error').text('');
-                    $('#pengembalian').find('#siswa-error').text('');
-
                     $('#pengembalian').modal('toggle');
                     setTimeout(() => {
                         location.reload();
@@ -711,8 +682,8 @@
                         var error = $.parseJSON(xhr.responseText);
                         var errors = error.errors;
                         // Tampilkan pesan error dari validasi
-                        if (errors.siswa) {
-                            $('#pengembalian').find('#siswa-error').text(errors.siswa[0]);
+                        if (errors.id_usr) {
+                            $('#pengembalian').find('#siswa-error').text(errors.id_usr[0]);
                         } else {
                             $('#pengembalian').find('#siswa-error').text('');
                         }
@@ -768,32 +739,42 @@
 
         $('#storePinjaman').off('click').on('click', function(e) {
             e.preventDefault();
-
-            var form = $("#pinjamanForm")[0];
-            var data = new FormData(form);
+            // Mendapatkan nilai dari input
+            let token = $('meta[name="csrf-token"]').attr('content');
+            let id_dbuku = $('#pinjamanForm').find('#id_dbuku').val();
+            let id_usr = $('#pinjamanForm').find('#id_dsiswa').val();
+            let id_dpustakawan = $('#pinjamanForm').find('#id_dpustakawan').val();
+            let trks_tgl_peminjaman = $('#pinjamanForm').find('#trks_tgl_peminjaman').val();
+            let trks_tgl_jatuh_tempo = $('#pinjamanForm').find('#trks_tgl_jatuh_tempo').val();
 
             $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
                 url: '/peminjaman/add',
                 type: "POST",
-                data: data,
                 cache: false,
-                contentType: false,
-                processData: false,
+                data: {
+                    "_token": token,
+                    "id_dbuku": id_dbuku,
+                    "id_usr": id_usr,
+                    "id_dpustakawan": id_dpustakawan,
+                    "trks_tgl_peminjaman": trks_tgl_peminjaman,
+                    "trks_tgl_jatuh_tempo": trks_tgl_jatuh_tempo
+                },
                 success: function(response) {
                     if (response.status === 'error') {
                         Swal.fire({
                             icon: 'error',
-                            title: `${response.message}`,
-                            timer: 3000
+                            title: 'Terjadi Kesalahan',
+                            html: `<p>${response.message}</p>`,
+                            confirmButtonText: 'Ok',
+                            timer: 3000,
                         });
                     } else {
                         Swal.fire({
                             icon: 'success',
-                            title: `${response.message}`,
-                            timer: 3000
+                            title: 'Peminjaman Berhasil',
+                            html: `<p>${response.message}</p>`,
+                            confirmButtonText: 'Ok',
+                            timer: 3000,
                         });
                         $('#tambahPeminjaman').modal('toggle');
                         setTimeout(() => {
@@ -811,8 +792,8 @@
                             $('#tambahPeminjaman').find('#buku-error').text('');
                         }
 
-                        if (errors.id_dsiswa) {
-                            $('#tambahPeminjaman').find('#siswa-error').text(errors.id_dsiswa[0]);
+                        if (errors.id_usr) {
+                            $('#tambahPeminjaman').find('#siswa-error').text(errors.id_usr[0]);
                         } else {
                             $('#tambahPeminjaman').find('#siswa-error').text('');
                         }
@@ -844,21 +825,10 @@
 
         // clear edit
         $('body').on('click', '.editPeminjaman', function() {
-            $('#editPeminjaman').find('#buku-error').text('');
-            $('#editPeminjaman').find('#siswa-error').text('');
-            $('#editPeminjaman').find('#pustakawan-error').text('');
-            $('#editPeminjaman').find('#tgl-pinjam-error').text('');
-            $('#editPeminjaman').find('#tgl-jatuh-error').text('');
+            $('#editPeminjaman').find('span').text('');
         });
         $('body').on('click', '.editPengembalian', function() {
-            $('#editPengembalian').find('#buku-error').text('');
-            $('#editPengembalian').find('#siswa-error').text('');
-            $('#editPengembalian').find('#pustakawan-error').text('');
-            $('#editPengembalian').find('#tgl-pinjam-error').text('');
-            $('#editPengembalian').find('#tgl-jatuh-error').text('');
-            $('#editPengembalian').find('#tgl-pengembalian-error').text('');
-            $('#editPengembalian').find('#denda-error').text('');
-            $('#editPengembalian').find('#keterangan-error').text('');
+            $('#editPengembalian').find('span').text('');
         });
 
         // AJAX Edit peminjaman
@@ -895,7 +865,7 @@
             let id_trks = activeModal.find('#id_trks').val();
             let id_dbuku = activeModal.find('#id_dbuku').val();
             let id_dpustakawan = activeModal.find('#id_dpustakawan').val();
-            let id_dsiswa = activeModal.find('#id_dsiswa').val();
+            let id_usr = activeModal.find('#id_dsiswa').val();
             let trks_tgl_peminjaman = activeModal.find('#trks_tgl_peminjaman').val();
             let trks_tgl_jatuh_tempo = activeModal.find('#trks_tgl_jatuh_tempo').val();
             let trks_tgl_pengembalian = activeModal.find('#trks_tgl_pengembalian').val();
@@ -904,14 +874,7 @@
 
 
             // Clear error messages
-            activeModal.find('#buku-error').text('');
-            activeModal.find('#siswa-error').text('');
-            activeModal.find('#pustakawan-error').text('');
-            activeModal.find('#tgl-pinjam-error').text('');
-            activeModal.find('#tgl-jatuh-error').text('');
-            activeModal.find('#tgl-pengembalian-error').text('');
-            activeModal.find('#denda-error').text('');
-            activeModal.find('#keterangan-error').text('');
+            activeModal.find('span').text('');
 
             // Ajax
             $.ajax({
@@ -920,7 +883,7 @@
                 cache: false,
                 data: {
                     "id_dbuku": id_dbuku,
-                    "id_dsiswa": id_dsiswa,
+                    "id_usr": id_usr,
                     "id_dpustakawan": id_dpustakawan,
                     "trks_tgl_peminjaman": trks_tgl_peminjaman,
                     "trks_tgl_jatuh_tempo": trks_tgl_jatuh_tempo,
@@ -932,11 +895,11 @@
                 },
                 success: function(response) {
                     Swal.fire({
-                        type: 'success',
                         icon: 'success',
-                        title: `${response.message}`,
-                        editConfirmButton: false,
-                        timer: 3000
+                        title: 'Transaksi Berhasil Dirubah',
+                        html: `<p>${response.message}</p>`,
+                        confirmButtonText: 'Ok',
+                        timer: 3000,
                     });
                     activeModal.modal('toggle');
                     $('#tbl_transaksi').DataTable().ajax.reload();
@@ -947,31 +910,41 @@
                         // Show error messages for each field
                         if (errors.id_dbuku) {
                             activeModal.find('#buku-error').text(errors.id_dbuku[0]);
+                        } else {
+                            activeModal.find('#buku-error').text("");
                         }
-                        if (errors.id_dsiswa) {
-                            activeModal.find('#siswa-error').text(errors.id_dsiswa[0]);
+                        if (errors.id_usr) {
+                            activeModal.find('#siswa-error').text(errors.id_usr[0]);
+                        } else {
+                            activeModal.find('#siswa-error').text("");
                         }
                         if (errors.trks_tgl_peminjaman) {
-                            activeModal.find('#tgl-pinjam-error').text(errors
-                                .trks_tgl_peminjaman[0]);
+                            activeModal.find('#tgl-pinjam-error').text(errors.trks_tgl_peminjaman[0]);
+                        } else {
+                            activeModal.find('#tgl-pinjam-error').text("");
                         }
                         if (errors.trks_tgl_jatuh_tempo) {
-                            activeModal.find('#tgl-jatuh-error').text(errors
-                                .trks_tgl_jatuh_tempo[0]);
+                            activeModal.find('#tgl-jatuh-error').text(errors.trks_tgl_jatuh_tempo[0]);
+                        } else {
+                            activeModal.find('#tgl-jatuh-error').text("");
                         }
                         if (errors.trks_tgl_pengembalian) {
                             activeModal.find('#tgl-pengembalian-error').text(errors
                                 .trks_tgl_pengembalian[0]);
+                        } else {
+                            activeModal.find('#tgl-pengembalian-error').text("");
                         }
                         if (errors.trks_denda) {
                             activeModal.find('#denda-error').text(errors.trks_denda[0]);
+                        } else {
+                            activeModal.find('#denda-error').text("");
                         }
                         if (errors.trks_keterangan) {
-                            activeModal.find('#keterangan-error').text(errors.trks_keterangan[
-                                0]);
+                            activeModal.find('#keterangan-error').text(errors.trks_keterangan[0]);
+                        } else {
+                            activeModal.find('#keterangan-error').text("");
                         }
-                    } else {
-                        console.log("Unexpected error:", xhr);
+
                     }
                 }
             });
@@ -1009,19 +982,19 @@
             e.preventDefault();
             // Ambil nilai dari form
             let id_dbuku = $('#reservasi').find('#id_dbuku').val();
-            let id_dsiswa = $('#reservasi').find('#id_dsiswa').val();
+            let id_usr = $('#reservasi').find('#id_dsiswa').val();
             let trks_tgl_reservasi = $('#reservasi').find('#trks_tgl_reservasi').val();
             let trsv_tgl_kadaluarsa = $('#reservasi').find('#trsv_tgl_kadaluarsa').val();
             let token = $("meta[name='csrf-token']").attr("content");
 
             // Proses AJAX
             $.ajax({
-                url: `reservasi/store`, // URL untuk store data
+                url: `reservasi/store`,
                 type: "POST",
                 cache: false,
                 data: {
                     "id_dbuku": id_dbuku,
-                    "id_dsiswa": id_dsiswa,
+                    "id_usr": id_usr,
                     "trks_tgl_reservasi": trks_tgl_reservasi,
                     "trsv_tgl_kadaluarsa": trsv_tgl_kadaluarsa,
                     "_token": token
@@ -1035,23 +1008,23 @@
                             confirmButtonText: 'Ok',
                             timer: 3000,
                         });
+                        // Tutup modal dan reload DataTable
+                        $('#reservasi').modal('toggle');
+                        $('#tbl_reservasi').DataTable().ajax.reload();
+
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
                     } else {
                         Swal.fire({
-                            icon: 'error',
-                            title: 'Terjadi Kesalahan',
+                            icon: 'warning',
+                            title: 'Tidak Ada Buku Tersedia',
                             html: `<p>${response.message}</p>`,
                             confirmButtonText: 'Tutup',
                             timer: 3000,
                         });
+                        $('#reservasi').modal('toggle');
                     }
-
-
-                    // Tutup modal dan reload DataTable
-                    $('#reservasi').modal('toggle');
-                    $('#tbl_reservasi').DataTable().ajax.reload();
-
-                    // Kosongkan form setelah berhasil disimpan
-                    $('#reservasi').find('input, select').val('');
                 },
                 error: function(xhr) {
                     if (xhr.status === 422) {
@@ -1064,8 +1037,8 @@
                             $('#reservasi').find('#buku-error').text('');
                         }
 
-                        if (errors.id_dsiswa) {
-                            $('#reservasi').find('#siswa-error').text(errors.id_dsiswa[0]);
+                        if (errors.id_usr) {
+                            $('#reservasi').find('#siswa-error').text(errors.id_usr[0]);
                         } else {
                             $('#reservasi').find('#siswa-error').text('');
                         }
@@ -1104,9 +1077,9 @@
 
         // reservasi ajax
         $('#pengambilan').find('#id_dsiswa').on('change', function() {
-            let id_dsiswa = $(this).val();
+            let id_usr = $(this).val();
             let token = $("meta[name='csrf-token']").attr("content");
-            if (id_dsiswa == '') {
+            if (id_usr == '') {
                 $('#pengambilan').find('#trsv_tgl_reservasi').val('');
                 $('#pengambilan').find('#trsv_tgl_kadaluarsa').val('');
 
@@ -1116,7 +1089,7 @@
                     type: "GET",
                     cache: false,
                     data: {
-                        "id_peminjam": id_dsiswa,
+                        "id_peminjam": id_usr,
                         'type': 'peminjam',
                         "_token": token
                     },
@@ -1165,7 +1138,7 @@
 
             // Ambil nilai dari form
             let id_trsv = $('#pengambilan').find('#id_dbuku').val();
-            let id_dsiswa = $('#pengambilan').find('#id_dsiswa').val();
+            let id_usr = $('#pengambilan').find('#id_dsiswa').val();
             let trks_tgl_reservasi = $('#pengambilan').find('#trsv_tgl_reservasi').val();
             let trsv_tgl_kadaluarsa = $('#pengambilan').find('#trsv_tgl_kadaluarsa').val();
             let trsv_tgl_pengambilan = $('#pengambilan').find('#trsv_tgl_pengambilan').val();
@@ -1180,7 +1153,7 @@
                     "id_dbuku": $('#pengambilan').find('#id_buku').val(),
                     "id_trsv": id_trsv,
                     "id_dpustakawan": $('#pengambilan').find('#id_dpustakawan').val(),
-                    "id_peminjam": id_dsiswa,
+                    "id_peminjam": id_usr,
                     "trks_tgl_reservasi": trks_tgl_reservasi,
                     "trks_tgl_jth_tempo": trks_tgl_jth_tempo,
                     "trsv_tgl_kadaluarsa": trsv_tgl_kadaluarsa,
@@ -1188,16 +1161,33 @@
                     "_token": token
                 },
                 success: function(response) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: `${response.message}`,
-                        showConfirmButton: false,
-                        timer: 3000
-                    });
+                    if (response.status == 'error') {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Buku Belum Tersedia untuk Pengambilan',
+                            html: `<p>${response.message}</p>`,
+                            confirmButtonText: 'Ok',
+                            timer: 3000,
+                        });
+                        $('#pengambilan').modal('toggle');
+                    } else {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Pengambilan Buku Berhasil',
+                            html: `<p>${response.message}</p>`,
+                            confirmButtonText: 'Ok',
+                            timer: 3000,
+                        });
+                        $('#pengambilan').modal('toggle');
+                        $('#tbl_reservasi').DataTable().ajax.reload();
+                        $('#tbl_transaksi').DataTable().ajax.reload();
+                    }
+
 
                     // Tutup modal dan reload DataTable
                     $('#pengambilan').modal('toggle');
                     $('#tbl_reservasi').DataTable().ajax.reload();
+                    $('#tbl_transaksi').DataTable().ajax.reload();
 
                 },
                 error: function(xhr) {
@@ -1260,6 +1250,42 @@
                     }
                 }
             });
+        });
+        $('body').on('click', '#btn-batal', function() {
+
+            let id_trsv = $(this).data('id');
+            let token = $("meta[name='csrf-token']").attr("content");
+
+            Swal.fire({
+                title: 'Apakah Kamu Yakin?',
+                text: "ingin membatalkan reservasi ini!",
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonText: 'TIDAK',
+                confirmButtonText: 'YA, BATALKAN!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `/reservasi/batal`,
+                        type: "POST",
+                        cache: false,
+                        data: {
+                            "id_trsv": id_trsv,
+                            "_token": token
+                        },
+                        success: function(response) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Reservasi Telah Dibatalkan',
+                                html: `<p>${response.message}</p>`,
+                                confirmButtonText: 'Ok',
+                                timer: 3000,
+                            });
+                            $('#tbl_reservasi').DataTable().ajax.reload();
+                        }
+                    });
+                }
+            })
         });
     </script>
 @endpush

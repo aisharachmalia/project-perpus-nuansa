@@ -60,6 +60,7 @@ class LoginController extends Controller
                     if (Auth::check()) {
                         $menus =  Menu::join('akses_usrs', 'menus.id_menu', '=', 'akses_usrs.id_menu')
                             ->where('akses_usrs.id_usr', Auth::user()->id_usr)
+                            ->where('akses_usrs.hak_akses', '>=', 1)
                             ->select('menus.*')
                             ->groupBy('menus.id_menu')
                             ->get();
