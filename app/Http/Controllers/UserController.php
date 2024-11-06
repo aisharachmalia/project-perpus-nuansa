@@ -31,21 +31,22 @@ class UserController extends Controller
         }
 
         $siswa = User::join('dm_siswas', 'users.id_usr', '=', 'dm_siswas.id_usr')
-        ->select(
-            'dm_siswas.dsiswa_nama as usr_nama', 
-            'dm_siswas.dsiswa_nama as usr_username', 
-            'dm_siswas.dsiswa_email as usr_email'
+            ->select(
+                'dm_siswas.dsiswa_nama as usr_nama',
+                'dm_siswas.dsiswa_nama as usr_username',
+                'dm_siswas.dsiswa_email as usr_email'
 
-        )
-        ->get();
+            )
+            ->get();
 
-    return view('setting.users.index', compact('siswa'));
+        return view('setting.users.index', compact('siswa'));
     }
 
     public function detail($id = null)
     {
         $id_usr = Crypt::decryptString($id);
-        $data['user'] = User::find($id_usr);
+        $data['user'] = User::where('id_usr', $id_usr)->select('usr_nama', 'usr_username', 'usr_email', 'email_verified', 'usr_stat')->first();
+        $data['user']->email_verified = $data['user']->email_verified == null ? 'Belum Terverifikasi' : \Carbon\Carbon::parse($data['user']->email_verified)->format('d-m-Y');
         return response($data);
     }
     public function delete($id = null)
@@ -83,6 +84,13 @@ class UserController extends Controller
         $user->usr_nama = $request->nama;
         $user->usr_username = $request->username;
         $user->usr_email = $request->email;
+        if ($request->status == 1) {
+            $user->email_verified = now();
+            $user->usr_stat = 1;
+        } else {
+            $user->email_verified = null;
+            $user->usr_stat = 0;
+        }
         $user->save();
         return response()->json([
             'success' => true,

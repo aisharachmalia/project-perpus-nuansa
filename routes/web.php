@@ -209,14 +209,14 @@ route::get('/reservasi/table,', [\App\Http\Controllers\ReservasiController::clas
 // route transaksi
 Route::get('/transaksi', [TransaksiController::class, 'index'])->name('transaksi');
 Route::post('/peminjaman/add', [TransaksiController::class, 'createPeminjaman'])->name('pinjam.store');
-Route::post('/pengembalian/{id?}', [TransaksiController::class, 'pengembalian']);
-Route::get('/transaksi/detail/{id}', [TransaksiController::class, 'detail']);
-Route::get('/transaksi/detailBuku/{id}/{id2?}', [TransaksiController::class, 'detailBuku']);
-Route::delete('/transaksi/delete/{id}', [TransaksiController::class, 'delete'])->name('transaksi.delete');
-
 // edit peminjaman transaksi
 Route::get('/transaksi/detail/update/{id}', [TransaksiController::class, 'showEditTransaksi']);
 Route::put('/transaksi/update/{id}', [TransaksiController::class, 'editTransaksi'])->name('transaksi.update');
+Route::post('/pengembalian', [TransaksiController::class, 'pengembalian']);
+Route::get('/transaksi/detail', [TransaksiController::class, 'detail']);
+Route::get('/transaksi/detailBuku', [TransaksiController::class, 'detailBuku']);
+Route::delete('/transaksi/delete/{id}', [TransaksiController::class, 'delete'])->name('transaksi.delete');
+
 
 
 
@@ -229,3 +229,4 @@ Route::post('/profile', [App\Http\Controllers\ProfileController::class, 'updateP
 Route::post('/reservasi/store', [ReservasiController::class, 'createReservasi'])->name('reservasi.store');
 Route::post('/pengambilan/store', [ReservasiController::class, 'createPengambilan'])->name('pengambilan.store');
 Route::get('/reservasi/detail', [ReservasiController::class, 'detailReservasi'])->name('reservasi.detail');
+Route::post('/reservasi/batal', [ReservasiController::class, 'batalReservasi'])->name('reservasi.batal');

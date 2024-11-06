@@ -29,6 +29,26 @@
                                     $i = 1;
                                 @endphp
                                 @foreach ($usr as $item)
+                                    @php
+                                        // cek role
+                                        $role = App\Models\User::join('akses_usrs', 'akses_usrs.id_usr', 'users.id_usr')
+                                            ->where('users.id_usr', $item->id_usr)
+                                            ->where('akses_usrs.id_role', '<=', 2)
+                                            ->first();
+                                        $roleAusr = App\Models\User::leftJoin(
+                                            'akses_usrs',
+                                            'akses_usrs.id_usr',
+                                            'users.id_usr',
+                                        )
+                                            ->where('users.id_usr', $item->id_usr)
+                                            ->where(function ($query) {
+                                                $query
+                                                    ->whereIn('akses_usrs.id_role', [1, 2])
+                                                    ->orWhereNull('akses_usrs.id_usr');
+                                            })
+                                            ->first();
+
+                                    @endphp
                                     <tr>
                                         <td>{{ $i++ }}</td>
                                         <td>{{ $item->usr_nama }}</td>
@@ -42,14 +62,17 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <a href="javascript:void(0)" class="btn btn-success btn-sm modalAkses"
-                                                data-bs-toggle="modal" data-bs-target="#akses"
-                                                data-id="{{ \Illuminate\Support\Facades\Crypt::encryptString($item->id_usr) }}">Akses</a>
-                                            |
-                                            <a href="javascript:void(0)" class="btn btn-danger btn-sm defaultPassword"
-                                                data-bs-toggle="modal" data-bs-target="#reset"
-                                                data-id="{{ \Illuminate\Support\Facades\Crypt::encryptString($item->id_usr) }}">Reset
-                                                Password</a>
+                                            @if (!$roleAusr)
+                                                <a href="javascript:void(0)" class="btn btn-success btn-sm modalAkses"
+                                                    data-bs-toggle="modal" data-bs-target="#akses"
+                                                    data-id="{{ \Illuminate\Support\Facades\Crypt::encryptString($item->id_usr) }}">Akses</a>&nbsp;
+                                            @endif
+                                            @if (!$role)
+                                                <a href="javascript:void(0)" class="btn btn-danger btn-sm defaultPassword"
+                                                    data-bs-toggle="modal" data-bs-target="#reset"
+                                                    data-id="{{ \Illuminate\Support\Facades\Crypt::encryptString($item->id_usr) }}">Reset
+                                                    Password</a>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach
@@ -187,6 +210,9 @@
                 url: `akses-user-show/${id_usr}`,
                 type: "GET",
                 cache: false,
+                data: {
+                    "type": "default"
+                },
                 success: function(response) {
                     //fill data to show modal
                     $('#reset').find('#usr_nama').html(response['user'][0].usr_nama);
@@ -208,7 +234,6 @@
 
             //ajax
             $.ajax({
-
                 url: `default-password/${id_usr}`,
                 type: "PUT",
                 cache: false,
@@ -217,7 +242,6 @@
                     "_token": token
                 },
                 success: function(response) {
-
                     //show success message
                     Swal.fire({
                         type: 'success',

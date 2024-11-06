@@ -116,7 +116,7 @@
     <nav class="library-nav">
         <ul>
             @foreach ($datadepan as $item)
-                <li><a href="#{{ $item->id_dpenulis }}">{{ $item->dpenulis_nama_penulis }}</a></li>
+                <li><a href="{{ $item->id_dpenulis }}">{{ $item->dpenulis_nama_penulis }}</a></li>
             @endforeach
         </ul>
     </nav>
