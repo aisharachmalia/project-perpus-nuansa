@@ -67,19 +67,11 @@ class MenuSeeder extends Seeder
             'menu_stat' => 1
         ]);
         menu::create([
-            'menu_nama' => 'Guru',
-            'menu_parent' => 5,
-            'menu_url' => 'data_master.guru',
-            'menu_icon' => null,
-            'menu_urut' => 2,
-            'menu_stat' => 1
-        ]);
-        menu::create([
             'menu_nama' => 'Pustakawan',
             'menu_parent' => 5,
             'menu_url' => 'data_master.pustakawan',
             'menu_icon' => null,
-            'menu_urut' => 3,
+            'menu_urut' => 2,
             'menu_stat' => 1
         ]);
         menu::create([
@@ -87,7 +79,7 @@ class MenuSeeder extends Seeder
             'menu_parent' => 5,
             'menu_url' => 'data_master.buku',
             'menu_icon' => null,
-            'menu_urut' => 4,
+            'menu_urut' => 3,
             'menu_stat' => 1
         ]);
         menu::create([
@@ -95,7 +87,7 @@ class MenuSeeder extends Seeder
             'menu_parent' => 5,
             'menu_url' => 'data_master.referensi',
             'menu_icon' => null,
-            'menu_urut' => 5,
+            'menu_urut' => 4,
             'menu_stat' => 1
         ]);
 
@@ -110,7 +102,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'menu_nama' => 'User',
-            'menu_parent' => 11,
+            'menu_parent' => 10,
             'menu_url' => 'setting.users',
             'menu_icon' => null,
             'menu_urut' => 1,
@@ -119,7 +111,7 @@ class MenuSeeder extends Seeder
 
         menu::create([
             'menu_nama' => 'Akses User',
-            'menu_parent' => 11,
+            'menu_parent' => 10,
             'menu_url' => 'setting.akses-users',
             'menu_icon' => null,
             'menu_urut' => 2,

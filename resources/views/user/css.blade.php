@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <style>
 body {
     font-family: 'Montserrat', sans-serif;
@@ -16,19 +16,29 @@ body {
 body {
         font-family: 'Poppins', sans-serif;
     }
-header {
-position: fixed;
-width: 100%;
-top: 0;
-left: 0;
-z-index: 1000;
-background: rgba(0, 0, 0, 0.4);
-padding: 20px 0;
-transition: background 0.3s ease;
+    header {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    background: rgba(79, 91, 81, 0.4);
+    padding: 10px 0; /* Ubah padding jika perlu */
+    transition: background 0.3s ease;
+    height: 80px; /* Tetapkan tinggi tetap untuk header */
+    display: flex;
+    align-items: center; /* Menjaga konten tetap rata vertikal */
 }
 
+.logo img {
+    width: 150px; /* Sesuaikan ukuran logo */
+    height: auto; /* Agar menjaga proporsi gambar */
+    max-height: 100%; /* Membatasi tinggi logo sesuai header */
+}
+
+
 header.sticky {
-background: rgba(0, 0, 0, 0.7);
+background: rgba(104, 148, 111, 0.7);
 box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
@@ -39,13 +49,16 @@ display: flex;
 align-items: center;
 justify-content: space-between;
 }
+.containers {
+max-width: 1300px;
+margin-left: 95px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+}
 
 .logo {
 flex: 1; 
-}
-.logo img {
-    width: 60px; /* Mengubah ukuran lebar logo */
-    height: 50px; /* Menjaga proporsi */
 }
 
 nav {
@@ -251,15 +264,7 @@ section.author {
     background-color: #ffffff;
 }
 
-.row {
-    display: flex; /* Menggunakan flexbox */
-    justify-content: space-between; /* Menjaga jarak di antara kolom */
-}
 
-.col-4 {
-    flex: 1; /* Memastikan kolom berbagi lebar yang sama */
-    margin: 10px; /* Menambahkan margin untuk jarak antar kolom */
-}
 /* Style untuk Book Features Section */
 /* section.book-features {
     background-color: #fff;
@@ -332,6 +337,7 @@ footer {
     position: relative;
     bottom: 0;
     width: 100%;
+     flex-shrink: none;
 }
 section.search {
     background-color: #f4f4f4;

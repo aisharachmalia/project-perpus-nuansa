@@ -42,11 +42,7 @@ class WebController extends Controller
     {
         return view('user.tentang');
     }
-    public function pageBuku()
-    {
-        $buku = dm_buku::all();
-        return view('user.halaman_buku',compact('buku'));
-    }
+    
     public function pagePanduan()
     {
         return view('user.panduan');

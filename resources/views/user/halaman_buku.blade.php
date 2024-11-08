@@ -2,23 +2,25 @@
 @section('content')
 <section class="hero">
     <div class="container2">
-        <h1 class="aesthetic-title">Perpustakaan SMK</h1>
-        <p>Selamat datang di halaman perpustakaan SMK!</p>
-        <button class="button">Cari Tahu Lebih Banyak</button>
+        <h1 class="aesthetic-title">Nuansa Baca</h1>
+        <p>Selamat datang di Nuansa Baca!</p>
     </div>
 </section>
 
 <section class="search">
-    <div class="container4">
-        <form>
-            <input type="text" placeholder="Cari Buku" />
-            <button type="submit">Cari</button>
-        </form>
-    </div>
+  <div class="container4">
+      <form action="{{ route('buku.search') }}" method="GET">
+          <input type="text" name="query" placeholder="Cari Buku" />
+          <button type="submit">Cari</button>
+      </form>
+  </div>
 </section>
 <section class="author">
   <div class="container5">
-      {{-- <h1 class="penulis">Penulis</h1> --}}
+      
+    @if(!empty($query))
+    <h3>Hasil pencarian untuk: <strong>{{ $query }}</strong></h3>
+  @endif
       <div class="row">
         @foreach($buku as $item) <!-- Pastikan $items di-passing ke view -->
           <div class="col-2">
