@@ -17,7 +17,7 @@ class PustakawanController extends Controller
     public function pagePustakawan(Request $request)
     {
         if (request()->ajax()) {
-            $pustakawan=\DB::table('dm_pustakawan')->where("deleted_at",null);
+            $pustakawan = \DB::table('dm_pustakawan')->where("deleted_at", null);
             return Datatables::of($pustakawan)
                 ->addIndexColumn()
                 ->addColumn('aksi', function ($row) {
@@ -49,7 +49,24 @@ class PustakawanController extends Controller
             ->where('dm_pustakawan.id_dpustakawan', $id_dpustakawan)
             ->first();
 
-       return response()->json($ps);
+        $Status = [
+            '1' => 'Aktif',   // Label untuk status 1
+            '0' => 'Tidak Aktif',   // Label untuk status 0
+        ];
+
+        $selectedStatus = $ps->dpustakawan_status ?? '';  // Ambil status yang dipilih sebelumnya
+
+        $radioButtons = '';
+        foreach ($Status as $kds => $label) {
+            $checked = ($kds == $selectedStatus) ? 'checked' : ''; // Jika status sebelumnya cocok, tambahkan atribut checked
+            $radioButtons .= '<label><input type="radio" name="dpustakawan_status" value="' . $kds . '" ' . $checked . '> ' . $label . '</label><br>';
+        }
+
+        // dd($radioButtons);
+
+        return response()->json([
+            'ps' => $ps,
+        ]);
     }
     public function addPustakawan(Request $request)
     {
@@ -96,7 +113,7 @@ class PustakawanController extends Controller
             'message' => 'Data Berhasil Disimpan!'
         ], 200);
     }
-    
+
     public function editPustakawan($id = null, Request $request)
     {
         try {
@@ -109,7 +126,7 @@ class PustakawanController extends Controller
                 'dpustakawan_no_telp' => 'required|unique:dm_pustakawan,dpustakawan_no_telp,' . $pustakawan->id_dpustakawan . ',id_dpustakawan|numeric|regex:/^([0-9\s\-\+\(\)]*)$/|digits_between:11,13',
                 'dpustakawan_alamat' => 'required',
             ];
-            
+
             $messages = [
                 'dpustakawan_email.email' => 'Format email tidak sesuai',
                 'dpustakawan_nama.required' => 'Nama harus diisi!',
@@ -121,8 +138,8 @@ class PustakawanController extends Controller
                 'dpustakawan_no_telp.regex' => 'No. Telepon harus angka!',
                 'dpustakawan_no_telp.digits_between' => 'No. Telepon harus di antara 11 hingga 13 angka!',
             ];
-            
-            
+
+
 
             // Lakukan validasi
             $validator = \Validator::make($request->all(), $rules, $messages);
@@ -162,29 +179,29 @@ class PustakawanController extends Controller
     {
         try {
             $id_dpustakawan = Crypt::decryptString($id);
-    
+
             // Check if the pustakawan has lent any books
             $hasTransactions = \DB::table('trks_transaksi')
                 ->where('id_dpustakawan', $id_dpustakawan)
                 ->exists();
-    
+
             if ($hasTransactions) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Data pustakawan tidak dapat dihapus karena pustakawan ini sudah meminjamkan buku.',
                 ], 403);
             }
-    
+
             // Proceed with soft deletion if no transactions are found
             $ps = dm_pustakawan::find($id_dpustakawan);
             $ps->deleted_at = Carbon::now();
             $ps->save();
-    
+
             return response()->json([
                 'success' => true,
                 'message' => 'Data Berhasil Dihapus!',
             ], 200);
-    
+
         } catch (\Throwable $th) {
             return response()->json([
                 'success' => false,
@@ -192,12 +209,12 @@ class PustakawanController extends Controller
             ], 500);
         }
     }
-    
+
     public function linkExportPustakawan(Request $request)
     {
         try {
             $link = route('export_pustakawan');
-            return \Response::json(array('link' =>$link));
+            return \Response::json(array('link' => $link));
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -253,7 +270,7 @@ class PustakawanController extends Controller
             throw $th;
         }
     }
-    
+
 }
 
 

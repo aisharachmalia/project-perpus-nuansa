@@ -129,15 +129,10 @@ class HomeController extends Controller
             'statistikPeminjaman',
             'data',
             'bukuTerbanyakDipinjam',
-            'chartData',
             'bulan',
             'tahun'
         ));
-        if (!$tanggalAwal || !$tanggalAkhir) {
-            return response()->json(['error' => 'Tanggal tidak valid'], 400);
-        }
-
-        $datas = Transaksi::whereBetween('tanggal', [$tanggalAwal, $tanggalAkhir])->get();
+        
     }
     public function totalDataDashboard(Request $request)
     {

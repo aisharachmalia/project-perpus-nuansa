@@ -17,7 +17,6 @@
 
                         <!-- Book Details -->
                         <div class="col-md-6 p-4">
-                           
                             <h2 id="dbuku_judul">{{ $bk->dbuku_judul }}</h2>
                             <b class="text-muted">ISBN: <label id="dbuku_isbn">{{ $bk->dbuku_isbn }}</label></b>
                             <table class="table-borderless table-sm mb-3 mt-2">
@@ -52,11 +51,12 @@
                                     <td id="dbuku_edisi">{{ $bk->dbuku_edisi }}</td>
                                 </tr>
                             </table>
-                            <a href="{{ route('data_master.buku') }}" class="icon icon-left" style="text-decoration: none"><i class="bi bi-arrow-left"></i> Kembali</a>
+                            <a href="{{ route('data_master.buku') }}" class="icon icon-left"
+                                style="text-decoration: none"><i class="bi bi-arrow-left"></i> Kembali</a>
                         </div>
                     </div>
                     <!-- Book Cover -->
-                    
+
                 </div>
             </div>
         </div>
@@ -242,7 +242,7 @@
                     $('#editSalinan').find('#id_dsbk').val(id_dsbk);
                     $('#editSalinan').find('#dsbuku_no_salinan').val(response.dsbk[0]
                         .dsbuku_no_salinan);
-                    $('#editSalinan').find('#dsbuku_kondisi').html(response.slc1);
+                    $('#editSalinan').find('#dsbuku_kondisi').html(response.radioButtons);
                 },
                 error: function(error) {
                     console.log("Error:", error);
@@ -258,6 +258,7 @@
             var form = $("#form_buku_salinan_upd")[0];
             var id_dsbk = $('#id_dsbk').val();
             var data = new FormData(form);
+            console.log(data);
 
             let url = "{{ route('crud_dm_salinan_buku', ':id') }}";
             url = url.replace(':id', id_dsbk);

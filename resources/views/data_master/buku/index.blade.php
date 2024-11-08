@@ -360,14 +360,22 @@
                     $('#tbl_dmbuku').DataTable().ajax.reload()
                 },
                 error: function(xhr) {
-                    if (xhr.status === 422) {
+                    if (xhr.status === 403) {
+                        var response = JSON.parse(xhr.responseText);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: `${response.message}`,
+                            showConfirmButton: false,
+                            timer: 3000
+                        });
+                    } else if (xhr.status === 422) {
                         // Parse the JSON response
                         var response = JSON.parse(xhr.responseText);
                         if (response.message) {
 
                             $('#edit').find('#global-error').text(response.message);
                         }
-
                         var errors = response.errors;
 
                         if (errors) { // Check if errors is defined and not null

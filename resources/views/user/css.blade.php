@@ -1,5 +1,6 @@
 <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.css') }}">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
@@ -788,4 +789,11 @@ footer p {
     transform: scale(1.1);
 }
 
+#btn-back-to-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  border-radius: 50%;
+  display: none;
+}
 </style>
