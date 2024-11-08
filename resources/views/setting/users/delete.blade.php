@@ -32,6 +32,7 @@
                             showConfirmButton: false,
                             timer: 3000
                         });
+                        $('#tbl_list').DataTable().ajax.reload();
                     }
                 });
             }

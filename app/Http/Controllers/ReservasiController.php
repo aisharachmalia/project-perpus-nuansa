@@ -20,29 +20,38 @@ class ReservasiController extends Controller
         if (request()->ajax()) {  
             $reservasi = trks_reservasis::join('dm_buku', 'dm_buku.id_dbuku', '=', 'trks_reservasis.id_dbuku')
                 ->join('users', 'users.id_usr', '=', 'trks_reservasis.id_usr')
-                ->select('users.usr_nama', 'dm_buku.dbuku_judul', 'trks_reservasis.trsv_tgl_reservasi', 'trks_reservasis.trsv_tgl_kadaluarsa', 'trks_reservasis.trsv_tgl_pemberitahuan', 'trks_reservasis.trsv_tgl_pengambilan', 'trks_reservasis.trsv_status', 'trks_reservasis.id_trsv')
+                ->select('users.usr_nama', 'trks_reservasis.id_trsv', 'dm_buku.dbuku_judul', 'trks_reservasis.trsv_tgl_reservasi', 'trks_reservasis.trsv_tgl_kadaluarsa', 'trks_reservasis.trsv_tgl_pemberitahuan', 'trks_reservasis.trsv_tgl_pengambilan', 'trks_reservasis.trsv_status')
                 ->whereNull('trks_reservasis.deleted_at')
                 ->get();
 
                 return DataTables::of($reservasi)
                 ->addIndexColumn()
                 ->addColumn('aksi', function ($row) {
-                    $btn = '<div class="d-flex mr-2">';
-                    
-                    // Cek status reservasi
-                    if ($row->trsv_status == 1) { // Hanya aktif yang bisa diedit
-                        $btn .= '<a href="javascript:void(0)" class="btn btn-warning btn-sm editReservasi mr-2" data-id="' . Crypt::encryptString($row->id_trsv) . '" data-bs-toggle="modal" data-bs-target="#editReservasi">
+                    $btn = "";
+                    if ($row->trsv_status == 1) {
+                        $btn .= '<div class="d-flex mr-2 gap-1">
+                        <a href="javascript:void(0)" class="btn btn-warning btn-sm editPeminjaman mr-2"
+                            data-id="' . Crypt::encryptString($row->id_trsv) . '"
+                            data-bs-toggle="modal"
+                            data-bs-target="#editPeminjaman">
                             <i class="bi bi-pencil"></i>
                         </a>';
                     }
-    
-                    // Tambahkan tombol delete
-                    $btn .= '|<a href="javascript:void(0)" id="btn-delete" data-id="' . Crypt::encryptString($row->id_trsv) . '" class="btn btn-danger btn-sm">
-                        <i class="bi bi-trash"></i>
-                    </a></div>';
-                    
+                    if ((in_array($row->trsv_status, [-1, 0, 2]))) {
+                        $btn .= '<a href="javascript:void(0)" class="btn btn-primary btn-sm modalShow"  data-id="' . Crypt::encryptString($row->id_trsv) . '" data-bs-toggle="modal" data-bs-target="#show"><i class="bi bi-eye"></i></a>';
+                    }
+                    if ($row->trsv_status == 1) {
+                        $btn .= ' | <a href="javascript:void(0)" id="btn-batal"
+                                    data-id="' . Crypt::encryptString($row->id_trsv) . '"
+                                    class="btn btn-danger btn-sm">
+                                    <i class="bi bi-x-lg"></i>
+                                </a>';
+                    }
+
+                    $btn .= '</div>';
                     return $btn;
                 })
+
                 ->rawColumns(['aksi'])
                 ->make(true);
         }
@@ -55,18 +64,20 @@ class ReservasiController extends Controller
         try {
             $rules = [
                 'id_dbuku' => 'required',
-                'id_dsiswa' => 'required',
-                'trks_tgl_reservasi' => 'required|date',
-                'trsv_tgl_kadaluarsa' => 'required|date',
+                'id_usr' => 'required',
+                'trks_tgl_reservasi' => 'required|date|after_or_equal:today',
+                'trsv_tgl_kadaluarsa' => 'required|date|after_or_equal:trks_tgl_reservasi',
             ];
 
             $messages = [
                 'id_dbuku.required' => 'Buku harus pilih.',
-                'id_dsiswa.required' => 'Peminjam harus pilih.',
+                'id_usr.required' => 'Peminjam harus pilih.',
                 'trks_tgl_reservasi.required' => 'Tanggal reservasi harus diisi.',
                 'trks_tgl_reservasi.date' => 'Tanggal reservasi harus berupa tanggal yang valid.',
+                'trks_tgl_reservasi.after_or_equal' => 'Tanggal reservasi harus setelah atau sama dengan hari ini.',
                 'trsv_tgl_kadaluarsa.required' => 'Tanggal kadaluarsa harus diisi.',
                 'trsv_tgl_kadaluarsa.date' => 'Tanggal kadaluarsa harus berupa tanggal yang valid.',
+                'trsv_tgl_kadaluarsa.after_or_equal' => 'Tanggal kadaluarsa harus setelah atau sama dengan tanggal reservasi.',
             ];
 
             $validator = Validator::make($request->all(), $rules, $messages);
@@ -79,7 +90,7 @@ class ReservasiController extends Controller
             }
 
             $buku = Crypt::decryptString($request->id_dbuku);
-            $siswa = Crypt::decryptString($request->id_dsiswa);
+            $user = Crypt::decryptString($request->id_usr);
             $cbuku = dm_salinan_buku::where('id_dbuku', $buku)
                 ->where('dsbuku_kondisi', '!=', 'Hilang')
                 ->count();
@@ -99,7 +110,7 @@ class ReservasiController extends Controller
                     $reservasi = new trks_reservasis();
                     $reservasi->id_dbuku = $buku;
                     $reservasi->id_dsbuku = 0;
-                    $reservasi->id_usr = $siswa;
+                    $reservasi->id_usr = $user;
                     $reservasi->trsv_tgl_reservasi = $request->trks_tgl_reservasi;
                     $reservasi->trsv_tgl_kadaluarsa = $request->trsv_tgl_kadaluarsa;
                     $reservasi->save();
@@ -124,7 +135,7 @@ class ReservasiController extends Controller
                         $reservasi = new trks_reservasis();
                         $reservasi->id_dbuku = $buku;
                         $reservasi->id_dsbuku = 0;
-                        $reservasi->id_usr = $siswa;
+                        $reservasi->id_usr = $user;
                         $reservasi->trsv_tgl_reservasi = $request->trks_tgl_reservasi;
                         $reservasi->trsv_tgl_kadaluarsa = $request->trsv_tgl_kadaluarsa;
                         $reservasi->save();
@@ -153,22 +164,32 @@ class ReservasiController extends Controller
     public function detailReservasi(Request $request)
     {
         if ($request->type === 'peminjam') {
-
             $id_peminjam = Crypt::decryptString($request->id_peminjam);
-            $data = dm_buku::join('trks_reservasis', 'dm_buku.id_dbuku', '=', 'trks_reservasis.id_dbuku')
+            $data = trks_reservasis::join('dm_buku', 'dm_buku.id_dbuku', '=', 'trks_reservasis.id_dbuku')
                 ->where('trks_reservasis.id_usr', $id_peminjam)
-                ->select('trks_reservasis.id_trsv', 'dm_buku.dbuku_judul')
+                ->where('trks_reservasis.trsv_status', 1)
+                ->select('trks_reservasis.id_dbuku', 'dm_buku.dbuku_judul')
                 ->get()
                 ->map(function ($data) {
-                    $data->id_trsv = Crypt::encryptString($data->id_trsv);
+                    $data->id_dbuku = Crypt::encryptString($data->id_dbuku);
                     return $data;
                 });
             return  response()->json($data);
+        } elseif ($request->type === 'buku') {
+            $id_dbuku = Crypt::decryptString($request->id_dbuku);
+            $data = dm_buku::join('trks_reservasis', 'dm_buku.id_dbuku', '=', 'trks_reservasis.id_dbuku')
+                ->where('trks_reservasis.id_dbuku', $id_dbuku)
+                ->where('trks_reservasis.trsv_status', 1)
+                ->select('trks_reservasis.trsv_tgl_reservasi', 'trks_reservasis.id_trsv', 'trks_reservasis.trsv_tgl_kadaluarsa')->first();
+            $data->id_trsv = Crypt::encryptString($data->id_trsv);
+            return  response()->json($data);
         } else {
-
             $id_trsv = Crypt::decryptString($request->id_trsv);
-            $data = trks_reservasis::find($id_trsv)->join('dm_buku', 'dm_buku.id_dbuku', '=', 'trks_reservasis.id_dbuku')->select('trks_reservasis.trsv_tgl_reservasi', 'trks_reservasis.trsv_tgl_kadaluarsa', 'dm_buku.id_dbuku')->first();
-            $data->id_dbuku = Crypt::encryptString($data->id_dbuku);
+            $data = trks_reservasis::join('dm_buku', 'dm_buku.id_dbuku', '=', 'trks_reservasis.id_dbuku')
+                ->join('users', 'users.id_usr', '=', 'trks_reservasis.id_usr')
+                ->where('trks_reservasis.id_trsv', $id_trsv)
+                ->select('dm_buku.dbuku_judul', 'users.usr_nama', 'trks_reservasis.trsv_tgl_reservasi', 'trks_reservasis.trsv_tgl_kadaluarsa','trks_reservasis.trsv_tgl_pemberitahuan','trks_reservasis.trsv_tgl_pengambilan','trks_reservasis.trsv_status')
+                ->first();
             return  response()->json($data);
         }
     }
@@ -210,15 +231,14 @@ class ReservasiController extends Controller
             }
 
             $buku = Crypt::decryptString($request->id_dbuku);
-            $siswa = Crypt::decryptString($request->id_peminjam);
-
+            $user = Crypt::decryptString($request->id_peminjam);
             // Cek ketersediaan buku
             $dsbuku = dm_salinan_buku::where('id_dbuku', $buku)->where('dsbuku_status', 0)->orWhere('dsbuku_status', 2)->first();
             if ($dsbuku) {
                 $transaksi = new Transaksi();
                 $transaksi->id_dbuku = $buku;
                 $transaksi->id_dsbuku = $dsbuku->id_dsbuku;
-                $transaksi->id_usr = $siswa;
+                $transaksi->id_usr = $user;
                 $transaksi->id_dpustakawan = Crypt::decryptString($request->id_dpustakawan);
                 $transaksi->trks_tgl_peminjaman = $request->trks_tgl_reservasi;
                 $transaksi->trks_tgl_jatuh_tempo = $request->trks_tgl_jth_tempo;
@@ -236,7 +256,7 @@ class ReservasiController extends Controller
             } else {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Buku sedang tidak tersedia untuk reservasi!',
+                    'message' => 'Buku yang anda reservasi belum tersedia, tunggu tanggal pemberitahuan!',
                 ]);
             }
         } catch (\Exception $th) {
@@ -246,74 +266,74 @@ class ReservasiController extends Controller
 
     
     public function update(Request $request, $id)
-{
-    try {
-        // Dekripsi ID jika terenkripsi
-        $id_trsv = Crypt::decryptString($id);
-        $id_usr = Crypt::decryptString($request->id_usr);
-        $id_dbuku = Crypt::decryptString($request->id_dbuku);
+    {
+        try {
+            // Dekripsi ID jika terenkripsi
+            $id_trsv = Crypt::decryptString($id);
+            $id_usr = Crypt::decryptString($request->id_usr);
+            $id_dbuku = Crypt::decryptString($request->id_dbuku);
 
-        // Validasi input data
-        $rules = [
-            'id_dbuku' => 'required',
-            'id_usr' => 'required',
-            'trsv_tgl_reservasi' => 'required|date',
-            'trsv_tgl_kadaluarsa' => 'required|date|after_or_equal:trsv_tgl_reservasi',
-            'trsv_tgl_pemberitahuan' => 'nullable|date',
-        ];
+            // Validasi input data
+            $rules = [
+                'id_dbuku' => 'required',
+                'id_usr' => 'required',
+                'trsv_tgl_reservasi' => 'required|date',
+                'trsv_tgl_kadaluarsa' => 'required|date|after_or_equal:trsv_tgl_reservasi',
+                'trsv_tgl_pemberitahuan' => 'nullable|date',
+            ];
 
-        $messages = [
-            'id_dbuku.required' => 'Buku harus dipilih.',
-            'id_usr.required' => 'Peminjam harus dipilih.',
-            'trsv_tgl_reservasi.required' => 'Tanggal reservasi harus diisi.',
-            'trsv_tgl_reservasi.date' => 'Tanggal reservasi harus berupa tanggal yang valid.',
-            'trsv_tgl_kadaluarsa.required' => 'Tanggal kadaluarsa harus diisi.',
-            'trsv_tgl_kadaluarsa.date' => 'Tanggal kadaluarsa harus berupa tanggal yang valid.',
-            'trsv_tgl_kadaluarsa.after_or_equal' => 'Tanggal kadaluarsa harus sama atau setelah tanggal reservasi.',
-            'trsv_tgl_pemberitahuan.date' => 'Tanggal pemberitahuan harus berupa tanggal yang valid.',
-        ];
+            $messages = [
+                'id_dbuku.required' => 'Buku harus dipilih.',
+                'id_usr.required' => 'Peminjam harus dipilih.',
+                'trsv_tgl_reservasi.required' => 'Tanggal reservasi harus diisi.',
+                'trsv_tgl_reservasi.date' => 'Tanggal reservasi harus berupa tanggal yang valid.',
+                'trsv_tgl_kadaluarsa.required' => 'Tanggal kadaluarsa harus diisi.',
+                'trsv_tgl_kadaluarsa.date' => 'Tanggal kadaluarsa harus berupa tanggal yang valid.',
+                'trsv_tgl_kadaluarsa.after_or_equal' => 'Tanggal kadaluarsa harus sama atau setelah tanggal reservasi.',
+                'trsv_tgl_pemberitahuan.date' => 'Tanggal pemberitahuan harus berupa tanggal yang valid.',
+            ];
 
-        $validator = Validator::make($request->all(), $rules, $messages);
+            $validator = Validator::make($request->all(), $rules, $messages);
 
-        if ($validator->fails()) {
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'error',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $reservasi = trks_reservasis::find($id_trsv);
+
+            if (!$reservasi) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Data reservasi tidak ditemukan.'
+                ], 404);
+            }
+
+            $reservasi->id_dbuku = $id_dbuku;
+            $reservasi->id_usr = $id_usr;
+            $reservasi->trsv_tgl_reservasi = $request->trsv_tgl_reservasi;
+            $reservasi->trsv_tgl_kadaluarsa = $request->trsv_tgl_kadaluarsa;
+            $reservasi->trsv_tgl_pemberitahuan = $request->trsv_tgl_pemberitahuan;
+            $reservasi->save();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data reservasi berhasil diupdate.',
+                'reservasi' => $reservasi
+            ]);
+
+        } catch (\Exception $th) {
+            // Menangani error dengan log
+            Log::error($th->getMessage());
+
             return response()->json([
                 'status' => 'error',
-                'errors' => $validator->errors()
-            ], 422);
+                'message' => 'Terjadi kesalahan saat memperbarui data reservasi.',
+            ], 500);
         }
-
-        $reservasi = trks_reservasis::find($id_trsv);
-
-        if (!$reservasi) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Data reservasi tidak ditemukan.'
-            ], 404);
-        }
-
-        $reservasi->id_dbuku = $id_dbuku;
-        $reservasi->id_usr = $id_usr;
-        $reservasi->trsv_tgl_reservasi = $request->trsv_tgl_reservasi;
-        $reservasi->trsv_tgl_kadaluarsa = $request->trsv_tgl_kadaluarsa;
-        $reservasi->trsv_tgl_pemberitahuan = $request->trsv_tgl_pemberitahuan;
-        $reservasi->save();
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Data reservasi berhasil diupdate.',
-            'reservasi' => $reservasi
-        ]);
-
-    } catch (\Exception $th) {
-        // Menangani error dengan log
-        Log::error($th->getMessage());
-
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Terjadi kesalahan saat memperbarui data reservasi.',
-        ], 500);
     }
-}
 
     public function detailUpdate($id)
     {
@@ -325,27 +345,48 @@ class ReservasiController extends Controller
         ->where('trks_reservasis.id_trsv', $id_trsv)
         ->first();
 
-    $db['buku'] = dm_buku::select('id_dbuku', 'dbuku_judul')->get();
-    $db['usr'] = User::select('users.id_usr', 'users.usr_nama')->get();
+        $db['buku'] = dm_buku::select('id_dbuku', 'dbuku_judul')->get();
+        $db['usr'] = User::select('users.id_usr', 'users.usr_nama')->get();
 
-    $options['buku'] = '';
-    $options['usr'] = '';
+        $options['buku'] = '';
+        $options['usr'] = '';
 
-    foreach ($db['buku'] as $buku) {
-        $selected = ($buku->id_dbuku == $reservasi['reservasi']->id_dbuku) ? 'selected' : '';
-        $options['buku'] .= '<option value="' . Crypt::encryptString($buku->id_dbuku) . '" ' . $selected . '>' . $buku->dbuku_judul . '</option>';
+        foreach ($db['buku'] as $buku) {
+            $selected = ($buku->id_dbuku == $reservasi['reservasi']->id_dbuku) ? 'selected' : '';
+            $options['buku'] .= '<option value="' . Crypt::encryptString($buku->id_dbuku) . '" ' . $selected . '>' . $buku->dbuku_judul . '</option>';
+        }
+        foreach ($db['usr'] as $usr) {
+            $selected = ($usr->id_usr == $reservasi['reservasi']->id_usr) ? 'selected' : '';
+            $options['usr'] .= '<option value="' . Crypt::encryptString($usr->id_usr) . '" ' . $selected . '>' . $usr->usr_nama . '</option>';
+        }
+
+
+        $transaksi['usr'] = $options['usr'];
+        $transaksi['buku'] = $options['buku'];
+        $transaksi['reservasi'] = $reservasi['reservasi'];
+
+        return response()->json($transaksi);
     }
-    foreach ($db['usr'] as $usr) {
-        $selected = ($usr->id_usr == $reservasi['reservasi']->id_usr) ? 'selected' : '';
-        $options['usr'] .= '<option value="' . Crypt::encryptString($usr->id_usr) . '" ' . $selected . '>' . $usr->usr_nama . '</option>';
-    }
 
-
-    $transaksi['usr'] = $options['usr'];
-    $transaksi['buku'] = $options['buku'];
-    $transaksi['reservasi'] = $reservasi['reservasi'];
-
-    return response()->json($transaksi);
+    public function batalReservasi(Request $request)
+    {
+        try {
+            $id_trsv = Crypt::decryptString($request->id_trsv);
+            $preservasi = trks_reservasis::find($id_trsv);
+            $preservasi->trsv_status = -1;
+            $preservasi->save();
+            $pbuku = dm_buku::find($preservasi->id_dbuku);
+            $pbuku->dbuku_status = 0;
+            $pbuku->dbuku_flag = 0;
+            $pbuku->save();
+            $dsbuku = dm_salinan_buku::where('id_dbuku', $preservasi->id_dbuku)->where('dsbuku_status', 2)->first();
+            $dsbuku->dsbuku_flag = 0;
+            $dsbuku->dsbuku_status = 0;
+            $dsbuku->save();
+            return response()->json(['message' => 'Buku reservasi dibatalkan!']);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 
 }

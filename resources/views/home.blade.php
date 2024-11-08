@@ -1,3 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Dashboard</title>
+</head>
+<body>
 @extends('master')
 @section('content')
     <style>
@@ -118,7 +127,7 @@
 
 
     @php
-        $role = App\Models\akses_usr::join('users', 'akses_usrs.id_usr', 'users.id_usr')
+        $role = App\Models\Akses_usr::join('users', 'akses_usrs.id_usr', 'users.id_usr')
             ->where('users.id_usr', Auth::user()->id_usr)
             ->join('roles', 'akses_usrs.id_role', 'roles.id_role')
             ->first();
@@ -156,6 +165,7 @@
             <div class="col-12 col-lg-12">
                 <div class="row">
                     <div class="col-6 col-lg-3 col-md-6">
+                        <a href="{{ route('data_master.buku') }}">
                         <div class="card">
                             <div class="card-body px-3 py-4-5">
                                 <div class="row">
@@ -172,8 +182,10 @@
                                 </div>
                             </div>
                         </div>
+                        </a>
                     </div>
                     <div class="col-6 col-lg-3 col-md-6">
+                        <a href="{{route('transaksi')}}">
                         <div class="card">
                             <div class="card-body px-3 py-4-5">
                                 <div class="row">
@@ -189,8 +201,10 @@
                                 </div>
                             </div>
                         </div>
+                    </a>
                     </div>
                     <div class="col-6 col-lg-3 col-md-6">
+                        <a href="{{route('denda')}}">
                         <div class="card">
                             <div class="card-body px-3 py-4-5">
                                 <div class="row">
@@ -206,8 +220,10 @@
                                 </div>
                             </div>
                         </div>
+                    </a>
                     </div>
                     <div class="col-6 col-lg-3 col-md-6">
+                        <a href="{{route('pageLaporan')}}">
                         <div class="card">
                             <div class="card-body px-3 py-4-5">
                                 <div class="row">
@@ -223,6 +239,7 @@
                                 </div>
                             </div>
                         </div>
+                        </a>
                     </div>
                 </div>
 
@@ -330,6 +347,8 @@
     </div>
     </section>
     </div>
+</body>
+</html>
 @endsection
 @push('scripts')
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>

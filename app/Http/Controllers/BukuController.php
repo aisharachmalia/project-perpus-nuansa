@@ -79,7 +79,6 @@ class BukuController extends Controller
                 $id = Crypt::decryptString($id);
                 $id_bk = dm_buku::find($id);
 
-
                 $rules = [
                     'dbuku_cover' => 'image|mimes:jpg,jpeg,png|max:2000',
                     'dbuku_judul' => 'required',
@@ -133,12 +132,24 @@ class BukuController extends Controller
                     ->whereIn('dsbuku_status', [1, 2])
                     ->count();
 
-
                 if ($request->dbuku_jml_total < $borrowedAndReservedCount) {
                     return response()->json([
                         'success' => false,
                         'message' => 'Jumlah total tidak boleh kurang dari jumlah buku yang sedang dipinjam atau reservasi!',
                     ], 422);
+                }
+
+                if ($request->dbuku_judul != $id_bk->dbuku_judul) {
+                    $borrowedOrReservedCount = dm_salinan_buku::where('id_dbuku', $id_bk->id_dbuku)
+                        ->whereIn('dsbuku_status', [1, 2]) // Status 1 = Borrowed, Status 2 = Reserved
+                        ->count();
+                
+                    if ($borrowedOrReservedCount > 0) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Judul buku tidak dapat diubah karena sedang dipinjam atau sedang di reservasi!',
+                        ], 403);
+                    }
                 }
 
 
@@ -194,30 +205,47 @@ class BukuController extends Controller
                     'updated_at' => now(),
                 ]);
 
+                // If the book title has changed, update the salinan no_salinan
+                if ($request->dbuku_judul != $id_bk->dbuku_judul) {
+                    // Loop through each salinan and update dsbuku_no_salinan
+                    $salinans = dm_salinan_buku::where('id_dbuku', $id_bk->id_dbuku)->get();
+                    $newTitle = $request->dbuku_judul;
+
+                    foreach ($salinans as $index => $salinan) {
+                        // Generate a new no_salinan for each copy
+                        $newNoSalinan = $newTitle . str_pad($index + 1, 5, '0', STR_PAD_LEFT); // Start at 1, increment by 1
+                        // Update the dsbuku_no_salinan to reflect the new book title
+                        $salinan->update([
+                            'dsbuku_no_salinan' => $newNoSalinan,
+                        ]);
+                    }
+                }
+
+
+                // Handle updating the book copies (salinan) if total quantity changes
                 if ($request->dbuku_jml_total == 0) {
-                    // Delete only "Baik" and "Rusak" copies; keep "Hilang," "Terpinjam," and "Reservasi" intact
                     \DB::table('dm_salinan_bukus')
                         ->where('id_dbuku', $id_bk->id_dbuku)
-                        ->whereIn('dsbuku_kondisi', ['Baik', 'Rusak']) // Changed to whereIn
+                        ->whereIn('dsbuku_kondisi', ['Baik', 'Rusak'])
                         ->whereNotIn('dsbuku_status', [1, 2])
                         ->update(['deleted_at' => Carbon::now()]);
                 } elseif ($request->dbuku_jml_total > $oldTotal) {
                     $new = $request->dbuku_jml_total - $oldTotal;
-                
                     for ($i = 1; $i <= $new; $i++) {
                         $newCopyNumber = $oldTotal + $i;
                         $no_salinan = $request->dbuku_judul . str_pad($newCopyNumber, 5, '0', STR_PAD_LEFT);
-                
+
                         while (dm_salinan_buku::where('dsbuku_no_salinan', $no_salinan)->exists()) {
                             $newCopyNumber++;
                             $no_salinan = $request->dbuku_judul . str_pad($newCopyNumber, 5, '0', STR_PAD_LEFT);
                         }
+
                         dm_salinan_buku::create([
                             'id_dbuku' => $id_bk->id_dbuku,
                             'dsbuku_no_salinan' => $no_salinan,
-                            'dsbuku_kondisi' => 'Baik',
                             'dsbuku_status' => 0,
-                            'created_at' => Carbon::now(),
+                            'dsbuku_kondisi' => 'Baik',
+                            'created_at' => now(),
                         ]);
                     }
                 } elseif ($request->dbuku_jml_total < $oldTotal) {
@@ -230,7 +258,7 @@ class BukuController extends Controller
                         ->take($excessCopies)
                         ->update(['deleted_at' => Carbon::now()]);
                 }
-                
+
                 // Return success response
                 return response()->json([
                     'success' => true,

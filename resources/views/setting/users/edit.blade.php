@@ -1,22 +1,22 @@
 <script>
     $('body').on('click', '.modalEdit', function() {
-    let id_usr = $(this).data('id');
-    $.ajax({
-        url: `user-detail/${id_usr}`,
-        type: "GET",
-        cache: false,
-        success: function(response) {
-            // Set nilai field lain
-            $('#edit').find('#usr_nama').val(response['user'].usr_nama);
-            $('#edit').find('#usr_id').val(id_usr);
-            $('#edit').find('#usr_username').val(response['user'].usr_username);
-            $('#edit').find('#usr_email').val(response['user'].usr_email);
-            
-            // Set status radio button
-            if (response['user'].status === 1) {
-                $('#edit').find('#status_active').prop('checked', true);
-            } else {
-                $('#edit').find('#status_inactive').prop('checked', true);
+        let id_usr = $(this).data('id');
+        //fetch detail post with ajax
+        $.ajax({
+            url: `user-detail/${id_usr}`,
+            type: "GET",
+            cache: false,
+            success: function(response) {
+                //fill data to form edit modal
+                $('#edit').find('#usr_nama').val(response['user'].usr_nama);
+                $('#edit').find('#usr_id').val(id_usr);
+                $('#edit').find('#usr_username').val(response['user'].usr_username);
+                $('#edit').find('#usr_email').val(response['user'].usr_email);
+                $('#edit').find('#status[value="' + response['user'].usr_stat + '"]').prop('checked', true);
+
+                $('#usr_error').text('');
+                $('#username_error').text('');
+                $('#email_error').text('');
             }
         }
     });
@@ -29,7 +29,7 @@
         let nama = $('#edit').find('#usr_nama').val();
         let username = $('#edit').find('#usr_username').val();
         let email = $('#edit').find('#usr_email').val();
-        let status = $('#edit').find('#status').val();
+        let status = $('#status:checked').val();
         let token = $("meta[name='csrf-token']").attr("content");
 
 
@@ -47,7 +47,6 @@
                 "_token": token
             },
             success: function(response) {
-
                 //show success message
                 Swal.fire({
                     type: 'success',
@@ -56,6 +55,7 @@
                     showConfirmButton: false,
                     timer: 3000
                 });
+                $('#tbl_list').DataTable().ajax.reload();
                 $('#edit').modal('hide');
                 $('.modal-backdrop').remove();
             },

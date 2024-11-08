@@ -7,7 +7,7 @@ use App\Http\Controllers\ReservasiController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\UsePageController;
 use Illuminate\Support\Facades\Auth;
-
+use App\Http\Controllers\PenulisController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -19,10 +19,27 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 //
-Route::get('/', [App\Http\Controllers\UsePageController::class, 'berandaPage'])->name('beranda');
-Route::get('/popular', [App\Http\Controllers\UsePageController::class, 'berandaPage'])->name('popular-books');
+Route::get('/', [App\Http\Controllers\UsePageController::class, 'berandaPage'])->name('beranda.page');
 Route::get('/tentang', [App\Http\Controllers\WebController::class, 'pageTentang'])->name('tentang');
-Route::get('/halaman-buku', [App\Http\Controllers\WebController::class, 'pageBuku'])->name('buku');
+Route::get('/halaman-buku', [App\Http\Controllers\UsePageController::class, 'pageBuku'])->name('buku');
+Route::get('/search', [App\Http\Controllers\UsePageController::class, 'pageBuku'])->name('buku.search');
+Route::get('/halaman-buku/{penerbit?}', [App\Http\Controllers\UsePageController::class, 'pageBukuByPenerbit'])->name('BukuByPenerbit');
+Route::get('/halaman-penulis/favorit', [App\Http\Controllers\UsePageController::class, 'PagePenulsFav'])->name('Page-Penulis-Fav');
+Route::get('/penulis-favorit', [App\Http\Controllers\UsePageController::class, 'penulisFavorit'])->name('penulis.favorit');
+
+// Route untuk memuat lebih banyak buku favorit
+Route::post('/penulis/load-more-books-fav', [App\Http\Controllers\UsePageController::class, 'loadMoreBooksFav'])->name('penulis.loadMoreBooksFav');
+
+// Route untuk penulis lokal dan asing
+Route::get('/penulis-lokal', [App\Http\Controllers\UsePageController::class, 'penulisLokal'])->name('penulis.lokal');
+Route::post('/penulis/load-more-books-lokal', [App\Http\Controllers\UsePageController::class, 'loadMoreBooks'])->name('penulis.loadMoreBooksLokal');
+
+Route::get('/penulis-asing', [App\Http\Controllers\UsePageController::class, 'penulisAsing'])->name('penulis.asing');
+Route::post('/penulis/load-more-books-asing', [App\Http\Controllers\UsePageController::class, 'loadMoreBooksAsing'])->name('penulis.loadMoreBooksAsing');
+
+// Route::get('/load-more-authors', [App\Http\Controllers\UsePageController::class, 'loadMoreAuthors']);
+// Route::get('/load-more-books', [UsePageController::class, 'loadMoreBooks'])->name('loadMoreBooks');
+
 Route::get('/panduan', [App\Http\Controllers\WebController::class, 'pagePanduan'])->name('panduan');
 
 //Login
@@ -53,7 +70,7 @@ Route::post('/lupa-password', [App\Http\Controllers\Auth\ForgotPasswordControlle
 //
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/total-data-dashboard',[App\Http\Controllers\HomeController::class, 'totalDataDashboard'])->name('total_data_dashboard');
 Route::get('/data-leaderboard',[App\Http\Controllers\HomeController::class, 'totalDataDashboard'])->name('data-leaderboard');
 Route::post('/update-chart', [App\Http\Controllers\HomeController::class, 'updateChart'])->name('update.chart');
@@ -205,21 +222,20 @@ route::get('/reservasi/table,', [\App\Http\Controllers\ReservasiController::clas
 // route transaksi
 Route::get('/transaksi', [TransaksiController::class, 'index'])->name('transaksi');
 Route::post('/peminjaman/add', [TransaksiController::class, 'createPeminjaman'])->name('pinjam.store');
-Route::post('/pengembalian/{id?}', [TransaksiController::class, 'pengembalian']);
-Route::get('/transaksi/detail/{id}', [TransaksiController::class, 'detail']);
-Route::get('/transaksi/detailBuku/{id}/{id2?}', [TransaksiController::class, 'detailBuku']);
-Route::delete('/transaksi/delete/{id}', [TransaksiController::class, 'delete'])->name('transaksi.delete');
-
 // edit peminjaman transaksi
 Route::get('/transaksi/detail/update/{id}', [TransaksiController::class, 'showEditTransaksi']);
 Route::put('/transaksi/update/{id}', [TransaksiController::class, 'editTransaksi'])->name('transaksi.update');
-
-
+Route::post('/pengembalian', [TransaksiController::class, 'pengembalian']);
+Route::get('/transaksi/detail', [TransaksiController::class, 'detail']);
+Route::get('/transaksi/detailBuku', [TransaksiController::class, 'detailBuku']);
+Route::delete('/transaksi/delete/{id}', [TransaksiController::class, 'delete'])->name('transaksi.delete');
 
 Route::get('/document/{id}', [App\Http\Controllers\BacaOnlineController::class, 'documentDetail'])->name('document.detail');
 
 Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'index'])->name('profile');
-Route::post('/profile', [App\Http\Controllers\ProfileController::class, 'updateProfile'])->name('update_profile');
+Route::post('/update-profile', [App\Http\Controllers\ProfileController::class, 'updateProfile'])->name('update_profile');
+Route::post('/upload-image', [App\Http\Controllers\ProfileController::class, 'updateProfileImage'])->name('update_profile_image');
+
 
 // reservasi
 Route::post('/reservasi/store', [ReservasiController::class, 'createReservasi'])->name('reservasi.store');
@@ -229,3 +245,5 @@ Route::get('/reservasi/detail/{id?}', [ReservasiController::class, 'detailUpdate
 Route::put('/reservasi/update/{id}', [ReservasiController::class, 'update'])->name('reservasi.update');
  
        
+Route::post('/reservasi/batal', [ReservasiController::class, 'batalReservasi'])->name('reservasi.batal');
+

@@ -1,7 +1,4 @@
 
 <footer>
-    <div class="container">
-        <p>&copy; 2024 Perpustakaan Sekolah. All Rights Reserved.</p>
-    </div>
+    <p>&copy; {{ date('Y') }} Nuansa Baca. All rights reserved.</p>
 </footer>
-

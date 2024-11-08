@@ -37,7 +37,7 @@
             role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalCenterTitle">Show User
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Lihat User
                     </h5>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <i data-feather="x"></i>
@@ -133,15 +133,15 @@
                                             <span class="text-danger" id="email_error"></span>
                                         </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label for="status">Status</label>
-                                        <div>
-                                            <label>
-                                                <input type="radio" name="status" id="status_active" value="1"> Aktif
-                                            </label>
-                                            <label>
-                                                <input type="radio" name="status" id="status_inactive" value="0"> Tidak Aktif
-                                            </label>
+                                    <div class="col-md-4 col-12">
+                                        <div class="form-group">
+                                            <label for="basicSelect">Status</label>
+                                            <br>
+                                            <input type="radio" id="status" name="status" value="1">
+                                            <label for="aktif">Aktif</label>
+                                            &nbsp;
+                                            <input type="radio" id="status" name="status" value="0">
+                                            <label for="tidak_aktif">Tidak Aktif</label>
                                         </div>
                                         <small id="status_error" class="text-danger"></small>
                                     </div>

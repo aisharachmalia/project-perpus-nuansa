@@ -90,10 +90,6 @@ class HomeController extends Controller
         // Hitung total siswa, buku, peminjaman, dan denda
         $totalSiswa = Dm_siswa::whereNull('deleted_at')->count();
 
-        // Kirim hasil ke view
-        return view('home', compact(
-            'totalSiswa', 'peminjaman_terbanyak', 'statistikPeminjaman', 'data',
-            'bukuTerbanyakDipinjam', 'bulan', 'tahun'
         $totalBuku = DB::table('dm_buku')->whereNull('deleted_at')
             ->when($bulan, function ($query) use ($bulan) {
                 return $query->whereMonth('created_at', $bulan);
@@ -133,7 +129,6 @@ class HomeController extends Controller
             'statistikPeminjaman',
             'data',
             'bukuTerbanyakDipinjam',
-            'chartData',
             'bulan',
             'tahun'
         ));
@@ -196,35 +191,37 @@ class HomeController extends Controller
         $buku_terbanyak_dipinjam = \DB::select("SELECT dm_buku.dbuku_judul, dm_buku.dbuku_cover, dm_penulis.dpenulis_nama_penulis, COUNT(trks_transaksi.id_dbuku) as total_peminjaman FROM trks_transaksi JOIN dm_buku ON trks_transaksi.id_dbuku = dm_buku.id_dbuku JOIN dm_penulis ON dm_buku.id_dpenulis = dm_penulis.id_dpenulis WHERE trks_transaksi.deleted_at IS NULL $kond1 GROUP BY dm_buku.dbuku_judul, dm_buku.dbuku_cover, dm_penulis.dpenulis_nama_penulis ORDER BY total_peminjaman DESC LIMIT 5");
 
         // Generate HTML untuk buku terbanyak dipinjam
-       // Generate HTML untuk buku terbanyak dipinjam
-$html_buku_terbanyak_dipinjam = '';
-if (count($buku_terbanyak_dipinjam) > 0) {
-    foreach ($buku_terbanyak_dipinjam as $key => $value) {
-        $no = $key + 1;
-        // Pastikan path menuju assets folder
-        $coverImagePath = asset('storage/cover/' . $value->dbuku_cover);
-        $coverImage = $value->dbuku_cover ? "<img src='{$coverImagePath}' alt='{$value->dbuku_judul}' style='width: 50px; height: auto;'>" : 'Cover Tidak Tersedia';
-        $html_buku_terbanyak_dipinjam .= "<tr>
-                                          <td>{$coverImage}</td>
-                                          <td>{$value->dbuku_judul}</td>
-                                          <td>{$value->dpenulis_nama_penulis}</td>
-                                          <td>{$value->total_peminjaman}</td>
-                                      </tr>";
-    }
-} else {
-    $html_buku_terbanyak_dipinjam .= "<tr>
-                                       <td colspan='4'>Data Peminjaman Tidak Tersedia</td>
-                                   </tr>";
-}
-$data['buku_terbanyak_dipinjam'] = $html_buku_terbanyak_dipinjam;
+        // Generate HTML untuk buku terbanyak dipinjam
+        $html_buku_terbanyak_dipinjam = '';
+        if (count($buku_terbanyak_dipinjam) > 0) {
+            foreach ($buku_terbanyak_dipinjam as $key => $value) {
+                $no = $key + 1;
+                // Pastikan path menuju assets folder
+                $coverImagePath = asset('storage/cover/' . $value->dbuku_cover);
+                $coverImage = $value->dbuku_cover ? "<img src='{$coverImagePath}' alt='{$value->dbuku_judul}' style='width: 50px; height: auto;'>" : 'Cover Tidak Tersedia';
+                $html_buku_terbanyak_dipinjam .= "
+                                    <tr>
+                                        <td>{$coverImage}</td>
+                                        <td>{$value->dbuku_judul}</td>
+                                        <td>{$value->dpenulis_nama_penulis}</td>
+                                        <td>{$value->total_peminjaman}</td>
+                                    </tr>";
+            }
+        } else {
+            $html_buku_terbanyak_dipinjam .= "
+                                <tr>
+                                    <td colspan='4'>Data Peminjaman Tidak Tersedia</td>
+                                </tr>";
+        }
+        $data['buku_terbanyak_dipinjam'] = $html_buku_terbanyak_dipinjam;
 
 
         $statistik_peminjaman = \DB::select(
             "SELECT MONTH(trks_tgl_peminjaman) AS bulan, COUNT(*) AS total
-             FROM trks_transaksi
-             WHERE trks_tgl_peminjaman BETWEEN ? AND ?
-             GROUP BY bulan
-             ORDER BY bulan",
+                        FROM trks_transaksi
+                        WHERE trks_tgl_peminjaman BETWEEN ? AND ?
+                        GROUP BY bulan
+                        ORDER BY bulan",
             [$tanggalawal, $tanggalakhir]
         );
 
@@ -233,6 +230,6 @@ $data['buku_terbanyak_dipinjam'] = $html_buku_terbanyak_dipinjam;
         foreach ($statistik_peminjaman as $item) {
             $data['statistik_peminjaman'][$item->bulan - 1] = $item->total; // Menyesuaikan index array dengan bulan
         }
-            return response()->json($data);
-        }
+        return response()->json($data);
     }
+}

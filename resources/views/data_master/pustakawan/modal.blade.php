@@ -86,11 +86,10 @@
                         <div class="col-md-4 col-12">
                             <div class="form-group">
                                 <label for="country-floating">Status</label>
-                                <select class="form-control" id="dpustakawan_status" name="dpustakawan_status">
-                                    <option disabled value="1" selected>Pilih Status</option>
-                                    <option value="1">aktif</option>
-                                    <option value="0">tidak aktif</option>
-                                </select>
+                                <br>
+                                <input type="radio" name="dpustakawan_status" value="1" {{ old('dpustakawan_status') == 1 ? 'checked' : '' }}> Aktif
+                                &nbsp;
+                                <input type="radio" name="dpustakawan_status" value="0" {{ old('dpustakawan_status') == 0 ? 'checked' : '' }}> Tidak Aktif                                
                             </div>
                         </div>
                         <div class="col-md-12 col-12 mt-4">
@@ -109,6 +108,7 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade text-left" id="show" tabindex="-1" role="dialog" aria-labelledby="modalDelete" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
         <div class="modal-content">
@@ -117,7 +117,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="row justify-content-center">
+                <div class="row">
                     <div class="col-4">
                         <b>Nama</b> : <br>
                         <p id="dpustakawan_nama"></p>
@@ -126,13 +126,13 @@
                         <b>E-mail</b> : <br>
                         <p id="dpustakawan_email"></p>
                     </div>
-                </div>
-                <div class="row justify-content-center">
                     <div class="col-4">
-                        <b>No.Telepon</b> : <br>
+                        <b>No. Telepon</b> : <br>
                         <p id="dpustakawan_no_telp"></p>
                     </div>
-                    <div class="col-4">
+                </div>
+                <div class="row">
+                    <div class="col-12">
                         <b>Alamat</b> : <br>
                         <p id="dpustakawan_alamat"></p>
                     </div>

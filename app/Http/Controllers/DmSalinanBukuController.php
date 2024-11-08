@@ -85,15 +85,15 @@ class DmSalinanBukuController extends Controller
 
         $selectedKondisi = $dsbk[0]->dsbuku_kondisi ?? '';
 
-        $slc1 = '';
+        $radioButtons = '';
         foreach ($kondisi as $kds) {
-            $selected = ($kds == $selectedKondisi) ? 'selected' : ''; // Jika kondisi sebelumnya cocok, tambahkan atribut selected
-            $slc1 .= '<option value="' . $kds . '" ' . $selected . '>' . $kds . '</option>';
+            $checked = ($kds == $selectedKondisi) ? 'checked' : ''; // Jika kondisi sebelumnya cocok, tambahkan atribut checked
+            $radioButtons .= '<label><input type="radio" name="dsbuku_kondisi" value="' . $kds . '" ' . $checked . '> ' . $kds . '</label>&nbsp;';
         }
 
         return response()->json([
             'dsbk' => $dsbk,
-            'slc1' => $slc1
+            'radioButtons' => $radioButtons
         ]);
     }
 
