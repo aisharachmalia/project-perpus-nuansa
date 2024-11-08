@@ -236,7 +236,9 @@ Route::delete('/transaksi/delete/{id}', [TransaksiController::class, 'delete'])-
 Route::get('/document/{id}', [App\Http\Controllers\BacaOnlineController::class, 'documentDetail'])->name('document.detail');
 
 Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'index'])->name('profile');
-Route::post('/profile', [App\Http\Controllers\ProfileController::class, 'updateProfile'])->name('update_profile');
+Route::post('/update-profile', [App\Http\Controllers\ProfileController::class, 'updateProfile'])->name('update_profile');
+Route::post('/upload-image', [App\Http\Controllers\ProfileController::class, 'updateProfileImage'])->name('update_profile_image');
+
 
 // reservasi
 Route::post('/reservasi/store', [ReservasiController::class, 'createReservasi'])->name('reservasi.store');

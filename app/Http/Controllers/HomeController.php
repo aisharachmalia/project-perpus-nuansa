@@ -16,11 +16,7 @@ class HomeController extends Controller
 
     public function index(Request $request)
     {
-        // Ambil input bulan dan tahun dari request
-     
-
-
-    return view('home');
+        return view('home');
     }
     public function totalDataDashboard(Request $request)
     {
@@ -105,7 +101,8 @@ class HomeController extends Controller
                         FROM trks_transaksi
                         WHERE trks_tgl_peminjaman BETWEEN ? AND ?
                         GROUP BY bulan
-                        ORDER BY bulan",[$tanggalawal, $tanggalakhir]
+                        ORDER BY bulan",
+            [$tanggalawal, $tanggalakhir]
         );
 
         // Format data for Highcharts

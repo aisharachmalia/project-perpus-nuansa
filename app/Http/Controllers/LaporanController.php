@@ -21,7 +21,6 @@ class LaporanController extends Controller
 
     public function tableTrks(Request $request)
     {
-
         $filt = '';
 
         if ($request->get('status') == '1' || $request->get('status') == '2' || $request->get('status') == '3') {
@@ -56,6 +55,7 @@ class LaporanController extends Controller
                     WHERE trks_transaksi.deleted_at IS NULL $filt"
         );
 
+
         if ($request->ajax()) {
             return DataTables::of($trks)
                 ->addIndexColumn()
@@ -69,7 +69,7 @@ class LaporanController extends Controller
                     return $trks->trks_tgl_pengembalian ? Carbon::parse($trks->trks_tgl_pengembalian)->format('d-m-Y H:i') : '-';
                 })
                 ->editColumn('jumlah', function ($trks) {
-                    return 'Rp. ' . number_format($trks->jumlah ,0, ',', '.') ? $trks->jumlah : '0';
+                    return 'Rp. ' . ($trks->jumlah !== null ? number_format($trks->jumlah, 0, ',', '.') : '0');
                 })
                 ->make(true);
         }

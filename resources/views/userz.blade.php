@@ -15,9 +15,12 @@
 </head>
 
 <body>
+    <button type="button" class="btn btn-success btn-floating btn-lg" id="btn-back-to-top">
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </button>
     <div>
         @include('user.header')
-        <div >
+        <div>
             @yield('content')
 
             @include('user.footer')
