@@ -259,7 +259,7 @@
                             <div class="col-md-4 col-12">
                                 <div class="form-group">
                                     <label class="fw-semibold">Nama Peminjam</label>
-                                    <input type="hidden" id="id_buku">
+                                    <input type="hidden" id="id_trsv">
                                     <select id="id_dsiswa" name="id_dsiswa" class="form-control shadow-sm rounded-pill">
                                         <option value="">Pilih Peminjam</option>
                                         @foreach ($reservasi as $data)
@@ -431,7 +431,84 @@
             </div>
         </div>
     </div>
+
+
+    {{-- show reservasi --}}
+    <div class="modal fade" id="show" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-centered modal-dialog-scrollable modal-lg"
+            role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Lihat Detail Reservasi
+                    </h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <i data-feather="x"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-12">
+                        <div class="card-content">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4 col-12">
+                                        <div class="form-group">
+                                            <label for="usr_nama">Nama Peminjam</label>
+                                            <p id="usr_nama"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-12">
+                                        <div class="form-group">
+                                            <label for="usr_username">Buku</label>
+                                            <p id="buku"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-12">
+                                        <div class="form-group">
+                                            <label for="usr_email">Tanggal Reservasi</label>
+                                            <p id="tgl_reservasi"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-12">
+                                        <div class="form-group">
+                                            <label for="verified">Tanggal Kadaluarsa</label>
+                                            <p id="tgl_kadaluarsa"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-12">
+                                        <div class="form-group">
+                                            <label for="verified">Tanggal Pemberitahuan</label>
+                                            <p id="tgl_pemberitahuan"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-12">
+                                        <div class="form-group">
+                                            <label for="verified">Tanggal Pengambilan</label>
+                                            <p id="tgl_pengambilan"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-12">
+                                        <div class="form-group">
+                                            <label for="basicSelect">Status Reservasi</label>
+                                            <p id="status"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+                        <i class="bx bx-x d-block d-sm-none"></i>
+                        <span class="d-none d-sm-block">Close</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     {{-- end modal pengembalian --}}
+    {{-- end modal reservasi --}}
 @endsection
 
 
@@ -573,8 +650,6 @@
                 ]
             });
         });
-
-
         // ajax buat pinjaman
         $('body').on('click', '.modalCreate', function() {
             $('#tambahPeminjaman').find('span').text('');
@@ -594,26 +669,34 @@
 
         $('#pengembalian').find('#id_dsiswa').on('change', function() {
             var id_usr = $(this).val();
-            $.ajax({
-                url: `/transaksi/detail`,
-                type: 'GET',
-                data: {
-                    "_token": $('meta[name="csrf-token"]').attr('content'),
-                    "id_usr": id_usr
-                },
-                success: function(response) {
-                    $('#pengembalian').find('#trks_tgl_pengembalian').val(new Date()
-                        .toISOString().slice(0, 10));
-                    $('#pengembalian').find('#id_dbuku').empty();
-                    $('#pengembalian').find('#id_dbuku').append(
-                        '<option value="">Pilih Buku</option>');
-                    $.each(response, function(index, value) {
+            if (id_usr == '') {
+                $('#pengembalian').find('input, select').val("");
+                $('#pengembalian').find('#id_dbuku').empty();
+                $('#pengembalian').find('#id_dbuku').append(
+                    '<option value="">Pilih Buku</option>');
+            } else {
+                $.ajax({
+                    url: `/transaksi/detail`,
+                    type: 'GET',
+                    data: {
+                        "_token": $('meta[name="csrf-token"]').attr('content'),
+                        "id_usr": id_usr
+                    },
+                    success: function(response) {
+                        $('#pengembalian').find('#trks_tgl_pengembalian').val(new Date()
+                            .toISOString().slice(0, 10));
+                        $('#pengembalian').find('#id_dbuku').empty();
                         $('#pengembalian').find('#id_dbuku').append(
-                            '<option value="' + value.id_trks + '">' +
-                            value.dbuku_judul + '</option>');
-                    });
-                }
-            });
+                            '<option value="">Pilih Buku</option>');
+                        $.each(response, function(index, value) {
+                            $('#pengembalian').find('#id_dbuku').append(
+                                '<option value="' + value.id_trks + '">' +
+                                value.dbuku_judul + '</option>');
+                        });
+                    }
+                });
+            }
+
         });
 
         $('#pengembalian').find('#id_dbuku').on('change', function() {
@@ -1062,6 +1145,41 @@
             });
         });
 
+        // show reservasi
+        $('body').on('click', '.modalShow', function() {
+            let id_trsv = $(this).data('id');
+            let token = $("meta[name='csrf-token']").attr("content");
+            //fetch detail post with ajax
+            $.ajax({
+                url: `/reservasi/detail`,
+                type: "GET",
+                cache: false,
+                data: {
+                    "id_trsv": id_trsv,
+                    "type": 'show',
+                    "_token": token
+                },
+                success: function(response) {
+                    $('#show').find('#usr_nama').html(response.usr_nama);
+                    $('#show').find('#buku').html(response.dbuku_judul);
+                    $('#show').find('#tgl_reservasi').html(response.trsv_tgl_reservasi.split(' ')[0]);
+                    $('#show').find('#tgl_kadaluarsa').html(response.trsv_tgl_kadaluarsa.split(' ')[0]);
+                    $('#show').find('#tgl_pemberitahuan').html(response.trsv_tgl_pemberitahuan == null ?
+                        "-" : response.trsv_tgl_pemberitahuan.split(' ')[0]);
+                    $('#show').find('#tgl_pengambilan').html(response.trsv_tgl_pengambilan == null ?
+                        "-" : response.trsv_tgl_pengambilan.split(' ')[0]);
+                    if (response.trsv_status == -1) {
+                        $('#show').find('#status').html(`Dibatalkan`);
+                    } else if (response.trsv_status == 0) {
+                        $('#show').find('#status').html(`Kadaluarsa`);
+                    } else if (response.trsv_status == 1) {
+                        $('#show').find('#status').html(`Aktif`);
+                    } else {
+                        $('#show').find('#status').html(`Selesai`);
+                    };
+                }
+            });
+        });
 
         // clear modal reservasi
         $('.pengambilan').on('click', function() {
@@ -1079,10 +1197,12 @@
         $('#pengambilan').find('#id_dsiswa').on('change', function() {
             let id_usr = $(this).val();
             let token = $("meta[name='csrf-token']").attr("content");
-            if (id_usr == '') {
-                $('#pengambilan').find('#trsv_tgl_reservasi').val('');
-                $('#pengambilan').find('#trsv_tgl_kadaluarsa').val('');
-
+            if (id_usr == "") {
+                $('#pengambilan').find('input, select').val('');
+                $('#pengambilan').find('#trsv_tgl_pengambilan').val(new Date().toISOString().slice(0, 10));
+                $('#pengambilan').find('#id_dbuku').empty();
+                $('#pengambilan').find('#id_dbuku').append(
+                    '<option value="">Pilih Buku</option>');
             } else {
                 $.ajax({
                     url: `reservasi/detail`,
@@ -1094,9 +1214,12 @@
                         "_token": token
                     },
                     success: function(response) {
+                        $('#pengambilan').find('#id_dbuku').empty();
+                        $('#pengambilan').find('#id_dbuku').append(
+                            '<option value="">Pilih Buku</option>');
                         $.each(response, function(index, value) {
                             $('#pengambilan').find('#id_dbuku').append(
-                                '<option value="' + value.id_trsv + '">' +
+                                '<option value="' + value.id_dbuku + '">' +
                                 value.dbuku_judul + '</option>');
                         });
                     }
@@ -1104,29 +1227,31 @@
             }
 
         });
+
         $('#pengambilan').find('#id_dbuku').on('change', function() {
             let id_dbuku = $(this).val();
             let token = $("meta[name='csrf-token']").attr("content");
             if (id_dbuku == '') {
                 $('#pengambilan').find('#trsv_tgl_reservasi').val('');
                 $('#pengambilan').find('#trsv_tgl_kadaluarsa').val('');
-                $('#pengambilan').find('#id_buku').val('');
             } else {
                 $.ajax({
                     url: `reservasi/detail`,
                     type: "GET",
                     cache: false,
                     data: {
-                        "id_trsv": id_dbuku,
+                        "id_dbuku": id_dbuku,
                         'type': 'buku',
                         "_token": token
                     },
                     success: function(response) {
-                        $('#pengambilan').find('#trsv_tgl_reservasi').val(response.trsv_tgl_reservasi
+                        $('#pengambilan').find('#trsv_tgl_reservasi').val(response
+                            .trsv_tgl_reservasi
                             .split(' ')[0]);
-                        $('#pengambilan').find('#trsv_tgl_kadaluarsa').val(response.trsv_tgl_kadaluarsa
+                        $('#pengambilan').find('#trsv_tgl_kadaluarsa').val(response
+                            .trsv_tgl_kadaluarsa
                             .split(' ')[0]);
-                        $('#pengambilan').find('#id_buku').val(response.id_dbuku);
+                        $('#pengambilan').find('#id_trsv').val(response.id_trsv);
                     }
                 });
             }
@@ -1135,14 +1260,14 @@
         // ajax Create Pengambilan
         $('#storePengambilan').off('click').on('click', function(e) {
             e.preventDefault();
-
             // Ambil nilai dari form
-            let id_trsv = $('#pengambilan').find('#id_dbuku').val();
+            let id_dbuku = $('#pengambilan').find('#id_dbuku').val();
             let id_usr = $('#pengambilan').find('#id_dsiswa').val();
             let trks_tgl_reservasi = $('#pengambilan').find('#trsv_tgl_reservasi').val();
             let trsv_tgl_kadaluarsa = $('#pengambilan').find('#trsv_tgl_kadaluarsa').val();
             let trsv_tgl_pengambilan = $('#pengambilan').find('#trsv_tgl_pengambilan').val();
             let trks_tgl_jth_tempo = $('#pengambilan').find('#trsv_jatuh_tempo').val();
+            let id_trsv = $('#pengambilan').find('#id_trsv').val();
             let token = $("meta[name='csrf-token']").attr("content");
             // Proses AJAX
             $.ajax({
@@ -1150,7 +1275,7 @@
                 type: "POST",
                 cache: false,
                 data: {
-                    "id_dbuku": $('#pengambilan').find('#id_buku').val(),
+                    "id_dbuku": id_dbuku,
                     "id_trsv": id_trsv,
                     "id_dpustakawan": $('#pengambilan').find('#id_dpustakawan').val(),
                     "id_peminjam": id_usr,
