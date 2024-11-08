@@ -53,11 +53,15 @@ class TransaksiController extends Controller
         $bukuReservasi = dm_buku::select('dm_buku.id_dbuku', 'dm_buku.dbuku_judul')->groupBy('dm_buku.id_dbuku')->join('dm_salinan_bukus', 'dm_buku.id_dbuku', '=', 'dm_salinan_bukus.id_dbuku')->whereNull('dm_salinan_bukus.deleted_at')->get();
         $siswa = User::join('trks_transaksi', 'users.id_usr', '=', 'trks_transaksi.id_usr')
             ->whereNull('trks_transaksi.trks_tgl_pengembalian')
+            ->whereNull('users.deleted_at')
+            ->where('users.usr_stat', 1)
             ->groupBy('users.id_usr')
             ->select('users.id_usr', 'users.usr_nama')->get();
         $siswa2 = User::select('users.id_usr', 'users.usr_nama')
             ->leftJoin('akses_usrs', 'users.id_usr', '=', 'akses_usrs.id_usr')
             ->whereNull('akses_usrs.id_usr')
+            ->whereNull('users.deleted_at')
+            ->where('users.usr_stat', 1)
             ->get();
 
         $reservasi = User::join('trks_reservasis', 'users.id_usr', '=', 'trks_reservasis.id_usr')
@@ -356,6 +360,7 @@ class TransaksiController extends Controller
             ->where('users.id_usr', $userId)
             ->whereNull('trks_transaksi.trks_tgl_pengembalian')
             ->whereNull('trks_transaksi.deleted_at')
+            ->where('trks_transaksi.trks_status', 0)
             ->select(
                 'trks_transaksi.trks_tgl_peminjaman',
                 'trks_transaksi.trks_tgl_jatuh_tempo',
@@ -409,7 +414,12 @@ class TransaksiController extends Controller
 
         $db['buku'] = dm_buku::select('dm_buku.id_dbuku', 'dm_buku.dbuku_judul')->join('dm_salinan_bukus', 'dm_buku.id_dbuku', '=', 'dm_salinan_bukus.id_dbuku')->groupBy('dm_buku.id_dbuku')->get();
         $db['pustakawan'] = dm_pustakawan::select('dm_pustakawan.id_dpustakawan', 'dm_pustakawan.dpustakawan_nama')->get();
-        $db['usr'] = User::select('users.id_usr', 'users.usr_nama')->get();
+        $db['usr'] = User::select('users.id_usr', 'users.usr_nama')
+            ->leftJoin('akses_usrs', 'users.id_usr', '=', 'akses_usrs.id_usr')
+            ->whereNull('akses_usrs.id_usr')
+            ->whereNull('users.deleted_at')
+            ->where('users.usr_stat', 1)
+            ->get();
 
         $options['pustakawan'] = '';
         $options['buku'] = '';

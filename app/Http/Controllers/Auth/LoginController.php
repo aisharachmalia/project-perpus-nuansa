@@ -46,10 +46,10 @@ class LoginController extends Controller
             $password = $request->password;
             $usr = User::where('usr_username', $username)->first();
             if (!$usr) {
-                return redirect()->route('login')->with('error_login3', 'Username tidak terdaftar.');
+                return redirect()->route('login-usr')->with('error_login3', 'Username tidak terdaftar.');
             } else {
                 if ($usr->usr_stat != 1) {
-                    return redirect()->route('login')->with('error_login2', 'Akun anda belum di verifikasi.');
+                    return redirect()->route('login-usr')->with('error_login2', 'Akun anda belum di verifikasi.');
                 } else {
                     Auth::attempt([
                         'usr_username' => $username,
@@ -65,6 +65,8 @@ class LoginController extends Controller
                             ->groupBy('menus.id_menu')
                             ->get();
                         Session::put('menus', $menus);
+                        Session::put('redirect_url', $menus[0]->menu_url);
+
                         if (isset($request->remember_me)) {
                             $user = auth()->user();
                             Auth::login($user, true);
@@ -82,7 +84,7 @@ class LoginController extends Controller
                         }
                         return redirect()->route('home');
                     } else {
-                        return redirect()->route('login')->with('error_login', 'Gagal Login.');
+                        return redirect()->route('login-usr')->with('error_login', 'Gagal Login.');
                     }
                 }
             }

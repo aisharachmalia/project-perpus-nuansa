@@ -37,7 +37,7 @@
             role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalCenterTitle">Show User
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Lihat User
                     </h5>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <i data-feather="x"></i>
@@ -136,10 +136,12 @@
                                     <div class="col-md-4 col-12">
                                         <div class="form-group">
                                             <label for="basicSelect">Status</label>
-                                            <select class="form-select status" id="status" name="status">
-                                                <option value="0">Tidak Aktif</option>
-                                                <option value="1">Aktif</option>
-                                            </select>
+                                            <br>
+                                            <input type="radio" id="status" name="status" value="1">
+                                            <label for="aktif">Aktif</label>
+                                            &nbsp;
+                                            <input type="radio" id="status" name="status" value="0">
+                                            <label for="tidak_aktif">Tidak Aktif</label>
                                         </div>
                                     </div>
                                 </div>
