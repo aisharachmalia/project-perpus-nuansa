@@ -133,14 +133,17 @@
                                             <span class="text-danger" id="email_error"></span>
                                         </div>
                                     </div>
-                                    <div class="col-md-4 col-12">
-                                        <div class="form-group">
-                                            <label for="basicSelect">Status</label>
-                                            <select class="form-select status" id="status" name="status">
-                                                <option value="0">Tidak Aktif</option>
-                                                <option value="1">Aktif</option>
-                                            </select>
+                                    <div class="form-group">
+                                        <label for="status">Status</label>
+                                        <div>
+                                            <label>
+                                                <input type="radio" name="status" id="status_active" value="1"> Aktif
+                                            </label>
+                                            <label>
+                                                <input type="radio" name="status" id="status_inactive" value="0"> Tidak Aktif
+                                            </label>
                                         </div>
+                                        <small id="status_error" class="text-danger"></small>
                                     </div>
                                 </div>
                             </div>

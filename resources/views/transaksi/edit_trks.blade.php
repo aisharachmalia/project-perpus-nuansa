@@ -250,9 +250,9 @@
                                 <!-- Buku -->
                                 <div class="col-md-{{ $role->id_role < 3 ? '4' : '6' }}">
                                     <div class="form-group">
-                                        <label for="id_dsiswa">Judul Buku</label>
-                                        <input type="hidden" id="id_trks" name="id_trks">
-                                        <select id="id_dsiswa" name="id_dsiswa"
+                                        <label for="id_dbuku">Judul Buku</label>
+                                        <input type="hidden" id="id_trsv" name="id_trsv">
+                                        <select id="id_dbuku" name="id_dbuku"
                                             class="form-select shadow-sm rounded-pill">
                                             <option value="">Pilih Buku</option>
                                         </select>
@@ -271,23 +271,6 @@
                                         <span id="siswa-error" class="text-danger"></span>
                                     </div>
                                 </div>
-
-                                {{-- pustakawan --}}
-                                @if ($role->id_role < 3)
-                                    <div class="col-md-4 col-12">
-                                        <div class="form-group">
-                                            <label for="city-column" class="fw-semibold">Nama Pustakawan</label>
-                                            <select id="id_dpustakawan" name="id_dpustakawan"
-                                                class="form-select shadow-sm rounded-pill">
-                                                <option value="">Pilih Pustakawan</option>
-                                            </select>
-                                            <span id="pustakawan-error" class="text-danger small"></span>
-                                        </div>
-                                    </div>
-                                @else
-                                    <input type="hidden" name="id_dpustakawan" id="id_dpustakawan"
-                                        value="{{ \Crypt::encryptString(Auth::user()->id_usr) }}">
-                                @endif
 
                                 <!-- Tanggal Reservasi -->
                                 <div class="col-md-4">
