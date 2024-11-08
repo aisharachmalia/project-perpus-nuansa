@@ -25,13 +25,19 @@ class ReservasiController extends Controller
             return DataTables::of($reservasi)
                 ->addIndexColumn()
                 ->addColumn('aksi', function ($row) {
-                    $btn = '<div class="d-flex mr-2 gap-1">
-                                <a href="javascript:void(0)" class="btn btn-warning btn-sm editPeminjaman mr-2"
-                                    data-id="' . Crypt::encryptString($row->id_trsv) . '"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#editPeminjaman">
-                                    <i class="bi bi-pencil"></i>
-                                </a>';
+                    $btn = "";
+                    if ($row->trsv_status == 1) {
+                        $btn .= '<div class="d-flex mr-2 gap-1">
+                        <a href="javascript:void(0)" class="btn btn-warning btn-sm editPeminjaman mr-2"
+                            data-id="' . Crypt::encryptString($row->id_trsv) . '"
+                            data-bs-toggle="modal"
+                            data-bs-target="#editPeminjaman">
+                            <i class="bi bi-pencil"></i>
+                        </a>';
+                    }
+                    if ((in_array($row->trsv_status, [-1, 0, 2]))) {
+                        $btn .= '<a href="javascript:void(0)" class="btn btn-primary btn-sm modalShow"  data-id="' . Crypt::encryptString($row->id_trsv) . '" data-bs-toggle="modal" data-bs-target="#show"><i class="bi bi-eye"></i></a>';
+                    }
                     if ($row->trsv_status == 1) {
                         $btn .= ' | <a href="javascript:void(0)" id="btn-batal"
                                     data-id="' . Crypt::encryptString($row->id_trsv) . '"
@@ -156,22 +162,32 @@ class ReservasiController extends Controller
     public function detailReservasi(Request $request)
     {
         if ($request->type === 'peminjam') {
-
             $id_peminjam = Crypt::decryptString($request->id_peminjam);
-            $data = dm_buku::join('trks_reservasis', 'dm_buku.id_dbuku', '=', 'trks_reservasis.id_dbuku')
+            $data = trks_reservasis::join('dm_buku', 'dm_buku.id_dbuku', '=', 'trks_reservasis.id_dbuku')
                 ->where('trks_reservasis.id_usr', $id_peminjam)
-                ->select('trks_reservasis.id_trsv', 'dm_buku.dbuku_judul')
+                ->where('trks_reservasis.trsv_status', 1)
+                ->select('trks_reservasis.id_dbuku', 'dm_buku.dbuku_judul')
                 ->get()
                 ->map(function ($data) {
-                    $data->id_trsv = Crypt::encryptString($data->id_trsv);
+                    $data->id_dbuku = Crypt::encryptString($data->id_dbuku);
                     return $data;
                 });
             return  response()->json($data);
+        } elseif ($request->type === 'buku') {
+            $id_dbuku = Crypt::decryptString($request->id_dbuku);
+            $data = dm_buku::join('trks_reservasis', 'dm_buku.id_dbuku', '=', 'trks_reservasis.id_dbuku')
+                ->where('trks_reservasis.id_dbuku', $id_dbuku)
+                ->where('trks_reservasis.trsv_status', 1)
+                ->select('trks_reservasis.trsv_tgl_reservasi', 'trks_reservasis.id_trsv', 'trks_reservasis.trsv_tgl_kadaluarsa')->first();
+            $data->id_trsv = Crypt::encryptString($data->id_trsv);
+            return  response()->json($data);
         } else {
-
             $id_trsv = Crypt::decryptString($request->id_trsv);
-            $data = trks_reservasis::find($id_trsv)->join('dm_buku', 'dm_buku.id_dbuku', '=', 'trks_reservasis.id_dbuku')->select('trks_reservasis.trsv_tgl_reservasi', 'trks_reservasis.trsv_tgl_kadaluarsa', 'dm_buku.id_dbuku')->first();
-            $data->id_dbuku = Crypt::encryptString($data->id_dbuku);
+            $data = trks_reservasis::join('dm_buku', 'dm_buku.id_dbuku', '=', 'trks_reservasis.id_dbuku')
+                ->join('users', 'users.id_usr', '=', 'trks_reservasis.id_usr')
+                ->where('trks_reservasis.id_trsv', $id_trsv)
+                ->select('dm_buku.dbuku_judul', 'users.usr_nama', 'trks_reservasis.trsv_tgl_reservasi', 'trks_reservasis.trsv_tgl_kadaluarsa','trks_reservasis.trsv_tgl_pemberitahuan','trks_reservasis.trsv_tgl_pengambilan','trks_reservasis.trsv_status')
+                ->first();
             return  response()->json($data);
         }
     }
@@ -215,7 +231,6 @@ class ReservasiController extends Controller
 
             $buku = Crypt::decryptString($request->id_dbuku);
             $user = Crypt::decryptString($request->id_peminjam);
-
             // Cek ketersediaan buku
             $dsbuku = dm_salinan_buku::where('id_dbuku', $buku)->where('dsbuku_status', 0)->orWhere('dsbuku_status', 2)->first();
             if ($dsbuku) {
