@@ -1257,6 +1257,7 @@
             }
 
         });
+
         // ajax Create Pengambilan
         $('#storePengambilan').off('click').on('click', function(e) {
             e.preventDefault();
@@ -1376,44 +1377,142 @@
                 }
             });
         });
-        $('body').on('click', '#btn-batal', function() {
 
-            let id_trsv = $(this).data('id');
-            let token = $("meta[name='csrf-token']").attr("content");
+            // Clear edit fields
+            $('body').on('click', '.editReservasi', function() {
+                $('#editReservasi').find('#buku-error').text('');
+                $('#editReservasi').find('#siswa-error').text('');
+                $('#editReservasi').find('#tgl-reservasi-error').text('');
+                $('#editReservasi').find('#tgl-kadaluarsa-error').text('');
+                $('#editReservasi').find('#tgl-pemberitahuan-error').text('');
+            });
 
-            Swal.fire({
-                title: 'Apakah Kamu Yakin?',
-                text: "ingin membatalkan reservasi ini!",
-                icon: 'warning',
-                showCancelButton: true,
-                cancelButtonText: 'TIDAK',
-                confirmButtonText: 'YA, BATALKAN!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        url: `/reservasi/batal`,
-                        type: "POST",
-                        cache: false,
-                        data: {
-                            "id_trsv": id_trsv,
-                            "_token": token
-                        },
-                        success: function(response) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Reservasi Telah Dibatalkan',
-                                html: `<p>${response.message}</p>`,
-                                confirmButtonText: 'Ok',
-                                timer: 3000,
-                            });
-                            $('#tbl_reservasi').DataTable().ajax.reload();
+            // AJAX Edit reservasi
+            $(document).on('click', '.editReservasi', function() {
+                let id_tsrv = $(this).data('id');
+  
+                $.ajax({
+                    url: `reservasi/detail/${id_tsrv}`,
+                    type: "GET",
+                    cache: false,
+                    success: function(response) {
+                        $('#editReservasi').find('#id_trsv').val(id_tsrv);
+                        $('#editReservasi').find('#id_dbuku').html(response["buku"]);
+                        $('#editReservasi').find('#id_dsiswa').html(response["usr"]);
+                        $('#editReservasi').find('#trsv_tgl_reservasi').val(response.reservasi.trsv_tgl_reservasi.split(' ')[0]);
+                        $('#editReservasi').find('#trsv_tgl_kadaluarsa').val(response.reservasi.trsv_tgl_kadaluarsa.split(' ')[0]);
+                        $('#editReservasi').find('#trsv_tgl_pemberitahuan').val(response.reservasi.trsv_tgl_pemberitahuan.split(' ')[0]);
+
+                    },
+                });
+            });
+
+            $('body').on('click', '#simpanReservasi', function(e) {
+                e.preventDefault();
+                let token = $('meta[name="csrf-token"]').attr('content');
+                let id_trsv = $('#editReservasi').find('#id_trsv').val();
+                let id_dbuku = $('#editReservasi').find('#id_dbuku').val();
+                let id_dsiswa = $('#editReservasi').find('#id_dsiswa').val();
+                let trsv_tgl_reservasi = $('#editReservasi').find('#trsv_tgl_reservasi').val();
+                let trsv_tgl_kadaluarsa = $('#editReservasi').find('#trsv_tgl_kadaluarsa').val();
+                let trsv_tgl_pemberitahuan = $('#editReservasi').find('#trsv_tgl_pemberitahuan').val();
+
+                // Clear error messages
+                $('#editReservasi').find('#buku-error').text('');
+                $('#editReservasi').find('#siswa-error').text('');
+                $('#editReservasi').find('#tgl-reservasi-error').text('');
+                $('#editReservasi').find('#tgl-kadaluarsa-error').text('');
+                $('#editReservasi').find('#tgl-pemberitahuan-error').text('');
+
+                // Ajax request to update reservasi
+                $.ajax({
+                    url: `/reservasi/update/${id_trsv}`,
+                    type: "PUT",
+                    cache: false,
+                    data: {
+                        "id_dbuku": id_dbuku,
+                        "id_usr": id_dsiswa,
+                        "trsv_tgl_reservasi": trsv_tgl_reservasi,
+                        "trsv_tgl_kadaluarsa": trsv_tgl_kadaluarsa,
+                        "trsv_tgl_pemberitahuan": trsv_tgl_pemberitahuan,
+                        "_token": token
+                    },
+                    success: function(response) {
+                        Swal.fire({
+                            type: 'success',
+                            icon: 'success',
+                            title: `${response.message}`,
+                            timer: 3000
+                        });
+                        $('#editReservasi').modal('toggle');
+                        $('#tbl_reservasi').DataTable().ajax.reload();
+                    },
+                    error: function(xhr) {
+                        if (xhr.status === 422) {
+                            let errors = JSON.parse(xhr.responseText).errors;
+                            if (errors.id_dbuku) {
+                                $('#editReservasi').find('#buku-error').text(errors.id_dbuku[0]);
+                            }
+                            if (errors.id_dsiswa) {
+                                $('#editReservasi').find('#siswa-error').text(errors.id_dsiswa[0]);
+                            }
+                            if (errors.trsv_tgl_reservasi) {
+                                $('#editReservasi').find('#tgl-reservasi-error').text(errors.trsv_tgl_reservasi[0]);
+                            }
+                            if (errors.trsv_tgl_kadaluarsa) {
+                                $('#editReservasi').find('#tgl-kadaluarsa-error').text(errors.trsv_tgl_kadaluarsa[0]);
+                            }
+                            if (errors.trsv_tgl_pemberitahuan) {
+                                $('#editReservasi').find('#tgl-pemberitahuan-error').text(errors.trsv_tgl_pemberitahuan[0]);
+                            }
+                        } else {
+                            console.log("Unexpected error:", xhr);
                         }
-                    });
-                }
-            })
-        });
+                    }
+                });
+            });
+
+            $('body').on('click', '#btn-batal', function() {
+
+                let id_trsv = $(this).data('id');
+                let token = $("meta[name='csrf-token']").attr("content");
+
+                Swal.fire({
+                    title: 'Apakah Kamu Yakin?',
+                    text: "ingin membatalkan reservasi ini!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    cancelButtonText: 'TIDAK',
+                    confirmButtonText: 'YA, BATALKAN!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: `/reservasi/batal`,
+                            type: "POST",
+                            cache: false,
+                            data: {
+                                "id_trsv": id_trsv,
+                                "_token": token
+                            },
+                            success: function(response) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Reservasi Telah Dibatalkan',
+                                    html: `<p>${response.message}</p>`,
+                                    confirmButtonText: 'Ok',
+                                    timer: 3000,
+                                });
+                                $('#tbl_reservasi').DataTable().ajax.reload();
+                            }
+                        });
+                    }
+                })
+            });
     </script>
+
 @endpush
+
+
 <style>
     .swal2-html {
         font-size: 14px;
@@ -1473,7 +1572,7 @@
     .btn-custom {
         background-color: #3b82f6;
         /* Warna tombol */
-        color: white;
+        color: white;  
         /* Warna teks tombol */
         border-radius: 8px;
         /* Sudut tombol melengkung */
@@ -1486,3 +1585,4 @@
         /* Warna tombol saat hover */
     }
 </style>
+        

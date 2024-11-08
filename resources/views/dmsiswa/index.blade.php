@@ -8,7 +8,7 @@
                     <div class="card-header">
                         <div class="row">
                             <div class="col-12 d-flex justify-content-start">
-                               <a href="javascript:void(0)" class="btn btn-custom btn-success mb-2 modalCreate" data-bs-toggle="modal" data-bs-target="#create">+ Tambah</a>&nbsp; &nbsp;
+                               <a href="javascript:void(0)" class="btn btn-custom btn-primary mb-2 modalCreate" data-bs-toggle="modal" data-bs-target="#create">+ Tambah</a>&nbsp; &nbsp;
                               <a href="javascript:;" class="btn btn-custom btn-success mb-2" id="export">
                                 <i class="fas fa-file-excel"></i> Export Excel
                             </a>
@@ -250,13 +250,20 @@
                                     </div>
                                     <div class="col-md-6 col-12">
                                         <div class="form-group">
-                                            <label for="edit_status">Status</label>
-                                            <select name="dsiswa_sts" id="dsiswa_sts" class="form-select" placeholder="Status">
-                                                <option value="0">Tidak Aktif</option>
-                                                <option value="1">Aktif</option>
-                                            </select>
+                                            <label for="dsiswa_sts">Status</label>
+                                            <div>
+                                                <label for="aktif">
+                                                    <input type="radio" name="dsiswa_sts" id="aktif" value="1" checked>
+                                                    Aktif
+                                                </label>
+                                                <label for="non-aktif">
+                                                    <input type="radio" name="dsiswa_sts" id="non-aktif" value="0">
+                                                    Tidak Aktif
+                                                </label>
+                                            </div>
                                         </div>
                                     </div>
+                                    
                                     <div class="col-md-6 col-12">
                                         <div class="form-group">
                                             <label for="edit_kelas">Kelas</label>
@@ -541,81 +548,85 @@
         });
     </script>
 
-    {{-- show --}}
-    <script>
-        $('body').on('click', '.modalShow', function() {
-            let id_siswa = $(this).data('id');
-
-            $.ajax({
-                url: `siswa/show/${id_siswa}`,
-                type: "GET",
-                cache: false,
-                success: function(response) {
-                    $('#show').find('#dsiswa_nama').text(response.siswa.dsiswa_nama);
-                    $('#show').find('#dsiswa_nis').text(response.siswa.dsiswa_nis);
-                    $('#show').find('#dsiswa_email').text(response.siswa.dsiswa_email);
-                    $('#show').find('#dsiswa_no_telp').text(response.siswa.dsiswa_no_telp);
-                    $('#show').find('#dsiswa_sts').text(response.siswa.dsiswa_sts);
-                    $('#show').find('#dsiswa_alamat').text(response.siswa.dsiswa_alamat);
-                    $('#show').find('#dkelas_nama_kelas').text(response.siswa.dkelas_nama_kelas);
-                }
-            });
-        });
-    </script>
-
-    {{-- edit --}}
-    <script>
-     $(document).ready(function() {
-
-    // Edit modal trigger
-    $('body').on('click', '.modalEdit', function() {
-        let id_siswa = $(this).data('id');
+<script>
+    $('body').on('click', '.modalShow', function() {
+        let id_dsiswa = $(this).data('id');
 
         $.ajax({
-            url: `siswa/show/${id_siswa}`,
+            url: `siswa/show/${id_dsiswa}`,
             type: "GET",
             cache: false,
             success: function(response) {
-                $('#edit').find('#id_dsiswa').val(id_siswa);
-                $('#edit').find('#dsiswa_nama').val(response.siswa.dsiswa_nama);
-                $('#edit').find('#dsiswa_nis').val(response.siswa.dsiswa_nis);
-                $('#edit').find('#dsiswa_email').val(response.siswa.dsiswa_email);
-                $('#edit').find('#dsiswa_no_telp').val(response.siswa.dsiswa_no_telp);
-                $('#edit').find('#dsiswa_sts').val(response.siswa.dsiswa_sts);
-                $('#edit').find('#dsiswa_alamat').val(response.siswa.dsiswa_alamat);
-                
-                // Update select option for kelas
-                $('#edit').find('#id_dkelas').html(response.slc); // Ensure the select options are updated
-            },
-            error: function(xhr) {
-                console.log("Error fetching data:", xhr);
+                // Tampilkan data siswa lainnya
+                $('#show').find('#dsiswa_nama').text(response.siswa.dsiswa_nama);
+                $('#show').find('#dsiswa_nis').text(response.siswa.dsiswa_nis);
+                $('#show').find('#dsiswa_email').text(response.siswa.dsiswa_email);
+                $('#show').find('#dsiswa_no_telp').text(response.siswa.dsiswa_no_telp);
+                $('#show').find('#dsiswa_alamat').text(response.siswa.dsiswa_alamat);
+                $('#show').find('#dkelas_nama_kelas').text(response.siswa.dkelas_nama_kelas);
+
+                // Menampilkan status siswa sebagai teks
+                let statusText = (response.siswa.dsiswa_sts == 1) ? 'Aktif' : 'Tidak Aktif';
+                $('#show').find('#dsiswa_sts').text(statusText);
             }
         });
     });
+</script>
+ 
+<script>
+$(document).ready(function() {
+    // Trigger untuk menampilkan modal edit siswa
+    $('body').on('click', '.modalEdit', function() {
+        let id_dsiswa = $(this).data('id');
 
-    // Setup CSRF token for all AJAX requests
+        $.ajax({
+            url: `siswa/show/${id_dsiswa}`,
+            type: "GET",
+            cache: false,
+            success: function(response) {
+            $('#edit').find('#id_dsiswa').val(id_dsiswa);
+            $('#edit').find('#dsiswa_nama').val(response.siswa.dsiswa_nama);
+            $('#edit').find('#dsiswa_nis').val(response.siswa.dsiswa_nis);
+            $('#edit').find('#dsiswa_email').val(response.siswa.dsiswa_email);
+            $('#edit').find('#dsiswa_no_telp').val(response.siswa.dsiswa_no_telp);
+            $('#edit').find('#dsiswa_alamat').val(response.siswa.dsiswa_alamat);
+            $('#edit').find('#id_dkelas').html(response.slc);
+
+            if (response.siswa.dsiswa_sts == 1) {
+                $('#edit').find('#aktif').prop('checked', true);
+            } else {
+                $('#edit').find('#non-aktif').prop('checked', true);
+            }
+        },
+
+        });
+    });
+
+    // Setup CSRF token untuk semua AJAX request
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
 
-   // Update student data
+    // Fungsi untuk update data siswa
+    // Fungsi untuk update data siswa
 $('#update').off('click').on('click', function(e) {
     e.preventDefault();
 
-    // Ambil data dari form
-    let id_dsiswa = $('#edit').find('#id_dsiswa').val(); // Ini harus id asli, bukan yang terenkripsi
+    let id_dsiswa = $('#edit').find('#id_dsiswa').val();
     let dsiswa_nama = $('#edit').find('#dsiswa_nama').val();
     let dsiswa_nis = $('#edit').find('#dsiswa_nis').val();
     let dsiswa_email = $('#edit').find('#dsiswa_email').val();
     let dsiswa_no_telp = $('#edit').find('#dsiswa_no_telp').val();
-    let dsiswa_sts = $('#edit').find('#dsiswa_sts').val();
+    
+    // Ambil nilai dsiswa_sts dari radio button yang dipilih
+    let dsiswa_sts = $('input[name="dsiswa_sts"]:checked').val();  // Update bagian ini
+    
     let dsiswa_alamat = $('#edit').find('#dsiswa_alamat').val();
     let id_dkelas = $('#edit').find('#id_dkelas').val();
-    let token = $("meta[name='csrf-token']").attr("content");
 
-    // Clear previous error messages 
+    // Clear previous error messages
     $('#edit').find('#nama-error').text('');
     $('#edit').find('#nis-error').text('');
     $('#edit').find('#email-error').text('');
@@ -624,7 +635,7 @@ $('#update').off('click').on('click', function(e) {
     $('#edit').find('#kelas-error').text('');
 
     $.ajax({
-        url: `/siswa/update/${id_dsiswa}`,  // Pastikan ID yang terkirim tidak dienkripsi
+        url: `siswa/update/${id_dsiswa}`,
         type: "PUT",
         data: {
             "_method": "PUT",
@@ -632,10 +643,9 @@ $('#update').off('click').on('click', function(e) {
             "dsiswa_nis": dsiswa_nis,
             "dsiswa_email": dsiswa_email,
             "dsiswa_no_telp": dsiswa_no_telp,
-            "dsiswa_sts": dsiswa_sts,
+            "dsiswa_sts": dsiswa_sts,  // Pastikan nilai status yang dipilih dikirim ke server
             "dsiswa_alamat": dsiswa_alamat,
             "id_dkelas": id_dkelas,
-            "_token": token
         },
         success: function(response) {
             Swal.fire({
@@ -652,7 +662,8 @@ $('#update').off('click').on('click', function(e) {
                 if (xhr.responseText) {
                     var error = JSON.parse(xhr.responseText);
                     var errors = error.errors;
-                    console.log(error.errors);
+                    console.log(errors);
+
                     // Tampilkan error di form
                     if (errors.dsiswa_nama) {
                         $('#edit').find('#nama-error').text(errors.dsiswa_nama[0]);
@@ -660,8 +671,8 @@ $('#update').off('click').on('click', function(e) {
                     if (errors.dsiswa_nis) {
                         $('#edit').find('#nis-error').text(errors.dsiswa_nis[0]);
                     }
-                      if (errors.dsiswa_email) {
-                         $('#edit').find('#email-error').text(errors.dsiswa_email[0]);
+                    if (errors.dsiswa_email) {
+                        $('#edit').find('#email-error').text(errors.dsiswa_email[0]);
                     }
                     if (errors.dsiswa_no_telp) {
                         $('#edit').find('#telp-error').text(errors.dsiswa_no_telp[0]);
@@ -681,7 +692,9 @@ $('#update').off('click').on('click', function(e) {
         }
     });
 });
-     });
+
+});
+
 
 
     </script>
@@ -735,4 +748,4 @@ $('#update').off('click').on('click', function(e) {
     background-color: #0056b3; /* Biru gelap saat hover */
 }
 
-</style>
+</style>   

@@ -241,5 +241,9 @@ Route::post('/upload-image', [App\Http\Controllers\ProfileController::class, 'up
 Route::post('/reservasi/store', [ReservasiController::class, 'createReservasi'])->name('reservasi.store');
 Route::post('/pengambilan/store', [ReservasiController::class, 'createPengambilan'])->name('pengambilan.store');
 Route::get('/reservasi/detail', [ReservasiController::class, 'detailReservasi'])->name('reservasi.detail');
+Route::get('/reservasi/detail/{id?}', [ReservasiController::class, 'detailUpdate'])->name('reservasi.detail');
+Route::put('/reservasi/update/{id}', [ReservasiController::class, 'update'])->name('reservasi.update');
+ 
+       
 Route::post('/reservasi/batal', [ReservasiController::class, 'batalReservasi'])->name('reservasi.batal');
 
