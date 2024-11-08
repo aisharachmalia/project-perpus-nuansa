@@ -55,7 +55,7 @@
                                 <select id="filter-siswa" class="form-control">
                                     <option value="">All</option>
                                     @php
-                                        $siswa = DB::table('users')->where('id_usr', '>=', 4)->get();
+                                        $siswa = DB::table('users')->leftJoin('akses_usrs', 'users.id_usr', '=', 'akses_usrs.id_usr')->whereNull('akses_usrs.id_usr')->select('users.id_usr', 'usr_nama')->get();
                                     @endphp
                                     @foreach ($siswa as $item)
                                         <option value="{{ Crypt::encrypt($item->id_usr) }}">{{ $item->usr_nama }}</option>
@@ -176,8 +176,6 @@
                     tanggal_akhir: tanggalAkhir
                 },
                 success: function(response) {
-                    // Lakukan sesuatu dengan respons (misal: refresh tabel)
-                    =le.log(response);
                     // Misal, jika kamu menggunakan DataTables, refresh tabel di sini
                     $('#tbl_trks').DataTable().ajax.reload();
                 },

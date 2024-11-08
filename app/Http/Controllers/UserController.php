@@ -65,18 +65,18 @@ class UserController extends Controller
         $id_usr = Crypt::decryptString($id);
         $user = User::find($id_usr);
         $rules = [
-            'nama' => 'required',
-            'username' => 'required|unique:users,usr_username,' . $user->id_usr . ',id_usr',
-            'email' => 'required|email|unique:users,usr_email,' . $user->id_usr . ',id_usr',
+            'usr_nama' => 'required',
+            'usr_username' => 'required|unique:users,usr_username,' . $user->id_usr . ',id_usr',
+            'usr_email' => 'required|email|unique:users,usr_email,' . $user->id_usr . ',id_usr',
         ];
 
         $messages = [
-            'nama.required' => 'Nama harus diisi.',
-            'username.required' => 'Username harus diisi.',
-            'email.required' => 'E-Mail harus diisi.',
-            'email.email' => 'Format E-Mail tidak sesuai.',
-            'username.unique' => 'Username ini telah terdaftar.',
-            'email.unique' => 'E-Mail ini telah terdaftar.',
+            'usr_nama.required' => 'Nama harus diisi.',
+            'usr_username.required' => 'Username harus diisi.',
+            'usr_username.unique' => 'Username ini telah terdaftar.',
+            'usr_email.required' => 'E-Mail harus diisi.',
+            'usr_email.email' => 'Format E-Mail tidak sesuai.',
+            'usr_email.unique' => 'E-Mail ini telah terdaftar.',
         ];
 
         $validated = $request->validate($rules, $messages);
