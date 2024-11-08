@@ -14,7 +14,7 @@
 @section('content')
 <section class="hero">
     <div class="container2">
-        <h1 class="aesthetic-title">Tentang</h1>
+        <h1 class="aesthetic-title">Nuansa Baca</h1>
     </div>
 </section>
     <section class="about">

@@ -7,7 +7,7 @@ use App\Http\Controllers\ReservasiController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\UsePageController;
 use Illuminate\Support\Facades\Auth;
-
+use App\Http\Controllers\PenulisController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -19,13 +19,27 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 //
-Route::get('/', [App\Http\Controllers\UsePageController::class, 'berandaPage'])->name('beranda');
-Route::get('/popular', [App\Http\Controllers\UsePageController::class, 'berandaPage'])->name('popular-books');
+Route::get('/', [App\Http\Controllers\UsePageController::class, 'berandaPage'])->name('beranda.page');
 Route::get('/tentang', [App\Http\Controllers\WebController::class, 'pageTentang'])->name('tentang');
-Route::get('/halaman-buku', [App\Http\Controllers\WebController::class, 'pageBuku'])->name('buku');
+Route::get('/halaman-buku', [App\Http\Controllers\UsePageController::class, 'pageBuku'])->name('buku');
+Route::get('/search', [App\Http\Controllers\UsePageController::class, 'pageBuku'])->name('buku.search');
 Route::get('/halaman-buku/{penerbit?}', [App\Http\Controllers\UsePageController::class, 'pageBukuByPenerbit'])->name('BukuByPenerbit');
 Route::get('/halaman-penulis/favorit', [App\Http\Controllers\UsePageController::class, 'PagePenulsFav'])->name('Page-Penulis-Fav');
-Route::get('/halaman-penulis/lokal', [App\Http\Controllers\UsePageController::class, 'PagePenulisLokal'])->name('Page-Penulis-Lokal');
+Route::get('/penulis-favorit', [App\Http\Controllers\UsePageController::class, 'penulisFavorit'])->name('penulis.favorit');
+
+// Route untuk memuat lebih banyak buku favorit
+Route::post('/penulis/load-more-books-fav', [App\Http\Controllers\UsePageController::class, 'loadMoreBooksFav'])->name('penulis.loadMoreBooksFav');
+
+// Route untuk penulis lokal dan asing
+Route::get('/penulis-lokal', [App\Http\Controllers\UsePageController::class, 'penulisLokal'])->name('penulis.lokal');
+Route::post('/penulis/load-more-books-lokal', [App\Http\Controllers\UsePageController::class, 'loadMoreBooks'])->name('penulis.loadMoreBooksLokal');
+
+Route::get('/penulis-asing', [App\Http\Controllers\UsePageController::class, 'penulisAsing'])->name('penulis.asing');
+Route::post('/penulis/load-more-books-asing', [App\Http\Controllers\UsePageController::class, 'loadMoreBooksAsing'])->name('penulis.loadMoreBooksAsing');
+
+// Route::get('/load-more-authors', [App\Http\Controllers\UsePageController::class, 'loadMoreAuthors']);
+// Route::get('/load-more-books', [UsePageController::class, 'loadMoreBooks'])->name('loadMoreBooks');
+
 Route::get('/panduan', [App\Http\Controllers\WebController::class, 'pagePanduan'])->name('panduan');
 
 //Login
@@ -56,7 +70,7 @@ Route::post('/lupa-password', [App\Http\Controllers\Auth\ForgotPasswordControlle
 //
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/total-data-dashboard',[App\Http\Controllers\HomeController::class, 'totalDataDashboard'])->name('total_data_dashboard');
 Route::get('/data-leaderboard',[App\Http\Controllers\HomeController::class, 'totalDataDashboard'])->name('data-leaderboard');
 Route::post('/update-chart', [App\Http\Controllers\HomeController::class, 'updateChart'])->name('update.chart');
