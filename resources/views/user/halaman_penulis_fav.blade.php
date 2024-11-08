@@ -1,149 +1,112 @@
 @extends('userz')
 @section('content')
-    <style>
-        /* Library Navigation */
-        .library-nav {
-            background: linear-gradient(45deg, #2c5030, #2abb4c);
-            padding: 15px 0;
-            text-align: center;
-            border-bottom: 4px solid #2980b9;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .library-nav ul {
-            list-style: none;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-        }
-
-        .library-nav ul li a {
-            font-size: 1.1em;
-            font-weight: bold;
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            transition: background 0.3s, transform 0.3s;
-        }
-
-        .library-nav ul li a:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-            transform: scale(1.1);
-        }
-
-        /* Section Styles */
-        .guide-section {
-            padding: 40px 0;
-            background-color: #f5f5f5;
-        }
-
-        .guide-section h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 2em;
-            color: #2c5030;
-        }
-
-        .guide-section p {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .guide-section ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .guide-section ul li {
-            margin: 10px 0;
-            font-size: 1.1em;
-        }
-
-        /* Facility Section */
-        .fasilitas-list {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .fasilitas-item {
-            text-align: center;
-            width: 30%;
-            background-color: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s;
-        }
-
-        .fasilitas-item img {
-            width: 100%;
-            border-radius: 5px;
-        }
-
-        .fasilitas-item:hover {
-            transform: scale(1.05);
-        }
-    </style>
-    @push('scripts')
-        <script>
-            document.querySelectorAll('.library-nav ul li a').forEach(anchor => {
-                anchor.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    document.querySelector(this.getAttribute('href')).scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                });
-            });
-        </script>
-    @endpush
-
-    </style>
-
-
-    <section class="hero">
-        <div class="container2">
-            <h1 class="aesthetic-title">Nuansa Baca</h1>
-            <p>Selamat datang di Nuansa Baca! Temukan Dunia Pengetahuan</p>
-        </div>
-    </section>
-
-    <nav class="library-nav">
-        <ul>
-            @foreach ($datadepan as $item)
-                <li><a href="{{ $item->id_dpenulis }}">{{ $item->dpenulis_nama_penulis }}</a></li>
-            @endforeach
-        </ul>
-    </nav>
-
-    @foreach ($datadepan as $item)
-        <section id="{{ $item->id_dpenulis }}" class="guide-section">
-            <h2 style="text-align: start;margin-bottom: 20px;font-size: 2em;color: #2c5030;margin-left: 20px">
-                {{ $item->dpenulis_nama_penulis }}</h2>
-            <ul>
-                @foreach ($bukuByPenulis as $item)
-                    <div class="carousel-item">
-                        <a href="{{ route('document.detail', ['id' => $item[0]->id_dbuku]) }}">
-                            <img class="carousel-item__img" src="{{ asset('storage/cover/' . $item[0]->dbuku_cover) }}"
-                                alt="{{ $item[0]->dbuku_judul }}" />
-                        </a>
-                        <div class="carousel-item__details">
-                            <div class="controls">
-                                <span class="fas fa-play-circle"></span>
-                                <span class="fas fa-plus-circle"></span>
-                            </div>
-                            <h5 class="carousel-item__details--title">{{ $item[0]->dbuku_judul }}</h5>
-                            <h6 class="carousel-item__details--subtitle">Last updated 3 mins ago</h6>
+<style>
+    .penulis-section {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+        background-color: #f9f9f9;
+    }
+    .books-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+    }
+    .book-item {
+        text-align: center;
+    }
+    .book-item img {
+        width: 50%;
+        height: auto;
+        border-radius: 5px;
+    }
+    .see-more {
+        margin-top: 10px;
+    }
+</style>
+<section class="hero">
+    <div class="container2">
+        <h1 class="aesthetic-title">Nuansa Baca </h1>
+        <p>Selamat datang di Nuansa Baca! Temukan Dunia Pengetahuan</p>
+    </div>
+</section>
+<h1 class="text-center mb-4">Penulis Favorit</h1>
+<div class="containers my-4">
+    <div class="row">
+        @forelse($penulisFavorit as $penulis)
+            <div class="col-md-12 penulis-section">
+                <h2 class="text-primary">{{ $penulis->dpenulis_nama_penulis }}</h2>
+                <p class="text-muted">Total Peminjaman: {{ $penulis->total_peminjaman }}</p>
+                
+                <div class="books-container" id="books-{{ $penulis->id_dpenulis }}">
+                    @foreach($penulis->buku->take(6) as $buku)
+                        <div class="book-item">
+                            <img src="{{ asset('storage/cover/' . $buku->dbuku_cover) }}" alt="{{ $buku->dbuku_judul }}">
+                            <p class="fw-bold mt-2">{{ $buku->dbuku_judul }}</p>
+                            <small class="text-muted">{{ $buku->dbuku_thn_terbit }}</small>
                         </div>
-                    </div>
-                @endforeach
-            </ul>
-        </section>
-        
-    @endforeach
+                    @endforeach
+                </div>
+
+                @if($penulis->buku->count() >= 6)
+                    <button class="btn btn-outline-primary see-more" 
+                            data-penulis-id="{{ $penulis->id_dpenulis }}" 
+                            data-offset="6">
+                        See More
+                    </button>
+                @endif
+            </div>
+        @empty
+            <p class="text-center">Data kosong</p>
+        @endforelse
+    </div>
+</div>
 @endsection
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+   $(document).ready(function() {
+    $('.see-more').on('click', function() {
+        let button = $(this);
+        let penulisId = button.data('penulis-id');
+        let offset = button.data('offset');
+
+        $.ajax({
+            url: "{{ route('penulis.loadMoreBooksFav') }}",
+            method: "POST",
+            data: {
+                _token: "{{ csrf_token() }}",
+                id_dpenulis: penulisId,
+                offset: offset
+            },
+            success: function(data) {
+                if (data.length > 0) {
+                    let newBooksHTML = '';
+                    data.forEach(function(buku) {
+                        newBooksHTML += 
+                            '<div class="book-item">' +
+                            '<img src="{{ asset('storage/cover') }}/' + buku.dbuku_cover + '" alt="' + buku.dbuku_judul + '">' +
+                            '<p class="fw-bold mt-2">' + buku.dbuku_judul + '</p>' +
+                            '<small class="text-muted">' + buku.dbuku_thn_terbit + '</small>' +
+                            '</div>';
+                    });
+
+                    // Tambahkan buku baru
+                    $('#books-' + penulisId).append(newBooksHTML);
+                    // Update offset dan sembunyikan tombol jika tidak ada lagi data
+                    button.data('offset', offset + 6);
+                    if (data.length < 6) {
+                        button.hide();
+                    }
+                } else {
+                    button.hide();
+                }
+            },
+            error: function(xhr) {
+                console.error(xhr.responseText);
+            }
+        });
+    });
+});
+</script>
+

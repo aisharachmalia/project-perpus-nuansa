@@ -7,7 +7,7 @@
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>USER</title>
+    <title>Nuansa Baca</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     @include('user.css')

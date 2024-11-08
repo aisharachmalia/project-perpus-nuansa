@@ -22,8 +22,7 @@ class PustakawanExport implements FromView
 
     public function view(): View
     {
-        $pustakawan = \DB::select("SELECT * FROM dm_pustakawan");
-
+        $pustakawan = \DB::select("SELECT * FROM dm_pustakawan WHERE deleted_at IS NULL");
         return view('export.exc_pustakawan', compact('pustakawan'));
     }
 }

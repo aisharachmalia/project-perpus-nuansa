@@ -10,9 +10,8 @@ use App\Models\Transaksi;
 
 class UsePageController extends Controller
 {
-    public function berandaPage()
+    function berandaPage()
     {
-   
         $datadepan = DB::table('trks_transaksi')
             ->select(
                 'dm_buku.id_dbuku',
@@ -55,76 +54,9 @@ class UsePageController extends Controller
         return view('user.buku_by_penerbit', compact('buku', 'pnb'));
     }
 
-    public function PagePenulsFav()
-    {
-        $datadepan = DB::table('trks_transaksi')
-            ->select(
-                'dm_penulis.id_dpenulis',
-                'dm_penulis.dpenulis_nama_penulis',
-                DB::raw('SUM(trks_transaksi.id_dbuku) as total_peminjaman')
-            )
-            ->join('dm_buku', 'trks_transaksi.id_dbuku', '=', 'dm_buku.id_dbuku')
-            ->join('dm_penulis', 'dm_buku.id_dpenulis', '=', 'dm_penulis.id_dpenulis')
-            ->groupBy('dm_penulis.id_dpenulis', 'dm_penulis.dpenulis_nama_penulis')
-            ->orderByDesc('total_peminjaman')
-            ->take(5)
-            ->get();
 
-        // Initialize an array to hold books for each author
-        $bukuByPenulis = [];
 
-        // For each author, get their books
-        foreach ($datadepan as $author) {
-            $bukuByPenulis[$author->id_dpenulis] = DB::table('dm_buku')
-                ->select(
-                    'dm_buku.id_dbuku',
-                    'dm_buku.dbuku_judul',
-                    'dm_buku.dbuku_cover',
-                    'dm_penulis.dpenulis_nama_penulis',
-                    DB::raw('COUNT(trks_transaksi.id_dbuku) as total_peminjaman')
-                )
-                ->join('dm_penulis', 'dm_buku.id_dpenulis', '=', 'dm_penulis.id_dpenulis')
-                ->leftJoin('trks_transaksi', 'dm_buku.id_dbuku', '=', 'trks_transaksi.id_dbuku')
-                ->where('dm_penulis.id_dpenulis', $author->id_dpenulis) // Filter by author
-                ->groupBy('dm_buku.id_dbuku', 'dm_buku.dbuku_judul', 'dm_buku.dbuku_cover', 'dm_penulis.dpenulis_nama_penulis')
-                ->orderByDesc('total_peminjaman')
-                ->get();
-        }
-        return view('user.halaman_penulis_fav', compact('datadepan', 'bukuByPenulis'));
-    }
 
-    public function PagePenulisLokal()
-    {
-        $pnls = DB::table('dm_penulis')
-            ->select(
-                'dm_penulis.id_dpenulis',
-                'dm_penulis.dpenulis_nama_penulis',
-            )
-            ->where('dm_penulis.deleted_at', null)
-            ->where('dm_penulis.dpenulis_kewarganegaraan', 'Indonesia')
-            ->take(5)
-            ->get();
-
-        $bukuByPenulis = [];
-
-        // Loop through each author and get their respective books.
-        foreach ($pnls as $author) {
-            $bukuByPenulis[$author->id_dpenulis] = DB::table('dm_buku')
-                ->select(
-                    'dm_buku.id_dbuku',
-                    'dm_buku.dbuku_judul',
-                    'dm_buku.dbuku_cover',
-                    'dm_penulis.dpenulis_nama_penulis'
-                )
-                ->join('dm_penulis', 'dm_buku.id_dpenulis', '=', 'dm_penulis.id_dpenulis')
-                ->whereNull('dm_penulis.deleted_at')
-                ->where('dm_penulis.dpenulis_kewarganegaraan', 'Indonesia')
-                ->where('dm_buku.id_dpenulis', $author->id_dpenulis)
-                ->get();
-        }
-
-        return view('user.halaman_penulis_lokal', compact('pnls', 'bukuByPenulis'));
-    }
     public function pageBuku(Request $request)
     {
         $query = $request->input('query');
@@ -141,6 +73,112 @@ class UsePageController extends Controller
     
         return view('user.halaman_buku', compact('buku', 'query'));
     }
+    public function penulisAsing()
+    {
+        // Mengambil data penulis yang tidak berasal dari Indonesia
+        $penulisAsing = DB::table('dm_penulis')
+            ->where('dpenulis_kewarganegaraan', '!=', 'Indonesia') // Tidak berasal dari Indonesia
+            ->get();
     
-
+        // Untuk setiap penulis, ambil maksimal 6 buku pertama
+        $penulisAsing->each(function ($penulis) {
+            $penulis->buku = DB::table('dm_buku')
+                ->where('id_dpenulis', $penulis->id_dpenulis)
+                ->limit(6)
+                ->get();
+            
+            // Hitung total buku untuk menentukan apakah "See More" diperlukan
+            $penulis->jumlahBuku = DB::table('dm_buku')
+                ->where('id_dpenulis', $penulis->id_dpenulis)
+                ->count();
+        });
+    
+        return view('user.halaman_penulis_asing', compact('penulisAsing'));
+    }
+    public function loadMoreBooksAsing(Request $request)
+    {
+        // Ambil buku tambahan berdasarkan offset dan id penulis
+        $buku = DB::table('dm_buku')
+            ->where('id_dpenulis', $request->id_dpenulis)
+            ->offset($request->offset)
+            ->limit(6)
+            ->get();
+    
+        return response()->json($buku);
+    }
+    
+        public function penulisLokal()
+        {
+            // Mengambil data penulis asal Indonesia
+            $penulisLokal = DB::table('dm_penulis')
+                ->where('dpenulis_kewarganegaraan', 'Indonesia')
+                ->get();
+    
+            // Untuk setiap penulis, ambil maksimal 6 buku pertama
+            $penulisLokal->each(function ($penulis) {
+                $penulis->buku = DB::table('dm_buku')
+                    ->where('id_dpenulis', $penulis->id_dpenulis)
+                    ->limit(6)
+                    ->get();
+                
+                // Hitung total buku untuk menentukan apakah "See More" diperlukan
+                $penulis->jumlahBuku = DB::table('dm_buku')
+                    ->where('id_dpenulis', $penulis->id_dpenulis)
+                    ->count();
+            });
+    
+            return view('user.halaman_penulis_lokal', compact('penulisLokal'));
+        }
+    
+        public function loadMoreBooks(Request $request)
+        {
+            // Ambil buku tambahan berdasarkan offset dan id penulis
+            $buku = DB::table('dm_buku')
+                ->where('id_dpenulis', $request->id_dpenulis)
+                ->offset($request->offset)
+                ->limit(6)
+                ->get();
+    
+            return response()->json($buku);
+        
+    } 
+    public function loadMoreBooksFav(Request $request)
+    {
+        // Validasi parameter
+        if (!$request->has('offset') || !$request->has('id_dpenulis')) {
+            return response()->json([], 400);
+        }
+    
+        // Mengambil data buku sesuai offset
+        $buku = DB::table('dm_buku')
+            ->where('id_dpenulis', $request->id_dpenulis)
+            ->offset($request->offset)
+            ->limit(6)
+            ->get();
+        
+        return response()->json($buku);
+    }
+    
+    
+    public function penulisFavorit()
+    {
+        $penulisFavorit = DB::table('dm_penulis')
+            ->join('dm_buku', 'dm_penulis.id_dpenulis', '=', 'dm_buku.id_dpenulis')
+            ->join('trks_transaksi', 'dm_buku.id_dbuku', '=', 'trks_transaksi.id_dbuku')
+            ->select('dm_penulis.*', DB::raw('COUNT(trks_transaksi.id_trks) as total_peminjaman'))
+            ->groupBy('dm_penulis.id_dpenulis')
+            ->orderByDesc('total_peminjaman')
+            ->limit(5)
+            ->get();
+    
+        $penulisFavorit->each(function ($penulis) {
+            $penulis->buku = DB::table('dm_buku')
+                ->where('id_dpenulis', $penulis->id_dpenulis)
+                ->limit(6)
+                ->get();
+        });
+    
+        return view('user.halaman_penulis_fav', compact('penulisFavorit'));
+    }
+    
 }

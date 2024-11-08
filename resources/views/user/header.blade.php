@@ -29,7 +29,7 @@
             </ul>
         </nav>
         <div>
-          <a class="dropdown-item" href="{{ route('login-usr') }}"><i class="fa-sharp fa-solid fa-right-to-bracket" style="color: white"></i> </a>
+          <a class="dropdown-item" href="{{ route('login-usr') }}" style="color: white"><i class="bi bi-box-arrow-in-right" style="color: white"></i> Login</a>
         </div>
     </div>
 </header>

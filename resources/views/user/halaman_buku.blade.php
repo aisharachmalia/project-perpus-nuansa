@@ -17,7 +17,10 @@
 </section>
 <section class="author">
   <div class="container5">
-      {{-- <h1 class="penulis">Penulis</h1> --}}
+      
+    @if(!empty($query))
+    <h3>Hasil pencarian untuk: <strong>{{ $query }}</strong></h3>
+  @endif
       <div class="row">
         @foreach($buku as $item) <!-- Pastikan $items di-passing ke view -->
           <div class="col-2">

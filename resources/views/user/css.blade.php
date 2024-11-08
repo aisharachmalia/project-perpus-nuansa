@@ -2,7 +2,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <style>
 body {
     font-family: 'Montserrat', sans-serif;
@@ -44,6 +44,13 @@ box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 .container {
 max-width: 1200px;
 margin: 0 auto;
+display: flex;
+align-items: center;
+justify-content: space-between;
+}
+.containers {
+max-width: 1300px;
+margin-left: 95px;
 display: flex;
 align-items: center;
 justify-content: space-between;
@@ -256,15 +263,7 @@ section.author {
     background-color: #ffffff;
 }
 
-.row {
-    display: flex; /* Menggunakan flexbox */
-    justify-content: space-between; /* Menjaga jarak di antara kolom */
-}
 
-.col-4 {
-    flex: 1; /* Memastikan kolom berbagi lebar yang sama */
-    margin: 10px; /* Menambahkan margin untuk jarak antar kolom */
-}
 /* Style untuk Book Features Section */
 /* section.book-features {
     background-color: #fff;
@@ -337,6 +336,7 @@ footer {
     position: relative;
     bottom: 0;
     width: 100%;
+     flex-shrink: none;
 }
 section.search {
     background-color: #f4f4f4;
