@@ -1,6 +1,8 @@
 @extends('userz')
 
 @section('content')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
     <style>
         body {
             margin: 0;
@@ -61,27 +63,27 @@
     </section>
 
     <!-- Buku Rekomendasi Section -->
-    <section class="carousel">
-        <h2 class="categories__title">Rekomendasi Buku</h2>
-        <div class="carousel__container">
+
+       
+        <div class="">
             @foreach ($datadepan as $item)
-                <div class="carousel-item">
+                <div class="">
                     <a href="{{ route('document.detail', ['id' => $item->id_dbuku]) }}">
-                        <img class="carousel-item__img" src="{{ asset('storage/cover/' . $item->dbuku_cover) }}"
+                        <img class="" src="{{ asset('storage/cover/' . $item->dbuku_cover) }}"
                             alt="{{ $item->dbuku_judul }}" />
                     </a>
-                    <div class="carousel-item__details">
-                        <div class="controls">
+                    <div class="">
+                        <div class="">
                             <span class="fas fa-play-circle"></span>
                             <span class="fas fa-plus-circle"></span>
                         </div>
-                        <h5 class="carousel-item__details--title">{{ $item->dbuku_judul }}</h5>
-                        <h6 class="carousel-item__details--subtitle">Last updated 3 mins ago</h6>
+                        <h5 class="">{{ $item->dbuku_judul }}</h5>
+                        <h6 class="">Last updated 3 mins ago</h6>
                     </div>
                 </div>
             @endforeach
         </div>
-    </section>
+
 
     <!-- Penerbit Section -->
     <section class="author">
