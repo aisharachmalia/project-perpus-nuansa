@@ -101,9 +101,6 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel17">Akses Menu</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <i data-feather="x"></i>
-                    </button>
                 </div>
                 <div class="modal-body">
                     <form data-action="{{ route('setting.user-access-store') }}" method="POST" id="add-user-access-form">
@@ -134,11 +131,11 @@
                         <div class="modal-footer">
                             <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
                                 <i class="bx bx-x d-block d-sm-none"></i>
-                                <span class="d-none d-sm-block">Close</span>
+                                <span class="d-none d-sm-block">Tutup</span>
                             </button>
                             <button type="submit" class="btn btn-primary ml-1">
                                 <i class="bx bx-check d-block d-sm-none"></i>
-                                <span class="d-none d-sm-block">Accept</span>
+                                <span class="d-none d-sm-block">Simpan</span>
                             </button>
                         </div>
                     </form>
@@ -152,9 +149,6 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="myModalLabel17">Default Password</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <i data-feather="x"></i>
-                    </button>
                 </div>
                 <div class="modal-body">
                     <div class="row justify-content-center">
@@ -183,11 +177,11 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
                         <i class="bx bx-x d-block d-sm-none"></i>
-                        <span class="d-none d-sm-block">Close</span>
+                        <span class="d-none d-sm-block">Tutup</span>
                     </button>
                     <button type="submit" class="btn btn-primary ml-1" data-bs-dismiss="modal" id="update">
                         <i class="bx bx-check d-block d-sm-none"></i>
-                        <span class="d-none d-sm-block">Accept</span>
+                        <span class="d-none d-sm-block">Simpan</span>
                     </button>
                 </div>
             </div>

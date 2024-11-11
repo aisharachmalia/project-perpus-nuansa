@@ -6,7 +6,7 @@
 
         Swal.fire({
             title: 'Apakah Kamu Yakin?',
-            text: "ingin menghapus data ini!",
+            text: "ingin menghapus user ini!",
             icon: 'warning',
             showCancelButton: true,
             cancelButtonText: 'TIDAK',

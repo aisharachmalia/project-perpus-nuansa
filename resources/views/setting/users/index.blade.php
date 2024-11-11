@@ -98,7 +98,7 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel17">Edit User</h4>
+                    <h4 class="modal-title" id="myModalLabel17">Perbarui User</h4>
                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <i data-feather="x"></i>
                     </button>
@@ -128,8 +128,8 @@
                                     <div class="col-md-4 col-12">
                                         <div class="form-group">
                                             <label for="usr_email">E-Mail</label>
-                                            <input type="text" id="usr_email" class="form-control" placeholder="Email"
-                                                name="usr_email">
+                                            <input type="text" id="usr_email" class="form-control"
+                                                placeholder="Email" name="usr_email">
                                             <span class="text-danger" id="email_error"></span>
                                         </div>
                                     </div>
@@ -153,11 +153,11 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
                         <i class="bx bx-x d-block d-sm-none"></i>
-                        <span class="d-none d-sm-block">Close</span>
+                        <span class="d-none d-sm-block">Tutup</span>
                     </button>
                     <button type="submit" class="btn btn-primary ml-1" id="update">
                         <i class="bx bx-check d-block d-sm-none"></i>
-                        <span class="d-none d-sm-block" id="submit">Accept</span>
+                        <span class="d-none d-sm-block" id="submit">Simpan</span>
                     </button>
                 </div>
             </div>
@@ -194,7 +194,7 @@
                             if (data == 1) {
                                 return '<span class="badge bg-success">Aktif</span>';
                             } else {
-                                return '<span class="badge bg-danger">Inaktif</span>';
+                                return '<span class="badge bg-danger">Tidak Aktif</span>';
                             }
                         }
                     },
