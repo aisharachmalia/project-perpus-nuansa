@@ -81,10 +81,6 @@ class PustakawanController extends Controller
                 'errors' => $validator->errors(),
             ], 422);
         }
-
-        // Cek jika nama pustakawan sudah ada
-        // Cek jika nama pustakawan sudah ada
-// Capitalize the first letter of the name
         $name = ucfirst(strtolower($request->dpustakawan_nama));
 
 // Check if the name already exists in the users table
@@ -113,12 +109,26 @@ class PustakawanController extends Controller
         ]);
 
 // Create the User record with hashed password
-        User::create([
+        $user = User::create([
             'usr_nama' => $name,
             'usr_username' => $username,
             'usr_email' => $request->dpustakawan_email,
             'password' => \Hash::make($request->dpustakawan_no_telp),
         ]);
+        $menus = \DB::table('menus')->get();
+
+        foreach ($menus as $menu) {
+            for ($i = 1; $i <= 4; $i++) {
+                \DB::table('akses_usrs')->insert([
+                    'id_usr' => $user->id_usr,
+                    'id_role' => 3,
+                    'id_menu' => $menu->id_menu,
+                    'hak_akses' => 0,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
         return response()->json([
             'success' => true,
             'message' => 'Data Berhasil Disimpan!',
@@ -130,14 +140,21 @@ class PustakawanController extends Controller
         try {
             $idPs = Crypt::decryptString($id);
             $pustakawan = dm_pustakawan::find($idPs);
-
+    
+            if (!$pustakawan) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data pustakawan tidak ditemukan',
+                ], 404);
+            }
+    
             $rules = [
                 'dpustakawan_nama' => 'required',
                 'dpustakawan_email' => 'required|email|unique:dm_pustakawan,dpustakawan_email,' . $pustakawan->id_dpustakawan . ',id_dpustakawan',
                 'dpustakawan_no_telp' => 'required|unique:dm_pustakawan,dpustakawan_no_telp,' . $pustakawan->id_dpustakawan . ',id_dpustakawan|numeric|regex:/^([0-9\s\-\+\(\)]*)$/|digits_between:11,13',
                 'dpustakawan_alamat' => 'required',
             ];
-
+    
             $messages = [
                 'dpustakawan_email.email' => 'Format email tidak sesuai',
                 'dpustakawan_nama.required' => 'Nama harus diisi!',
@@ -149,66 +166,64 @@ class PustakawanController extends Controller
                 'dpustakawan_no_telp.regex' => 'No. Telepon harus angka!',
                 'dpustakawan_no_telp.digits_between' => 'No. Telepon harus di antara 11 hingga 13 angka!',
             ];
-
+    
             // Validate request
             $validator = \Validator::make($request->all(), $rules, $messages);
-
+    
             if ($validator->fails()) {
                 return response()->json([
                     'success' => false,
                     'errors' => $validator->errors(),
                 ], 422);
-            }
-
-            // Update librarian data
-            dm_pustakawan::where('id_dpustakawan', $idPs)->update([
-                'dpustakawan_nama' => $request->dpustakawan_nama,
-                'dpustakawan_email' => $request->dpustakawan_email,
-                'dpustakawan_no_telp' => $request->dpustakawan_no_telp,
-                'dpustakawan_alamat' => $request->dpustakawan_alamat,
-                'dpustakawan_status' => $request->dpustakawan_status,
-            ]);
-
-            $user = User::where('usr_email', $pustakawan->dpustakawan_email)->first();
-            $name = ucfirst(strtolower($request->dpustakawan_nama));
-            $existingUser = User::where('usr_username', $name)->exists();
-
-            if ($existingUser) {
-                $counter = 1;
-                // Increment the counter until a unique username is found
-                while (User::where('usr_username', $name . $counter)->exists()) {
-                    $counter++;
-                }
-                // Create a unique username by appending the counter
-                $username = $name . $counter;
             } else {
-                // If no user with the same name, use the name as the username
-                $username = $name;
-            }
-
-            if ($user) {
-                // Update only the name and email, keeping the existing username
-                $user->update([
-                    'usr_username' => $username,
-                    'usr_nama' => $request->dpustakawan_nama,
-                    'usr_email' => $request->dpustakawan_email,
-                    'password' => \Hash::make($request->dpustakawan_no_telp),
+                // Update librarian data
+                $pustakawan->update([
+                    'dpustakawan_nama' => $request->dpustakawan_nama,
+                    'dpustakawan_email' => $request->dpustakawan_email,
+                    'dpustakawan_no_telp' => $request->dpustakawan_no_telp,
+                    'dpustakawan_alamat' => $request->dpustakawan_alamat,
+                    'dpustakawan_status' => $request->dpustakawan_status,
+                ]);
+    
+                // Update user data
+                $user = User::where('usr_email', $pustakawan->dpustakawan_email)->first();
+                $name = ucfirst(strtolower($request->dpustakawan_nama));
+                $existingUser = User::where('usr_username', $name)->exists();
+    
+                if ($existingUser) {
+                    $counter = 1;
+                    while (User::where('usr_username', $name . $counter)->exists()) {
+                        $counter++;
+                    }
+                    $username = $name . $counter;
+                } else {
+                    $username = $name;
+                }
+    
+                if ($user) {
+                    $user->update([
+                        'usr_username' => $username,
+                        'usr_nama' => $request->dpustakawan_nama,
+                        'usr_email' => $request->dpustakawan_email,
+                        'password' => \Hash::make($request->dpustakawan_no_telp),
+                    ]);
+                }
+    
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Data Berhasil Disimpan!',
                 ]);
             }
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Data Berhasil Disimpan!',
-            ]);
-
+    
         } catch (\Throwable $th) {
-            // Handle exceptions
             return response()->json([
                 'success' => false,
                 'message' => 'Terjadi kesalahan: ' . $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
+    
+    
 
     public function deletePustakawan($id = null)
     {

@@ -157,111 +157,47 @@
 
         <button id="startReading" class="btn btn-primary mt-3">Mulai Baca</button>
     </div>
-
-    <div id="readingCanvas" style="display:none;">
-        <h2 class="text-center">Membaca: {{ $bk->dbuku_judul }}</h2>
-
-        <!-- Kontrol PDF Gaya Komiku -->
-        <div class="controls text-center my-3">
-            <button id="prevPage"><i class="fa fa-chevron-left"></i> Sebelumnya</button>
-            <span>Halaman: <span id="pageNum"></span> / <span id="pageCount"></span></span>
-            <button id="nextPage">Berikutnya <i class="fa fa-chevron-right"></i></button>
-        </div>
-
-        <!-- Kontrol PDF Gaya Komiku -->
-        
-        <!-- Container untuk menampilkan PDF -->
-        <div id="viewerContainer" style="width: 100%; text-align: center;">
-            <canvas id="pdf-canvas" style="border:1px solid #ddd; max-width: 100%;"></canvas>
-        </div>
-
-        <button id="finishReading" class="btn btn-success my-3">Selesai Baca</button>
-    </div>
+<div id="readingCanvas" style="display:none;">
+    <h2 class="text-center">Membaca: {{ $bk->dbuku_judul }}</h2>
+    <div class="pdf-container" id="pdf-container"></div>
+</div>
 @endsection
 
 @push('scripts')
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
-    <script>
-        const url = "{{ Storage::url('file/' . $bk->dbuku_file) }}";
-        // Tampilkan canvas baca saat tombol 'Mulai Baca' ditekan
-        document.getElementById('startReading').addEventListener('click', function() {
-            document.querySelector('.container-baca').style.display = 'none'; // Sembunyikan detail buku
-            document.getElementById('readingCanvas').style.display = 'block'; // Tampilkan canvas baca
-            this.style.display = 'none'; // Sembunyikan tombol 'Mulai Baca'
-        });
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+<script>
+    const url = "{{ Storage::url('file/' . $bk->dbuku_file) }}";
+    
+    // Tampilkan semua halaman saat tombol 'Mulai Baca' ditekan
+    document.getElementById('startReading').addEventListener('click', function() {
+        document.querySelector('.container-baca').style.display = 'none'; // Sembunyikan detail buku
+        document.getElementById('readingCanvas').style.display = 'block'; // Tampilkan area baca
+        loadPDF();
+    });
 
-        let pdfDoc = null,
-            pageNum = 1,
-            pageRendering = false,
-            pageNumPending = null,
-            scale = 1.2;
-        const canvas = document.getElementById('pdf-canvas');
-        const ctx = canvas.getContext('2d');
+    function loadPDF() {
+        pdfjsLib.getDocument(url).promise.then(pdfDoc => {
+            for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
+                pdfDoc.getPage(pageNum).then(page => {
+                    const viewport = page.getViewport({ scale: 1.5 });
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    canvas.classList.add('pdf-page');
+                    document.getElementById('pdf-container').appendChild(canvas);
 
-        function renderPage(num) {
-            pageRendering = true;
-
-            pdfDoc.getPage(num).then(function(page) {
-                const viewport = page.getViewport({
-                    scale
+                    const renderContext = {
+                        canvasContext: ctx,
+                        viewport: viewport
+                    };
+                    page.render(renderContext);
                 });
-                canvas.height = viewport.height;
-                canvas.width = viewport.width;
-
-                const renderContext = {
-                    canvasContext: ctx,
-                    viewport
-                };
-                const renderTask = page.render(renderContext);
-
-                renderTask.promise.then(function() {
-                    pageRendering = false;
-                    if (pageNumPending !== null) {
-                        renderPage(pageNumPending);
-                        pageNumPending = null;
-                    }
-                });
-            });
-
-            document.getElementById('pageNum').textContent = num;
-        }
-
-        function queueRenderPage(num) {
-            if (pageRendering) {
-                pageNumPending = num;
-            } else {
-                renderPage(num);
             }
-        }
-
-        document.getElementById('nextPage').addEventListener('click', function() {
-            if (pageNum < pdfDoc.numPages) {
-                pageNum++;
-                queueRenderPage(pageNum);
-            }
+        }).catch(error => {
+            console.error("Error loading PDF:", error);
+            alert("Gagal memuat PDF. Periksa URL atau file PDF.");
         });
-
-        document.getElementById('prevPage').addEventListener('click', function() {
-            if (pageNum > 1) {
-                pageNum--;
-                queueRenderPage(pageNum);
-            }
-        });
-
-        pdfjsLib.getDocument(url).promise.then(function(pdfDoc_) {
-            pdfDoc = pdfDoc_;
-            document.getElementById('pageCount').textContent = pdfDoc.numPages;
-            renderPage(pageNum);
-        });
-
-        document.getElementById('startReading').addEventListener('click', function() {
-            document.querySelector('.container-baca').style.display = 'none';
-            document.getElementById('readingCanvas').style.display = 'block';
-        });
-
-        document.getElementById('finishReading').addEventListener('click', function() {
-            alert('Terima kasih telah membaca!');
-            location.reload();
-        });
-    </script>
+    }
+</script>
 @endpush

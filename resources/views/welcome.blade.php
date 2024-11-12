@@ -1,6 +1,8 @@
 @extends('userz')
 
 @section('content')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
     <style>
         body {
             margin: 0;
@@ -63,9 +65,9 @@
     <!-- Buku Rekomendasi Section -->
     <section class="carousel">
         <h2 class="categories__title">Rekomendasi Buku</h2>
-        <div class="carousel__container">
+        <div class="container">
             @foreach ($datadepan as $item)
-                <div class="carousel-item">
+                <div class="carousel-items">
                     <a href="{{ route('document.detail', ['id' => $item->id_dbuku]) }}">
                         <img class="carousel-item__img" src="{{ asset('storage/cover/' . $item->dbuku_cover) }}"
                             alt="{{ $item->dbuku_judul }}" />
