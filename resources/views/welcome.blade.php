@@ -63,27 +63,27 @@
     </section>
 
     <!-- Buku Rekomendasi Section -->
-
-       
-        <div class="">
+    <section class="carousel">
+        <h2 class="categories__title">Rekomendasi Buku</h2>
+        <div class="container">
             @foreach ($datadepan as $item)
-                <div class="">
+                <div class="carousel-items">
                     <a href="{{ route('document.detail', ['id' => $item->id_dbuku]) }}">
-                        <img class="" src="{{ asset('storage/cover/' . $item->dbuku_cover) }}"
+                        <img class="carousel-item__img" src="{{ asset('storage/cover/' . $item->dbuku_cover) }}"
                             alt="{{ $item->dbuku_judul }}" />
                     </a>
-                    <div class="">
-                        <div class="">
+                    <div class="carousel-item__details">
+                        <div class="controls">
                             <span class="fas fa-play-circle"></span>
                             <span class="fas fa-plus-circle"></span>
                         </div>
-                        <h5 class="">{{ $item->dbuku_judul }}</h5>
-                        <h6 class="">Last updated 3 mins ago</h6>
+                        <h5 class="carousel-item__details--title">{{ $item->dbuku_judul }}</h5>
+                        <h6 class="carousel-item__details--subtitle">Last updated 3 mins ago</h6>
                     </div>
                 </div>
             @endforeach
         </div>
-
+    </section>
 
     <!-- Penerbit Section -->
     <section class="author">

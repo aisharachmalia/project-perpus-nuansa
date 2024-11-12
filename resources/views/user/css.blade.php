@@ -587,61 +587,34 @@ body {
   padding-left: 20px !important;
   color: #333;
 }
-.background {
-  background: url('https://images.pexels.com/photos/1095624/pexels-photo-1095624.jpeg?auto=compress&cs=tinysrgb&h=750&w=1260')
-    center top no-repeat #252746;
-  background-size: cover;
-  display: block;
-  width: 100%;
-  height: 1000px;
-  position: absolute;
-  z-index: 0;
-  top: 0;
-  left: 0;
-}
 
-.background-texture {
-  background: linear-gradient(to top, #0f0140e6, rgba(255, 214, 117, 0.9));
-  background-size: cover;
-  width: 100%;
-  height: 1000px;
-  position: absolute;
-  z-index: 0;
-  top: 0;
-  left: 0;
-}
 
 .carousel {
   width: 100%;
   overflow-x: scroll;
+  padding: 30px;
   padding-top: 80px;
   position: relative;
   box-sizing: border-box;
-  background-color: #fff;
-    padding: 60px 0;
-    text-align: center;
 }
 
 .carousel__container {
   white-space: nowrap;
-  margin: 70px 0;
+  margin: 70px 0px;
   padding-bottom: 10px;
   display: inline-block;
 }
 
 .categories__title {
-  color: #333;
+  color: rgb(77, 55, 102);
+  font-size: 28px;
   position: absolute;
-  padding-left: 120px;
-  font-optical-sizing: auto;
-  font-weight: <weight>;
-  font-style: normal;
-  font-size: 2rem;
+  padding-left: 30px;
 }
 
-.carousel-item {
+.carousel-items {
   width: 200px;
-  height: 300px;
+  height: auto; /* Set height to auto to fit content */
   border-radius: 20px;
   background-color: #95bcd6;
   overflow: hidden;
@@ -649,38 +622,38 @@ body {
   margin-top: 70px;
   display: inline-block;
   cursor: pointer;
-  transition: 1000ms all;
+  transition: 500ms all; /* Adjusted to faster transition */
   transform-origin: center left;
   position: relative;
 }
 
-.carousel-item:hover ~ .carousel-item {
+.carousel-item:hover ~ .carousel-items {
   transform: translate3d(100px, 0, 0);
 }
 
-.carousel__container:hover .carousel-item {
+.carousel__container:hover .carousel-items {
   opacity: 0.3;
 }
 
-.carousel__container:hover .carousel-item:hover {
-  transform: scale(1.5);
+.carousel__container:hover .carousel-items:hover {
+  transform: scale(1.2); /* Reduce scale to prevent overflow */
   opacity: 1;
 }
 
 .carousel-item__img {
-  width: 200px;
-  height: 300px;
+  width: 100%; /* Ensure the image fits the container */
+  height: 300px; /* Set a fixed height */
   object-fit: cover;
 }
 
 .carousel-item__details {
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0));
-  font-size: 12px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0) 100%);
+  font-size: 14px; /* Increase font size for readability */
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: 300ms opacity; /* Faster transition */
   padding: 10px;
   position: absolute;
-  bottom: 0;
+  bottom: 0; /* Position at the bottom */
   left: 0;
   right: 0;
 }
@@ -690,20 +663,21 @@ body {
 }
 
 .carousel-item__details span {
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: #2ecc71;
 }
 
 .carousel-item__details .controls {
-  display: flex;
-  gap: 10px;
-  justify-content: start;
+  padding-top: 5px; /* Adjust padding if needed */
 }
 
-.carousel-item__details--title,
+.carousel-item__details .carousel-item__details--title,
 .carousel-item__details--subtitle {
   color: #fff;
   margin: 5px 0;
+  white-space: normal; /* Allow wrapping */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Ellipsis for long titles */
 }
 
 /* HALAMAN TENTANG */
