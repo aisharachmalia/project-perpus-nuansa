@@ -30,10 +30,10 @@ class ReservasiController extends Controller
                     $btn = "";
                     if ($row->trsv_status == 1) {
                         $btn .= '<div class="d-flex mr-2 gap-1">
-                        <a href="javascript:void(0)" class="btn btn-warning btn-sm editPeminjaman mr-2"
+                        <a href="javascript:void(0)" class="btn btn-warning btn-sm editReservasi mr-2"
                             data-id="' . Crypt::encryptString($row->id_trsv) . '"
                             data-bs-toggle="modal"
-                            data-bs-target="#editPeminjaman">
+                            data-bs-target="#editReservasi">
                             <i class="bi bi-pencil"></i>
                         </a>';
                     }

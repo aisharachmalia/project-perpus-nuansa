@@ -280,11 +280,11 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
                         <i class="bx bx-x d-block d-sm-none"></i>
-                        <span class="d-none d-sm-block">Tutup</span>
+                        Tutup
                     </button>
                     <button type="submit" class="btn btn-primary ml-1" id="update">
                         <i class="bx bx-check d-block d-sm-none"></i>
-                        <span class="d-none d-sm-block">Perbarui</span>
+                        Perbarui
                     </button>
                 </div>
             </form>
@@ -459,94 +459,89 @@
     
 
     {{-- create --}}
-    <script>
-        $('#store').off('click').on('click', function(e) {
-            e.preventDefault();
+<script>
+    // Function untuk menghapus pesan error saat input berubah
+function clearErrorOnInput(field, errorField) {
+    $(field).on('input', function() {
+        if ($(this).val().trim() !== '') {
+            $(errorField).text(''); // Hapus pesan error jika ada input
+        }
+    });
+}
 
-            let dsiswa_nama = $('#create').find('#dsiswa_nama').val();
-            let dsiswa_nis = $('#create').find('#dsiswa_nis').val();
-            let dsiswa_email = $('#create').find('#dsiswa_email').val();
-            let dsiswa_no_telp = $('#create').find('#dsiswa_no_telp').val();
-            let dsiswa_alamat = $('#create').find('#dsiswa_alamat').val();
-            let id_dkelas = $('#create').find('#id_dkelas').val();
-            let token = $("meta[name='csrf-token']").attr("content");
+// Panggil function untuk setiap field
+clearErrorOnInput('#dsiswa_nama', '#nama-error');
+clearErrorOnInput('#dsiswa_nis', '#nis-error');
+clearErrorOnInput('#dsiswa_email', '#email-error');
+clearErrorOnInput('#dsiswa_no_telp', '#telp-error');
+clearErrorOnInput('#dsiswa_alamat', '#alamat-error');
+clearErrorOnInput('#id_dkelas', '#kelas-error');
 
-            $('#create').on('hidden.bs.modal', function () {
-            // Hapus pesan error
-            $('#nama-error').text('');
-            $('#nis-error').text('');
-            $('#email-error').text('');
-            $('#telp-error').text('');
-            $('#kelas-error').text('');
-            $('#alamat-error').text('');
+// Fungsi utama untuk submit form
+$('#store').off('click').on('click', function(e) {
+    e.preventDefault();
 
-                // Reset form
-                $(this).find('form')[0].reset();
+    let dsiswa_nama = $('#create').find('#dsiswa_nama').val();
+    let dsiswa_nis = $('#create').find('#dsiswa_nis').val();
+    let dsiswa_email = $('#create').find('#dsiswa_email').val();
+    let dsiswa_no_telp = $('#create').find('#dsiswa_no_telp').val();
+    let dsiswa_alamat = $('#create').find('#dsiswa_alamat').val();
+    let id_dkelas = $('#create').find('#id_dkelas').val();
+    let token = $("meta[name='csrf-token']").attr("content");
+
+    $.ajax({
+        url: `siswa/add`,
+        type: "POST",
+        cache: false,
+        data: {
+            "dsiswa_nama": dsiswa_nama,
+            "dsiswa_nis": dsiswa_nis,
+            "dsiswa_email": dsiswa_email,
+            "dsiswa_no_telp": dsiswa_no_telp,
+            "dsiswa_alamat": dsiswa_alamat,
+            "id_dkelas": id_dkelas,
+            "_token": token
+        },
+        success: function(response) {
+            Swal.fire({
+                icon: 'success',
+                title: `${response.message}`,
+                showConfirmButton: false,
+                timer: 3000
             });
+            
+            $('#create').modal('toggle');
+            $('#tbl_list').DataTable().ajax.reload();
 
-            $.ajax({
-                url: `siswa/add`,
-                type: "POST",
-                cache: false,
-                data: {
-                    "dsiswa_nama": dsiswa_nama,
-                    "dsiswa_nis": dsiswa_nis,
-                    "dsiswa_email": dsiswa_email,
-                    "dsiswa_no_telp": dsiswa_no_telp,
-                    "dsiswa_alamat": dsiswa_alamat,
-                    "id_dkelas": id_dkelas,
-                    "_token": token
-                },
-                success: function(response) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: `${response.message}`,
-                        showConfirmButton: false,
-                        timer: 3000
-                    });
-                    
-                    $('#create').modal('toggle');
-                    $('#tbl_list').DataTable().ajax.reload();
+            // Kosongkan form setelah berhasil disimpan
+            $('#create').find('input').val('');
+            $('#create').find('select').val('');
+            $('#create').find('textarea').val('');
+        },
+        error: function(xhr) {
+            if (xhr.status === 422) {
+                if (xhr.responseText) {
+                    var errors = JSON.parse(xhr.responseText);
+                    errors = errors.errors;
 
-                    // Kosongkan form setelah berhasil disimpan
-                    $('#create').find('input').val('');
-                    $('#create').find('select').val('');
-                    $('#create').find('textarea').val('');
-                },
-                error: function(xhr) {
-                    if (xhr.status === 422) {
-                        if (xhr.responseText) {
-                            var errors = JSON.parse(xhr.responseText);
-                            errors = errors.errors;
-
-                            if (errors.dsiswa_nama) {
-                                $('#create').find('#nama-error').text(errors.dsiswa_nama[0]);
-                            }
-                            if (errors.dsiswa_nis) {
-                                $('#create').find('#nis-error').text(errors.dsiswa_nis[0]);
-                            }
-                            if (errors.dsiswa_email) {
-                                $('#create').find('#email-error').text(errors.dsiswa_email[0]);
-                            }
-                            if (errors.dsiswa_no_telp) {
-                                $('#create').find('#telp-error').text(errors.dsiswa_no_telp[0]);
-                            }
-                            if (errors.dsiswa_alamat) {
-                                $('#create').find('#alamat-error').text(errors.dsiswa_alamat[0]);
-                            }
-                            if (errors.id_dkelas) {
-                                $('#create').find('#kelas-error').text(errors.id_dkelas[0]);
-                            }
-                        } else {
-                            console.log("Error structure not as expected:", xhr.responseJSON);
-                        }
-                    } else {
-                        console.log("Unexpected error:", xhr);
-                    }
+                    $('#nama-error').text(errors.dsiswa_nama ? errors.dsiswa_nama[0] : '');
+                    $('#nis-error').text(errors.dsiswa_nis ? errors.dsiswa_nis[0] : '');
+                    $('#email-error').text(errors.dsiswa_email ? errors.dsiswa_email[0] : '');
+                    $('#telp-error').text(errors.dsiswa_no_telp ? errors.dsiswa_no_telp[0] : '');
+                    $('#alamat-error').text(errors.dsiswa_alamat ? errors.dsiswa_alamat[0] : '');
+                    $('#kelas-error').text(errors.id_dkelas ? errors.id_dkelas[0] : '');
+                } else {
+                    console.log("Error structure not as expected:", xhr.responseJSON);
                 }
-            });
-        });
-    </script>
+            } else {
+                console.log("Unexpected error:", xhr);
+            }
+        }
+    });
+});
+
+</script>
+
 
 <script>
     $('body').on('click', '.modalShow', function() {
@@ -574,43 +569,43 @@
 </script>
  
 <script>
-$(document).ready(function() {
-    // Trigger untuk menampilkan modal edit siswa
-    $('body').on('click', '.modalEdit', function() {
-        let id_dsiswa = $(this).data('id');
-
-        $.ajax({
-            url: `siswa/show/${id_dsiswa}`,
-            type: "GET",
-            cache: false,
-            success: function(response) {
-            $('#edit').find('#id_dsiswa').val(id_dsiswa);
-            $('#edit').find('#dsiswa_nama').val(response.siswa.dsiswa_nama);
-            $('#edit').find('#dsiswa_nis').val(response.siswa.dsiswa_nis);
-            $('#edit').find('#dsiswa_email').val(response.siswa.dsiswa_email);
-            $('#edit').find('#dsiswa_no_telp').val(response.siswa.dsiswa_no_telp);
-            $('#edit').find('#dsiswa_alamat').val(response.siswa.dsiswa_alamat);
-            $('#edit').find('#id_dkelas').html(response.slc);
-
-            if (response.siswa.dsiswa_sts == 1) {
-                $('#edit').find('#aktif').prop('checked', true);
-            } else {
-                $('#edit').find('#non-aktif').prop('checked', true);
-            }
-        },
-
+    $(document).ready(function() {
+        // Trigger untuk menampilkan modal edit siswa
+        $('body').on('click', '.modalEdit', function() {
+            let id_dsiswa = $(this).data('id');
+    
+            $.ajax({
+                url: `siswa/show/${id_dsiswa}`,
+                type: "GET",
+                cache: false,
+                success: function(response) {
+                    $('#edit').find('span').html('');
+                    $('#edit').find('#id_dsiswa').val(id_dsiswa);
+                    $('#edit').find('#dsiswa_nama').val(response.siswa.dsiswa_nama);
+                    $('#edit').find('#dsiswa_nis').val(response.siswa.dsiswa_nis);
+                    $('#edit').find('#dsiswa_email').val(response.siswa.dsiswa_email);
+                    $('#edit').find('#dsiswa_no_telp').val(response.siswa.dsiswa_no_telp);
+                    $('#edit').find('#dsiswa_alamat').val(response.siswa.dsiswa_alamat);
+                    $('#edit').find('#id_dkelas').html(response.slc);
+    
+                    if (response.siswa.dsiswa_sts == 1) {
+                        $('#edit').find('#aktif').prop('checked', true);
+                    } else {
+                        $('#edit').find('#non-aktif').prop('checked', true);
+                    }
+                   
+                }
+            });
         });
-    });
-
-    // Setup CSRF token untuk semua AJAX request
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-
-    // Fungsi untuk update data siswa
-    // Fungsi untuk update data siswa
+    
+        // Setup CSRF token untuk semua AJAX request
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+    
+// Fungsi untuk update data siswa
 $('#update').off('click').on('click', function(e) {
     e.preventDefault();
 
@@ -619,20 +614,17 @@ $('#update').off('click').on('click', function(e) {
     let dsiswa_nis = $('#edit').find('#dsiswa_nis').val();
     let dsiswa_email = $('#edit').find('#dsiswa_email').val();
     let dsiswa_no_telp = $('#edit').find('#dsiswa_no_telp').val();
-    
-    // Ambil nilai dsiswa_sts dari radio button yang dipilih
-    let dsiswa_sts = $('input[name="dsiswa_sts"]:checked').val();  // Update bagian ini
-    
+    let dsiswa_sts = $('input[name="dsiswa_sts"]:checked').val();
     let dsiswa_alamat = $('#edit').find('#dsiswa_alamat').val();
     let id_dkelas = $('#edit').find('#id_dkelas').val();
 
-    // Clear previous error messages
-    $('#edit').find('#nama-error').text('');
-    $('#edit').find('#nis-error').text('');
-    $('#edit').find('#email-error').text('');
-    $('#edit').find('#telp-error').text('');
-    $('#edit').find('#alamat-error').text('');
-    $('#edit').find('#kelas-error').text('');
+   // Hapus pesan error saat modal dibuka
+$('#edit').find('#nama-error').text('');
+$('#edit').find('#nis-error').text('');
+$('#edit').find('#email-error').text('');
+$('#edit').find('#telp-error').text('');
+$('#edit').find('#alamat-error').text('');
+$('#edit').find('#kelas-error').text('');
 
     $.ajax({
         url: `siswa/update/${id_dsiswa}`,
@@ -643,11 +635,19 @@ $('#update').off('click').on('click', function(e) {
             "dsiswa_nis": dsiswa_nis,
             "dsiswa_email": dsiswa_email,
             "dsiswa_no_telp": dsiswa_no_telp,
-            "dsiswa_sts": dsiswa_sts,  // Pastikan nilai status yang dipilih dikirim ke server
+            "dsiswa_sts": dsiswa_sts,
             "dsiswa_alamat": dsiswa_alamat,
             "id_dkelas": id_dkelas,
         },
         success: function(response) {
+            // Clear error messages if present
+            $('#edit').find('#nama-error').text('');
+            $('#edit').find('#nis-error').text('');
+            $('#edit').find('#email-error').text('');
+            $('#edit').find('#telp-error').text('');
+            $('#edit').find('#alamat-error').text('');
+            $('#edit').find('#kelas-error').text('');
+
             Swal.fire({
                 icon: 'success',
                 title: `${response.message}`,
@@ -660,28 +660,44 @@ $('#update').off('click').on('click', function(e) {
         error: function(xhr) {
             if (xhr.status === 422) {
                 if (xhr.responseText) {
-                    var error = JSON.parse(xhr.responseText);
-                    var errors = error.errors;
-                    console.log(errors);
+                    var errors = JSON.parse(xhr.responseText);
+                    errors = errors.errors;
 
-                    // Tampilkan error di form
+                    // Cek error untuk form edit
                     if (errors.dsiswa_nama) {
                         $('#edit').find('#nama-error').text(errors.dsiswa_nama[0]);
+                    } else {
+                        $('#edit').find('#nama-error').text('');
                     }
+
                     if (errors.dsiswa_nis) {
                         $('#edit').find('#nis-error').text(errors.dsiswa_nis[0]);
+                    } else {
+                        $('#edit').find('#nis-error').text('');
                     }
+
                     if (errors.dsiswa_email) {
                         $('#edit').find('#email-error').text(errors.dsiswa_email[0]);
+                    } else {
+                        $('#edit').find('#email-error').text('');
                     }
+
                     if (errors.dsiswa_no_telp) {
                         $('#edit').find('#telp-error').text(errors.dsiswa_no_telp[0]);
+                    } else {
+                        $('#edit').find('#telp-error').text('');
                     }
+
                     if (errors.dsiswa_alamat) {
                         $('#edit').find('#alamat-error').text(errors.dsiswa_alamat[0]);
+                    } else {
+                        $('#edit').find('#alamat-error').text('');
                     }
+
                     if (errors.id_dkelas) {
                         $('#edit').find('#kelas-error').text(errors.id_dkelas[0]);
+                    } else {
+                        $('#edit').find('#kelas-error').text('');
                     }
                 } else {
                     console.log("Error structure not as expected:", xhr.responseJSON);
@@ -692,12 +708,9 @@ $('#update').off('click').on('click', function(e) {
         }
     });
 });
-
-});
-
-
-
-    </script>
+    });
+</script>
+    
 @endpush
 
 <style>

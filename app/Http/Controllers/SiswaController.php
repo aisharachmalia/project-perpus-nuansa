@@ -71,92 +71,100 @@ class SiswaController extends Controller
     }
 
     public function store(Request $request)
-    {
-        
-        $validator = \Validator::make($request->all(), [
-            'dsiswa_nama' => 'required',
-            'dsiswa_nis' => 'required',
-            'dsiswa_no_telp' => 'required|regex:/^\+?[\d\s\-]+$/|min:10|max:13',
-            'dsiswa_alamat' => 'required',
-            'id_dkelas' => 'required',
-        ], [
-            'dsiswa_nama.required' => 'Nama harus diisi!',
-            'dsiswa_nis.required' => 'NIS harus diisi!',
-            'dsiswa_no_telp.required' => 'No. Telp harus diisi!',
-            'dsiswa_alamat.required' => 'Alamat harus diisi!',
-            'dsiswa_no_telp.regex' => 'No. Telp harus berformat angka yang benar!',
-            'dsiswa_no_telp.min' => 'No. Telp minimal 10 angka!',
-            'dsiswa_no_telp.max' => 'No. Telp maksimal 13 angka!',
-        ]);
-    
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'errors' => $validator->errors(),
-            ], 422);
-        }
-    
-  
-        $existingSiswa = dm_siswa::where('dsiswa_nama', $request->dsiswa_nama)
-                                 ->where('dsiswa_nis', $request->dsiswa_nis)
-                                 ->where('dsiswa_email', $request->dsiswa_email)
-                                 ->where('dsiswa_no_telp', $request->dsiswa_no_telp)
-                                 ->where('dsiswa_alamat', $request->dsiswa_alamat)
-                                 ->first();
-    
-        if ($existingSiswa) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Data siswa dengan NIS, nama, email, atau no telp yang sama sudah ada!',
-            ], 409); 
-        }
-    
- 
-        $baseUsername = $request->dsiswa_nama;
-        $username = $baseUsername;
-        $counter = 1;
+{
+    // Validasi data
+    $validator = \Validator::make($request->all(), [
+        'dsiswa_nama' => 'required',
+        'dsiswa_nis' => 'required|numeric|unique:dm_siswas,dsiswa_nis',
+        'dsiswa_email' => 'required|email|unique:dm_siswas,dsiswa_email', 
+        'dsiswa_no_telp' => 'required|regex:/^\+?[\d\s\-]+$/|min:10|max:13|unique:dm_siswas,dsiswa_no_telp',
+        'dsiswa_alamat' => 'required',
+        'id_dkelas' => 'required',
+    ], [
+        'dsiswa_nama.required' => 'Nama harus diisi!',
+        'dsiswa_nis.required' => 'NIS harus diisi!',
+        'dsiswa_nis.numeric' => 'NIS harus berupa angka!',
+        'dsiswa_nis.unique' => 'NIS Sudah Terdaftar!',
+        'dsiswa_email.required' => 'Email harus diisi!',
+        'dsiswa_email.email' => 'Format email tidak valid!', 
+        'dsiswa_email.unique' => 'Email sudah terdaftar!',
+        'dsiswa_no_telp.required' => 'No. Telp harus diisi!',
+        'dsiswa_no_telp.regex' => 'No. Telp harus berformat angka yang benar!',
+        'dsiswa_no_telp.min' => 'No. Telp minimal 10 angka!',
+        'dsiswa_no_telp.max' => 'No. Telp maksimal 13 angka!',
+        'dsiswa_no_telp.unique' => 'No. Telp sudah terdaftar!',
+        'dsiswa_alamat.required' => 'Alamat harus diisi!',
+        'id_dkelas.required' => 'Kelas harus diisi!', 
+    ]);
     
 
-        while (User::where('usr_username', $username)->exists()) {
-            $username = $baseUsername . str_pad($counter, 3, '0', STR_PAD_LEFT);
-            $counter++;
-        }
-
-        $baseEmail = $request->dsiswa_email;
-        $email = $baseEmail;
-        $counter = 1;
-
-        while (User::where('usr_email', $email)->exists()) {
-            $email = $baseEmail . str_pad($counter, 3, '0', STR_PAD_LEFT);
-            $counter++;
-        }
-    
-
-        $user = User::create([
-            'usr_nama' => $request->dsiswa_nama,
-            'usr_username' => $username,
-            'usr_email' => $email,
-            'password' => bcrypt('password_default'),
-        ]);
-    
-     
-        dm_siswa::create([
-            'id_dkelas' => $request->id_dkelas,
-            'dsiswa_nama' => $request->dsiswa_nama,
-            'dsiswa_nis' => $request->dsiswa_nis,
-            'dsiswa_email' => $request->dsiswa_email,
-            'dsiswa_no_telp' => $request->dsiswa_no_telp,
-            'dsiswa_alamat' => $request->dsiswa_alamat,
-            'id_usr' => $user->id_usr,
-            'dsiswa_flag' => 0,
-        ]);
-    
+    if ($validator->fails()) {
         return response()->json([
-            'success' => true,
-            'message' => 'Data Berhasil Disimpan!',
-        ], 200);
+            'success' => false,
+            'errors' => $validator->errors(),
+        ], 422);
     }
-    
+
+    // Cek apakah data siswa sudah ada sebelumnya
+    $existingSiswa = dm_siswa::where('dsiswa_nama', $request->dsiswa_nama)
+                             ->where('dsiswa_nis', $request->dsiswa_nis)
+                             ->where('dsiswa_email', $request->dsiswa_email)
+                             ->where('dsiswa_no_telp', $request->dsiswa_no_telp)
+                             ->where('dsiswa_alamat', $request->dsiswa_alamat)
+                             ->first();
+
+    if ($existingSiswa) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Data siswa dengan NIS, nama, email, atau no telp yang sama sudah ada!',
+        ], 409); 
+    }
+
+    // Proses pembuatan username unik
+    $baseUsername = $request->dsiswa_nama;
+    $username = $baseUsername;
+    $counter = 1;
+
+    while (User::where('usr_username', $username)->exists()) {
+        $username = $baseUsername . str_pad($counter, 3, '0', STR_PAD_LEFT);
+        $counter++;
+    }
+
+    // Proses pembuatan email unik jika sudah ada sebelumnya
+    $baseEmail = $request->dsiswa_email;
+    $email = $baseEmail;
+    $counter = 1;
+
+    while (User::where('usr_email', $email)->exists()) {
+        $email = $baseEmail . str_pad($counter, 3, '0', STR_PAD_LEFT);
+        $counter++;
+    }
+
+    // Buat data user
+    $user = User::create([
+        'usr_nama' => $request->dsiswa_nama,
+        'usr_username' => $username,
+        'usr_email' => $email,
+        'password' => bcrypt('password_default'),
+    ]);
+
+    // Simpan data siswa di dm_siswa
+    dm_siswa::create([
+        'id_dkelas' => $request->id_dkelas,
+        'dsiswa_nama' => $request->dsiswa_nama,
+        'dsiswa_nis' => $request->dsiswa_nis,
+        'dsiswa_email' => $request->dsiswa_email,
+        'dsiswa_no_telp' => $request->dsiswa_no_telp,
+        'dsiswa_alamat' => $request->dsiswa_alamat,
+        'id_usr' => $user->id_usr,
+        'dsiswa_flag' => 0,
+    ]);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Data Berhasil Disimpan!',
+    ], 200);
+}
 
  
     public function update($id, Request $request)
@@ -168,13 +176,30 @@ class SiswaController extends Controller
             // Validasi data
             $validator = \Validator::make($request->all(), [
                 'dsiswa_nama' => 'required',
-                'dsiswa_nis' => 'required|unique:dm_siswas,dsiswa_nis,' . $id_dsiswa . ',id_dsiswa',
+                 'dsiswa_nis' => 'required|numeric|unique:dm_siswas,dsiswa_nis,' . $id_dsiswa . ',id_dsiswa',
                 'dsiswa_email' => 'required|email|unique:dm_siswas,dsiswa_email,' . $id_dsiswa . ',id_dsiswa',
                 'dsiswa_no_telp' => 'required|unique:dm_siswas,dsiswa_no_telp,' . $id_dsiswa . ',id_dsiswa|regex:/^\+?[\d\s\-]+$/|min:10|max:13',
                 'dsiswa_alamat' => 'required',
                 'id_dkelas' => 'required',
-                'dsiswa_sts' => 'required', // Pastikan 'dsiswa_sts' divalidasi juga
+                'dsiswa_sts' => 'required', 
+            ], [
+                'dsiswa_nama.required' => 'Nama siswa wajib diisi.',
+                'dsiswa_nis.required' => 'NIS siswa wajib diisi.',
+                'dsiswa_nis.unique' => 'NIS sudah digunakan oleh siswa lain.',
+                'dsiswa_nis.numeric' => 'NIS harus berupa angka.',
+                'dsiswa_email.required' => 'Email siswa wajib diisi.',
+                'dsiswa_email.email' => 'Format email tidak valid.',
+                'dsiswa_email.unique' => 'Email sudah digunakan oleh siswa lain.',
+                'dsiswa_no_telp.required' => 'Nomor telepon siswa wajib diisi.',
+                'dsiswa_no_telp.unique' => 'Nomor telepon sudah digunakan oleh siswa lain.',
+                'dsiswa_no_telp.regex' => 'Nomor telepon hanya boleh berisi angka, spasi, dan tanda minus.',
+                'dsiswa_no_telp.min' => 'Nomor telepon harus terdiri dari minimal 10 karakter.',
+                'dsiswa_no_telp.max' => 'Nomor telepon maksimal 13 karakter.',
+                'dsiswa_alamat.required' => 'Alamat siswa wajib diisi.',
+                'id_dkelas.required' => 'Kelas wajib dipilih.',
+                'dsiswa_sts.required' => 'Status siswa wajib dipilih.',
             ]);
+            
     
             if ($validator->fails()) {
                 return response()->json([
