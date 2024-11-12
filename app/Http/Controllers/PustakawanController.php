@@ -81,16 +81,13 @@ class PustakawanController extends Controller
                 'errors' => $validator->errors(),
             ], 422);
         }
-
-        // Cek jika nama pustakawan sudah ada
-        // Cek jika nama pustakawan sudah ada
-// Capitalize the first letter of the name
+        
         $name = ucfirst(strtolower($request->dpustakawan_nama));
 
-// Check if the name already exists in the users table
+        // Check if the name already exists in the users table
         $existingUser = User::where('usr_nama', $name)->first();
 
-// Generate username, append number if name already exists
+        // Generate username, append number if name already exists
         if ($existingUser) {
             $counter = 1;
             // Increment the counter until a unique username is found
@@ -104,7 +101,7 @@ class PustakawanController extends Controller
             $username = $name;
         }
 
-// Create the Pustakawan record
+        // Create the Pustakawan record
         dm_pustakawan::create([
             'dpustakawan_nama' => $name,
             'dpustakawan_email' => $request->dpustakawan_email,
@@ -112,13 +109,14 @@ class PustakawanController extends Controller
             'dpustakawan_alamat' => $request->dpustakawan_alamat,
         ]);
 
-// Create the User record with hashed password
+        // Create the User record with hashed password
         User::create([
             'usr_nama' => $name,
             'usr_username' => $username,
             'usr_email' => $request->dpustakawan_email,
             'password' => \Hash::make($request->dpustakawan_no_telp),
         ]);
+        
         return response()->json([
             'success' => true,
             'message' => 'Data Berhasil Disimpan!',
@@ -186,13 +184,19 @@ class PustakawanController extends Controller
                 $username = $name;
             }
 
+            if ($request->dpustakawan_status == 0) {
+                $st = 0;
+            } else {
+                $st = 0;
+            }
+
             if ($user) {
                 // Update only the name and email, keeping the existing username
                 $user->update([
                     'usr_username' => $username,
                     'usr_nama' => $request->dpustakawan_nama,
                     'usr_email' => $request->dpustakawan_email,
-                    'password' => \Hash::make($request->dpustakawan_no_telp),
+                    'usr_stat' => $st,
                 ]);
             }
 
