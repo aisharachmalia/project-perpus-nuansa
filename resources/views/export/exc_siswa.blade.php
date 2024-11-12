@@ -18,7 +18,9 @@
         <td style="border: 3px solid black; padding: 8px; white-space: nowrap;">{{ $item->dsiswa_no_telp }}</td>
         <td style="border: 3px solid black; padding: 8px; white-space: nowrap;">{{ $item->dsiswa_alamat }}</td>
         <td style="border: 3px solid black; padding: 8px; white-space: nowrap;">{{ $item->dkelas_nama_kelas }}</td>
-        <td style="border: 3px solid black; padding: 8px; white-space: nowrap;">{{ $item->dsiswa_sts }}</td>
+        <td style="border: 3px solid black; padding: 8px; white-space: nowrap;">
+            {{ $item->dsiswa_sts == 1 ? 'Aktif' : 'Tidak Aktif' }}
+        </td>
     </tr>
     @endforeach
 </table>

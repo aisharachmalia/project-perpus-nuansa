@@ -90,7 +90,7 @@
                 <td>{{ $item->dsiswa_no_telp }}</td>
                 <td>{{ $item->dsiswa_alamat }}</td>
                 {{-- <td>{{ $item->dkelas_nama_kelas }}</td> --}}
-                <td>{{ $item->dsiswa_sts }}</td>
+               <td> {{ $item->dsiswa_sts == 1 ? 'Aktif' : 'Tidak Aktif' }}</td>
             </tr>
         @endforeach
     </tbody>
@@ -98,3 +98,4 @@
 
 </body>
 </html>
+      

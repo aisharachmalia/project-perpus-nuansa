@@ -143,6 +143,7 @@
                                             <input type="radio" id="status" name="status" value="0">
                                             <label for="tidak_aktif">Tidak Aktif</label>
                                         </div>
+                                        <small id="status_error" class="text-danger"></small>
                                     </div>
                                 </div>
                             </div>

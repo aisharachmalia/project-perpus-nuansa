@@ -18,10 +18,10 @@
                 $('#username_error').text('');
                 $('#email_error').text('');
             }
-        });
-
-
+        }
     });
+});
+ 
     $(document).on('click', '#update', function(e) {
         e.preventDefault();
         //define variable

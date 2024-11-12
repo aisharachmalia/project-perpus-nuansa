@@ -96,6 +96,7 @@
 </div>
 
 
+
 <!-- Modal untuk Edit Pengembalian -->
 <div class="modal fade" id="editPengembalian" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
     aria-hidden="true">
@@ -213,7 +214,6 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- Footer -->
                 <div class="modal-footer border-top-0">
                     <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Tutup</button>
@@ -224,3 +224,97 @@
         </div>
     </div>
 </div>
+
+
+
+<!-- Modal untuk Edit Reservasi -->
+<div class="modal fade" id="editReservasi" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-content shadow-lg rounded-4 border-0">
+            <!-- Header -->
+            <div class="modal-header bg-gradient-primary text-white rounded-top-4">
+                <h5 class="modal-title" id="exampleModalCenterTitle">Edit Reservasi</h5>
+            </div>
+
+            <!-- Form -->
+            <form class="form" data-action="{{ route('reservasi.update', ':id') }}" method="POST"
+                id="form-edit-reservasi">
+                @csrf
+                @method('PUT')
+                <div class="modal-body">
+                    <!-- Card Body -->
+                    <div class="card-content">
+                        <div class="card-body">
+                           <div class="row g-4">
+                                <!-- Buku -->
+                                <div class="col-md-{{ $role->id_role < 3 ? '4' : '6' }}">
+                                    <div class="form-group">
+                                        <label for="id_dbuku">Judul Buku</label>
+                                        <input type="hidden" id="id_trsv" name="id_trsv">
+                                        <select id="id_dbuku" name="id_dbuku"
+                                            class="form-select shadow-sm rounded-pill">
+                                            <option value="">Pilih Buku</option>
+                                        </select>
+                                        <span id="buku-error" class="text-danger small"></span>
+                                    </div>
+                                </div>
+
+                                <!-- Siswa -->
+                                <div class="col-md-{{ $role->id_role < 3 ? '4' : '6' }}">
+                                    <div class="form-group">
+                                        <label for="city-column">Nama Peminjam</label>
+                                        <select id="id_dsiswa" name="id_dsiswa"
+                                            class="form-select shadow-sm rounded-pill">
+                                            <option value="">Pilih Peminjam</option>
+                                        </select>
+                                        <span id="siswa-error" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <!-- Tanggal Reservasi -->
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="trsv_tgl_reservasi">Tanggal Reservasi</label>
+                                        <input type="date" id="trsv_tgl_reservasi"
+                                            class="form-control shadow-sm rounded-pill" name="trsv_tgl_reservasi">
+                                        <span id="tgl-reservasi-error" class="text-danger small"></span>
+                                    </div>
+                                </div>
+
+                                <!-- Tanggal Kadaluarsa -->
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="trsv_tgl_kadaluarsa">Tanggal Kadaluarsa</label>
+                                        <input type="date" id="trsv_tgl_kadaluarsa"
+                                            class="form-control shadow-sm rounded-pill" name="trsv_tgl_kadaluarsa">
+                                        <span id="tgl-kadaluarsa-error" class="text-danger small"></span>
+                                    </div>
+                                </div>
+
+                                <!-- Tanggal Pengambilan -->
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="trsv_tgl_pemberitahuan">Tanggal Pemberitahuan</label>
+                                        <input type="date" id="trsv_tgl_pemberitahuan"
+                                            class="form-control shadow-sm rounded-pill" name="trsv_tgl_pemberitahuan">
+                                        <span id="tgl-pemberitahuan-error" class="text-danger small"></span>
+                                    </div>
+                                </div>
+
+                            </div> <!-- End of Row -->
+                        </div>
+                    </div>
+                </div>
+                <!-- Footer -->
+                <div class="modal-footer border-top-0">
+                    <button type="button" class="btn btn-light rounded-pill" data-bs-dismiss="modal">Tutup</button>
+                    <button type="button" class="btn btn-primary rounded-pill" id="simpanReservasi">Simpan
+                        Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
