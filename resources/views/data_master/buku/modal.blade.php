@@ -27,6 +27,17 @@
                             </div>
                         </div>
                         <div class="col-4">
+                            <label>link Buku <span class="text-danger"> * tidak wajib diisi</span></label>
+                            <input type="text" id="dbuku_link" class="form-control" placeholder="Link Buku"
+                                name="dbuku_link">
+                            <span id="link-error" class="text-danger"></span>
+                        </div>
+                        <div class="col-4 ">
+                            <label for="dbuku_file">Ubah File PDF</label>
+                            <input type="file" name="dbuku_file" id="dbuku_file" class="form-control">
+                            <span id="file-error" class="text-danger"></span>
+                        </div>
+                        <div class="col-4">
                             <div class="form-group">
                                 <label>ISBN</label>
                                 <input type="text" id="dbuku_isbn" class="form-control" placeholder="ISBN"
@@ -127,7 +138,7 @@
                             <div class="form-group">
                                 <label>Jumlah Buku</label>
                                 <input type="number" class="form-control" placeholder="Jumlah"
-                                    name="dbuku_jml_total">
+                                    name="dbuku_jml_total" min="0">
                                 <span id="jml_total-error" class="text-danger"></span>
                             </div>
                         </div>
@@ -191,6 +202,17 @@
                             <span id="judul-error" class="text-danger"></span>
                         </div>
                         <div class="col-md-4">
+                            <label>link Buku <span class="text-danger"> * tidak wajib diisi</span></label>
+                            <input type="text" id="dbuku_link" class="form-control" placeholder="Link Buku"
+                                name="dbuku_link">
+                            <span id="link-error" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="dbuku_file">Ubah File PDF</label>
+                            <input type="file" name="dbuku_file" id="dbuku_file" class="form-control">
+                            <span id="file-error" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
                             <label>ISBN</label>
                             <input type="text" id="dbuku_isbn" class="form-control" placeholder="ISBN"
                                 name="dbuku_isbn" onkeypress="return hanyaAngka(event)">
@@ -234,8 +256,9 @@
                         <div class="col-md-4 mb-3">
                             <label>Jumlah Buku</label>
                             <input type="number" name="dbuku_jml_total" class="form-control" placeholder="Jumlah"
-                                id="dbuku_jml_total">
+                                id="dbuku_jml_total" min="0">
                             <span id="jml_total-error" class="text-danger"></span>
+                            <span id="global-error" class="text-danger"></span>
                         </div>
                         <div class="col-md-4 mb-3">
                             <label>Edisi Buku</label>

@@ -28,8 +28,7 @@
                                             class="fas fa-file-excel"></i></span>
                                 </a>
                                 <a href="javascript:void(0)" class="dropdown-item mb-2 text-start" id="printout">
-                                    <span class="badge bg-light-danger">Printout Pdf <i
-                                            class="fas fa-file-pdf"></i></span>
+                                    <span class="badge bg-light-danger">Printout Pdf <i class="fas fa-file-pdf"></i></span>
                                 </a>
                             </div>
                         </div>
@@ -44,7 +43,8 @@
                                         $buku = DB::table('dm_buku')->get();
                                     @endphp
                                     @foreach ($buku as $item)
-                                        <option value="{{ Crypt::encrypt($item->id_dbuku) }}">{{ $item->dbuku_judul }}</option>
+                                        <option value="{{ Crypt::encrypt($item->id_dbuku) }}">{{ $item->dbuku_judul }}
+                                        </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -55,11 +55,12 @@
                                 <select id="filter-siswa" class="form-control">
                                     <option value="">All</option>
                                     @php
-                                        $siswa = DB::table('dm_siswas')->get();
+                                        $siswa = DB::table('users')->leftJoin('akses_usrs', 'users.id_usr', '=', 'akses_usrs.id_usr')->whereNull('akses_usrs.id_usr')->select('users.id_usr', 'usr_nama')->get();
                                     @endphp
                                     @foreach ($siswa as $item)
-                                        <option value="{{ Crypt::encrypt($item->id_dsiswa)}}">{{ $item->dsiswa_nama }}</option>
+                                        <option value="{{ Crypt::encrypt($item->id_usr) }}">{{ $item->usr_nama }}</option>
                                     @endforeach
+
                                 </select>
                             </div>
 
@@ -88,7 +89,7 @@
                             </div>
 
                             <!-- Export and Print Buttons Section -->
-                            
+
                         </div>
                     </div>
 
@@ -175,8 +176,6 @@
                     tanggal_akhir: tanggalAkhir
                 },
                 success: function(response) {
-                    // Lakukan sesuatu dengan respons (misal: refresh tabel)
-                    console.log(response);
                     // Misal, jika kamu menggunakan DataTables, refresh tabel di sini
                     $('#tbl_trks').DataTable().ajax.reload();
                 },
@@ -211,7 +210,7 @@
                         data: 'dbuku_judul'
                     },
                     {
-                        data: 'dsiswa_nama'
+                        data: 'usr_nama'
                     },
                     {
                         data: 'trks_tgl_peminjaman'
@@ -225,25 +224,18 @@
                     },
                     {
                         class: "text-center",
-                        data: 'tdenda_jumlah',
-                        render : function(data) {
-                            if (data == null) {
-                                return 'Rp.0';
-                            } else {
-                                return 'Rp.' + number_format(data, 0, ',', '.');
-                            }
-                        }
+                        data: 'jumlah',
                     },
                     {
                         class: "text-center",
                         data: 'trks_status',
                         render: function(data) {
-                            if (data == '1') {
+                            if (data == 0) {
                                 return '<span class="badge bg-light-info"> Dipinjam </span>';
-                            } else if (data == '2') {
+                            } else if (data == 1) {
                                 return '<span class="badge bg-light-success"> Dikembalikan </span>';
-                            } else {
-                                return '<span class="badge bg-light-warning"> Belum Dikembalikan </span>';
+                            } else if (data == '-1'){
+                                return '<span class="badge bg-light-danger"> Batal </span>';
                             }
                         }
                     },

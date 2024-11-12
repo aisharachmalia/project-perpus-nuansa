@@ -7,7 +7,7 @@
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>USER</title>
+    <title>Nuansa Baca</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     @include('user.css')
@@ -15,9 +15,12 @@
 </head>
 
 <body>
+    <button type="button" class="btn btn-success btn-floating btn-lg" id="btn-back-to-top">
+        <i class="fa fa-arrow-up" aria-hidden="true"></i>
+    </button>
     <div>
         @include('user.header')
-        <div >
+        <div>
             @yield('content')
 
             @include('user.footer')

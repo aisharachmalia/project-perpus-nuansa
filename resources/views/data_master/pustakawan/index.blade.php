@@ -10,8 +10,10 @@
                             <div class="col-12 d-flex justify-content-start">
                                 <a href="javascript:void(0)" class="btn btn-primary mb-2 modalCreate " data-bs-toggle="modal"
                                     data-bs-target="#create">Tambah +</a>&nbsp;
-                                <a href="javascript:;" class="btn btn-success mb-2" id="export" ><i class="fas fa-file-excel"> </i> Export Excel</a>&nbsp;
-                                <a href="javascript:;" class="btn btn-danger mb-2" id="printout" ><i class="fas fa-file-pdf"> </i> Printout PDF </a>
+                                <a href="javascript:;" class="btn btn-success mb-2" id="export"><i
+                                        class="fas fa-file-excel"> </i> Export Excel</a>&nbsp;
+                                <a href="javascript:;" class="btn btn-danger mb-2" id="printout"><i
+                                        class="fas fa-file-pdf"> </i> Printout PDF </a>
                             </div>
                         </div>
                     </div>
@@ -43,10 +45,10 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            var link_export ="{{route('link_export_pustakawan')}}"
-            var link_printout ="{{route('link_printout_pustakawan')}}"
+            var link_export = "{{ route('link_export_pustakawan') }}"
+            var link_printout = "{{ route('link_printout_pustakawan') }}"
             $('#tbl_list').DataTable({
-                processing: true,
+                processing: false,
                 serverSide: true,
                 ajax: '{{ url()->current() }}',
                 columns: [{
@@ -84,11 +86,13 @@
                 ]
             });
 
-            $(document).on('click','#printout',function(){
+            $(document).on('click', '#printout', function() {
                 var value_table = $('#tbl_list').DataTable().data().count();
                 if (value_table > 0) {
                     $.ajax({
-                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
                         type: 'POST',
                         url: link_printout,
                         dataType: 'json',
@@ -102,16 +106,17 @@
                         html: 'Tidak terdapat Data yang akan dicetak',
                         showCloseButton: true,
                         focusConfirm: false,
-                        confirmButtonText:
-                        '<i class="fa fa-thumbs-up"></i> OK',
+                        confirmButtonText: '<i class="fa fa-thumbs-up"></i> OK',
                     });
                 }
             });
-            $(document).on('click','#export',function(){
+            $(document).on('click', '#export', function() {
                 var value_table = $('#tbl_list').DataTable().data().count();
                 if (value_table > 0) {
                     $.ajax({
-                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
                         type: 'POST',
                         url: link_export,
                         dataType: 'json',
@@ -125,21 +130,26 @@
                         html: 'Tidak terdapat Data yang akan dicetak',
                         showCloseButton: true,
                         focusConfirm: false,
-                        confirmButtonText:
-                        '<i class="fa fa-thumbs-up"></i> OK',
+                        confirmButtonText: '<i class="fa fa-thumbs-up"></i> OK',
                     });
                 }
             });
         })
     </script>
     <script>
-      $('body').on('click', '.modalCreate', function() {
+        $('body').on('click', '.modalCreate', function() {
+            $('#create').find('#dpustakawan_nama').val('');
+            $('#create').find('#dpustakawan_email').val('');
+            $('#create').find('#dpustakawan_no_telp').val('');
+            $('#create').find('#dpustakawan_alamat').val('');
+
             $('#create').find('#nama-error').text('');
             $('#create').find('#email-error').text('');
             $('#create').find('#telp-error').text('');
             $('#create').find('#alamat-error').text('');
         });
-        $('#store').off('click').on('click',function(e) {
+
+        $('#store').off('click').on('click', function(e) {
             e.preventDefault();
 
             let dpustakawan_nama = $('#create').find('#dpustakawan_nama').val();
@@ -174,9 +184,9 @@
                         showConfirmButton: false,
                         timer: 3000
                     });
+                    
                     $('#create').modal('toggle');
-                    $('.modal-backdrop').remove();
-                    $('#tbl_list').DataTable().ajax.reload(); // refresh tabel
+                    $('#tbl_list').DataTable().ajax.reload();l
                 },
                 error: function(xhr) {
                     if (xhr.status === 422) {
@@ -186,16 +196,16 @@
 
                             // Show error messages for each field
                             if (errors.dpustakawan_nama) {
-                                $('#create').find('#nama-error').text(errors.dpustakawan_nama[0]);
+                                $('#create').find('#nama-error').text(errors.dpustakawan_nama);
                             }
                             if (errors.dpustakawan_email) {
-                                $('#create').find('#email-error').text(errors.dpustakawan_email[0]);
+                                $('#create').find('#email-error').text(errors.dpustakawan_email);
                             }
                             if (errors.dpustakawan_no_telp) {
-                                $('#create').find('#telp-error').text(errors.dpustakawan_no_telp[0]);
+                                $('#create').find('#telp-error').text(errors.dpustakawan_no_telp);
                             }
                             if (errors.dpustakawan_alamat) {
-                                $('#create').find('#alamat-error').text(errors.dpustakawan_alamat[0]);
+                                $('#create').find('#alamat-error').text(errors.dpustakawan_alamat);
                             }
                         } else {
                             console.log("Error structure not as expected:", xhr.responseJSON);
@@ -211,10 +221,9 @@
 
     <script>
         $('body').on('click', '.modalEdit', function() {
-
             let id_ps = $(this).data('id');
 
-            //fetch detail post with ajax
+            // Fetch detail post with AJAX
             $.ajax({
                 url: `pustakawan/show/${id_ps}`,
                 type: "GET",
@@ -222,44 +231,41 @@
                 success: function(response) {
                     console.log(response);
 
-                    //fill data to form
-
+                    // Fill data to form
                     $('#edit').find('#id_dpustakawan').val(id_ps);
-                    $('#edit').find('#dpustakawan_nama').val(response.dpustakawan_nama);
-                    $('#edit').find('#dpustakawan_email').val(response.dpustakawan_email);
-                    $('#edit').find('#dpustakawan_no_telp').val(response.dpustakawan_no_telp);
-                    $('#edit').find('#dpustakawan_status').val(response.dpustakawan_status);
-                    $('#edit').find('#dpustakawan_alamat').val(response.dpustakawan_alamat);
+                    $('#edit').find('#dpustakawan_nama').val(response.ps.dpustakawan_nama);
+                    $('#edit').find('#dpustakawan_email').val(response.ps.dpustakawan_email);
+                    $('#edit').find('#dpustakawan_no_telp').val(response.ps.dpustakawan_no_telp);
+                    $('#edit').find('#dpustakawan_alamat').val(response.ps.dpustakawan_alamat);
 
+                    // Set the radio button for dpustakawan_status
+                    let status = response.ps.dpustakawan_status;
+                    $('#edit').find('input[name="dpustakawan_status"][value="' + status + '"]').prop(
+                        'checked', true);
 
-                    $('#edit').find('#nama-error').text('');
-                    $('#edit').find('#email-error').text('');
-                    $('#edit').find('#telp-error').text('');
-                    $('#edit').find('#alamat-error').text('');
+                    // Clear previous errors
+                    $('#edit').find('.error-message').text('');
                 }
             });
         });
 
-        //action update post
+        // Action to update post
         $('#update').click(function(e) {
             e.preventDefault();
 
-            //define variable
+            // Define variables
             let token = $('meta[name="csrf-token"]').attr('content');
             let id_ps = $('#edit').find('#id_dpustakawan').val();
             let dpustakawan_nama = $('#edit').find('#dpustakawan_nama').val();
             let dpustakawan_email = $('#edit').find('#dpustakawan_email').val();
             let dpustakawan_no_telp = $('#edit').find('#dpustakawan_no_telp').val();
-            let dpustakawan_status = $('#edit').find('#dpustakawan_status').val();
+            let dpustakawan_status = $('#edit').find('input[name="dpustakawan_status"]:checked').val();
             let dpustakawan_alamat = $('#edit').find('#dpustakawan_alamat').val();
 
-            //clear error message
-            $('#edit').find('#nama-error').text('');
-            $('#edit').find('#email-error').text('');
-            $('#edit').find('#telp-error').text('');
-            $('#edit').find('#alamat-error').text('');
+            // Clear error messages
+            $('#edit').find('.error-message').text('');
 
-            //ajax
+            // AJAX request
             $.ajax({
                 url: `pustakawan/edit/${id_ps}`,
                 type: "PUT",
@@ -273,48 +279,33 @@
                     "_token": token
                 },
                 success: function(response) {
-
-                    //edit success message
+                    // Success message
                     Swal.fire({
                         type: 'success',
                         icon: 'success',
                         title: `${response.message}`,
-                        editConfirmButton: false,
+                        showConfirmButton: false,
                         timer: 3000
                     });
                     $('#edit').modal('toggle');
-                    $('.modal-backdrop').remove();
                     $('#tbl_list').DataTable().ajax.reload()
                 },
                 error: function(xhr) {
                     console.log(xhr.status);
                     if (xhr.status === 422) {
-                        // Pastikan responseJSON ada dan mengandung errors
-                        console.log(xhr);
-                        if (xhr.responseText) {
-                            var errors = JSON.parse(xhr.responseText);
-                            console.log(errors.errors);
-                            var errors = errors.errors;
-                            // Show error messages for each field
-                            if (errors.dpustakawan_nama) {
-                                $('#edit').find('#nama-error').text(errors.dpustakawan_nama[
-                                0]); // Ubah dari #create ke #edit
-                            }
-
-                            if (errors.dpustakawan_email) {
-                                $('#edit').find('#email-error').text(errors.dpustakawan_email[
-                                0]); // Ubah dari #create ke #edit
-                            }
-                            if (errors.dpustakawan_no_telp) {
-                                console.log(errors.dpustakawan_no_telp);
-                                $('#edit').find('#telp-error').text(errors.dpustakawan_no_telp[0]);
-                            }
-                            if (errors.dpustakawan_alamat) {
-                                console.log(errors.dpustakawan_alamat);
-                                $('#edit').find('#alamat-error').text(errors.dpustakawan_alamat[0]);
-                            }
-                        } else {
-                            console.log("Error structure not as expected:", xhr.responseJSON);
+                        // Handle validation errors
+                        var errors = JSON.parse(xhr.responseText).errors;
+                        if (errors.dpustakawan_nama) {
+                            $('#edit').find('#nama-error').text(errors.dpustakawan_nama[0]);
+                        }
+                        if (errors.dpustakawan_email) {
+                            $('#edit').find('#email-error').text(errors.dpustakawan_email[0]);
+                        }
+                        if (errors.dpustakawan_no_telp) {
+                            $('#edit').find('#telp-error').text(errors.dpustakawan_no_telp[0]);
+                        }
+                        if (errors.dpustakawan_alamat) {
+                            $('#edit').find('#alamat-error').text(errors.dpustakawan_alamat[0]);
                         }
                     } else {
                         console.log("Unexpected error:", xhr);
@@ -323,6 +314,7 @@
             });
         });
     </script>
+
     <script>
         //button create post event
         $('body').on('click', '.modalShow', function() {
@@ -335,13 +327,12 @@
                 type: "GET",
                 cache: false,
                 success: function(response) {
-                    console.log(response)
+
                     //fill data to form
-                    $('#show').find('#dpustakawan_nama').text(response.dpustakawan_nama);
-                    $('#show').find('#dpustakawan_email').text(response.dpustakawan_email);
-                    $('#show').find('#dpustakawan_no_telp').text(response.dpustakawan_no_telp);
-                    $('#show').find('#dpustakawan_status').text(response.dpustakawan_status);
-                    $('#show').find('#dpustakawan_alamat').text(response.dpustakawan_alamat);
+                    $('#show').find('#dpustakawan_nama').text(response.ps.dpustakawan_nama);
+                    $('#show').find('#dpustakawan_email').text(response.ps.dpustakawan_email);
+                    $('#show').find('#dpustakawan_no_telp').text(response.ps.dpustakawan_no_telp);
+                    $('#show').find('#dpustakawan_alamat').text(response.ps.dpustakawan_alamat);
                 }
             });
         });
@@ -375,22 +366,36 @@
                         },
                         success: function(response) {
 
-                            //show success message
+                            if (response.success) {
+                                //show success message
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: response.message,
+                                    showConfirmButton: false,
+                                    timer: 3000
+                                });
+                                $('#tbl_list').DataTable().ajax.reload();
+                            } else {
+                                //show error message if deletion is not allowed
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal Menghapus',
+                                    text: response.message,
+                                    showConfirmButton: true,
+                                });
+                            }
+                        },
+                        error: function(xhr) {
                             Swal.fire({
-                                type: 'success',
-                                icon: 'success',
-                                title: `${response.message}`,
-                                showConfirmButton: false,
-                                timer: 3000
+                                icon: 'error',
+                                title: 'Terjadi Kesalahan',
+                                text: 'Tidak dapat menghapus data.',
                             });
-                            $('#tbl_list').DataTable().ajax.reload()
                         }
                     });
                 }
             })
         });
     </script>
-    <script>
-        
-    </script>
+    <script></script>
 @endpush

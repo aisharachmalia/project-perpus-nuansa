@@ -1,7 +1,4 @@
 
-
 <footer>
-    <div class="container">
-        <p>&copy; 2020 Reading Challenge</p>
-    </div>
+    <p>&copy; {{ date('Y') }} Nuansa Baca. All rights reserved.</p>
 </footer>

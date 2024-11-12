@@ -1,80 +1,107 @@
 @extends('userz')
+
 @section('content')
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Muli', sans-serif;
+            box-sizing: border-box;
+            overflow-x: hidden;
+        }
+    </style>
+
+    <!-- Hero Section -->
     <section class="hero">
         <div class="container2">
-            <h1>Perpustakaan SMK</h1>
-            <p>Selamat datang di halam perpustakaan SMK!<p>
-<button class="button">Learn More</button>
+            <h1 class="aesthetic-title">Nuansa Baca</h1>
+            <p>Selamat datang di halaman Nuansa Baca! Temukan Dunia Pengetahuan</p>
         </div>
     </section>
 
-    <section class="search">
-        <div class="container4">
-            <form>
-                <input type="text" placeholder="Search books" />
-                <button type="submit">Search</button>
-            </form>
-        </div>
-    </section>
-
-    <section class="book-features">
+    <!-- Author Section -->
+    <section class="author">
         <div class="container5">
-            <h2>Discover Your Next Favorite Book</h2>
-            <p>Explore our curated book lists, and find your next great read.</p>
-            <ul>
-                <li>
-                    <img src="https://images.ctfassets.net/usf1vwtuqyxm/6S51pK7uwnyhkS9Io9DsAn/320c162c5150f853b8d8568c4715dcef/English_Harry_Potter_7_Epub_9781781100264.jpg?w=914&q=70&fm=jpg" alt="Book 1">
-                    <h3>Book 1</h3>
-                    <p>This is a description of Book 1.</p>
-                </li>
-                <li>
-                    <img src="https://mir-s3-cdn-cf.behance.net/project_modules/1400/b468d093312907.5e6139cf2ab03.png" alt="Book 2">
-                    <h3>Book 2</h3>
-                    <p>This is a description of Book 2.</p>
-                </li>
-                <li>
-                    <img src="https://m.media-amazon.com/images/I/91fQAEtUQML._SL1500_.jpg" alt="Book 3">
-                    <h3>Book 3</h3>
-                    <p>This is a description of Book 3.</p>
-                </li>
-            </ul>
-            <ul style="margin-top: 2rem">
-                <li>
-                    <img src="https://hachette.imgix.net/books/9781474614399.jpg?auto=compress,format" alt="Book 1">
-                    <h3>Book 1</h3>
-                    <p>This is a description of Book 1.</p>
-                </li>
-                <li>
-                    <img src="https://0.academia-photos.com/attachment_thumbnails/62366143/mini_magick20200315-4967-ibzmuf.png?1584314950" alt="Book 2">
-                    <h3>Book 2</h3>
-                    <p>This is a description of Book 2.</p>
-                </li>
-                <li>
-                    <img src="https://cdn2.penguin.com.au/covers/original/9780241189450.jpg" alt="Book 3">
-                    <h3>Book 3</h3>
-                    <p>This is a description of Book 3.</p>
-                </li>
-            </ul>
-            <ul>
-                <li>
-                    <img src="https://images.ctfassets.net/usf1vwtuqyxm/6S51pK7uwnyhkS9Io9DsAn/320c162c5150f853b8d8568c4715dcef/English_Harry_Potter_7_Epub_9781781100264.jpg?w=914&q=70&fm=jpg" alt="Book 1">
-                    <h3>Book 1</h3>
-                    <p>This is a description of Book 1.</p>
-                </li>
-                <li>
-                    <img src="https://mir-s3-cdn-cf.behance.net/project_modules/1400/b468d093312907.5e6139cf2ab03.png" alt="Book 2">
-                    <h3>Book 2</h3>
-                    <p>This is a description of Book 2.</p>
-                </li>
-                <li>
-                    <img src="https://m.media-amazon.com/images/I/91fQAEtUQML._SL1500_.jpg" alt="Book 3">
-                    <h3>Book 3</h3>
-                    <p>This is a description of Book 3.</p>
-                </li>
-            </ul>
+            <h1 class="penulis">Penulis</h1>
+            <div class="row">
+                <!-- Penulis Favorit -->
+                <div class="col-4">
+                    <a href="{{ route('penulis.favorit') }}" class="text-decoration-none">
+                        <div class="card card-penulis mb-3" style="max-width: 540px;">
+                            <img src="https://i.pinimg.com/enabled_lo/564x/24/95/63/2495635bcea49ecfc842dd5d2b94d85e.jpg"
+                                class="img-fluid rounded-start" alt="Penulis Favorit"
+                                style="height: 100%; width: 100%; object-fit: cover;">
+                            <div class="penulis-judul">Penulis Favorit</div>
+                        </div>
+                    </a>
+                </div>
+                <!-- Penulis Asing -->
+                <div class="col-4">
+                    <a href="{{ route('penulis.asing') }}" class="text-decoration-none">
+                        <div class="card card-penulis mb-3" style="max-width: 540px;">
+                            <img src="https://i.pinimg.com/enabled_lo/564x/24/95/63/2495635bcea49ecfc842dd5d2b94d85e.jpg"
+                                class="img-fluid rounded-start" alt="Penulis Asing"
+                                style="height: 100%; width: 100%; object-fit: cover;">
+                            <div class="penulis-judul">Penulis Asing</div>
+                        </div>
+                    </a>
+                </div>
+                <!-- Penulis Lokal -->
+                <div class="col-4">
+                    <a href="{{ route('penulis.lokal') }}" class="text-decoration-none">
+                        <div class="card card-penulis mb-3" style="max-width: 540px;">
+                            <img src="https://i.pinimg.com/enabled_lo/564x/24/95/63/2495635bcea49ecfc842dd5d2b94d85e.jpg"
+                                class="img-fluid rounded-start" alt="Penulis Lokal"
+                                style="height: 100%; width: 100%; object-fit: cover;">
+                            <div class="penulis-judul">Penulis Lokal</div>
+                        </div>
+                    </a>
+                </div>
+            </div>
         </div>
     </section>
 
+    <!-- Buku Rekomendasi Section -->
+    <section class="carousel">
+        <h2 class="categories__title">Rekomendasi Buku</h2>
+        <div class="carousel__container">
+            @foreach ($datadepan as $item)
+                <div class="carousel-item">
+                    <a href="{{ route('document.detail', ['id' => $item->id_dbuku]) }}">
+                        <img class="carousel-item__img" src="{{ asset('storage/cover/' . $item->dbuku_cover) }}"
+                            alt="{{ $item->dbuku_judul }}" />
+                    </a>
+                    <div class="carousel-item__details">
+                        <div class="controls">
+                            <span class="fas fa-play-circle"></span>
+                            <span class="fas fa-plus-circle"></span>
+                        </div>
+                        <h5 class="carousel-item__details--title">{{ $item->dbuku_judul }}</h5>
+                        <h6 class="carousel-item__details--subtitle">Last updated 3 mins ago</h6>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </section>
 
-     
+    <!-- Penerbit Section -->
+    <section class="author">
+        <div class="container5">
+            <h1 class="penulis">Penerbit</h1>
+            <div class="row">
+                @foreach ($pnb as $item)
+                    <div class="col-3">
+                        <a href="{{ route('BukuByPenerbit', \Crypt::encryptString($item->id_dpenerbit)) }}"
+                            class="text-decoration-none">
+                            <div class="card card-penulis mb-3" style="max-width: 540px;">
+                                <img src="https://i.pinimg.com/564x/14/b7/15/14b715201694a3d4468d45468786ec01.jpg"
+                                    class="img-fluid rounded-start" alt="Penerbit {{ $item->dpenerbit_nama_penerbit }}"
+                                    style="height: 100%;  width: 100%; object-fit: cover;">
+                                <div class="penulis-judul">{{ $item->dpenerbit_nama_penerbit }}</div>
+                            </div>
+                        </a>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
 @endsection

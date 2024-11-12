@@ -1,9 +1,12 @@
 @php
-    $role = App\Models\akses_usr::join('users', 'akses_usrs.id_usr', 'users.id_usr')
+    $role = App\Models\Akses_usr::join('users', 'akses_usrs.id_usr', 'users.id_usr')
         ->where('users.id_usr', Auth::user()->id_usr)
         ->join('roles', 'akses_usrs.id_role', 'roles.id_role')
         ->first();
+
+    $user = App\Models\User::find(Auth::user()->id_usr);
 @endphp
+
 <div id="main" class='layout-navbar'>
     <header class=''>
         <nav class="navbar navbar-expand navbar-light ">
@@ -53,7 +56,7 @@
                                 </div>
                                 <div class="user-img d-flex align-items-center">
                                     <div class="avatar avatar-md">
-                                        <img src={{ asset('assets/images/faces/1.jpg') }}>
+                                        <img src="https://ui-avatars.com/api/?name={{ urlencode($user->usr_nama) }}&size=128&background=0D8ABC&color=fff&bold=true" alt="User Avatar">
                                     </div>
                                 </div>
                             </div>

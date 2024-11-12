@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\dm_buku;
 
 class WebController extends Controller
 {
-    public function pageWeb()
+    public function berandaPage()
     {
         return view('welcome');
     }
@@ -36,6 +37,15 @@ class WebController extends Controller
     public function pageForgotPassword()
     {
         return view('auth.forgot');
+    }
+    public function pageTentang()
+    {
+        return view('user.tentang');
+    }
+    
+    public function pagePanduan()
+    {
+        return view('user.panduan');
     }
 
 

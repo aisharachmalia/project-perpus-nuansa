@@ -17,41 +17,36 @@ class AksesUsrController extends Controller
         return view('setting.akses-users.index', compact('usr'));
     }
 
-    public function detail($id = null)
+    public function detail(Request $request, $id = null)
     {
-        $id_usr = Crypt::decryptString($id);
-
-        $user = DB::table('users')
-            ->join('akses_usrs', 'akses_usrs.id_usr', '=', 'users.id_usr')
-            ->groupBy('users.id_usr', 'akses_usrs.id_role')
-            ->where('users.id_usr', $id_usr)
-            ->select('users.id_usr', 'akses_usrs.id_role', 'users.usr_username', 'users.usr_email', 'users.usr_nama')
-            ->get();
-
-        $data['user'] = $user;
-
-        $menu = DB::table('menus')->get();
-
-        $mn = '';
-        foreach ($menu as $key => $value) {
-            $ausr = DB::select("SELECT * FROM akses_usrs WHERE id_usr=$id_usr ANd deleted_at is null ANd id_menu=$value->id_menu ");
-
-            $c = '';
-            if (count($ausr) > 0) {
-                foreach ($ausr as $ky => $val) {
-                    $n = 1 + $ky;
-                    $c .= '<td> <input class="form-check-input" type="checkbox" value="' . $n . '" id="defaultCheck' . $n . '" name="akses[' . $val->id_akses . ']" ' . ($val->hak_akses == $n ? 'checked' : '') . '></td>';
+        if ($request->type == "akses") {
+            $id_usr = Crypt::decryptString($id);
+            $user = DB::table('users')
+                ->join('akses_usrs', 'akses_usrs.id_usr', '=', 'users.id_usr')
+                ->groupBy('users.id_usr', 'akses_usrs.id_role')
+                ->where('users.id_usr', $id_usr)
+                ->select('users.id_usr', 'akses_usrs.id_role', 'users.usr_username', 'users.usr_email', 'users.usr_nama')
+                ->get();
+            $data['user'] = $user;
+            $menu = DB::table('menus')->get();
+            $mn = '';
+            foreach ($menu as $key => $value) {
+                $ausr = DB::select("SELECT * FROM akses_usrs WHERE id_usr=$id_usr ANd deleted_at is null ANd id_menu=$value->id_menu ");
+                $c = '';
+                if (count($ausr) > 0) {
+                    foreach ($ausr as $ky => $val) {
+                        $n = 1 + $ky;
+                        $c .= '<td> <input class="form-check-input" type="checkbox" value="' . $n . '" id="defaultCheck' . $n . '" name="akses[' . $val->id_akses . ']" ' . ($val->hak_akses == $n ? 'checked' : '') . '></td>';
+                    }
                 }
-            }
-
-            $mn .= '
+                $mn .= '
                     <tr class="text-center">
                         <td scope="row">' . $value->menu_nama . '</td>
                         ' . $c . '
                     </tr>';
-        }
+            }
 
-        $data['akses'] = '<div class="table-responsive">
+            $data['akses'] = '<div class="table-responsive">
                                 <table class="p-4 table table-borderless">
                                     <thead>
                                         <tr class="text-center">
@@ -67,8 +62,16 @@ class AksesUsrController extends Controller
                                     </tbody>
                                 </table>
                             </div>';
-        $data['password'] = str()->random(8);
-        return response($data);
+            return response($data);
+        } else {
+            $id_usr = Crypt::decryptString($id);
+            $user = DB::table('users')->where('users.id_usr', $id_usr)
+                ->select('users.id_usr', 'users.usr_username', 'users.usr_email', 'users.usr_nama')
+                ->get();
+            $data['user'] = $user;
+            $data['password'] = str()->random(8);
+            return response($data);
+        }
     }
     public function store(Request $request)
     {

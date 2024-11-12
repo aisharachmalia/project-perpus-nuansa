@@ -17,12 +17,13 @@
                             <span id="no-error" class="text-danger"></span>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label>kondisi</label>
-                            <select class="form-control" name="dsbuku_kondisi" id="dsbuku_kondisi">
-                                <option value="" selected disabled>kondisi Buku</option>
-                            </select>
+                            <label>Kondisi</label>
+                            <div id="dsbuku_kondisi">      
+
+                            </div>
                             <span id="kondisi-error" class="text-danger"></span>
                         </div>
+                        
                     </div>
                 </form>
             </div>

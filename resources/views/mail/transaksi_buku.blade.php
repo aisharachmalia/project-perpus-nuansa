@@ -38,7 +38,7 @@
 
         <div class="row">
             <div class="column">
-                <span class="label">Nama Siswa:</span>
+                <span class="label">Nama Peminjam:</span>
                 <span class="value">{{ $data['dsiswa_nama'] }}</span>
             </div>
             <div class="column">

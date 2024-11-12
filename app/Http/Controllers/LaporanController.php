@@ -21,7 +21,6 @@ class LaporanController extends Controller
 
     public function tableTrks(Request $request)
     {
-
         $filt = '';
 
         if ($request->get('status') == '1' || $request->get('status') == '2' || $request->get('status') == '3') {
@@ -37,7 +36,7 @@ class LaporanController extends Controller
         if ($request->get('siswa')) {
             // Decrypt the student ID if it's encrypted
             $siswa_id = decrypt($request->get('siswa'));
-            $filt .= "AND trks_transaksi.id_dsiswa LIKE '%" . $siswa_id . "%'";
+            $filt .= "AND trks_transaksi.id_usr LIKE '%" . $siswa_id . "%'";
         }
 
         if ($request->get('tanggal_awal') && $request->get('tanggal_akhir')) {
@@ -47,14 +46,15 @@ class LaporanController extends Controller
         $trks = \DB::select(
             "SELECT trks_transaksi.*,
                             dm_buku.dbuku_judul,
-                            dm_siswas.dsiswa_nama,
-                            trks_denda.tdenda_jumlah
+                            users.usr_nama,
+                            trks_denda.jumlah
                     FROM trks_transaksi
                     LEFT JOIN dm_buku ON trks_transaksi.id_dbuku = dm_buku.id_dbuku
-                    LEFT JOIN dm_siswas ON trks_transaksi.id_dsiswa = dm_siswas.id_dsiswa
+                    LEFT JOIN users ON trks_transaksi.id_usr = users.id_usr
                     LEFT JOIN trks_denda ON trks_transaksi.id_trks = trks_denda.id_trks
                     WHERE trks_transaksi.deleted_at IS NULL $filt"
         );
+
 
         if ($request->ajax()) {
             return DataTables::of($trks)
@@ -68,8 +68,8 @@ class LaporanController extends Controller
                 ->editColumn('trks_tgl_pengembalian', function ($trks) {
                     return $trks->trks_tgl_pengembalian ? Carbon::parse($trks->trks_tgl_pengembalian)->format('d-m-Y H:i') : '-';
                 })
-                ->editColumn('tdenda_jumlah', function ($trks) {
-                    return $trks->tdenda_jumlah ? $trks->tdenda_jumlah : '0';
+                ->editColumn('jumlah', function ($trks) {
+                    return 'Rp. ' . ($trks->jumlah !== null ? number_format($trks->jumlah, 0, ',', '.') : '0');
                 })
                 ->make(true);
         }
@@ -113,11 +113,11 @@ class LaporanController extends Controller
             $trks = \DB::select(
                 "SELECT trks_transaksi.*,
                             dm_buku.dbuku_judul,
-                            dm_siswas.dsiswa_nama,
-                            trks_denda.tdenda_jumlah
+                            users.usr_nama,
+                            trks_denda.jumlah
                     FROM trks_transaksi
                     LEFT JOIN dm_buku ON trks_transaksi.id_dbuku = dm_buku.id_dbuku
-                    LEFT JOIN dm_siswas ON trks_transaksi.id_dsiswa = dm_siswas.id_dsiswa
+                    LEFT JOIN users ON trks_transaksi.id_usr = users.id_usr
                     LEFT JOIN trks_denda ON trks_transaksi.id_trks = trks_denda.id_trks
                     WHERE trks_transaksi.deleted_at IS NULL"
             );
