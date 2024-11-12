@@ -127,7 +127,7 @@
 
 
     @php
-        $role = App\Models\akses_usr::join('users', 'akses_usrs.id_usr', 'users.id_usr')
+        $role = App\Models\Akses_usr::join('users', 'akses_usrs.id_usr', 'users.id_usr')
             ->where('users.id_usr', Auth::user()->id_usr)
             ->join('roles', 'akses_usrs.id_role', 'roles.id_role')
             ->first();
