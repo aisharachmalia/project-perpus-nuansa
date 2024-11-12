@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <header>
     <div class="container">
         <div class="logo">
@@ -29,7 +30,7 @@
             </ul>
         </nav>
         <div>
-          <a class="dropdown-item" href="{{ route('login-usr') }}" style="color: white"><i class="bi bi-box-arrow-in-right" style="color: white"></i> Login</a>
+          <a class="dropdown-item" href="{{ route('login-usr') }}" style="color: white"><i class="bi bi-door-open-fill"></i> Login</a>
         </div>
     </div>
 </header>

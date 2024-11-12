@@ -116,7 +116,20 @@ class PustakawanController extends Controller
             'usr_email' => $request->dpustakawan_email,
             'password' => \Hash::make($request->dpustakawan_no_telp),
         ]);
-        
+        $menus = \DB::table('menus')->get();
+
+        foreach ($menus as $menu) {
+            for ($i = 1; $i <= 4; $i++) {
+                \DB::table('akses_usrs')->insert([
+                    'id_usr' => $user->id_usr,
+                    'id_role' => 3,
+                    'id_menu' => $menu->id_menu,
+                    'hak_akses' => 0,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+        }
         return response()->json([
             'success' => true,
             'message' => 'Data Berhasil Disimpan!',
@@ -128,14 +141,21 @@ class PustakawanController extends Controller
         try {
             $idPs = Crypt::decryptString($id);
             $pustakawan = dm_pustakawan::find($idPs);
-
+    
+            if (!$pustakawan) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data pustakawan tidak ditemukan',
+                ], 404);
+            }
+    
             $rules = [
                 'dpustakawan_nama' => 'required',
                 'dpustakawan_email' => 'required|email|unique:dm_pustakawan,dpustakawan_email,' . $pustakawan->id_dpustakawan . ',id_dpustakawan',
                 'dpustakawan_no_telp' => 'required|unique:dm_pustakawan,dpustakawan_no_telp,' . $pustakawan->id_dpustakawan . ',id_dpustakawan|numeric|regex:/^([0-9\s\-\+\(\)]*)$/|digits_between:11,13',
                 'dpustakawan_alamat' => 'required',
             ];
-
+    
             $messages = [
                 'dpustakawan_email.email' => 'Format email tidak sesuai',
                 'dpustakawan_nama.required' => 'Nama harus diisi!',
@@ -147,10 +167,10 @@ class PustakawanController extends Controller
                 'dpustakawan_no_telp.regex' => 'No. Telepon harus angka!',
                 'dpustakawan_no_telp.digits_between' => 'No. Telepon harus di antara 11 hingga 13 angka!',
             ];
-
+    
             // Validate request
             $validator = \Validator::make($request->all(), $rules, $messages);
-
+    
             if ($validator->fails()) {
                 return response()->json([
                     'success' => false,
@@ -206,13 +226,14 @@ class PustakawanController extends Controller
             ]);
 
         } catch (\Throwable $th) {
-            // Handle exceptions
             return response()->json([
                 'success' => false,
                 'message' => 'Terjadi kesalahan: ' . $th->getMessage(),
-            ]);
+            ], 500);
         }
     }
+    
+    
 
     public function deletePustakawan($id = null)
     {
