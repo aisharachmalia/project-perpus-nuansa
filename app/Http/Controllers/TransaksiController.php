@@ -126,6 +126,7 @@ class TransaksiController extends Controller
             $dsbuku->save();
             // dm_buku
             $dm_buku = dm_buku::find($buku);
+            $dm_buku->dbuku_flag = 1;
             $dm_buku->dbuku_jml_tersedia = $dm_buku->dbuku_jml_tersedia - 1;
             $dm_buku->save();
 
@@ -301,22 +302,22 @@ class TransaksiController extends Controller
                 dm_salinan_buku::where('id_dsbuku', $transaksi->id_dsbuku)->update([
                     'dsbuku_status' => 2,
                 ]);
-                $peminjamDet = User::where('id_usr', $reservasi->id_usr)->first();
-                $array = [
-                    'receive' => $peminjamDet->usr_email,
-                    'subject' => 'Reservasi Buku Tersedia',
-                    'data' => [
-                        'dbuku_judul' => $reservasi->dbuku_judul,
-                        'usr_nama' => $peminjamDet->usr_nama,
-                        'trsv_tgl_reservasi' => $reservasi->trsv_tgl_reservasi,
-                    ],
-                ];
+                // $peminjamDet = User::where('id_usr', $reservasi->id_usr)->first();
+                // $array = [
+                //     'receive' => $peminjamDet->usr_email,
+                //     'subject' => 'Reservasi Buku Tersedia',
+                //     'data' => [
+                //         'dbuku_judul' => $reservasi->dbuku_judul,
+                //         'usr_nama' => $peminjamDet->usr_nama,
+                //         'trsv_tgl_reservasi' => $reservasi->trsv_tgl_reservasi,
+                //     ],
+                // ];
 
-                Mail::send('mail.pengembalian_buku', $array, function ($message) use ($array) {
-                    $message->to($array['receive'])
-                        ->subject($array['subject']);
-                    $message->from('perpustakaansmk@gmail.com', 'Perpustakaan SMK');
-                });
+                // Mail::send('mail.pengembalian_buku', $array, function ($message) use ($array) {
+                //     $message->to($array['receive'])
+                //         ->subject($array['subject']);
+                //     $message->from('perpustakaansmk@gmail.com', 'Perpustakaan SMK');
+                // });
             }
 
 

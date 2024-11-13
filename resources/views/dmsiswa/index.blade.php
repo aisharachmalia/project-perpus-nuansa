@@ -88,7 +88,7 @@
                                 <div class="form-group">
                                     <label for="id_dkelas">Nama Kelas</label>
                                     @php
-                                        $mpl = DB::table('dm_kelas')->get();    
+                                        $mpl = DB::table('dm_kelas')->get();
                                     @endphp
                                     <select class="form-control" id="id_dkelas" name="id_dkelas" required>
                                         <option disabled value="0" selected>Pilih kelas</option>
@@ -263,7 +263,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    
+
                                     <div class="col-md-6 col-12">
                                         <div class="form-group">
                                             <label for="edit_kelas">Kelas</label>
@@ -305,6 +305,7 @@
             var link_printout = "{{ route('link_printout_siswa') }}";
             var table = $('#tbl_list').DataTable({
                 serverSide: true,
+                scrollX: true,
                 ajax: '{{ url()->current() }}',
                 columns: [{
                         data: 'DT_RowIndex',
@@ -400,7 +401,7 @@
                 }
             });
         });
-    
+
     </script>
 
     {{-- delete --}}
@@ -408,7 +409,7 @@
         $('body').on('click', '#btn-delete', function() {
             let id_siswa = $(this).data('id');
             let token = $("meta[name='csrf-token']").attr("content");
-    
+
             Swal.fire({
                 title: 'Apakah Kamu Yakin?',
                 text: "ingin menghapus data ini!",
@@ -456,7 +457,7 @@
             });
         });
     </script>
-    
+
 
     {{-- create --}}
 <script>
@@ -509,20 +510,33 @@ $('#store').off('click').on('click', function(e) {
                 showConfirmButton: false,
                 timer: 3000
             });
-            
+
             $('#create').modal('toggle');
             $('#tbl_list').DataTable().ajax.reload();
 
-            // Kosongkan form setelah berhasil disimpan
-            $('#create').find('input').val('');
-            $('#create').find('select').val('');
-            $('#create').find('textarea').val('');
-        },
-        error: function(xhr) {
-            if (xhr.status === 422) {
-                if (xhr.responseText) {
-                    var errors = JSON.parse(xhr.responseText);
-                    errors = errors.errors;
+            $.ajax({
+                url: `siswa/add`,
+                type: "POST",
+                cache: false,
+                data: {
+                    "dsiswa_nama": dsiswa_nama,
+                    "dsiswa_nis": dsiswa_nis,
+                    "dsiswa_email": dsiswa_email,
+                    "dsiswa_no_telp": dsiswa_no_telp,
+                    "dsiswa_alamat": dsiswa_alamat,
+                    "id_dkelas": id_dkelas,
+                    "_token": token
+                },
+                success: function(response) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: `${response.message}`,
+                        showConfirmButton: false,
+                        timer: 3000
+                    });
+
+                    $('#create').modal('toggle');
+                    $('#tbl_list').DataTable().ajax.reload();
 
                     $('#nama-error').text(errors.dsiswa_nama ? errors.dsiswa_nama[0] : '');
                     $('#nis-error').text(errors.dsiswa_nis ? errors.dsiswa_nis[0] : '');
@@ -533,7 +547,7 @@ $('#store').off('click').on('click', function(e) {
                 } else {
                     console.log("Error structure not as expected:", xhr.responseJSON);
                 }
-            } else {
+            }) else {
                 console.log("Unexpected error:", xhr);
             }
         }
@@ -567,13 +581,13 @@ $('#store').off('click').on('click', function(e) {
         });
     });
 </script>
- 
+
 <script>
     $(document).ready(function() {
         // Trigger untuk menampilkan modal edit siswa
         $('body').on('click', '.modalEdit', function() {
             let id_dsiswa = $(this).data('id');
-    
+
             $.ajax({
                 url: `siswa/show/${id_dsiswa}`,
                 type: "GET",
@@ -587,24 +601,24 @@ $('#store').off('click').on('click', function(e) {
                     $('#edit').find('#dsiswa_no_telp').val(response.siswa.dsiswa_no_telp);
                     $('#edit').find('#dsiswa_alamat').val(response.siswa.dsiswa_alamat);
                     $('#edit').find('#id_dkelas').html(response.slc);
-    
+
                     if (response.siswa.dsiswa_sts == 1) {
                         $('#edit').find('#aktif').prop('checked', true);
                     } else {
                         $('#edit').find('#non-aktif').prop('checked', true);
                     }
-                   
+
                 }
             });
         });
-    
+
         // Setup CSRF token untuk semua AJAX request
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-    
+
 // Fungsi untuk update data siswa
 $('#update').off('click').on('click', function(e) {
     e.preventDefault();
@@ -614,7 +628,10 @@ $('#update').off('click').on('click', function(e) {
     let dsiswa_nis = $('#edit').find('#dsiswa_nis').val();
     let dsiswa_email = $('#edit').find('#dsiswa_email').val();
     let dsiswa_no_telp = $('#edit').find('#dsiswa_no_telp').val();
-    let dsiswa_sts = $('input[name="dsiswa_sts"]:checked').val();
+
+    // Ambil nilai dsiswa_sts dari radio button yang dipilih
+    let dsiswa_sts = $('input[name="dsiswa_sts"]:checked').val();  // Update bagian ini
+
     let dsiswa_alamat = $('#edit').find('#dsiswa_alamat').val();
     let id_dkelas = $('#edit').find('#id_dkelas').val();
 
@@ -710,7 +727,7 @@ $('#edit').find('#kelas-error').text('');
 });
     });
 </script>
-    
+
 @endpush
 
 <style>
@@ -761,4 +778,4 @@ $('#edit').find('#kelas-error').text('');
     background-color: #0056b3; /* Biru gelap saat hover */
 }
 
-</style>   
+</style>

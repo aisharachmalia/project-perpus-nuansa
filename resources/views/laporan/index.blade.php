@@ -190,6 +190,7 @@
             var link_printout = "{{ route('link_printout_buku') }}";
             var table = $('#tbl_trks').DataTable({
                 serverSide: true,
+                scrollX: true,
                 ajax: {
                     url: "{{ route('table_lap_trks') }}",
                     data: function(d) {

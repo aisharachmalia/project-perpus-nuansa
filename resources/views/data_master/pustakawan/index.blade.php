@@ -49,6 +49,7 @@
             var link_printout = "{{ route('link_printout_pustakawan') }}"
             $('#tbl_list').DataTable({
                 processing: false,
+                scrollX: true,
                 serverSide: true,
                 ajax: '{{ url()->current() }}',
                 columns: [{
@@ -184,7 +185,7 @@
                         showConfirmButton: false,
                         timer: 3000
                     });
-                    
+
                     $('#create').modal('toggle');
                     $('#tbl_list').DataTable().ajax.reload();
                 },

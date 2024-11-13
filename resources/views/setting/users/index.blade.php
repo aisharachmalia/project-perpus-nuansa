@@ -9,9 +9,9 @@
                         <h4 class="card-title text-center">Daftar User</h4>
                     </div>
                     <div class="card-body">
-                        <table class="table table-striped" id="tbl_list">
+                        <table id="tbl_list" class="table table-striped table-bordered" cellspacing="0" width="100%">
                             <thead>
-                                <tr id="">
+                                <tr>
                                     <th>No</th>
                                     <th>Nama</th>
                                     <th>Username</th>
@@ -172,8 +172,8 @@
     <script type="text/javascript">
         $(document).ready(function() {
             $('#tbl_list').DataTable({
-                processing: false,
                 serverSide: true,
+                scrollX: true,
                 ajax: '{{ url()->current() }}',
                 columns: [{
                         data: 'id_usr',

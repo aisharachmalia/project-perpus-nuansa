@@ -578,6 +578,7 @@
             var link_print = "{{ route('referensi.linkPrintout') }}";
             var table = $('#tbl_penulis').DataTable({
                 serverSide: true,
+                scrollX: true,
                 ajax: '{{ url('/data-master/dpenulis') }}',
                 columns: [{
                         data: 'DT_RowIndex',
@@ -652,6 +653,7 @@
 
             var table = $('#tbl_penerbit').DataTable({
                 serverSide: true,
+                scrollX: true,
                 ajax: '{{ url('/data-master/dpenerbit') }}',
                 columns: [{
                         data: 'DT_RowIndex',
@@ -676,6 +678,7 @@
             });
             var table = $('#tbl_kategori').DataTable({
                 serverSide: true,
+                scrollX: true,
                 ajax: '{{ url('/data-master/dkategori') }}',
                 columns: [{
                         data: 'DT_RowIndex',
