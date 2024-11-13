@@ -128,9 +128,8 @@ class ReservasiController extends Controller
                     $dsbuku = Transaksi::join('dm_salinan_bukus', 'dm_salinan_bukus.id_dbuku', '=', 'trks_transaksi.id_dbuku')
                         ->join('dm_buku', 'dm_buku.id_dbuku', '=', 'dm_salinan_bukus.id_dbuku')
                         ->where('dm_buku.id_dbuku', $buku)
-                        ->whereRaw("DATE_FORMAT(trks_transaksi.trks_tgl_jatuh_tempo, '%Y-%m-%d') <= ?", $request->trks_tgl_reservasi)
+                        ->whereRaw("DATE_FORMAT(trks_transaksi.trks_tgl_jatuh_tempo, '%Y-%m-%d %H:%i') <= ?", [$request->trks_tgl_reservasi = str_replace('T', ' ', $request->trks_tgl_reservasi)])
                         ->first();
-
                     if ($dsbuku) {
                         $reservasi = new trks_reservasis();
                         $reservasi->id_dbuku = $buku;
@@ -250,6 +249,7 @@ class ReservasiController extends Controller
                 $preservasi->save();
 
                 $dsbuku->dsbuku_status = 1;
+                $dsbuku->dsbuku_flag = 1;
                 $dsbuku->save();
 
                 return response()->json(['message' => 'Buku reservasi berhasil diambil!']);
@@ -377,8 +377,10 @@ class ReservasiController extends Controller
 
             $jreservasi = trks_reservasis::where('id_dbuku', $preservasi->id_dbuku)->where('trsv_status', 1)->exists();
             $jtransaksi = Transaksi::where('id_dbuku', $preservasi->id_dbuku)->where('trks_status', 0)->exists();
+            $pbuku = dm_buku::find($preservasi->id_dbuku);
+            $pbuku->dbuku_jml_tersedia = $pbuku->dbuku_jml_tersedia + 1;
+            $pbuku->save();
             if (!$jreservasi && !$jtransaksi) {
-                $pbuku = dm_buku::find($preservasi->id_dbuku);
                 $pbuku->dbuku_flag = 0;
                 $pbuku->save();
             }

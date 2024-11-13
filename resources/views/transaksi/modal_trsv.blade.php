@@ -41,7 +41,7 @@
                              <div class="col-md-4 col-12">
                                  <div class="form-group">
                                      <label class="fw-semibold">Tanggal Reservasi</label><br>
-                                     <input type="date" class="form-control shadow-sm rounded-pill"
+                                     <input type="datetime-local" class="form-control shadow-sm rounded-pill"
                                          name="trks_tgl_reservasi" id="trks_tgl_reservasi">
                                      <span id="tgl-reservasi-error" class="text-danger small"></span>
                                  </div>
@@ -49,7 +49,7 @@
                              <div class="col-md-4 col-12">
                                  <div class="form-group">
                                      <label class="fw-semibold">Tanggal Kadaluarsa</label><br>
-                                     <input type="date" class="form-control shadow-sm rounded-pill"
+                                     <input type="datetime-local" class="form-control shadow-sm rounded-pill"
                                          placeholder="tanggal jatuh tempo" name="trsv_tgl_kadaluarsa"
                                          id="trsv_tgl_kadaluarsa">
                                      <span id="tgl-kadaluarsa-error" class="text-danger small"></span>
@@ -127,7 +127,7 @@
                              <div class="col-md-4 col-12">
                                  <div class="form-group">
                                      <label class="fw-semibold">Tanggal Reservasi</label><br>
-                                     <input type="date" class="form-control shadow-sm rounded-pill"
+                                     <input type="datetime-local" class="form-control shadow-sm rounded-pill"
                                          name="trks_tgl_reservasi" id="trsv_tgl_reservasi">
                                      <span id="tgl-reservasi-error" class="text-danger small"></span>
                                  </div>
@@ -135,7 +135,7 @@
                              <div class="col-md-4 col-12">
                                  <div class="form-group">
                                      <label class="fw-semibold">Tanggal Kadaluarsa</label><br>
-                                     <input type="date" class="form-control shadow-sm rounded-pill"
+                                     <input type="datetime-local" class="form-control shadow-sm rounded-pill"
                                          placeholder="tanggal jatuh tempo" name="trsv_tgl_kadaluarsa"
                                          id="trsv_tgl_kadaluarsa">
                                      <span id="tgl-kadaluarsa-error" class="text-danger small"></span>
@@ -144,7 +144,7 @@
                              <div class="col-md-4 col-12">
                                  <div class="form-group">
                                      <label for="country-floating" class="fw-semibold">Tanggal Pengambilan</label>
-                                     <input type="date" class="form-control shadow-sm rounded-pill"
+                                     <input type="datetime-local" class="form-control shadow-sm rounded-pill"
                                          placeholder="tanggal pengambilan" name="trsv_tgl_pengambilan"
                                          id="trsv_tgl_pengambilan">
                                      <span id="tgl-pengambilan-error" class="text-danger small"></span>
@@ -153,7 +153,7 @@
                              <div class="col-md-4 col-12">
                                  <div class="form-group">
                                      <label for="country-floating" class="fw-semibold">Tanggal Jatuh Tempo</label>
-                                     <input type="date" class="form-control shadow-sm rounded-pill"
+                                     <input type="datetime-local" class="form-control shadow-sm rounded-pill"
                                          placeholder="tanggal jatuh tempo" name="trsv_jatuh_tempo"
                                          id="trsv_jatuh_tempo">
                                      <span id="trsv-jatuh-tempo-error" class="text-danger small"></span>

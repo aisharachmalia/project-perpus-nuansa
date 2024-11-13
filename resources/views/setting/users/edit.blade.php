@@ -12,15 +12,16 @@
                 $('#edit').find('#usr_id').val(id_usr);
                 $('#edit').find('#usr_username').val(response['user'].usr_username);
                 $('#edit').find('#usr_email').val(response['user'].usr_email);
-                $('#edit').find('#status[value="' + response['user'].usr_stat + '"]').prop('checked', true);
+                $('#edit').find('#status[value="' + response['user'].usr_stat + '"]').prop(
+                    'checked', true);
                 $('#usr_error').text('');
                 $('#username_error').text('');
                 $('#email_error').text('');
             }
-        }
+        })
     });
-});
- 
+
+
     $(document).on('click', '#update', function(e) {
         e.preventDefault();
         //define variable

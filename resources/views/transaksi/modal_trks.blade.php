@@ -58,7 +58,7 @@
                             <div class="col-md-6 col-12">
                                 <div class="form-group">
                                     <label for="country-floating" class="fw-semibold">Tanggal Peminjaman</label>
-                                    <input type="date" class="form-control shadow-sm rounded-pill"
+                                    <input type="datetime-local" class="form-control shadow-sm rounded-pill"
                                         placeholder="tanggal pinjam" name="trks_tgl_peminjaman"
                                         id="trks_tgl_peminjaman">
                                     <span id="tgl-pinjam-error" class="text-danger small"></span>
@@ -67,7 +67,7 @@
                             <div class="col-md-6 col-12">
                                 <div class="form-group">
                                     <label for="country-floating" class="fw-semibold">Tanggal Jatuh Tempo</label>
-                                    <input type="date" class="form-control shadow-sm rounded-pill"
+                                    <input type="datetime-local" class="form-control shadow-sm rounded-pill"
                                         placeholder="tanggal jatuh tempo" name="trks_tgl_jatuh_tempo"
                                         id="trks_tgl_jatuh_tempo">
                                     <span id="tgl-jatuh-tempo-error" class="text-danger small"></span>
@@ -122,7 +122,7 @@
                         <div class="col-md-4 col-12">
                             <div class="form-group">
                                 <label for="country-floating">Tanggal Peminjaman</label>
-                                <input type="date" class="form-control" name="trks_tgl_peminjaman"
+                                <input type="datetime-local" class="form-control" name="trks_tgl_peminjaman"
                                     id="trks_tgl_peminjaman">
                                 <span id="tgl-pinjam-error" class="text-danger"></span>
                             </div>
@@ -130,7 +130,7 @@
                         <div class="col-md-4 col-12">
                             <div class="form-group">
                                 <label for="country-floating">Tanggal Jatuh Tempo</label>
-                                <input type="date" class="form-control" name="trks_tgl_jatuh_tempo"
+                                <input type="datetime-local" class="form-control" name="trks_tgl_jatuh_tempo"
                                     id="trks_tgl_jatuh_tempo">
                                 <span id="tgl-jatuh-tempo-error" class="text-danger"></span>
                             </div>
@@ -138,7 +138,7 @@
                         <div class="col-md-4 col-12">
                             <div class="form-group">
                                 <label for="country-floating">Tanggal Pengembalian</label>
-                                <input type="date" class="form-control" name="trks_tgl_pengembalian"
+                                <input type="datetime-local" class="form-control" name="trks_tgl_pengembalian"
                                     id="trks_tgl_pengembalian">
                                 <span id="tgl-pengembalian-error" class="text-danger"></span>
                             </div>

@@ -126,8 +126,8 @@
                         data: null,
                         render: function(data, type, row) {
                             return '<strong>' + new Date(row.trks_tgl_peminjaman)
-                                .toLocaleDateString('id-ID') + '</strong><br>' +
-                                new Date(row.trks_tgl_jatuh_tempo).toLocaleDateString('id-ID');
+                                .toLocaleString('id-ID').slice(0, 17) + '</strong><br>' +
+                                new Date(row.trks_tgl_jatuh_tempo).toLocaleString('id-ID').slice(0, 17);
                         }
 
                     },
@@ -137,7 +137,7 @@
                         render: function(data, type, row) {
                             let pengembalian = row.trks_tgl_pengembalian == null ?
                                 'Belum dikembalikan' :
-                                new Date(row.trks_tgl_pengembalian).toLocaleDateString('id-ID');
+                                new Date(row.trks_tgl_pengembalian).toLocaleString('id-ID').slice(0, 17);
                             let status = '';
                             if (row.trks_status == -1) {
                                 status = 'Dibatalkan';
@@ -190,9 +190,8 @@
                         class: "text-center",
                         data: null,
                         render: function(data, type, row) {
-                            return '<strong>' + new Date(row.trsv_tgl_reservasi).toLocaleDateString(
-                                    'id-ID') + '</strong><br>' +
-                                new Date(row.trsv_tgl_kadaluarsa).toLocaleDateString('id-ID');
+                            return '<strong>' + new Date(row.trsv_tgl_reservasi).toLocaleString('id-ID').slice(0, 17) + '</strong><br>' +
+                                new Date(row.trsv_tgl_kadaluarsa).toLocaleString('id-ID').slice(0, 17);
                         }
 
                     },
@@ -202,10 +201,10 @@
                         render: function(data, type, row) {
                             let pemberitahuan = row.trsv_tgl_pemberitahuan == null ?
                                 'Belum ada pemberitahuan' :
-                                new Date(row.trsv_tgl_pemberitahuan).toLocaleDateString('id-ID');
+                                new Date(row.trsv_tgl_pemberitahuan).toLocaleString('id-ID').slice(0, 17);
                             let pengambilan = row.trsv_tgl_pengambilan == null ?
                                 'Belum diambil' :
-                                new Date(row.trsv_tgl_pengambilan).toLocaleDateString('id-ID');
+                                new Date(row.trsv_tgl_pengambilan).toLocaleString('id-ID').slice(0, 17);
                             return pengambilan + '<br>' + pemberitahuan;
                         }
 

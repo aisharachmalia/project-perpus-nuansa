@@ -3,9 +3,7 @@
       $('body').on('click', '.modalCreate', function() {
             $('#tambahPeminjaman').find('span').text('');
             $('#tambahPeminjaman').find('input, select').val('');
-            $('#tambahPeminjaman').find('#trks_tgl_peminjaman').val(new Date()
-                .toISOString().slice(0, 10));
-
+            $('#tambahPeminjaman').find('#trks_tgl_peminjaman').val(new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' }).slice(0, 16));
         });
 
         $('body').on('click', '.pengembalian', function() {
@@ -32,8 +30,7 @@
                         "id_usr": id_usr
                     },
                     success: function(response) {
-                        $('#pengembalian').find('#trks_tgl_pengembalian').val(new Date()
-                            .toISOString().slice(0, 10));
+                        $('#pengembalian').find('#trks_tgl_pengembalian').val(new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' }).slice(0, 16));
                         $('#pengembalian').find('#id_dbuku').empty();
                         $('#pengembalian').find('#id_dbuku').append(
                             '<option value="">Pilih Buku</option>');
@@ -61,9 +58,9 @@
                 },
                 success: function(response) {
                     $('#pengembalian').find('#trks_tgl_peminjaman').val(response['buku']
-                        .trks_tgl_peminjaman.split(' ')[0]);
+                        .trks_tgl_peminjaman);
                     $('#pengembalian').find('#trks_tgl_jatuh_tempo').val(response['buku']
-                        .trks_tgl_jatuh_tempo.split(' ')[0]);
+                        .trks_tgl_jatuh_tempo);
                     $('#pengembalian').find('#trks_denda').val(response['denda']);
                     $('#pengembalian').find('#id_trks').val(id_trks);
                 }
@@ -276,9 +273,9 @@
                     $('#editPeminjaman').find('#id_dsiswa').html(response['usr']);
                     $('#editPeminjaman').find('#id_dpustakawan').html(response['pustakawan']);
                     $('#editPeminjaman').find('#trks_tgl_peminjaman').val(response['transaksi']
-                        .trks_tgl_peminjaman.split(' ')[0]);
+                        .trks_tgl_peminjaman);
                     $('#editPeminjaman').find('#trks_tgl_jatuh_tempo').val(response['transaksi']
-                        .trks_tgl_jatuh_tempo.split(' ')[0]);
+                        .trks_tgl_jatuh_tempo);
                 },
             });
         });
@@ -396,11 +393,11 @@
                     $('#editPengembalian').find('#id_dsiswa').html(response['usr']);
                     $('#editPengembalian').find('#id_dpustakawan').html(response['pustakawan']);
                     $('#editPengembalian').find('#trks_tgl_peminjaman').val(response['transaksi']
-                        .trks_tgl_peminjaman.split(' ')[0]);
+                        .trks_tgl_peminjaman);
                     $('#editPengembalian').find('#trks_tgl_jatuh_tempo').val(response['transaksi']
-                        .trks_tgl_jatuh_tempo.split(' ')[0]);
+                        .trks_tgl_jatuh_tempo);
                     $('#editPengembalian').find('#trks_tgl_pengembalian').val(response['transaksi']
-                        .trks_tgl_pengembalian.split(' ')[0]);
+                        .trks_tgl_pengembalian);
                     $('#editPengembalian').find('#trks_denda').val(response['transaksi']
                         .trks_denda);
                 },

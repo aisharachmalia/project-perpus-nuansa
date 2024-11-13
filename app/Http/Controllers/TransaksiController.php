@@ -82,8 +82,8 @@ class TransaksiController extends Controller
                 'id_dbuku' => 'required',
                 'id_usr' => 'required',
                 'id_dpustakawan' => 'required',
-                'trks_tgl_peminjaman' => 'required|date|date_equals:today',
-                'trks_tgl_jatuh_tempo' => 'required|date|after_or_equal:today',
+                'trks_tgl_peminjaman' => 'required|date|after_or_equal:today',
+                'trks_tgl_jatuh_tempo' => 'required|date|after:trks_tgl_peminjaman',
             ];
 
             $messages = [
@@ -92,10 +92,10 @@ class TransaksiController extends Controller
                 'id_dpustakawan.required' => 'Pustakawan harus diisi.',
                 'trks_tgl_peminjaman.required' => 'Tanggal peminjaman harus diisi.',
                 'trks_tgl_peminjaman.date' => 'Tanggal peminjaman harus berupa tanggal yang valid.',
-                'trks_tgl_peminjaman.date_equals' => 'Tanggal peminjaman harus hari ini.',
+                'trks_tgl_peminjaman.after_or_equal' => 'Tanggal peminjaman harus hari ini.',
                 'trks_tgl_jatuh_tempo.required' => 'Tanggal jatuh tempo harus diisi.',
                 'trks_tgl_jatuh_tempo.date' => 'Tanggal jatuh tempo harus berupa tanggal yang valid.',
-                'trks_tgl_jatuh_tempo.after_or_equal' => 'Tanggal jatuh tempo harus hari ini atau setelahnya.',
+                'trks_tgl_jatuh_tempo.after' => 'Tanggal atau jam jatuh tempo harus setelah tanggal peminjaman.',
             ];
             $validator = Validator::make($request->all(), $rules, $messages);
 
@@ -168,8 +168,8 @@ class TransaksiController extends Controller
                 'id_dbuku' => 'required',
                 'id_usr' => 'required',
                 'id_dpustakawan' => 'required',
-                'trks_tgl_peminjaman' => 'required|date',
-                'trks_tgl_jatuh_tempo' => 'required|date',
+                'trks_tgl_peminjaman' => 'required|date|after_or_equal:today',
+                'trks_tgl_jatuh_tempo' => 'required|date|after:trks_tgl_peminjaman',
             ];
 
             $messages = [
@@ -177,7 +177,9 @@ class TransaksiController extends Controller
                 'id_usr.required' => 'Peminjam harus dipilih!',
                 'id_dpustakawan.required' => 'Pustakawan harus dipilih!',
                 'trks_tgl_peminjaman.required' => 'Tanggal pinjam harus diisi!',
+                'trks_tgl_peminjaman.after_or_equal' => 'Tanggal peminjaman harus hari ini.',
                 'trks_tgl_jatuh_tempo.required' => 'Tanggal jatuh tempo harus diisi!',
+                'trks_tgl_jatuh_tempo.after' => 'Tanggal atau jam jatuh tempo harus setelah tanggal peminjaman.',
             ];
         } else {
             $rules = [
@@ -289,7 +291,12 @@ class TransaksiController extends Controller
                 'trks_status' => 1,
             ]);
             $transaksi = Transaksi::where('id_trks', $id_trks)->first();
-            $reservasi = trks_reservasis::join('dm_buku', 'trks_reservasis.id_dbuku', '=', 'dm_buku.id_dbuku')->whereRaw("DATE_FORMAT(trks_reservasis.trsv_tgl_reservasi, '%Y-%m-%d') >= ?", $request->tanggal_pengembalian)->where('trsv_status', 1)->first();
+            $reservasi = trks_reservasis::join('dm_buku', 'trks_reservasis.id_dbuku', '=', 'dm_buku.id_dbuku')
+                ->whereRaw("DATE_FORMAT(trks_reservasis.trsv_tgl_reservasi, '%Y-%m-%d %H:%i') >= ?", [$request->tanggal_pengembalian = str_replace('T', ' ', $request->tanggal_pengembalian)])
+                ->where('trsv_status', 1)
+                ->whereNull('trsv_tgl_pemberitahuan')
+                ->first();
+
             if (!$reservasi) {
                 dm_salinan_buku::where('id_dsbuku', $transaksi->id_dsbuku)->update([
                     'dsbuku_status' => 0,
@@ -302,6 +309,8 @@ class TransaksiController extends Controller
                 dm_salinan_buku::where('id_dsbuku', $transaksi->id_dsbuku)->update([
                     'dsbuku_status' => 2,
                 ]);
+                $reservasi->trsv_tgl_pemberitahuan = Carbon::now('Asia/Jakarta');
+                $reservasi->save();
                 // $peminjamDet = User::where('id_usr', $reservasi->id_usr)->first();
                 // $array = [
                 //     'receive' => $peminjamDet->usr_email,
