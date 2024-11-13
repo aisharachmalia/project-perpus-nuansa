@@ -24,25 +24,42 @@
                     <form method="POST" action="{{ route('login_user') }}">
                         @csrf
                         <div class="form-group position-relative has-icon-left mb-4">
-                            <input type="text" class="form-control form-control-xl" name="usr_username" placeholder="Username" @if(isset($login_user)) @if($login_user != null) value="{{ $login_user[0] }}" @endif @endif>
+                            <input type="text" class="form-control form-control-xl" name="usr_username"
+                                placeholder="Username"
+                                @if (isset($login_user)) @if ($login_user != null) value="{{ $login_user[0] }}" @endif
+                                @endif>
                             <div class="form-control-icon">
                                 <i class="bi bi-person"></i>
                             </div>
                             @if ($errors->has('usr_username'))
-                            <span class="text-danger">{{$errors->first('usr_username')}}</span>     
+                                <span class="text-danger">{{ $errors->first('usr_username') }}</span>
                             @endif
                         </div>
+
                         <div class="form-group position-relative has-icon-left mb-4">
-                            <input type="password" class="form-control form-control-xl" name="password" placeholder="Password" @if(isset($login_user)) @if($login_user != null) value="{{ $login_user[1] }}" @endif @endif>
+                            <input type="password" class="form-control form-control-xl" name="password" id="password"
+                                placeholder="Password"
+                                @if (isset($login_user)) @if ($login_user != null) value="{{ $login_user[1] }}" @endif
+                                @endif>
                             <div class="form-control-icon">
                                 <i class="bi bi-shield-lock"></i>
                             </div>
+                            <span class="position-absolute top-50 end-0 translate-middle-y me-5"
+                                onclick="togglePassword()" style="cursor: pointer;">
+                                <div class="form-control-icon">
+                                    <i id="toggleIcon" class="bi bi-eye"></i>
+                                </div>
+                            </span>
                             @if ($errors->has('password'))
-                            <span class="text-danger">{{$errors->first('password')}}</span>     
+                                <span class="text-danger">{{ $errors->first('password') }}</span>
                             @endif
                         </div>
+
                         <div class="form-check form-check-lg d-flex align-items-end">
-                             <input class="form-check-input me-2" type="checkbox" name="remember_me" value="{{ \Crypt::encryptString(1) }}" @if(isset($login_user)) @if($login_user != null) checked @endif @endif>
+                            <input class="form-check-input me-2" type="checkbox" name="remember_me"
+                                value="{{ \Crypt::encryptString(1) }}"
+                                @if (isset($login_user)) @if ($login_user != null) checked @endif
+                                @endif>
                             <label class="form-check-label text-gray-600" for="flexCheckDefault" name="remember">
                                 Ingat saya
                             </label>
@@ -50,7 +67,8 @@
                         <button type="submit" class="btn btn-primary btn-block btn-lg shadow-lg mt-5">Log in</button>
                     </form>
                     <div class="text-center mt-5 text-lg fs-4">
-                        <p class="text-gray-600">Tidak Memiliki Akun? <a href="{{ route('register') }}" class="font-bold">Sign up</a>.</p>
+                        <p class="text-gray-600">Tidak Memiliki Akun? <a href="{{ route('register') }}"
+                                class="font-bold">Sign up</a>.</p>
                         <p><a class="font-bold" href="{{ route('forgot_password') }}">Lupa Password?</a>.</p>
                     </div>
                 </div>
@@ -65,7 +83,7 @@
 </html>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-@if(session('success'))
+@if (session('success'))
     <script>
         Swal.fire({
             icon: 'success',
@@ -76,7 +94,7 @@
     </script>
 @endif
 
-@if(session('success_ver'))
+@if (session('success_ver'))
     <script>
         Swal.fire({
             icon: 'success',
@@ -87,7 +105,7 @@
     </script>
 @endif
 
-@if(session('error_login'))
+@if (session('error_login'))
     <script>
         Swal.fire({
             icon: 'error',
@@ -97,7 +115,7 @@
         });
     </script>
 @endif
-@if(session('error_login2'))
+@if (session('error_login2'))
     <script>
         Swal.fire({
             icon: 'error',
@@ -107,7 +125,7 @@
         });
     </script>
 @endif
-@if(session('error_login3'))
+@if (session('error_login3'))
     <script>
         Swal.fire({
             icon: 'error',
@@ -137,3 +155,20 @@
         });
     </script>
 @endif
+
+<script>
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const toggleIcon = document.getElementById('toggleIcon');
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleIcon.classList.remove('bi-eye');
+            toggleIcon.classList.add('bi-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            toggleIcon.classList.remove('bi-eye-slash');
+            toggleIcon.classList.add('bi-eye');
+        }
+    }
+</script>

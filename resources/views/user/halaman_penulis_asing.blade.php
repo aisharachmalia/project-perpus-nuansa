@@ -45,7 +45,8 @@
 
         .books-container {
             display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 3 buku per baris */
+            grid-template-columns: repeat(3, 1fr);
+            /* 3 buku per baris */
             gap: 10px;
             padding-bottom: 10px;
         }
@@ -86,10 +87,10 @@
             font-weight: bold;
             margin-top: 40px;
         }
-       footer{
-        position: fixed;
-       }
 
+        footer {
+            position: fixed;
+        }
     </style>
 
     <section class="hero">
@@ -105,33 +106,36 @@
                 <li><a href="#{{ $item->id_dpenulis }}">{{ $item->dpenulis_nama_penulis }}</a></li>
             @endforeach
         </ul>
-    </nav> 
+    </nav>
 
-    <h1 class="text-center mb-4">Penulis Asing (Bukan dari Indonesia)</h1>   
+    <h1 class="text-center mb-4">Penulis Asing (Bukan dari Indonesia)</h1>
     <div class="containers my-4">
-        @if($penulisAsing->isEmpty())
+        @if ($penulisAsing->isEmpty())
             <p class="empty-data-message text-center">Data Kosong</p>
         @else
             <div class="row">
-                @foreach($penulisAsing as $penulis)
+                @foreach ($penulisAsing as $penulis)
                     <div class="col-md-12 penulis-section">
                         <h2 class="text-primary">{{ $penulis->dpenulis_nama_penulis }}</h2>
                         <p class="text-muted">{{ $penulis->dpenulis_kewarganegaraan }}</p>
-                        
+
                         <div class="books-container" id="books-{{ $penulis->id_dpenulis }}">
-                            @foreach($penulis->buku->take(6) as $buku) <!-- Tampilkan 6 buku pertama -->
+                            @foreach ($penulis->buku->take(6) as $buku)
+                                <!-- Tampilkan 6 buku pertama -->
                                 <div class="book-item">
-                                    <img src="{{ asset('storage/cover/' . $buku->dbuku_cover) }}" alt="{{ $buku->dbuku_judul }}">
+                                    <a href="{{ route('document.detail', ['id' => Crypt::encryptString($item->id_dbuku)]) }}">
+                                        <img src="{{ asset('storage/cover/' . $buku->dbuku_cover) }}"
+                                            alt="{{ $buku->dbuku_judul }}">
+                                    </a>
                                     <p class="fw-bold mt-2">{{ $buku->dbuku_judul }}</p>
                                     <small class="text-muted">{{ $buku->dbuku_thn_terbit }}</small>
                                 </div>
                             @endforeach
                         </div>
-        
-                        @if($penulis->jumlahBuku > 6)
-                            <button class="btn btn-outline-primary see-more" 
-                                    data-penulis-id="{{ $penulis->id_dpenulis }}" 
-                                    data-offset="6">
+
+                        @if ($penulis->jumlahBuku > 6)
+                            <button class="btn btn-outline-primary see-more" data-penulis-id="{{ $penulis->id_dpenulis }}"
+                                data-offset="6">
                                 See More
                             </button>
                         @endif
@@ -147,7 +151,7 @@
                 let button = $(this);
                 let penulisId = button.data('penulis-id');
                 let offset = button.data('offset');
-    
+
                 $.ajax({
                     url: "{{ route('penulis.loadMoreBooksAsing') }}",
                     method: "POST",
@@ -160,17 +164,19 @@
                         // Menambahkan buku-buku baru di bawah (dalam grid layout)
                         let newBooksHTML = '';
                         data.forEach(function(buku) {
-                            newBooksHTML += 
+                            newBooksHTML +=
                                 '<div class="book-item">' +
-                                '<img src="{{ asset('storage/cover/') }}/' + buku.dbuku_cover + '" alt="' + buku.dbuku_judul + '">' +
+                                '<img src="{{ asset('storage/cover/') }}/' + buku
+                                .dbuku_cover + '" alt="' + buku.dbuku_judul + '">' +
                                 '<p class="fw-bold mt-2">' + buku.dbuku_judul + '</p>' +
-                                '<small class="text-muted">' + buku.dbuku_thn_terbit + '</small>' +
+                                '<small class="text-muted">' + buku.dbuku_thn_terbit +
+                                '</small>' +
                                 '</div>';
                         });
-    
+
                         // Menambahkan buku baru setelah tombol "See More"
                         $('#books-' + penulisId).append(newBooksHTML);
-    
+
                         // Update offset dan sembunyikan tombol jika tidak ada buku lagi
                         button.data('offset', offset + 6);
                         if (data.length < 6) {

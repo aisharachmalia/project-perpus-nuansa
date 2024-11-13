@@ -56,6 +56,7 @@
 
             var table = $('#tbl_dmbuku').DataTable({
                 serverSide: true,
+                scrollX: true,
                 ajax: "{{ route('table_dm_buku') }}",
                 columns: [{
                         data: 'DT_RowIndex',
@@ -351,7 +352,7 @@
         $('#update').click(function(e) {
             e.preventDefault();
 
-            //define variable
+            $('.text-danger').text('');
             var form = $("#form_buku_upd")[0];
             var id_bk = $('#id_bk').val();
             var data = new FormData(form);
@@ -396,12 +397,15 @@
                     } else if (xhr.status === 422) {
                         // Parse the JSON response
                         var response = JSON.parse(xhr.responseText);
+                        console.log(response);
                         var errors = response.errors;
+
                         if (response.message) {
                             $('#edit').find('#global-error').text(response.message);
                         } else {
                             $('#edit').find('#global-error').text('');
                         }
+
                         if (errors.dbuku_cover) {
                             $('#edit').find('#cover-error').text(errors.dbuku_cover[0]);
                         } else {
