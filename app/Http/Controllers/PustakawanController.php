@@ -110,7 +110,7 @@ class PustakawanController extends Controller
         ]);
 
         // Create the User record with hashed password
-        User::create([
+        $user = User::create([
             'usr_nama' => $name,
             'usr_username' => $username,
             'usr_email' => $request->dpustakawan_email,

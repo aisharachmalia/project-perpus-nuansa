@@ -146,11 +146,11 @@
                         data: 'dsbuku_status',
                         render: function(data) {
                             if (data == 0) {
-                                return '<span class="badge bg-success">Tersedia</span>';
+                                return '<span class="badge bg-light-success">Tersedia</span>';
                             } else if (data == 1) {
-                                return '<span class="badge bg-danger">Dipinjam</span>';
+                                return '<span class="badge bg-light-warning">Dipinjam</span>';
                             } else {
-                                return '<span class="badge bg-warning">reservasi</span>';
+                                return '<span class="badge bg-light-info">reservasi</span>';
                             }
                         }
                     },
@@ -308,9 +308,13 @@
                         var errors = response.errors;
                         if (errors.dsbuku_no_salinan) {
                             $('#editSalinan').find('#no-error').text(errors.dsbuku_no_salinan[0]);
+                        } else {
+                            $('#editSalinan').find('#no-error').text('');
                         }
                         if (errors.dbuku_isbn) {
                             $('#editSalinan').find('#kondisi-error').text(errors.dsbuku_kondisi[0]);
+                        } else {
+                            $('#editSalinan').find('#kondisi-error').text('');
                         }
                     } else {
                         console.log("Unexpected error structure:", xhr);

@@ -138,7 +138,7 @@
                             <div class="form-group">
                                 <label>Jumlah Buku</label>
                                 <input type="number" class="form-control" placeholder="Jumlah"
-                                    name="dbuku_jml_total" min="0">
+                                    name="dbuku_jml_total" min="0" max="100">
                                 <span id="jml_total-error" class="text-danger"></span>
                             </div>
                         </div>
@@ -256,7 +256,7 @@
                         <div class="col-md-4 mb-3">
                             <label>Jumlah Buku</label>
                             <input type="number" name="dbuku_jml_total" class="form-control" placeholder="Jumlah"
-                                id="dbuku_jml_total" min="0">
+                                id="dbuku_jml_total" min="0" max="100">
                             <span id="jml_total-error" class="text-danger"></span>
                             <span id="global-error" class="text-danger"></span>
                         </div>

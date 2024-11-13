@@ -157,33 +157,67 @@
 
                                         <div class="row mt-4">
                                             <div class="col">
-                                                
                                                 <div class="form-group">
                                                     <label>
                                                         <p><b> Ubah Password</b></p>
-                                                        <input type="checkbox" class="form-check-input" id="toggleCheckbox">&nbsp;<span class="text-danger">*</span>klik jika  anda ingin memperbahui password
+                                                        <input type="checkbox" class="form-check-input"
+                                                            id="toggleCheckbox">&nbsp;<span class="text-danger">*</span>klik
+                                                        jika anda ingin memperbahui password
                                                     </label>
                                                 </div>
+
+                                                <div class="form-group">
+                                                    <label>Password Lama</label>
+                                                    <div class="input-group">
+                                                        <input type="password" class="form-control" name="password_lama"
+                                                            id="password_lama" placeholder="Masukkan password lama"
+                                                            disabled>
+                                                        <button type="button" class="btn btn-outline-secondary"
+                                                            onclick="togglePasswordVisibility('password_lama', 'password_lama_icon')">
+                                                            <i id="password_lama_icon" class="bi bi-eye"></i>
+                                                        </button>
+                                                    </div>
+                                                    @if ($errors->has('password_lama'))
+                                                        <span
+                                                            class="text-danger">{{ $errors->first('password_lama') }}</span>
+                                                    @endif
+                                                </div>
+
+                                                <!-- Input untuk Password -->
                                                 <div class="form-group">
                                                     <label>Password</label>
-                                                    <input class="form-control" type="password" name="password"
-                                                        placeholder="masukkan password" id="passwordField" disabled>
+                                                    <div class="input-group">
+                                                        <input type="password" class="form-control" name="password"
+                                                            placeholder="masukkan password" id="passwordField" disabled>
+                                                        <button type="button" class="btn btn-outline-secondary"
+                                                            onclick="togglePasswordVisibility('passwordField', 'togglePasswordIcon')">
+                                                            <i id="togglePasswordIcon" class="bi bi-eye"></i>
+                                                        </button>
+                                                    </div>
                                                     @if ($errors->has('password'))
                                                         <span class="text-danger">{{ $errors->first('password') }}</span>
                                                     @endif
                                                 </div>
 
+                                                <!-- Input untuk Konfirmasi Password -->
                                                 <div class="form-group">
                                                     <label>Konfirmasi Password</label>
-                                                    <input class="form-control" type="password" name="password_konf"
-                                                        placeholder="konfirmasi password" id="passwordConfirmField"
-                                                        disabled>
+                                                    <div class="input-group">
+                                                        <input type="password" class="form-control" name="password_konf"
+                                                            placeholder="konfirmasi password" id="passwordConfirmField"
+                                                            disabled>
+                                                        <button type="button" class="btn btn-outline-secondary"
+                                                            onclick="togglePasswordVisibility('passwordConfirmField', 'togglePasswordConfirmIcon')">
+                                                            <i id="togglePasswordConfirmIcon" class="bi bi-eye"></i>
+                                                        </button>
+                                                    </div>
                                                     @if ($errors->has('password_konf'))
                                                         <span
                                                             class="text-danger">{{ $errors->first('password_konf') }}</span>
                                                     @endif
                                                 </div>
                                             </div>
+
                                         </div>
                                         <div class="row">
                                             <div class="col d-flex justify-content-end">
@@ -211,16 +245,45 @@
             });
         </script>
     @endif
+    
+    @if ($errors->any())
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Ada yang salah',
+                text: '{{ $errors->first() }}', // Menampilkan error pertama
+                showConfirmButton: true,
+            });
+        </script>
+    @endif
+
     <script>
         document.getElementById('toggleCheckbox').addEventListener('change', function() {
             // Get references to the password fields
             const passwordField = document.getElementById('passwordField');
+            const password_lama = document.getElementById('password_lama');
             const passwordConfirmField = document.getElementById('passwordConfirmField');
 
             // Toggle the disabled property based on checkbox status
             const isEnabled = this.checked;
             passwordField.disabled = !isEnabled;
+            password_lama.disabled = !isEnabled;
             passwordConfirmField.disabled = !isEnabled;
         });
+
+        function togglePasswordVisibility(fieldId, iconId) {
+            const passwordField = document.getElementById(fieldId);
+            const icon = document.getElementById(iconId);
+
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                icon.classList.remove("bi-eye");
+                icon.classList.add("bi-eye-slash");
+            } else {
+                passwordField.type = "password";
+                icon.classList.remove("bi-eye-slash");
+                icon.classList.add("bi-eye");
+            }
+        }
     </script>
 @endsection
