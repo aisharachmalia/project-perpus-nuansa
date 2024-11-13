@@ -157,19 +157,27 @@
 
                                         <div class="row mt-4">
                                             <div class="col">
-                                                <p><b> Ubah Password</b></p>
+                                                
                                                 <div class="form-group">
-                                                    <label>password</label>
+                                                    <label>
+                                                        <p><b> Ubah Password</b></p>
+                                                        <input type="checkbox" class="form-check-input" id="toggleCheckbox">&nbsp;<span class="text-danger">*</span>klik jika  anda ingin memperbahui password
+                                                    </label>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Password</label>
                                                     <input class="form-control" type="password" name="password"
-                                                        placeholder="masukkan password">
+                                                        placeholder="masukkan password" id="passwordField" disabled>
                                                     @if ($errors->has('password'))
                                                         <span class="text-danger">{{ $errors->first('password') }}</span>
                                                     @endif
                                                 </div>
+
                                                 <div class="form-group">
-                                                    <label>konfirmasi password</label>
+                                                    <label>Konfirmasi Password</label>
                                                     <input class="form-control" type="password" name="password_konf"
-                                                        placeholder="konfirmasi password">
+                                                        placeholder="konfirmasi password" id="passwordConfirmField"
+                                                        disabled>
                                                     @if ($errors->has('password_konf'))
                                                         <span
                                                             class="text-danger">{{ $errors->first('password_konf') }}</span>
@@ -179,7 +187,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col d-flex justify-content-end">
-                                                <button class="btn btn-primary" type="submit">Simpan Pembaruan</button>
+                                                <button class="btn btn-primary" type="submit">Simpan Perubahan</button>
                                             </div>
                                         </div>
                                     </form>
@@ -203,4 +211,16 @@
             });
         </script>
     @endif
+    <script>
+        document.getElementById('toggleCheckbox').addEventListener('change', function() {
+            // Get references to the password fields
+            const passwordField = document.getElementById('passwordField');
+            const passwordConfirmField = document.getElementById('passwordConfirmField');
+
+            // Toggle the disabled property based on checkbox status
+            const isEnabled = this.checked;
+            passwordField.disabled = !isEnabled;
+            passwordConfirmField.disabled = !isEnabled;
+        });
+    </script>
 @endsection

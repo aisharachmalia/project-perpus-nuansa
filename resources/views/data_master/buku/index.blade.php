@@ -243,39 +243,63 @@
                         var errors = response.errors;
                         if (errors.dbuku_cover) {
                             $('#createBuku').find('#cover-error').text(errors.dbuku_cover[0]);
+                        } else {
+                            $('#createBuku').find('#cover-error').text('');
                         }
                         if (errors.dbuku_isbn) {
                             $('#createBuku').find('#isbn-error').text(errors.dbuku_isbn[0]);
+                        } else {
+                            $('#createBuku').find('#isbn-error').text('');
                         }
                         if (errors.dbuku_judul) {
                             $('#createBuku').find('#judul-error').text(errors.dbuku_judul[0]);
+                        } else {
+                            $('#createBuku').find('#judul-error').text('');
                         }
                         if (errors.dbuku_bahasa) {
                             $('#createBuku').find('#bahasa-error').text(errors.dbuku_bahasa[0]);
+                        } else {
+                            $('#createBuku').find('#bahasa-error').text('');
                         }
                         if (errors.dbuku_file) {
                             $('#createBuku').find('#file-error').text(errors.dbuku_file[0]);
+                        } else {
+                            $('#createBuku').find('#file-error').text('');
                         }
                         if (errors.dbuku_lokasi_rak) {
                             $('#createBuku').find('#lokasi_rak-error').text(errors.dbuku_lokasi_rak[0]);
+                        } else {
+                            $('#createBuku').find('#lokasi_rak-error').text('');
                         }
                         if (errors.dbuku_thn_terbit) {
                             $('#createBuku').find('#thn_terbit-error').text(errors.dbuku_thn_terbit[0]);
+                        } else {
+                            $('#createBuku').find('#thn_terbit-error').text('');
                         }
                         if (errors.dbuku_edisi) {
                             $('#createBuku').find('#edisi-error').text(errors.dbuku_edisi[0]);
+                        } else {
+                            $('#createBuku').find('#edisi-error').text('');
                         }
                         if (errors.dbuku_jml_total) {
                             $('#createBuku').find('#jml_total-error').text(errors.dbuku_jml_total[0]);
+                        } else {
+                            $('#createBuku').find('#jml_total-error').text('');
                         }
                         if (errors.dbuku_edisi) {
                             $('#createBuku').find('#edisi-error').text(errors.dbuku_edisi[0]);
+                        } else {
+                            $('#createBuku').find('#edisi-error').text('');
                         }
                         if (errors.id_dpenerbit) {
                             $('#createBuku').find('#penerbit-error').text(errors.id_dpenerbit[0]);
+                        } else {
+                            $('#createBuku').find('#penerbit-error').text('');
                         }
                         if (errors.id_dpenulis) {
                             $('#createBuku').find('#penulis-error').text(errors.id_dpenulis[0]);
+                        } else {
+                            $('#createBuku').find('#penulis-error').text('');
                         }
                         // Continue handling other fields similarly...
                     } else {
@@ -372,33 +396,71 @@
                     } else if (xhr.status === 422) {
                         // Parse the JSON response
                         var response = JSON.parse(xhr.responseText);
-                        if (response.message) {
-
-                            $('#edit').find('#global-error').text(response.message);
-                        }
                         var errors = response.errors;
-
-                        if (errors) { // Check if errors is defined and not null
-                            var errorMapping = {
-                                dbuku_cover: '#cover-error',
-                                dbuku_isbn: '#isbn-error',
-                                dbuku_judul: '#judul-error',
-                                dbuku_bahasa: '#bahasa-error',
-                                dbuku_file: '#file-error',
-                                dbuku_lokasi_rak: '#lokasi_rak-error',
-                                dbuku_thn_terbit: '#thn_terbit-error',
-                                dbuku_edisi: '#edisi-error',
-                                dbuku_jml_total: '#jml_total-error',
-                                id_dpenerbit: '#penerbit-error',
-                                id_dpenulis: '#penulis-error'
-                            };
-
-                            // Loop through the errors and display them
-                            Object.keys(errors).forEach(function(field) {
-                                if (errorMapping[field]) {
-                                    $('#edit').find(errorMapping[field]).text(errors[field][0]);
-                                }
-                            });
+                        if (response.message) {
+                            $('#edit').find('#global-error').text(response.message);
+                        } else {
+                            $('#edit').find('#global-error').text('');
+                        }
+                        if (errors.dbuku_cover) {
+                            $('#edit').find('#cover-error').text(errors.dbuku_cover[0]);
+                        } else {
+                            $('#edit').find('#cover-error').text('');
+                        }
+                        if (errors.dbuku_isbn) {
+                            $('#edit').find('#isbn-error').text(errors.dbuku_isbn[0]);
+                        } else {
+                            $('#edit').find('#isbn-error').text('');
+                        }
+                        if (errors.dbuku_judul) {
+                            $('#edit').find('#judul-error').text(errors.dbuku_judul[0]);
+                        } else {
+                            $('#edit').find('#judul-error').text('');
+                        }
+                        if (errors.dbuku_bahasa) {
+                            $('#edit').find('#bahasa-error').text(errors.dbuku_bahasa[0]);
+                        } else {
+                            $('#edit').find('#bahasa-error').text('');
+                        }
+                        if (errors.dbuku_file) {
+                            $('#edit').find('#file-error').text(errors.dbuku_file[0]);
+                        } else {
+                            $('#edit').find('#file-error').text('');
+                        }
+                        if (errors.dbuku_lokasi_rak) {
+                            $('#edit').find('#lokasi_rak-error').text(errors.dbuku_lokasi_rak[0]);
+                        } else {
+                            $('#edit').find('#lokasi_rak-error').text('');
+                        }
+                        if (errors.dbuku_thn_terbit) {
+                            $('#edit').find('#thn_terbit-error').text(errors.dbuku_thn_terbit[0]);
+                        } else {
+                            $('#edit').find('#thn_terbit-error').text('');
+                        }
+                        if (errors.dbuku_edisi) {
+                            $('#edit').find('#edisi-error').text(errors.dbuku_edisi[0]);
+                        } else {
+                            $('#edit').find('#edisi-error').text('');
+                        }
+                        if (errors.dbuku_jml_total) {
+                            $('#edit').find('#jml_total-error').text(errors.dbuku_jml_total[0]);
+                        } else {
+                            $('#edit').find('#jml_total-error').text('');
+                        }
+                        if (errors.dbuku_edisi) {
+                            $('#edit').find('#edisi-error').text(errors.dbuku_edisi[0]);
+                        } else {
+                            $('#edit').find('#edisi-error').text('');
+                        }
+                        if (errors.id_dpenerbit) {
+                            $('#edit').find('#penerbit-error').text(errors.id_dpenerbit[0]);
+                        } else {
+                            $('#edit').find('#penerbit-error').text('');
+                        }
+                        if (errors.id_dpenulis) {
+                            $('#edit').find('#penulis-error').text(errors.id_dpenulis[0]);
+                        } else {
+                            $('#edit').find('#penulis-error').text('');
                         }
                     } else {
                         console.log("Unexpected error structure:", xhr);
