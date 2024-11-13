@@ -64,7 +64,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="trks_tgl_peminjaman">Tanggal Peminjaman</label>
-                                        <input type="date" id="trks_tgl_peminjaman"
+                                        <input type="datetime-local" id="trks_tgl_peminjaman"
                                             class="form-control shadow-sm rounded-pill" name="trks_tgl_peminjaman">
                                         <span id="tgl-pinjam-error" class="text-danger small"></span>
                                     </div>
@@ -74,7 +74,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="trks_tgl_jatuh_tempo">Tanggal Jatuh Tempo</label>
-                                        <input type="date" id="trks_tgl_jatuh_tempo"
+                                        <input type="datetime-local" id="trks_tgl_jatuh_tempo"
                                             class="form-control shadow-sm rounded-pill" name="trks_tgl_jatuh_tempo">
                                         <span id="tgl-jatuh-error" class="text-danger small"></span>
                                     </div>
@@ -163,7 +163,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="trks_tgl_peminjaman">Tanggal Peminjaman</label>
-                                        <input type="date" id="trks_tgl_peminjaman"
+                                        <input type="datetime-local" id="trks_tgl_peminjaman"
                                             class="form-control shadow-sm rounded-pill" name="trks_tgl_peminjaman">
                                         <span id="tgl-pinjam-error" class="text-danger small"></span>
                                     </div>
@@ -173,7 +173,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="trks_tgl_jatuh_tempo">Tanggal Jatuh Tempo</label>
-                                        <input type="date" id="trks_tgl_jatuh_tempo"
+                                        <input type="datetime-local" id="trks_tgl_jatuh_tempo"
                                             class="form-control shadow-sm rounded-pill" name="trks_tgl_jatuh_tempo">
                                         <span id="tgl-jatuh-error" class="text-danger small"></span>
                                     </div>
@@ -183,7 +183,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="trks_tgl_pengembalian">Tanggal Pengembalian</label>
-                                        <input type="date" id="trks_tgl_pengembalian"
+                                        <input type="datetime-local" id="trks_tgl_pengembalian"
                                             class="form-control shadow-sm rounded-pill" name="trks_tgl_pengembalian">
                                         <span id="tgl-pengembalian-error" class="text-danger small"></span>
                                     </div>
@@ -276,7 +276,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="trsv_tgl_reservasi">Tanggal Reservasi</label>
-                                        <input type="date" id="trsv_tgl_reservasi"
+                                        <input type="datetime-local" id="trsv_tgl_reservasi"
                                             class="form-control shadow-sm rounded-pill" name="trsv_tgl_reservasi">
                                         <span id="tgl-reservasi-error" class="text-danger small"></span>
                                     </div>
@@ -286,7 +286,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="trsv_tgl_kadaluarsa">Tanggal Kadaluarsa</label>
-                                        <input type="date" id="trsv_tgl_kadaluarsa"
+                                        <input type="datetime-local" id="trsv_tgl_kadaluarsa"
                                             class="form-control shadow-sm rounded-pill" name="trsv_tgl_kadaluarsa">
                                         <span id="tgl-kadaluarsa-error" class="text-danger small"></span>
                                     </div>
@@ -296,7 +296,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="trsv_tgl_pemberitahuan">Tanggal Pemberitahuan</label>
-                                        <input type="date" id="trsv_tgl_pemberitahuan"
+                                        <input type="datetime-local" id="trsv_tgl_pemberitahuan"
                                             class="form-control shadow-sm rounded-pill" name="trsv_tgl_pemberitahuan">
                                         <span id="tgl-pemberitahuan-error" class="text-danger small"></span>
                                     </div>

@@ -65,18 +65,18 @@ class UserController extends Controller
         $id_usr = Crypt::decryptString($id);
         $user = User::find($id_usr);
         $rules = [
-            'usr_nama' => 'required',
-            'usr_username' => 'required|unique:users,usr_username,' . $user->id_usr . ',id_usr',
-            'usr_email' => 'required|email|unique:users,usr_email,' . $user->id_usr . ',id_usr',
+            'nama' => 'required',
+            'username' => 'required|unique:users,usr_username,' . $user->id_usr . ',id_usr',
+            'email' => 'required|email|unique:users,usr_email,' . $user->id_usr . ',id_usr',
         ];
 
         $messages = [
-            'usr_nama.required' => 'Nama harus diisi.',
-            'usr_username.required' => 'Username harus diisi.',
-            'usr_username.unique' => 'Username ini telah terdaftar.',
-            'usr_email.required' => 'E-Mail harus diisi.',
-            'usr_email.email' => 'Format E-Mail tidak sesuai.',
-            'usr_email.unique' => 'E-Mail ini telah terdaftar.',
+            'nama.required' => 'Nama harus diisi.',
+            'username.required' => 'Username harus diisi.',
+            'username.unique' => 'Username ini telah terdaftar.',
+            'email.required' => 'E-Mail harus diisi.',
+            'email.email' => 'Format E-Mail tidak sesuai.',
+            'email.unique' => 'E-Mail ini telah terdaftar.',
         ];
 
         $validated = $request->validate($rules, $messages);
@@ -94,7 +94,7 @@ class UserController extends Controller
         $user->save();
         return response()->json([
             'success' => true,
-            'message' => 'Data Berhasil Diupdate!',
+            'message' => 'Data User Berhasil Diperbarui!',
         ]);
     }
 }
