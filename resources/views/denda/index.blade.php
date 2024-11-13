@@ -98,7 +98,7 @@
                 </div>
             </div>
             <button type="button" class="btn btn-primary" id="bayar">
-                <span class="d-none d-sm-block">Simpan</span>
+               Simpan
             </button>
         </div>
     </div>
@@ -151,6 +151,7 @@
 
             var table = $('#tbl_denda').DataTable({
                 serverSide: true,
+                scrollX: true,
                 ajax: '{{ url('/table-denda') }}',
                 columns: [{
                         data: 'DT_RowIndex',

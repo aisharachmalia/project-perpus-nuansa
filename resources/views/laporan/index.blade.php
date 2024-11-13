@@ -181,6 +181,7 @@
             var table = $('#tbl_trks').DataTable({
                 scrollX: true,
                 serverSide: true,
+                scrollX: true,
                 ajax: {
                     url: "{{ route('table_lap_trks') }}",
                     data: function(d) {
