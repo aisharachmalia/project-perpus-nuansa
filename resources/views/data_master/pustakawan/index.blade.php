@@ -49,6 +49,7 @@
             var link_printout = "{{ route('link_printout_pustakawan') }}"
             $('#tbl_list').DataTable({
                 processing: false,
+                scrollX: true,
                 serverSide: true,
                 ajax: '{{ url()->current() }}',
                 columns: [{
@@ -184,9 +185,9 @@
                         showConfirmButton: false,
                         timer: 3000
                     });
-                    
+
                     $('#create').modal('toggle');
-                    $('#tbl_list').DataTable().ajax.reload();l
+                    $('#tbl_list').DataTable().ajax.reload();
                 },
                 error: function(xhr) {
                     if (xhr.status === 422) {
@@ -219,101 +220,119 @@
         });
     </script>
 
-    <script>
-        $('body').on('click', '.modalEdit', function() {
-            let id_ps = $(this).data('id');
+<script>
+    $('body').on('click', '.modalEdit', function() {
+        let id_ps = $(this).data('id');
+        $('#edit').find('span').text('');
+        // Fetch detail post with AJAX
+        $.ajax({
+            url: `pustakawan/show/${id_ps}`,
+            type: "GET",
+            cache: false,
+            success: function(response) {
+                console.log(response);
 
-            // Fetch detail post with AJAX
-            $.ajax({
-                url: `pustakawan/show/${id_ps}`,
-                type: "GET",
-                cache: false,
-                success: function(response) {
-                    console.log(response);
+                // Fill data to form
+                $('#edit').find('#id_dpustakawan').val(id_ps);
+                $('#edit').find('#dpustakawan_nama').val(response.dpustakawan_nama);
+                $('#edit').find('#dpustakawan_email').val(response.dpustakawan_email);
+                $('#edit').find('#dpustakawan_no_telp').val(response.dpustakawan_no_telp);
+                $('#edit').find('#dpustakawan_alamat').val(response.dpustakawan_alamat);
 
-                    // Fill data to form
-                    $('#edit').find('#id_dpustakawan').val(id_ps);
-                    $('#edit').find('#dpustakawan_nama').val(response.ps.dpustakawan_nama);
-                    $('#edit').find('#dpustakawan_email').val(response.ps.dpustakawan_email);
-                    $('#edit').find('#dpustakawan_no_telp').val(response.ps.dpustakawan_no_telp);
-                    $('#edit').find('#dpustakawan_alamat').val(response.ps.dpustakawan_alamat);
+                // Set the radio button for dpustakawan_status
+                let status = response.dpustakawan_status;
+                $('#edit').find('input[name="dpustakawan_status"][value="' + status + '"]').prop('checked', true);
 
-                    // Set the radio button for dpustakawan_status
-                    let status = response.ps.dpustakawan_status;
-                    $('#edit').find('input[name="dpustakawan_status"][value="' + status + '"]').prop(
-                        'checked', true);
+                // Clear previous errors
+                $('#edit').find('.error-message').text('');
+            }
+        });
+    });
 
-                    // Clear previous errors
+    // Action to update post
+    $('#update').click(function(e) {
+        e.preventDefault();
+
+        // Define variables
+        let token = $('meta[name="csrf-token"]').attr('content');
+        let id_ps = $('#edit').find('#id_dpustakawan').val();
+        let dpustakawan_nama = $('#edit').find('#dpustakawan_nama').val();
+        let dpustakawan_email = $('#edit').find('#dpustakawan_email').val();
+        let dpustakawan_no_telp = $('#edit').find('#dpustakawan_no_telp').val();
+        let dpustakawan_status = $('#edit').find('input[name="dpustakawan_status"]:checked').val();
+        let dpustakawan_alamat = $('#edit').find('#dpustakawan_alamat').val();
+
+        // Clear error messages
+        $('#edit').find('.error-message').text('');
+        $('#tbl_list').DataTable().ajax.reload();
+
+        // AJAX request
+        $.ajax({
+            url: `pustakawan/edit/${id_ps}`,
+            type: "PUT",
+            cache: false,
+            data: {
+                "dpustakawan_nama": dpustakawan_nama,
+                "dpustakawan_email": dpustakawan_email,
+                "dpustakawan_no_telp": dpustakawan_no_telp,
+                "dpustakawan_status": dpustakawan_status,
+                "dpustakawan_alamat": dpustakawan_alamat,
+                "_token": token
+            },
+            success: function(response) {
+                // Success message
+                Swal.fire({
+                    type: 'success',
+                    icon: 'success',
+                    title: `${response.message}`,
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+                $('#edit').modal('toggle');
+                $('#tbl_list').DataTable().ajax.reload();
+                $('body').removeClass('modal-open');
+                $('body').css('overflow', 'auto');
+            },
+            error: function(xhr) {
+                console.log(xhr.status);
+                if (xhr.status === 422) {
+                    // Handle validation errors
+                    var errors = JSON.parse(xhr.responseText).errors;
+
+                    // Clear previous error messages
                     $('#edit').find('.error-message').text('');
-                }
-            });
-        });
 
-        // Action to update post
-        $('#update').click(function(e) {
-            e.preventDefault();
-
-            // Define variables
-            let token = $('meta[name="csrf-token"]').attr('content');
-            let id_ps = $('#edit').find('#id_dpustakawan').val();
-            let dpustakawan_nama = $('#edit').find('#dpustakawan_nama').val();
-            let dpustakawan_email = $('#edit').find('#dpustakawan_email').val();
-            let dpustakawan_no_telp = $('#edit').find('#dpustakawan_no_telp').val();
-            let dpustakawan_status = $('#edit').find('input[name="dpustakawan_status"]:checked').val();
-            let dpustakawan_alamat = $('#edit').find('#dpustakawan_alamat').val();
-
-            // Clear error messages
-            $('#edit').find('.error-message').text('');
-
-            // AJAX request
-            $.ajax({
-                url: `pustakawan/edit/${id_ps}`,
-                type: "PUT",
-                cache: false,
-                data: {
-                    "dpustakawan_nama": dpustakawan_nama,
-                    "dpustakawan_email": dpustakawan_email,
-                    "dpustakawan_no_telp": dpustakawan_no_telp,
-                    "dpustakawan_status": dpustakawan_status,
-                    "dpustakawan_alamat": dpustakawan_alamat,
-                    "_token": token
-                },
-                success: function(response) {
-                    // Success message
-                    Swal.fire({
-                        type: 'success',
-                        icon: 'success',
-                        title: `${response.message}`,
-                        showConfirmButton: false,
-                        timer: 3000
-                    });
-                    $('#edit').modal('toggle');
-                    $('#tbl_list').DataTable().ajax.reload()
-                },
-                error: function(xhr) {
-                    console.log(xhr.status);
-                    if (xhr.status === 422) {
-                        // Handle validation errors
-                        var errors = JSON.parse(xhr.responseText).errors;
-                        if (errors.dpustakawan_nama) {
-                            $('#edit').find('#nama-error').text(errors.dpustakawan_nama[0]);
-                        }
-                        if (errors.dpustakawan_email) {
-                            $('#edit').find('#email-error').text(errors.dpustakawan_email[0]);
-                        }
-                        if (errors.dpustakawan_no_telp) {
-                            $('#edit').find('#telp-error').text(errors.dpustakawan_no_telp[0]);
-                        }
-                        if (errors.dpustakawan_alamat) {
-                            $('#edit').find('#alamat-error').text(errors.dpustakawan_alamat[0]);
-                        }
+                    if (errors.dpustakawan_nama) {
+                        $('#edit').find('#nama-error').text(errors.dpustakawan_nama[0]);
                     } else {
-                        console.log("Unexpected error:", xhr);
+                        $('#edit').find('#nama-error').text('');
                     }
+
+                    if (errors.dpustakawan_email) {
+                        $('#edit').find('#email-error').text(errors.dpustakawan_email[0]);
+                    } else {
+                        $('#edit').find('#email-error').text('');
+                    }
+
+                    if (errors.dpustakawan_no_telp) {
+                        $('#edit').find('#telp-error').text(errors.dpustakawan_no_telp[0]);
+                    } else {
+                        $('#edit').find('#telp-error').text('');
+                    }
+
+                    if (errors.dpustakawan_alamat) {
+                        $('#edit').find('#alamat-error').text(errors.dpustakawan_alamat[0]);
+                    } else {
+                        $('#edit').find('#alamat-error').text('');
+                    }
+                } else {
+                    console.log("Unexpected error:", xhr);
                 }
-            });
+            }
         });
-    </script>
+    });
+</script>
+
 
     <script>
         //button create post event
@@ -329,10 +348,10 @@
                 success: function(response) {
 
                     //fill data to form
-                    $('#show').find('#dpustakawan_nama').text(response.ps.dpustakawan_nama);
-                    $('#show').find('#dpustakawan_email').text(response.ps.dpustakawan_email);
-                    $('#show').find('#dpustakawan_no_telp').text(response.ps.dpustakawan_no_telp);
-                    $('#show').find('#dpustakawan_alamat').text(response.ps.dpustakawan_alamat);
+                    $('#show').find('#dpustakawan_nama').text(response.dpustakawan_nama);
+                    $('#show').find('#dpustakawan_email').text(response.dpustakawan_email);
+                    $('#show').find('#dpustakawan_no_telp').text(response.dpustakawan_no_telp);
+                    $('#show').find('#dpustakawan_alamat').text(response.dpustakawan_alamat);
                 }
             });
         });

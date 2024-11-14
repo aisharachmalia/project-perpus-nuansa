@@ -1,6 +1,8 @@
 @extends('userz')
 
 @section('content')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
     <style>
         body {
             margin: 0;
@@ -30,7 +32,7 @@
                             <img src="https://i.pinimg.com/enabled_lo/564x/24/95/63/2495635bcea49ecfc842dd5d2b94d85e.jpg"
                                 class="img-fluid rounded-start" alt="Penulis Favorit"
                                 style="height: 100%; width: 100%; object-fit: cover;">
-                            <div class="penulis-judul">Penulis Favorit</div>
+                            <div class="penulis-judulz">Penulis Favorit</div>
                         </div>
                     </a>
                 </div>
@@ -41,7 +43,7 @@
                             <img src="https://i.pinimg.com/enabled_lo/564x/24/95/63/2495635bcea49ecfc842dd5d2b94d85e.jpg"
                                 class="img-fluid rounded-start" alt="Penulis Asing"
                                 style="height: 100%; width: 100%; object-fit: cover;">
-                            <div class="penulis-judul">Penulis Asing</div>
+                            <div class="penulis-judulz">Penulis Asing</div>
                         </div>
                     </a>
                 </div>
@@ -52,7 +54,7 @@
                             <img src="https://i.pinimg.com/enabled_lo/564x/24/95/63/2495635bcea49ecfc842dd5d2b94d85e.jpg"
                                 class="img-fluid rounded-start" alt="Penulis Lokal"
                                 style="height: 100%; width: 100%; object-fit: cover;">
-                            <div class="penulis-judul">Penulis Lokal</div>
+                            <div class="penulis-judulz">Penulis Lokal</div>
                         </div>
                     </a>
                 </div>
@@ -63,10 +65,10 @@
     <!-- Buku Rekomendasi Section -->
     <section class="carousel">
         <h2 class="categories__title">Rekomendasi Buku</h2>
-        <div class="carousel__container">
+        <div class="container">
             @foreach ($datadepan as $item)
-                <div class="carousel-item">
-                    <a href="{{ route('document.detail', ['id' => $item->id_dbuku]) }}">
+                <div class="carousel-items">
+                    <a href="{{ route('document.detail', ['id' => Crypt::encryptString($item->id_dbuku)]) }}">
                         <img class="carousel-item__img" src="{{ asset('storage/cover/' . $item->dbuku_cover) }}"
                             alt="{{ $item->dbuku_judul }}" />
                     </a>

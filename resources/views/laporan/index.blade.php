@@ -1,13 +1,6 @@
 @extends('master')
 @section('content')
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-    <style>
-        .dropdown-menu {
-            border-radius: 0;
-            background: transparent;
-            -webkit-appearance: none;
-        }
-    </style>
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-12">
@@ -69,9 +62,9 @@
                                 <span>Status</span>
                                 <select id="filter-status" class="form-control">
                                     <option value="">All</option>
-                                    <option value="1">Dipinjam</option>
-                                    <option value="2">Dikembalikan</option>
-                                    <option value="3">Belum Dikembalikan</option>
+                                    <option value="1">Dikembalikan</option>
+                                    <option value="0">Dipinjam</option>
+                                    <option value="-1">Batal</option>
                                 </select>
                             </div>
 
@@ -87,9 +80,6 @@
                                     <i class="fa fa-caret-down"></i>
                                 </div>
                             </div>
-
-                            <!-- Export and Print Buttons Section -->
-
                         </div>
                     </div>
 
@@ -189,7 +179,9 @@
             var link_export = "{{ route('link_export_buku') }}";
             var link_printout = "{{ route('link_printout_buku') }}";
             var table = $('#tbl_trks').DataTable({
+                scrollX: true,
                 serverSide: true,
+                scrollX: true,
                 ajax: {
                     url: "{{ route('table_lap_trks') }}",
                     data: function(d) {

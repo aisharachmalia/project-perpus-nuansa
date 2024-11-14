@@ -9,7 +9,9 @@ use Illuminate\Http\Request;
 class BacaOnlineController extends Controller
 {
     public function documentDetail($id = null)
-    {
+    {   
+        $id = \Crypt::decryptString($id);
+        
         $bk = \DB::select(
             "SELECT dm_buku.*,                                         
                             dm_penulis.dpenulis_nama_penulis, 

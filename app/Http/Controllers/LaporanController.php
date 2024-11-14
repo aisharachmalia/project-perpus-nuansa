@@ -23,7 +23,7 @@ class LaporanController extends Controller
     {
         $filt = '';
 
-        if ($request->get('status') == '1' || $request->get('status') == '2' || $request->get('status') == '3') {
+        if ($request->get('status') == '1' || $request->get('status') == '0' || $request->get('status') == '-1') {
             $filt .= "AND trks_transaksi.trks_status = '" . $request->get('status') . "' ";
         }
 

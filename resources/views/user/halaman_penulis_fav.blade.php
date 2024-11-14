@@ -31,7 +31,7 @@
         <p>Selamat datang di Nuansa Baca! Temukan Dunia Pengetahuan</p>
     </div>
 </section>
-<h1 class="text-center mb-4">Penulis Favorit</h1>
+<h1 class="text-center mb-4 mt-5">Penulis Favorit</h1>
 <div class="containers my-4">
     <div class="row">
         @forelse($penulisFavorit as $penulis)
@@ -42,7 +42,9 @@
                 <div class="books-container" id="books-{{ $penulis->id_dpenulis }}">
                     @foreach($penulis->buku->take(6) as $buku)
                         <div class="book-item">
+                            <a href="{{ route('document.detail', ['id' => Crypt::encryptString($buku->id_dbuku)]) }}">
                             <img src="{{ asset('storage/cover/' . $buku->dbuku_cover) }}" alt="{{ $buku->dbuku_judul }}">
+                            </a>
                             <p class="fw-bold mt-2">{{ $buku->dbuku_judul }}</p>
                             <small class="text-muted">{{ $buku->dbuku_thn_terbit }}</small>
                         </div>
