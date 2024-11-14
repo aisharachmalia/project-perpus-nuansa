@@ -32,7 +32,7 @@
                             <img src="https://i.pinimg.com/enabled_lo/564x/24/95/63/2495635bcea49ecfc842dd5d2b94d85e.jpg"
                                 class="img-fluid rounded-start" alt="Penulis Favorit"
                                 style="height: 100%; width: 100%; object-fit: cover;">
-                            <div class="penulis-judul">Penulis Favorit</div>
+                            <div class="penulis-judulz">Penulis Favorit</div>
                         </div>
                     </a>
                 </div>
@@ -43,7 +43,7 @@
                             <img src="https://i.pinimg.com/enabled_lo/564x/24/95/63/2495635bcea49ecfc842dd5d2b94d85e.jpg"
                                 class="img-fluid rounded-start" alt="Penulis Asing"
                                 style="height: 100%; width: 100%; object-fit: cover;">
-                            <div class="penulis-judul">Penulis Asing</div>
+                            <div class="penulis-judulz">Penulis Asing</div>
                         </div>
                     </a>
                 </div>
@@ -54,7 +54,7 @@
                             <img src="https://i.pinimg.com/enabled_lo/564x/24/95/63/2495635bcea49ecfc842dd5d2b94d85e.jpg"
                                 class="img-fluid rounded-start" alt="Penulis Lokal"
                                 style="height: 100%; width: 100%; object-fit: cover;">
-                            <div class="penulis-judul">Penulis Lokal</div>
+                            <div class="penulis-judulz">Penulis Lokal</div>
                         </div>
                     </a>
                 </div>
