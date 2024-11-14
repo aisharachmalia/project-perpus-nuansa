@@ -239,32 +239,39 @@ class PustakawanController extends Controller
     {
         try {
             $id_dpustakawan = Crypt::decryptString($id);
-
+    
             // Check if the pustakawan has lent any books
             $hasTransactions = \DB::table('trks_transaksi')
                 ->where('id_dpustakawan', $id_dpustakawan)
                 ->exists();
-
+    
             if ($hasTransactions) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Data pustakawan tidak dapat dihapus karena pustakawan ini sudah meminjamkan buku.',
                 ], 403);
             }
-
-            // Proceed with soft deletion if no transactions are found
-            $ps = dm_pustakawan::find($id_dpustakawan);
-            $usrps = User::where("usr_username", $ps->dpustakawan_nama)->first();
-            $ps->deleted_at = Carbon::now();
-            $usrps->deleted_at = Carbon::now();
-            $ps->save();
-            $usrps->save();
-
+    
+            // Proceed with update (not soft delete) if no transactions are found
+            \DB::table('dm_pustakawan')
+                ->where('id_dpustakawan', $id_dpustakawan)
+                ->update(['deleted_at' => Carbon::now()]);
+    
+            // Update the related user record
+            $ps = \DB::table('users')
+                ->where('usr_username', function ($query) use ($id_dpustakawan) {
+                    $query->select('dpustakawan_nama')
+                        ->from('dm_pustakawan')
+                        ->where('id_dpustakawan', $id_dpustakawan)
+                        ->limit(1);
+                })
+                ->update(['deleted_at' => Carbon::now()]);
+    
             return response()->json([
                 'success' => true,
                 'message' => 'Data Berhasil Dihapus!',
             ], 200);
-
+    
         } catch (\Throwable $th) {
             return response()->json([
                 'success' => false,
@@ -272,12 +279,13 @@ class PustakawanController extends Controller
             ], 500);
         }
     }
+    
 
     public function linkExportPustakawan(Request $request)
     {
         try {
             $link = route('export_pustakawan');
-            return \Response::json(array('link' => $link));
+            return \Response::json(array('link' => $link));                                       
         } catch (\Throwable $th) {
             throw $th;
         }
