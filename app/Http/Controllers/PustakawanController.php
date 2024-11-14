@@ -55,7 +55,7 @@ class PustakawanController extends Controller
         $rules = [
             'dpustakawan_nama' => 'required',
             'dpustakawan_email' => 'required|email|unique:dm_pustakawan,dpustakawan_email',
-            'dpustakawan_no_telp' => 'required|unique:dm_pustakawan,dpustakawan_no_telp|regex:/^([0-9\s\-\+\(\)]*)$/|min:10|max:13',
+            'dpustakawan_no_telp' => 'required|unique:dm_pustakawan,dpustakawan_no_telp|regex:/^([0-9\s\-\+\(\)]*)$/|min:11|max:13',
             'dpustakawan_alamat' => 'required',
         ];
 

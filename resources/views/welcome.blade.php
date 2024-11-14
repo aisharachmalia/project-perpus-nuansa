@@ -64,7 +64,7 @@
 
     <!-- Buku Rekomendasi Section -->
     <section class="carousel">
-        <h2 class="categories__title">Rekomendasi Buku</h2>
+        <h2 class="penulis">Rekomendasi Buku</h2>
         <div class="container">
             @foreach ($datadepan as $item)
                 <div class="carousel-items">
