@@ -132,11 +132,11 @@
             ->join('roles', 'akses_usrs.id_role', 'roles.id_role')
             ->first();
     @endphp
-    <header class="mb-3">
+    {{-- <header class="mb-3">
         <a href="#" class="burger-btn d-block d-xl-none">
             <i class="bi bi-justify fs-3"></i>
         </a>
-    </header>
+    </header> --}}
 
     <div class="page-heading">
 
@@ -355,8 +355,6 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script src="{{ URL::asset('assets/js/highcharts.js') }}" type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-
-    // Kategori Terbanyak Dibaca
     </script>
     <script>
         $(document).ready(function() {

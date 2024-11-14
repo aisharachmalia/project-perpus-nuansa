@@ -153,7 +153,8 @@
             <h1 class="aesthetic-title">Nuansa Baca </h1>
             <p>Selamat datang di Nuansa Baca! Temukan Dunia Pengetahuan</p>
         </div>
-    </section> <h1 class="text-center mb-4">Penulis Lokal dari Indonesia</h1>   
+    </section> 
+    <h1 class="text-center mb-4 mt-5">Penulis Lokal</h1>   
     <div class="containers my-4">
         <div class="row">
             @foreach($penulisLokal as $penulis)

@@ -1,9 +1,14 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.css') }}">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.min.js"></script>
+
 <style>
 body {
     font-family: 'Montserrat', sans-serif;
@@ -16,32 +21,168 @@ body {
 body {
         font-family: 'Poppins', sans-serif;
     }
-    header {
+/* General Header Styling */
+header {
     position: fixed;
     width: 100%;
     top: 0;
     left: 0;
     z-index: 1000;
     background: rgba(79, 91, 81, 0.4);
-    padding: 10px 0; /* Ubah padding jika perlu */
+    padding: 10px 0;
     transition: background 0.3s ease;
-    height: 80px; /* Tetapkan tinggi tetap untuk header */
+    height: 80px;
     display: flex;
-    align-items: center; /* Menjaga konten tetap rata vertikal */
+    align-items: center;
+}
+.dropdown-menu {
+    
+    position: absolute;
+    z-index: 1050;
+    background-color: rgb(42, 101, 28);
+}
+.dropdown-menu {
+    z-index: 1050;
+}
+.dropdown-menu {
+    display: none; /* Prevents display issues */
+}
+/* Mengatur warna teks pada dropdown */
+.dropdown-menu a.dropdown-item {
+    color: black !important; /* Mengubah warna teks menjadi hitam */
+}
+
+.dropdown-menu a.dropdown-item:hover {
+    background-color: #f0f0f0; /* Mengatur warna latar saat di-hover */
+    color: black; /* Warna tetap hitam saat di-hover */
+}
+
+.dropdown-menu.show {
+    display: block; /* Shows dropdown when active */
+}
+
+.header-login a {
+    display: block !important;
+    color: white !important;
+}
+.login-section a {
+    color: white;
+}
+
+header.sticky {
+    background: rgba(104, 148, 111, 0.7);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Logo Styling */
+.logo {
+    flex: 0 0 auto; /* Prevents the logo from stretching */
 }
 
 .logo img {
-    width: 150px; /* Sesuaikan ukuran logo */
-    height: auto; /* Agar menjaga proporsi gambar */
-    max-height: 100%; /* Membatasi tinggi logo sesuai header */
+    width: 90px;
+    height: auto;
+    max-height: 90%;
 }
 
-
-header.sticky {
-background: rgba(104, 148, 111, 0.7);
-box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+/* Centered Navbar Styling */
+nav {
+    flex-grow: 1; /* Allows nav to occupy space in the middle */
+    display: flex;
+    justify-content: center; /* Center the navigation menu */
 }
 
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+    margin: 0;
+    padding: 0;
+}
+
+nav a {
+    color: #fff;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 10px 15px;
+    transition: color 0.3s ease, background-color 0.3s ease;
+    border-radius: 5px;
+}
+
+nav a:hover {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+nav a.active {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Login Button */
+.header-login {
+    flex: 0 0 auto; /* Prevents the login section from expanding */
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    /* Hide nav items and use a toggle menu for mobile screens */
+    nav ul {
+        display: none; /* Hide nav items by default */
+        flex-direction: column;
+        background-color: rgba(79, 91, 81, 0.9);
+        position: absolute;
+        top: 80px;
+        right: 0;
+        width: 100%;
+        padding: 10px;
+        text-align: center;
+    }
+
+    nav ul.show {
+        display: flex; /* Show nav items when toggled */
+    }
+
+  
+}
+
+.hero {
+    background-image: url('https://media.houseandgarden.co.uk/photos/620bb44d47f811e6e7d15429/16:9/w_2580,c_limit/Annabelle-Holland.jpg');
+    /* Gambar latar belakang */
+    background-size: cover;
+    /* Memastikan gambar menutupi seluruh area */
+    background-position: center;
+    /* Memusatkan gambar */
+    padding: 100px 0;
+    text-align: center;
+    color: #fff;
+    /* Mengubah warna teks agar lebih kontras dengan latar belakang */
+}
+.hero p {
+    white-space: break-spaces;
+    padding: 10px;
+    margin-bottom: 40px;
+    font-size: 18px;
+    /* Ukuran font untuk teks lebih besar */
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
 .container {
 max-width: 1200px;
 margin: 0 auto;
@@ -56,139 +197,6 @@ display: flex;
 align-items: center;
 justify-content: space-between;
 }
-
-.logo {
-flex: 1; 
-}
-
-nav {
-flex: 38; /* Flexbox untuk nav agar berada di tengah */
-}
-
-nav ul {
-list-style: none;
-display: flex;
-justify-content: center; /* Buat menu berada di tengah */
-gap: 30px;
-margin: 0;
-padding: 0;
-}
-
-nav a {
-color: #fff;
-text-transform: uppercase;
-text-decoration: none;
-font-weight: bold;
-padding: 10px 15px;
-transition: color 0.3s ease, background-color 0.3s ease;
-border-radius: 5px;
-}
-
-nav a:hover {
-color: #fff;
-background-color: rgba(255, 255, 255, 0.1);
-}
-
-nav a.active {
-background-color: rgba(255, 255, 255, 0.2);
-}
-
-.cart-icon {
-/* flex: 1; /* Flexbox untuk menjaga ikon cart di kanan */
-text-align: right; */
-}
-/* 
-.cart-icon img {
-width: 30px;
-height: auto;
-} */
-
-@media (max-width: 768px) {
-nav ul {
-flex-direction: column;
-align-items: center;
-}
-}
-.dropdown {
-  float: left;
-  overflow: hidden;
-}
-
-/* Dropdown button */
-.dropdown .dropbtn {
-  font-size: 16px;
-  border: none;
-  outline: none;
-  color: white;
-  padding: 14px 16px;
-  background-color: inherit;
-  font-family: inherit; /* Important for vertical align on mobile phones */
-  margin: 0; /* Important for vertical align on mobile phones */
-}
-
-/* Add a red background color to navbar links on hover */
-.navbar a:hover, .dropdown:hover .dropbtn {
-  background-color: red;
-}
-
-/* Dropdown content (hidden by default) */
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f9f9f9;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-}
-
-/* Links inside the dropdown */
-.dropdown-content a {
-  float: none;
-  color: black;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-  text-align: left;
-}
-
-/* Add a grey background color to dropdown links on hover */
-.dropdown-content a:hover {
-  background-color: #ddd;
-}
-
-/* Show the dropdown menu on hover */
-.dropdown:hover .dropdown-content {
-  display: block;
-}
-
-
-.hero {
-    background-image: url('https://media.houseandgarden.co.uk/photos/620bb44d47f811e6e7d15429/16:9/w_2580,c_limit/Annabelle-Holland.jpg');
-    /* Gambar latar belakang */
-    background-size: cover;
-    /* Memastikan gambar menutupi seluruh area */
-    background-position: center;
-    /* Memusatkan gambar */
-    padding: 100px 0;
-    text-align: center;
-    color: #fff;
-    /* Mengubah warna teks agar lebih kontras dengan latar belakang */
-}
-
-.hero h1 {
-    font-size: 48px;
-    /* Ukuran font yang lebih besar */
-    margin-bottom: 20px;
-}
-
-.hero p {
-    white-space: break-spaces;
-    padding: 10px;
-    margin-bottom: 40px;
-    font-size: 18px;
-    /* Ukuran font untuk teks lebih besar */
-}
-
 
 .button {
     background-color: #4e4f31;
@@ -264,64 +272,6 @@ section.author {
     background-color: #ffffff;
 }
 
-
-/* Style untuk Book Features Section */
-/* section.book-features {
-    background-color: #fff;
-    padding: 60px 0;
-    text-align: center;
-} */
-/* .book-features h2 {
-    font-size: 2.5rem;
-    margin-bottom: 20px;
-    color: #333;
-} */
-
-/* .book-features p {
-    font-size: 1.1rem;
-    color: #666;
-    margin-bottom: 40px;
-} */
-
-/* .book-features ul {
-    display: flex;
-    justify-content: space-around;
-    padding: 0;
-    list-style: none;
-} */
-
-/* .book-features li {
-    width: 250px;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    padding: 20px;
-    max-width: 300px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-} */
-
-/* .book-features li:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 20px 30px rgba(0, 0, 0, 0.1);
-} */
-
-/* .book-features img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 10px;
-    margin-bottom: 15px;
-}
-
-.book-features h3 {
-    font-size: 1.5rem;
-    color: #333;
-    margin-bottom: 10px;
-}
-
-.book-features p {
-    font-size: 1rem;
-    color: #777;
-} */
-
 @media (max-width: 768px) {
     .book-features ul {
         flex-direction: column;
@@ -329,16 +279,6 @@ section.author {
     }
 }
 
-footer {
-    background-color: #333;
-    color: #fff;
-    padding: 15px 0;
-    text-align: center;
-    position: relative;
-    bottom: 0;
-    width: 100%;
-     flex-shrink: none;
-}
 section.search {
     background-color: #f4f4f4;
     padding: 40px 0;
@@ -445,10 +385,10 @@ body {
   border-radius: 15px;
 }
 .penulis-judul {
-  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 24px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8); width: 100%;
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: rgb(0, 0, 0); font-size: 24px; font-weight: bold; text-shadow: 2px 2px 4px rgba(240, 233, 233, 0.8); width: 100%;
 }
-.penulis-juduls {
-  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: rgb(0, 0, 0); font-size: 24px; font-weight: bold; text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8); width: 100%;
+.penulis-judulz {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: rgb(255, 255, 255); font-size: 24px; font-weight: bold;  width: 100%;
 }
 .ag-courses-item_link {
   display: block;
@@ -591,7 +531,7 @@ body {
 
 .carousel {
   width: 100%;
-  overflow-x: scroll;
+  /* overflow-x: scroll; */
   padding: 30px;
   padding-top: 80px;
   position: relative;

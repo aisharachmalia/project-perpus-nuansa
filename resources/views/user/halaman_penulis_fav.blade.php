@@ -31,7 +31,7 @@
         <p>Selamat datang di Nuansa Baca! Temukan Dunia Pengetahuan</p>
     </div>
 </section>
-<h1 class="text-center mb-4">Penulis Favorit</h1>
+<h1 class="text-center mb-4 mt-5">Penulis Favorit</h1>
 <div class="containers my-4">
     <div class="row">
         @forelse($penulisFavorit as $penulis)

@@ -107,7 +107,7 @@
         </ul>
     </nav> 
 
-    <h1 class="text-center mb-4">Penulis Asing (Bukan dari Indonesia)</h1>   
+    <h1 class="text-center mb-4 mt-5">Penulis Asing (Bukan dari Indonesia)</h1>   
     <div class="containers my-4">
         @if($penulisAsing->isEmpty())
             <p class="empty-data-message text-center">Data Kosong</p>
