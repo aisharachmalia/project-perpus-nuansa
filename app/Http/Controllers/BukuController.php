@@ -88,7 +88,7 @@ class BukuController extends Controller
                     'dbuku_bahasa' => 'required',
                     'dbuku_link' => 'nullable',
                     'dbuku_file' => 'mimes:pdf|max:10240',
-                    'dbuku_jml_total' => 'required|integer|min:0',
+                    'dbuku_jml_total' => 'required|integer|min:0|max:100',
                     'dbuku_edisi' => 'required',
                     'id_dpenulis' => 'required',
                     'id_dpenerbit' => 'required',
@@ -112,6 +112,7 @@ class BukuController extends Controller
                     'dbuku_edisi.required' => 'Edisi harus diisi!',
                     'dbuku_jml_total.required' => 'Jumlah harus diisi!',
                     'dbuku_jml_total.min' => 'Jumlah tidak boleh kurang dari 0!', // Updated message
+                    'dbuku_jml_total.max' => 'Jumlah tidak boleh lebih dari 100!', // Updated message
                     'id_dpenulis.required' => 'Penulis harus diisi!',
                     'id_dpenerbit.required' => 'Penerbit harus diisi!',
                 ];
@@ -275,7 +276,7 @@ class BukuController extends Controller
                     'dbuku_bahasa' => 'required',
                     'dbuku_link' => 'nullable',
                     'dbuku_file' => 'required|mimes:pdf|max:10240',
-                    'dbuku_jml_total' => 'required|integer|min:0',
+                    'dbuku_jml_total' => 'required|integer|min:0|max:100',
                     'dbuku_edisi' => 'required',
                     'id_dpenulis' => 'required',
                     'id_dpenerbit' => 'required',
@@ -300,6 +301,7 @@ class BukuController extends Controller
                     'dbuku_edisi.required' => 'Edisi harus diisi!',
                     'dbuku_jml_total.required' => 'Jumlah harus diisi!',
                     'dbuku_jml_total.min' => 'Jumlah tidak boleh kurang dari 0!',
+                    'dbuku_jml_total.max' => 'Jumlah tidak boleh lebih dari 100!',
                     'id_dpenulis.required' => 'Penulis harus diisi!',
                     'id_dpenerbit.required' => 'Penerbit harus diisi!',
                 ];

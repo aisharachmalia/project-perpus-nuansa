@@ -165,7 +165,7 @@
                     <div class="books-container" id="books-{{ $penulis->id_dpenulis }}">
                         @foreach($penulis->buku->take(6) as $buku) <!-- Tampilkan 6 buku pertama -->
                             <div class="book-item">
-                                <a href="{{ route('document.detail', ['id' => $buku->id_dbuku]) }}">
+                                <a href="{{ route('document.detail', ['id' => Crypt::encryptString($buku->id_dbuku)]) }}">
                                 <img src="{{ asset('storage/cover/' . $buku->dbuku_cover) }}" alt="{{ $buku->dbuku_judul }}">
                                 </a>
                                 <p class="fw-bold mt-2">{{ $buku->dbuku_judul }}</p>

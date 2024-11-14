@@ -25,7 +25,8 @@
                     <form method="POST" action="{{ route('post_register_user') }}">
                         @csrf
                         <div class="form-group position-relative has-icon-left mb-4">
-                            <input type="text" class="form-control form-control-xl" name="usr_nama" placeholder="Nama" value="{{ old('usr_nama') }}">
+                            <input type="text" class="form-control form-control-xl" name="usr_nama"
+                                placeholder="Nama" value="{{ old('usr_nama') }}">
                             <div class="form-control-icon">
                                 <i class="bi bi-person"></i>
                             </div>
@@ -34,7 +35,8 @@
                             @endif
                         </div>
                         <div class="form-group position-relative has-icon-left mb-4">
-                            <input type="text" class="form-control form-control-xl" name="usr_username" placeholder="Username" value="{{ old('usr_username') }}">
+                            <input type="text" class="form-control form-control-xl" name="usr_username"
+                                placeholder="Username" value="{{ old('usr_username') }}">
                             <div class="form-control-icon">
                                 <i class="bi bi-person"></i>
                             </div>
@@ -43,7 +45,8 @@
                             @endif
                         </div>
                         <div class="form-group position-relative has-icon-left mb-4">
-                            <input type="text" class="form-control form-control-xl" name="usr_email" placeholder="Email" value="{{ old('usr_email') }}">
+                            <input type="text" class="form-control form-control-xl" name="usr_email"
+                                placeholder="Email" value="{{ old('usr_email') }}">
                             <div class="form-control-icon">
                                 <i class="bi bi-envelope"></i>
                             </div>
@@ -52,19 +55,34 @@
                             @endif
                         </div>
                         <div class="form-group position-relative has-icon-left mb-4">
-                            <input type="password" class="form-control form-control-xl" name="password" placeholder="Password">
+                            <input type="password" class="form-control form-control-xl" name="password" id="password"
+                                placeholder="Password">
                             <div class="form-control-icon">
                                 <i class="bi bi-shield-lock"></i>
                             </div>
+                            <span class="position-absolute top-50 end-0 translate-middle-y me-5"
+                                onclick="togglePassword('password', 'toggleIcon1')" style="cursor: pointer;">
+                                <div class="form-control-icon">
+                                    <i id="toggleIcon1" class="bi bi-eye"></i>
+                                </div>
+                            </span>
                             @if ($errors->has('password'))
                                 <span class="text-danger">{{ $errors->first('password') }}</span>
                             @endif
                         </div>
+                        
                         <div class="form-group position-relative has-icon-left mb-4">
-                            <input type="password" class="form-control form-control-xl" name="password_konf" placeholder="Confirm Password">
+                            <input type="password" class="form-control form-control-xl" name="password_konf" id="password_konf"
+                                placeholder="Confirm Password">
                             <div class="form-control-icon">
                                 <i class="bi bi-shield-lock"></i>
                             </div>
+                            <span class="position-absolute top-50 end-0 translate-middle-y me-5"
+                                onclick="togglePassword('password_konf', 'toggleIcon2')" style="cursor: pointer;">
+                                <div class="form-control-icon">
+                                    <i id="toggleIcon2" class="bi bi-eye"></i>
+                                </div>
+                            </span>
                             @if ($errors->has('password_konf'))
                                 <span class="text-danger">{{ $errors->first('password_konf') }}</span>
                             @endif
@@ -72,7 +90,8 @@
                         <button type="submit" class="btn btn-primary btn-block btn-lg shadow-lg mt-2">Sign Up</button>
                     </form>
                     <div class="text-center mt-4 text-lg fs-4">
-                        <p class='text-gray-600'>Sudah memiliki akun ? <a href="{{ route('login') }}" class="font-bold">Log in</a>.</p>
+                        <p class='text-gray-600'>Sudah memiliki akun ? <a href="{{ route('login') }}"
+                                class="font-bold">Log in</a>.</p>
                     </div>
                 </div>
             </div>
@@ -81,6 +100,24 @@
         </div>
 
     </div>
+
 </body>
+
+<script>
+    function togglePassword(inputId, iconId) {
+        const passwordInput = document.getElementById(inputId);
+        const toggleIcon = document.getElementById(iconId);
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleIcon.classList.remove('bi-eye');
+            toggleIcon.classList.add('bi-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            toggleIcon.classList.remove('bi-eye-slash');
+            toggleIcon.classList.add('bi-eye');
+        }
+    }
+</script>
 
 </html>

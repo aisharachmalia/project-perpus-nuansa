@@ -68,7 +68,7 @@
         <div class="container">
             @foreach ($datadepan as $item)
                 <div class="carousel-items">
-                    <a href="{{ route('document.detail', ['id' => $item->id_dbuku]) }}">
+                    <a href="{{ route('document.detail', ['id' => Crypt::encryptString($item->id_dbuku)]) }}">
                         <img class="carousel-item__img" src="{{ asset('storage/cover/' . $item->dbuku_cover) }}"
                             alt="{{ $item->dbuku_judul }}" />
                     </a>

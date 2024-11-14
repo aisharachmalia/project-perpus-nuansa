@@ -12,16 +12,16 @@
                 $('#edit').find('#usr_id').val(id_usr);
                 $('#edit').find('#usr_username').val(response['user'].usr_username);
                 $('#edit').find('#usr_email').val(response['user'].usr_email);
-                $('#edit').find('#status[value="' + response['user'].usr_stat + '"]').prop('checked', true);
-
+                $('#edit').find('#status[value="' + response['user'].usr_stat + '"]').prop(
+                    'checked', true);
                 $('#usr_error').text('');
                 $('#username_error').text('');
                 $('#email_error').text('');
             }
-        }
+        })
     });
-});
- 
+
+
     $(document).on('click', '#update', function(e) {
         e.preventDefault();
         //define variable
@@ -29,7 +29,7 @@
         let nama = $('#edit').find('#usr_nama').val();
         let username = $('#edit').find('#usr_username').val();
         let email = $('#edit').find('#usr_email').val();
-        let status = $('#status:checked').val();
+        let status = $('#edit').find('#status:checked').val();
         let token = $("meta[name='csrf-token']").attr("content");
 
 
@@ -64,19 +64,19 @@
                     var errors = $.parseJSON(xhr.responseText);
                     // Tampilkan pesan error dari validasi
                     if (errors.errors.nama) {
-                        $('#usr_error').text(errors.errors.nama[0]);
+                        $('#edit').find('#usr_error').text(errors.errors.nama[0]);
                     } else {
-                        $('#usr_error').text('');
+                        $('#edit').find('#usr_error').text('');
                     }
                     if (errors.errors.username) {
-                        $('#username_error').text(errors.errors.username[0]);
+                        $('#edit').find('#username_error').text(errors.errors.username[0]);
                     } else {
-                        $('#username_error').text('');
+                        $('#edit').find('#username_error').text('');
                     }
                     if (errors.errors.email) {
-                        $('#email_error').text(errors.errors.email[0]);
+                        $('#edit').find('#email_error').text(errors.errors.email[0]);
                     } else {
-                        $('#email_error').text('');
+                        $('#edit').find('#email_error').text('');
                     }
                 }
             }

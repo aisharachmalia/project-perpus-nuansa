@@ -25,8 +25,7 @@
                         @csrf
                         <div class="form-group position-relative has-icon-left mb-4">
                             <input type="hidden" class="form-control form-control-xl" name="usr_email"
-                                placeholder="Username" value="{{ \Crypt::encryptString($user->usr_email) }}"
-                                readonly>
+                                placeholder="Username" value="{{ \Crypt::encryptString($user->usr_email) }}" readonly>
                         </div>
                         <div class="form-group position-relative has-icon-left mb-4">
                             <input type="text" class="form-control form-control-xl" name="kode_otp"
@@ -39,25 +38,38 @@
                             @endif
                         </div>
                         <div class="form-group position-relative has-icon-left mb-4">
-                            <input type="password" class="form-control form-control-xl" name="password"
-                                placeholder="New password">
+                            <input type="password" class="form-control form-control-xl" name="password" id="password"
+                                placeholder="Password">
                             <div class="form-control-icon">
                                 <i class="bi bi-shield-lock"></i>
                             </div>
+                            <span class="position-absolute top-50 end-0 translate-middle-y me-5"
+                                onclick="togglePassword('password', 'toggleIcon1')" style="cursor: pointer;">
+                                <div class="form-control-icon">
+                                    <i id="toggleIcon1" class="bi bi-eye"></i>
+                                </div>
+                            </span>
                             @if ($errors->has('password'))
                                 <span class="text-danger">{{ $errors->first('password') }}</span>
                             @endif
                         </div>
+
                         <div class="form-group position-relative has-icon-left mb-4">
                             <input type="password" class="form-control form-control-xl" name="password_konf"
-                                placeholder="Confirm Password">
+                                id="password_konf" placeholder="Confirm Password">
                             <div class="form-control-icon">
                                 <i class="bi bi-shield-lock"></i>
                             </div>
+                            <span class="position-absolute top-50 end-0 translate-middle-y me-5"
+                                onclick="togglePassword('password_konf', 'toggleIcon2')" style="cursor: pointer;">
+                                <div class="form-control-icon">
+                                    <i id="toggleIcon2" class="bi bi-eye"></i>
+                                </div>
+                            </span>
                             @if ($errors->has('password_konf'))
                                 <span class="text-danger">{{ $errors->first('password_konf') }}</span>
                             @endif
-                        </div>
+                        </div>-
                         <button type="submit" class="btn btn-primary btn-block btn-lg shadow-lg mt-5">Kirim</button>
                     </form>
                     <div class="text-center mt-5 text-lg fs-4">
@@ -93,3 +105,20 @@
         });
     </script>
 @endif
+
+<script>
+    function togglePassword(inputId, iconId) {
+        const passwordInput = document.getElementById(inputId);
+        const toggleIcon = document.getElementById(iconId);
+
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleIcon.classList.remove('bi-eye');
+            toggleIcon.classList.add('bi-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            toggleIcon.classList.remove('bi-eye-slash');
+            toggleIcon.classList.add('bi-eye');
+        }
+    }
+</script>
