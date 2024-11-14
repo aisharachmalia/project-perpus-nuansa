@@ -1,3 +1,4 @@
+<h1>Data Siswa</h1>
 <table style="border-collapse: collapse; width: 100%;">
     <tr>
         <th style="border: 3px solid black; padding: 8px; white-space: nowrap;">No</th>
