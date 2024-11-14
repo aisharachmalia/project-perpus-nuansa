@@ -713,8 +713,7 @@
                                 }
 
                                 if (errors.dsiswa_no_telp) {
-                                    $('#edit').find('#telp-error').text(errors.dsiswa_no_telp[
-                                        0]);
+                                    $('#edit').find('#telp-error').text(errors.dsiswa_no_telp[0]);
                                 } else {
                                     $('#edit').find('#telp-error').text('');
                                 }
