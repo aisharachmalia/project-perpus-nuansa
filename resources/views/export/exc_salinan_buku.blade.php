@@ -1,4 +1,23 @@
 <table>
+    <tr>
+        <th>Judul Buku</th>
+        <th>ISBN</th>
+        <th>Nama Penulis</th>
+        <th>Nama Penerbit</th>
+        <th>Tahun Terbit</th>
+    </tr>
+        <tr>
+            <td>{{ $bk[0]->dbuku_judul }}</td>
+            <td>'{{ $bk[0]->dbuku_isbn }}</td>
+            <td>{{ $bk[0]->dpenulis_nama_penulis }}</td>
+            <td>{{ $bk[0]->dpenerbit_nama_penerbit }}</td>
+            <td>{{ $bk[0]->dbuku_thn_terbit }}</td>
+        </tr>
+</table>
+<table>
+    
+</table>
+<table>
     <thead>
         <tr>
             <th>No</th>

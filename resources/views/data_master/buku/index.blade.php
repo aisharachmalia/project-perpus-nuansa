@@ -69,9 +69,9 @@
                         class: 'object-fit-cover',
                         render: function(data, type, row) {
                             // Use the asset() helper function to get the full URL
-                            var imageUrl = '/storage/cover/' + data; // Ensure this path is correct
-                            return '<img src="' + imageUrl +
-                                '" width="100px" height="100px" onerror="this.onerror=null;this.src=\'/storage/cover/default.jpg\';" style="width: 100%; height: 100%; object-fit: cover; object-position: center">'; // Optional: default image on error
+                            var defaultImage = '/assets/images/buku/default.jpg';
+                            return '<img src="' + data +
+                                '" width="100px" height="100px" onerror="this.onerror=null;this.src=\'' + defaultImage + '\';" style="width: 100%; height: 100%; object-fit: cover; object-position: center">'; // Optional: default image on error
                         }
                     },
                     {

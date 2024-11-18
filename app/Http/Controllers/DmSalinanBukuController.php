@@ -26,6 +26,15 @@ class DmSalinanBukuController extends Controller
         "
         );
 
+        if (\Storage::exists('public/cover/' . $bk[0]->dbuku_cover)) {
+            // If the file exists, generate a URL to 'storage/cover/'
+            $bk[0]->dbuku_cover ='storage/cover/' . $bk[0]->dbuku_cover;
+        } else {
+            // If the file does not exist, use the default image path
+            $bk[0]->dbuku_cover = 'assets/images/buku/default.jpg';
+        }
+
+
         return view('data_master.buku.dm_salinan', [
             'id' => $id,
             'bk' => $bk[0],
@@ -110,7 +119,7 @@ class DmSalinanBukuController extends Controller
                         return response()->json([
                             'success' => false,
                             'message' => 'Data ini tidak bisa diubah!'
-                        ], 422);
+                        ], 403);
                     } else {
                         $rules = [
                             'dsbuku_no_salinan' => 'required|unique:dm_salinan_bukus,dsbuku_no_salinan,' . $id_dsbk . ',id_dsbuku',
@@ -137,7 +146,7 @@ class DmSalinanBukuController extends Controller
 
                         // Update data ids buku
                         $ids->update([
-                            'dsbuku_no_ids' => $request->dsbuku_no_ids,
+                            'dsbuku_no_salinan' => $request->dsbuku_no_salinan, // Fixed the field name
                             'dsbuku_kondisi' => $request->dsbuku_kondisi,
                             'dsbuku_status' => $ids->dsbuku_status,
                             'updated_at' => now(),
@@ -185,6 +194,7 @@ class DmSalinanBukuController extends Controller
                                 'message' => 'Salinan Buku tidak bisa dihapus Karena Buku sedang di pinjam atau sedang direservasi!',
                             ], 403); // Forbidden
                         } else {
+                            $salinan->dsbuku_no_salinan .= '_deleted';
                             $salinan->deleted_at = Carbon::now();
                             $salinan->save();
 
@@ -272,7 +282,26 @@ class DmSalinanBukuController extends Controller
             $id = $request->input('id');
 
             // Fetch the data using Eloquent
-            $salinan = dm_salinan_buku::where('id_dbuku', $id)->get();
+            $salinan = dm_salinan_buku::where('id_dbuku', $id)->whereNull('deleted_at')->get();
+
+            $bk = \DB::select(
+                "SELECT dm_buku.*,                                         
+                                dm_penulis.dpenulis_nama_penulis, 
+                                dm_penerbits.dpenerbit_nama_penerbit
+                        FROM dm_buku 
+                        LEFT JOIN dm_penulis ON dm_buku.id_dpenulis = dm_penulis.id_dpenulis 
+                        LEFT JOIN dm_penerbits ON dm_buku.id_dpenerbit = dm_penerbits.id_dpenerbit 
+                        WHERE dm_buku.id_dbuku = $id; 
+            "
+            );
+
+            if (\Storage::exists('public/cover/' . $bk[0]->dbuku_cover)) {
+                // If the file exists, generate a URL to 'storage/cover/'
+                $bk[0]->dbuku_cover = 'storage/cover/' . $bk[0]->dbuku_cover;
+            } else {
+                // If the file does not exist, use the default image path
+                $bk[0]->dbuku_cover = 'assets/images/buku/default.jpg';
+            }
 
             // Ensure that there's data to pass to the view
             if ($salinan->isEmpty()) {
@@ -281,7 +310,8 @@ class DmSalinanBukuController extends Controller
 
             $html = \View::make('pdf.pdf_salinan_buku', [
                 'title' => 'Rekap Data Salinan Buku',
-                'salinan' => $salinan
+                'salinan' => $salinan,
+                'bk' => $bk
             ])->render();
 
             // TCPDF generation

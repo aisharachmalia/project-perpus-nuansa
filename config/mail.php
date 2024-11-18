@@ -40,7 +40,7 @@ return [
             'port' => 587,
             'encryption' => 'nuansabaca2024@gmail.com',
             'username' => 'nuansabaca2024@gmail.com',
-            'password' => 'uxeuahopbevpkabf',
+            'password' => 'zmdtljgxddczdivq',
             'timeout' => null,
         ],
 
