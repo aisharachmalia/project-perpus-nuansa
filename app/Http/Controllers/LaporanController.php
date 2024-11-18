@@ -89,7 +89,7 @@ class LaporanController extends Controller
     public function exportLaporan(Request $request)
     {
         try {
-            return (new LaporanExport)->dataExport($request->all())->download('Rekap Laoran Transaksi.xlsx');
+            return (new LaporanExport)->dataExport($request->all())->download('Rekap Laporan Transaksi.xlsx');
         } catch (\Throwable $th) {
             throw $th;
         }

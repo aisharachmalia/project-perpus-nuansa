@@ -232,8 +232,6 @@ class PustakawanController extends Controller
             ], 500);
         }
     }
-    
-    
 
     public function deletePustakawan($id = null)
     {
