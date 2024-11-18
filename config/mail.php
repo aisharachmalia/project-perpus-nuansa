@@ -38,9 +38,9 @@ return [
             'transport' => 'smtp',
             'host' => 'smtp.googlemail.com',
             'port' => 587,
-            'encryption' => 'iyakdepe@gmail.com',
-            'username' => 'iyakdepe@gmail.com',
-            'password' => 'uxeuahopbevpkabf',
+            'encryption' => 'nuansabaca2024@gmail.com',
+            'username' => 'nuansabaca2024@gmail.com',
+            'password' => 'zmdtljgxddczdivq',
             'timeout' => null,
         ],
 
@@ -91,7 +91,7 @@ return [
     */
 
     'from' => [
-        'address' => 'iyakdepe@gmail.com',
+        'address' => 'nuansabaca2024@gmail.com',
         'name' => 'Nuansa Baca',
     ],
 
