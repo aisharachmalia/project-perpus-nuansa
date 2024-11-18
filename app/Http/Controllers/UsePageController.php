@@ -29,6 +29,15 @@ class UsePageController extends Controller
 
         $buku = dm_buku::all();
 
+        foreach ($datadepan as $book) {
+            if (\Storage::exists('public/cover/' . $book->dbuku_cover)) {
+                // If the file exists, generate a URL to 'storage/cover/'
+                $book->dbuku_cover = asset('storage/cover/' . $book->dbuku_cover);
+            } else {
+                // If the file does not exist, use the default image path
+                $book->dbuku_cover = asset('assets/images/buku/default.jpg');
+            }
+        }
         $pnb = \DB::select(
             "SELECT * FROM dm_penerbits
                         WHERE dm_penerbits.deleted_at IS NULL;
@@ -69,6 +78,16 @@ class UsePageController extends Controller
         } else {
             // If no query, retrieve all books
             $buku = dm_buku::all();
+            
+            foreach ($buku as $book) {
+                if (\Storage::exists('public/cover/' . $book->dbuku_cover)) {
+                    // If the file exists, generate a URL to 'storage/cover/'
+                    $book->dbuku_cover = asset('storage/cover/' . $book->dbuku_cover);
+                } else {
+                    // If the file does not exist, use the default image path
+                    $book->dbuku_cover = asset('assets/images/buku/default.jpg');
+                }
+            }
         }
     
         return view('user.halaman_buku', compact('buku', 'query'));

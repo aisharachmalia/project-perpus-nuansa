@@ -36,7 +36,7 @@
             <tr>
                 <!-- Book Cover Image on the Left -->
                 <td class="cover-cell">
-                    <img src="{{ asset('storage/cover/' . $item->dbuku_cover) }}" alt="Book Cover" class="cover">
+                    <img src="{{  $item->dbuku_cover }}" alt="Book Cover" class="cover">
                 </td>
                 
                 <!-- Description Section on the Right -->
