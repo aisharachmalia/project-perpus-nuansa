@@ -140,11 +140,6 @@
                                 <td id="dbuku_bahasa">{{ $bk->dbuku_bahasa }}</td>
                             </tr>
                             <tr>
-                                <td>Jumlah Buku</td>
-                                <td>:</td>
-                                <td id="dbuku_jml_total">{{ $bk->dbuku_jml_total }}</td>
-                            </tr>
-                            <tr>
                                 <td>Edisi Buku</td>
                                 <td>:</td>
                                 <td id="dbuku_edisi">{{ $bk->dbuku_edisi }}</td>

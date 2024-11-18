@@ -78,7 +78,6 @@
                             <span class="fas fa-plus-circle"></span>
                         </div>
                         <h5 class="carousel-item__details--title">{{ $item->dbuku_judul }}</h5>
-                        <h6 class="carousel-item__details--subtitle">Last updated 3 mins ago</h6>
                     </div>
                 </div>
             @endforeach

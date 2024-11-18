@@ -15,14 +15,15 @@
       </form>
   </div>
 </section>
+
 <section class="author">
   <div class="container5">
-      
     @if(!empty($query))
-    <h3>Hasil pencarian untuk: <strong>{{ $query }}</strong></h3>
-  @endif
-      <div class="row">
-        @foreach($buku as $item) <!-- Pastikan $items di-passing ke view -->
+      <h3>Hasil pencarian untuk: <strong>{{ $query }}</strong></h3>
+    @endif
+    <div class="row">
+      @forelse($buku as $item)
+        @if(!empty($item->dbuku_file)) <!-- Pastikan file PDF ada -->
           <div class="col-2">
             <a href="{{ route('document.detail', ['id' => Crypt::encryptString($item->id_dbuku)]) }}">
               <div class="card card-penulis mb-3" style="max-width: 540px; position: relative;">
@@ -33,8 +34,11 @@
               </div>
             </a>
           </div>
-        @endforeach
-      </div>
+        @endif
+      @empty
+        <p>Buku tidak ditemukan.</p>
+      @endforelse
+    </div>
   </div>
 </section>
 
