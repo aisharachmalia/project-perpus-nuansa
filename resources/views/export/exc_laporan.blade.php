@@ -22,7 +22,7 @@
             <td>{{ $item->trks_tgl_peminjaman }}</td>
             <td>{{ $item->trks_tgl_jatuh_tempo }}</td>
             <td>{{ $item->trks_tgl_pengembalian }}</td>
-            <td>Rp.{{ $number_format($item->jumlah, 0, ',', '.') }}</td>
+            <td>Rp.@if( $item->jumlah == null) 0 @else {{ $item->jumlah }} @endif</td>
             <td style="text-align: center;">
                 @if($item->trks_status == 1)
                     Dipinjam

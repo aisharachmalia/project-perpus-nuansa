@@ -22,14 +22,27 @@ class BukuController extends Controller
     public function tableBuku(Request $request)
     {
         try {
-            $buku = \DB::select("SELECT dm_buku.*, 
-                                            dm_penulis.dpenulis_nama_penulis, 
-                                            dm_penerbits.dpenerbit_nama_penerbit
-                                    FROM dm_buku 
-                                    LEFT JOIN dm_penulis ON dm_buku.id_dpenulis = dm_penulis.id_dpenulis 
-                                    LEFT JOIN dm_penerbits ON dm_buku.id_dpenerbit = dm_penerbits.id_dpenerbit 
-                                    WHERE dm_buku.deleted_at IS NULL;
-                                ");
+            $buku = \DB::select(
+                "SELECT dm_buku.*,
+                                dm_penulis.dpenulis_nama_penulis, 
+                                dm_penerbits.dpenerbit_nama_penerbit
+                        FROM dm_buku 
+                        LEFT JOIN dm_penulis ON dm_buku.id_dpenulis = dm_penulis.id_dpenulis 
+                        LEFT JOIN dm_penerbits ON dm_buku.id_dpenerbit = dm_penerbits.id_dpenerbit 
+                        WHERE dm_buku.deleted_at IS NULL
+                        ORDER BY dm_penulis.dpenulis_nama_penulis asc, dm_buku.created_at DESC;
+            "
+            );
+
+            foreach ($buku as $book) {
+                if (\Storage::exists('public/cover/' . $book->dbuku_cover)) {
+                    // If the file exists, generate a URL to 'storage/cover/'
+                    $book->dbuku_cover = asset('storage/cover/' . $book->dbuku_cover);
+                } else {
+                    // If the file does not exist, use the default image path
+                    $book->dbuku_cover = asset('assets/images/buku/default.jpg');
+                }
+            }
 
             return Datatables::of($buku)
                 ->addIndexColumn()
@@ -144,7 +157,7 @@ class BukuController extends Controller
                     $borrowedOrReservedCount = dm_salinan_buku::where('id_dbuku', $id_bk->id_dbuku)
                         ->whereIn('dsbuku_status', [1, 2]) // Status 1 = Borrowed, Status 2 = Reserved
                         ->count();
-                
+
                     if ($borrowedOrReservedCount > 0) {
                         return response()->json([
                             'success' => false,
@@ -441,10 +454,12 @@ class BukuController extends Controller
         $pnb = \DB::select("SELECT * FROM dm_penerbits");
 
         $img = '';
-        if ($bk[0]->dbuku_cover != null) {
+        if (\Storage::exists('public/cover/' . $bk[0]->dbuku_cover)) {
+            // If the file exists, generate a URL to 'storage/cover/'
             $img = asset('storage/cover/' . $bk[0]->dbuku_cover);
         } else {
-            $img = asset('storage/cover/default.jpg');
+            // If the file does not exist, use the default image path
+            $img = asset('assets/images/buku/default.jpg');
         }
 
         $file = '';
@@ -549,6 +564,16 @@ class BukuController extends Controller
                                         LEFT JOIN dm_penerbits ON dm_buku.id_dpenerbit = dm_penerbits.id_dpenerbit 
                                         WHERE dm_buku.deleted_at IS NULL;
                                     ");
+                                    
+            foreach ($buku as $book) {
+                if (\Storage::exists('public/cover/' . $book->dbuku_cover)) {
+                    // If the file exists, generate a URL to 'storage/cover/'
+                    $book->dbuku_cover = asset('storage/cover/' . $book->dbuku_cover);
+                } else {
+                    // If the file does not exist, use the default image path
+                    $book->dbuku_cover = asset('assets/images/buku/default.jpg');
+                }
+            }
 
             $html = \View::make('pdf.pdf_buku', [
                 'title' => 'Data Buku',

@@ -10,7 +10,7 @@
                 <div class="card">
                     <div class="row">
                         <div class="col-md-6">
-                            <img id="dbuku_cover" alt="Book Cover" src="/storage/cover/{{ $bk->dbuku_cover }}"
+                            <img id="dbuku_cover" alt="Book Cover" src="{{ asset( $bk->dbuku_cover) }}"
                                 style="width: 100%; object-fit: cover; object-position: center;padding: 2rem"
                                 onerror="this.src='/storage/cover/default.jpg';">
                         </div>
@@ -293,9 +293,10 @@
                 },
                 error: function(xhr) {
                     console.log(xhr);
-                    if (xhr.status === 422) {
-                        // Parse the JSON response
-                        var response = JSON.parse(xhr.responseText);
+
+                    // Parse the response text to get the error message
+                    if (xhr.status === 403) {
+                        let response = JSON.parse(xhr.responseText);
                         Swal.fire({
                             icon: 'error',
                             title: 'Error!',
@@ -303,7 +304,9 @@
                             editConfirmButton: false,
                             timer: 3000
                         });
-
+                    } else if (xhr.status === 422) {
+                        // Parse the JSON response
+                        var response = JSON.parse(xhr.responseText);
                         console.log(response.errors);
                         var errors = response.errors;
                         if (errors.dsbuku_no_salinan) {
