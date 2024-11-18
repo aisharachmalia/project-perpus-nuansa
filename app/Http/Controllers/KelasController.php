@@ -28,7 +28,7 @@ class KelasController extends Controller
             ->rawColumns(['action'])
             ->make(true);
     }
-    return view('dmkelas.index');
+    return view('data_master.referensi.index');
 }
 
    public function detail($id)

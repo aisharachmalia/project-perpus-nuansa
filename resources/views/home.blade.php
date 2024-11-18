@@ -296,7 +296,7 @@
                                         <thead>
                                             <tr>
                                                 <th>Peringkat</th>
-                                                <th>Nama Pengguna</th>
+                                                <th>Nama Siswa</th>
                                                 <th>Jumlah Peminjaman</th>
                                             </tr>
                                         </thead>
