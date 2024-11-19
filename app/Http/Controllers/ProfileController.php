@@ -12,7 +12,7 @@ class ProfileController extends Controller
     }
     public function updateProfile(Request $request)
     {
-        $user = \Auth::user();
+        $user = \Auth::User();
 
         $rules = [
             'usr_nama' => 'required',

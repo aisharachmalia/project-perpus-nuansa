@@ -12,26 +12,18 @@
                                 <h4>Laporan Peminjaman</h4>
                             </div>
                         </div>
-                        <div class="col-md-2 mt-2 d-flex justify-content-start mb-2">
-                            <a href="#" class="icon icon-left dropdown-toggle" data-bs-toggle="dropdown"><i
-                                    class="bi bi-justify fs-3"></i></a>
-                            <div class="dropdown-menu justify-content-start">
-                                <a href="javascript:void(0)" class="dropdown-item mb-2 text-start" id="export">
-                                    <span class="badge bg-light-warning">Export Excel <i
-                                            class="fas fa-file-excel"></i></span>
-                                </a>
-                                <a href="javascript:void(0)" class="dropdown-item mb-2 text-start" id="printout">
-                                    <span class="badge bg-light-danger">Printout Pdf <i class="fas fa-file-pdf"></i></span>
-                                </a>
-                            </div>
+                        <div class="col-12 d-flex justify-content-start">
+                            <a href="javascript:;" class="btn btn-success mb-2" id="export"> Export Excel</a>
+                            &nbsp;&nbsp;
+                            <a href="javascript:;" class="btn btn-danger mb-2" id="printout"> Printout Pdf</a>
                         </div>
                         <!-- Filters Section -->
                         <div class="row">
                             <!-- Filter Buku -->
                             <div class="col-md-2 mb-2">
-                                <span>Filter Buku</span>
+                                <span>Buku</span>
                                 <select id="filter-buku" class="form-control">
-                                    <option value="">All</option>
+                                    <option value="">Semua Buku</option>
                                     @php
                                         $buku = DB::table('dm_buku')->get();
                                     @endphp
@@ -44,9 +36,9 @@
 
                             <!-- Filter Siswa -->
                             <div class="col-md-2 mb-2">
-                                <span>Filter Siswa</span>
+                                <span>Siswa</span>
                                 <select id="filter-siswa" class="form-control">
-                                    <option value="">All</option>
+                                    <option value="">Semua Siswa</option>
                                     @php
                                         $siswa = DB::table('users')->leftJoin('akses_usrs', 'users.id_usr', '=', 'akses_usrs.id_usr')->whereNull('akses_usrs.id_usr')->select('users.id_usr', 'usr_nama')->get();
                                     @endphp
@@ -61,7 +53,7 @@
                             <div class="col-md-2 mb-2">
                                 <span>Status</span>
                                 <select id="filter-status" class="form-control">
-                                    <option value="">All</option>
+                                    <option value="">Semua Status</option>
                                     <option value="1">Dikembalikan</option>
                                     <option value="0">Dipinjam</option>
                                     <option value="-1">Batal</option>
@@ -70,7 +62,7 @@
 
                             <!-- Filter Tanggal -->
                             <div class="col-md-6 mb-2">
-                                <span>Filter Tanggal</span>
+                                <span>Tanggal</span>
                                 <div id="daterange" class="float-end"
                                     style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc; width: 100%; text-align:center">
                                     <input type="hidden" id="filter-tanggal-awal">

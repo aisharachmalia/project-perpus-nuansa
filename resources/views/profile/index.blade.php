@@ -2,12 +2,12 @@
 
 @section('content')
     @php
-        $role = App\Models\akses_usr::join('users', 'akses_usrs.id_usr', 'users.id_usr')
-            ->where('users.id_usr', Auth::user()->id_usr)
+        $role = App\Models\Akses_usr::join('users', 'akses_usrs.id_usr', 'users.id_usr')
+            ->where('users.id_usr', Auth::User()->id_usr)
             ->join('roles', 'akses_usrs.id_role', 'roles.id_role')
             ->first();
 
-        $user = App\Models\User::find(Auth::user()->id_usr);
+        $user = App\Models\User::find(Auth::User()->id_usr);
     @endphp
     <link rel="stylesheet" href="{{ asset('assets/css/pages/profile.css') }}">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
@@ -24,9 +24,9 @@
                                 </div>
                                 <div class="col d-flex flex-column flex-sm-row justify-content-between mb-3">
                                     <div class="text-center text-sm-left mb-2 mb-sm-0">
-                                        <h4 class="pt-sm-2 pb-1 mb-0 text-start p-1">{{ Auth::user()->usr_username }}
+                                        <h4 class="pt-sm-2 pb-1 mb-0 text-start p-1">{{ Auth::User()->usr_username }}
                                         </h4>
-                                        <p class="mb-0 text-start p-1">{{ Auth::user()->usr_email }}</p>
+                                        <p class="mb-0 text-start p-1">{{ Auth::User()->usr_email }}</p>
                                         {{-- <form action="{{ route('update_profile_image') }}" method="POST" enctype="multipart/form-data">
                                             <input type="file" name="file" id="file">
                                             <button type="submit" class="btn btn-primary">Upload</button>
@@ -35,7 +35,7 @@
                                     <div class="text-center text-sm-right">
                                         <span class="badge badge-secondary">Ad</span>
                                         <div class="text-muted"><small>Bergabung
-                                                {{ Auth::user()->created_at->format('d. M. Y') }}</small></div>
+                                                {{ Auth::User()->created_at->format('d. M. Y') }}</small></div>
                                     </div>
                                 </div>
                             </div>
@@ -61,16 +61,16 @@
                                                 <tbody>
                                                     <tr>
                                                         <td>Bergabung:</td>
-                                                        <td>{{ Auth::user()->created_at->format('d/m/Y') }}</td>
+                                                        <td>{{ Auth::User()->created_at->format('d/m/Y') }}</td>
                                                     </tr>
                                                     <tr>
                                                         <td>
                                                             Terakhir Lihat:
                                                         </td>
                                                         <td>
-                                                            {{-- @if (Auth::user()->last_active_at)
+                                                            {{-- @if (Auth::User()->last_active_at)
                                                                     
-                                                                        {{ Auth::user()->last_active_at}}
+                                                                        {{ Auth::User()->last_active_at}}
                                                                     
                                                                 @else
                                                                     --
@@ -81,7 +81,7 @@
                                                     <tr>
                                                         <td>Email:</td>
                                                         <td>
-                                                            @if (Auth::user()->email_verified)
+                                                            @if (Auth::User()->email_verified)
                                                                 Terverifikasi
                                                             @else
                                                                 Belum Terverifikasi
@@ -90,12 +90,12 @@
                                                     </tr>
                                                     <tr>
                                                         <td>Role:</td>
-                                                        <td>{{ Auth::user()->usr_nama }}</td>
+                                                        <td>{{ Auth::User()->usr_nama }}</td>
                                                     </tr>
                                                     <tr>
                                                         <td>Status:</td>
                                                         <td>
-                                                            @if (Auth::user()->usr_stat == 1)
+                                                            @if (Auth::User()->usr_stat == 1)
                                                                 Aktif
                                                             @else
                                                                 Tidak Aktif
@@ -119,7 +119,7 @@
                                                         <div class="form-group">
                                                             <label>Nama</label>
                                                             <input class="form-control" type="text" name="usr_nama"
-                                                                value="{{ Auth::user()->usr_nama }}">
+                                                                value="{{ Auth::User()->usr_nama }}">
                                                             @if ($errors->has('usr_nama'))
                                                                 <span
                                                                     class="text-danger">{{ $errors->first('usr_nama') }}</span>
@@ -130,7 +130,7 @@
                                                         <div class="form-group">
                                                             <label>Username</label>
                                                             <input class="form-control" type="text" name="usr_username"
-                                                                value="{{ Auth::user()->usr_username }}">
+                                                                value="{{ Auth::User()->usr_username }}">
                                                             @if ($errors->has('usr_username'))
                                                                 <span
                                                                     class="text-danger">{{ $errors->first('usr_username') }}</span>
@@ -143,7 +143,7 @@
                                                         <div class="form-group">
                                                             <label>Email</label>
                                                             <input class="form-control" type="email" name="usr_email"
-                                                                value="{{ Auth::user()->usr_email }}">
+                                                                value="{{ Auth::User()->usr_email }}">
                                                             @if ($errors->has('usr_email'))
                                                                 <span
                                                                     class="text-danger">{{ $errors->first('usr_email') }}</span>
@@ -242,17 +242,6 @@
                 title: '{{ session('success') }}',
                 showConfirmButton: false,
                 timer: 2000
-            });
-        </script>
-    @endif
-    
-    @if ($errors->any())
-        <script>
-            Swal.fire({
-                icon: 'error',
-                title: 'Ada yang salah',
-                text: '{{ $errors->first() }}', // Menampilkan error pertama
-                showConfirmButton: true,
             });
         </script>
     @endif

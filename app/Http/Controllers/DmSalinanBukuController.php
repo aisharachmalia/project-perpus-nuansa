@@ -48,7 +48,8 @@ class DmSalinanBukuController extends Controller
             $salinanBukus = \DB::select(
                 "SELECT * FROM dm_salinan_bukus
                                     join dm_buku on dm_salinan_bukus.id_dbuku = dm_buku.id_dbuku
-                                    WHERE dm_buku.id_dbuku = $id AND dm_salinan_bukus.deleted_at IS NULL;"
+                                    WHERE dm_buku.id_dbuku = $id AND dm_salinan_bukus.deleted_at IS NULL
+                                    ORDER BY dm_salinan_bukus.dsbuku_no_salinan ASC;"
             );
 
 
