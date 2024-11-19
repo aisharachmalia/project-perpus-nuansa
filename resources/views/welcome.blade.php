@@ -63,7 +63,8 @@
     </section>
 
     <!-- Buku Rekomendasi Section -->
-    <section class="carousel">
+    <section class="author">
+        <div class="container5">
         <h2 class="penulis">Rekomendasi Buku</h2>
         <div class="container">
             @foreach ($datadepan as $item)
@@ -82,6 +83,7 @@
                 </div>
             @endforeach
         </div>
+    </div>
     </section>
 
     <!-- Penerbit Section -->
