@@ -241,8 +241,12 @@ class BukuController extends Controller
                     \DB::table('dm_salinan_bukus')
                         ->where('id_dbuku', $id_bk->id_dbuku)
                         ->whereIn('dsbuku_kondisi', ['Baik', 'Rusak'])
-                        ->whereNotIn('dsbuku_status', [1, 2])
-                        ->update(['deleted_at' => Carbon::now()]);
+                        ->where('dsbuku_status', 0)
+                        ->whereRaw("dsbuku_no_salinan NOT LIKE '%_deleted'")
+                        ->update([
+                            'dsbuku_no_salinan' => \DB::raw("CONCAT(dsbuku_no_salinan, '_deleted')"),
+                            'deleted_at' => Carbon::now(),
+                        ]);
                 } elseif ($request->dbuku_jml_total > $oldTotal) {
                     $new = $request->dbuku_jml_total - $oldTotal;
                     for ($i = 1; $i <= $new; $i++) {
@@ -267,10 +271,14 @@ class BukuController extends Controller
                     \DB::table('dm_salinan_bukus')
                         ->where('id_dbuku', $id_bk->id_dbuku)
                         ->whereIn('dsbuku_kondisi', ['Baik', 'Rusak']) // Changed to whereIn
-                        ->whereNotIn('dsbuku_status', [1, 2])
+                        ->where('dsbuku_status', 0)
                         ->orderBy('created_at', 'desc')
                         ->take($excessCopies)
-                        ->update(['deleted_at' => Carbon::now()]);
+                        ->whereRaw("dsbuku_no_salinan NOT LIKE '%_deleted'")
+                        ->update([
+                            'dsbuku_no_salinan' => \DB::raw("CONCAT(dsbuku_no_salinan, '_deleted')"),
+                            'deleted_at' => Carbon::now(),
+                        ]);
                 }
 
                 // Return success response

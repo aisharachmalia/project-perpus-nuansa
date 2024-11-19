@@ -103,6 +103,7 @@ class UsePageController extends Controller
         $penulisAsing->each(function ($penulis) {
             $penulis->buku = DB::table('dm_buku')
                 ->where('id_dpenulis', $penulis->id_dpenulis)
+                ->whereNotNull('dbuku_file')
                 ->limit(6)
                 ->get();
             
