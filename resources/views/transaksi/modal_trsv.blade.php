@@ -79,6 +79,12 @@
                      <form class="form" data-action="{{ route('pengambilan.store') }}" method="POST"
                          id="pengambilanForm">
                          @csrf
+                         @if ($role->id_role == 3)
+                            @php
+                                $id_pustakawan = \Crypt::encryptString(Auth::user()->id_usr);
+                            @endphp
+                            <input type="hidden" name="id_dpustakawan" id="id_dpustakawan" value="{{$id_pustakawan}}">
+                        @endif
                          <div class="row g-4">
                              <div class="col-md-4 col-12">
                                  <div class="form-group">
@@ -120,9 +126,6 @@
                                          <span id="pustakawan-error" class="text-danger small"></span>
                                      </div>
                                  </div>
-                             @else
-                                 <input type="hidden" name="id_dpustakawan" id="id_dpustakawan"
-                                     value="{{ \Crypt::encryptString(Auth::user()->id_usr) }}">
                              @endif
                              <div class="col-md-4 col-12">
                                  <div class="form-group">
@@ -182,9 +185,6 @@
                  <div class="modal-header">
                      <h5 class="modal-title" id="exampleModalCenterTitle">Lihat Detail Reservasi
                      </h5>
-                     <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                         <i data-feather="x"></i>
-                     </button>
                  </div>
                  <div class="modal-body">
                      <div class="col-12">
@@ -240,9 +240,7 @@
                  </div>
                  <div class="modal-footer">
                      <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
-                         <i class="bx bx-x d-block d-sm-none"></i>
-                         <span class="d-none d-sm-block">Close</span>
-                     </button>
+                         Tutup
                  </div>
              </div>
          </div>
