@@ -16,9 +16,13 @@ class UserController extends Controller
             $users = User::query()->where("deleted_at", null);
             return Datatables::of($users)->addIndexColumn()
                 ->addColumn('action', function ($row) {
+                    $role = User::join('akses_usrs', 'akses_usrs.id_usr', 'users.id_usr')
+                        ->where('users.id_usr', $row->id_usr)
+                        ->where('akses_usrs.id_role', '<=', 2)
+                        ->first();
                     $btn = '<a href="javascript:void(0)" class="btn btn-primary btn-sm modalShow"  data-id="' . Crypt::encryptString($row->id_usr) . '" data-bs-toggle="modal" data-bs-target="#show">Lihat</a>';
-                    if ($row->id_usr > 2) {
-                        $btn .= ' | <a href="javascript:void(0)" data-bs-toggle="modal" data-id="' . Crypt::encryptString($row->id_usr) . '" data-bs-target="#edit" class="btn btn-success btn-sm modalEdit">Edit</a> | <a href="javascript:void(0)" data-id="' . Crypt::encryptString($row->id_usr) . '" class="btn btn-danger btn-sm deleteUser">Hapus</a>';
+                    if (!$role) {
+                        $btn .= ' &nbsp; <a href="javascript:void(0)" data-bs-toggle="modal" data-id="' . Crypt::encryptString($row->id_usr) . '" data-bs-target="#edit" class="btn btn-success btn-sm modalEdit">Edit</a> &nbsp; <a href="javascript:void(0)" data-id="' . Crypt::encryptString($row->id_usr) . '" class="btn btn-danger btn-sm deleteUser">Hapus</a>';
                         return $btn;
                     }
                     return $btn;
@@ -53,7 +57,7 @@ class UserController extends Controller
     {
         $id_usr = Crypt::decryptString($id);
         $user = User::find($id_usr);
-        $user->deleted_at = now();
+        $user->deleted_at = now('Asia/Jakarta');
         $user->save();
         return response()->json([
             'success' => true,
@@ -85,7 +89,7 @@ class UserController extends Controller
         $user->usr_username = $request->username;
         $user->usr_email = $request->email;
         if ($request->status == 1) {
-            $user->email_verified = now();
+            $user->email_verified = now('Asia/Jakarta');
             $user->usr_stat = 1;
         } else {
             $user->email_verified = null;

@@ -23,8 +23,8 @@ class DmGuruSeeder extends Seeder
                 'dguru_alamat' => 'Jl. Merdeka No. 10',
                 'id_mapel' => 1,
                 'dguru_status' => '1',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => now('Asia/Jakarta'),
+                'updated_at' => now('Asia/Jakarta'),
             ],
             [
                 'dguru_nama' => 'Budi Santoso',
@@ -34,8 +34,8 @@ class DmGuruSeeder extends Seeder
                 'dguru_alamat' => 'Jl. Sudirman No. 5',
                 'id_mapel' => 2,
                 'dguru_status' => '1',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => now('Asia/Jakarta'),
+                'updated_at' => now('Asia/Jakarta'),
             ],
             [
                 'dguru_nama' => 'Citra Dewi',
@@ -45,8 +45,8 @@ class DmGuruSeeder extends Seeder
                 'dguru_alamat' => 'Jl. Thamrin No. 22',
                 'id_mapel' => 3,
                 'dguru_status' => '1',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => now('Asia/Jakarta'),
+                'updated_at' => now('Asia/Jakarta'),
             ],
             [
                 'dguru_nama' => 'Deni Setiawan',
@@ -56,8 +56,8 @@ class DmGuruSeeder extends Seeder
                 'dguru_alamat' => 'Jl. Pahlawan No. 15',
                 'id_mapel' => 4,
                 'dguru_status' => '1',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => now('Asia/Jakarta'),
+                'updated_at' => now('Asia/Jakarta'),
             ],
             [
                 'dguru_nama' => 'Eka Putri',
@@ -67,8 +67,8 @@ class DmGuruSeeder extends Seeder
                 'dguru_alamat' => 'Jl. Diponegoro No. 18',
                 'id_mapel' => 5,
                 'dguru_status' => '1',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => now('Asia/Jakarta'),
+                'updated_at' => now('Asia/Jakarta'),
             ],
             [
                 'dguru_nama' => 'Fajar Hidayat',
@@ -78,8 +78,8 @@ class DmGuruSeeder extends Seeder
                 'dguru_alamat' => 'Jl. Gajah Mada No. 30',
                 'id_mapel' => 1,
                 'dguru_status' => '1',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => now('Asia/Jakarta'),
+                'updated_at' => now('Asia/Jakarta'),
             ],
             [
                 'dguru_nama' => 'Gita Ananda',
@@ -89,8 +89,8 @@ class DmGuruSeeder extends Seeder
                 'dguru_alamat' => 'Jl. Kartini No. 50',
                 'id_mapel' => 2,
                 'dguru_status' => '1',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => now('Asia/Jakarta'),
+                'updated_at' => now('Asia/Jakarta'),
             ],
         ]);
     }

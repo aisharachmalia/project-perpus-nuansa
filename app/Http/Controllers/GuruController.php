@@ -193,7 +193,7 @@ class GuruController extends Controller
         $id_dguru = Crypt::decryptString($id);
 
         $gr = dm_guru::find($id_dguru);
-        $gr->deleted_at = Carbon::now();
+        $gr->deleted_at = Carbon::now('Asia/Jakarta');
         $gr->save();
 
         //return response
