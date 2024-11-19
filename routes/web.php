@@ -5,9 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\ReservasiController;
 use App\Http\Controllers\SiswaController;
-use App\Http\Controllers\UsePageController;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\PenulisController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -44,9 +43,6 @@ Route::post('/penulis/load-more-books-asing', [App\Http\Controllers\UsePageContr
 Route::get('/panduan', [App\Http\Controllers\WebController::class, 'pagePanduan'])->name('panduan');
 
 //Login
-Route::get('/login', function () {
-    return redirect('/login-usr');
-});
 Route::get('/login-usr', [App\Http\Controllers\WebController::class, 'pageLogin'])->name('login-usr');
 
 
@@ -246,7 +242,5 @@ Route::post('/pengambilan/store', [ReservasiController::class, 'createPengambila
 Route::get('/reservasi/detail', [ReservasiController::class, 'detailReservasi'])->name('reservasi.detail');
 Route::get('/reservasi/detail/{id?}', [ReservasiController::class, 'detailUpdate'])->name('reservasi.detail');
 Route::put('/reservasi/update/{id}', [ReservasiController::class, 'update'])->name('reservasi.update');
- 
-       
 Route::post('/reservasi/batal', [ReservasiController::class, 'batalReservasi'])->name('reservasi.batal');
 

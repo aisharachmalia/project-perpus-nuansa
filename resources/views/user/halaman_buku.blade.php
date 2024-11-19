@@ -26,10 +26,10 @@
           <div class="col-2">
             <a href="{{ route('document.detail', ['id' => Crypt::encryptString($item->id_dbuku)]) }}">
               <div class="card card-penulis mb-3" style="max-width: 540px; position: relative;">
-                <img src="{{ asset('storage/cover/' . $item->dbuku_cover) }}" 
+                <img src="{{  $item->dbuku_cover }}" 
                      class="img-fluid rounded-start" 
                      alt="{{ $item->dbuku_judul }}" 
-                     style="height: 100%; width: 100%; object-fit: cover;">
+                     style="height: 300px; width: 100%; object-fit:cover ;">
               </div>
             </a>
           </div>

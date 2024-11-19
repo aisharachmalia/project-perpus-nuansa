@@ -15,16 +15,25 @@ class DmSalinanBukuController extends Controller
     {
         $id = \Crypt::decryptString($id);
         $bk = \DB::select(
-            "SELECT dm_buku.*,                                         
-                            dm_penulis.dpenulis_nama_penulis, 
+            "SELECT dm_buku.*,
+                            dm_penulis.dpenulis_nama_penulis,
                             dm_penerbits.dpenerbit_nama_penerbit
-                    FROM dm_buku 
-                    LEFT JOIN dm_penulis ON dm_buku.id_dpenulis = dm_penulis.id_dpenulis 
-                    LEFT JOIN dm_penerbits ON dm_buku.id_dpenerbit = dm_penerbits.id_dpenerbit 
-                    WHERE dm_buku.id_dbuku = $id; 
-        
+                    FROM dm_buku
+                    LEFT JOIN dm_penulis ON dm_buku.id_dpenulis = dm_penulis.id_dpenulis
+                    LEFT JOIN dm_penerbits ON dm_buku.id_dpenerbit = dm_penerbits.id_dpenerbit
+                    WHERE dm_buku.id_dbuku = $id;
+
         "
         );
+
+        if (\Storage::exists('public/cover/' . $bk[0]->dbuku_cover)) {
+            // If the file exists, generate a URL to 'storage/cover/'
+            $bk[0]->dbuku_cover ='storage/cover/' . $bk[0]->dbuku_cover;
+        } else {
+            // If the file does not exist, use the default image path
+            $bk[0]->dbuku_cover = 'assets/images/buku/default.jpg';
+        }
+
 
         return view('data_master.buku.dm_salinan', [
             'id' => $id,
@@ -37,7 +46,7 @@ class DmSalinanBukuController extends Controller
         $id = \Crypt::decryptString($request->id);
         if ($request->ajax()) {
             $salinanBukus = \DB::select(
-                "SELECT * FROM dm_salinan_bukus 
+                "SELECT * FROM dm_salinan_bukus
                                     join dm_buku on dm_salinan_bukus.id_dbuku = dm_buku.id_dbuku
                                     WHERE dm_buku.id_dbuku = $id AND dm_salinan_bukus.deleted_at IS NULL;"
             );
@@ -74,7 +83,7 @@ class DmSalinanBukuController extends Controller
     public function salinanDetail($id = null)
     {
         $id = \Crypt::decryptString($id);
-        $dsbk = \DB::select("SELECT dm_salinan_bukus.* FROM dm_salinan_bukus 
+        $dsbk = \DB::select("SELECT dm_salinan_bukus.* FROM dm_salinan_bukus
                                     WHERE dm_salinan_bukus.id_dsbuku = $id
                             ");
         $kondisi = [
@@ -110,7 +119,7 @@ class DmSalinanBukuController extends Controller
                         return response()->json([
                             'success' => false,
                             'message' => 'Data ini tidak bisa diubah!'
-                        ], 422);
+                        ], 403);
                     } else {
                         $rules = [
                             'dsbuku_no_salinan' => 'required|unique:dm_salinan_bukus,dsbuku_no_salinan,' . $id_dsbk . ',id_dsbuku',
@@ -137,10 +146,10 @@ class DmSalinanBukuController extends Controller
 
                         // Update data ids buku
                         $ids->update([
-                            'dsbuku_no_ids' => $request->dsbuku_no_ids,
+                            'dsbuku_no_salinan' => $request->dsbuku_no_salinan, // Fixed the field name
                             'dsbuku_kondisi' => $request->dsbuku_kondisi,
                             'dsbuku_status' => $ids->dsbuku_status,
-                            'updated_at' => now(),
+                            'updated_at' => now('Asia/Jakarta'),
                         ]);
 
                         // Hanya update jumlah buku jika kondisi berubah
@@ -185,7 +194,8 @@ class DmSalinanBukuController extends Controller
                                 'message' => 'Salinan Buku tidak bisa dihapus Karena Buku sedang di pinjam atau sedang direservasi!',
                             ], 403); // Forbidden
                         } else {
-                            $salinan->deleted_at = Carbon::now();
+                            $salinan->dsbuku_no_salinan .= '_deleted';
+                            $salinan->deleted_at = Carbon::now('Asia/Jakarta');
                             $salinan->save();
 
                             // Decrease the total book count in dm_buku
@@ -281,7 +291,8 @@ class DmSalinanBukuController extends Controller
 
             $html = \View::make('pdf.pdf_salinan_buku', [
                 'title' => 'Rekap Data Salinan Buku',
-                'salinan' => $salinan
+                'salinan' => $salinan,
+                'bk' => $bk
             ])->render();
 
             // TCPDF generation

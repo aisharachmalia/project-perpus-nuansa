@@ -2,13 +2,13 @@
       // ajax buat pinjaman
       $('body').on('click', '.modalCreate', function() {
             $('#tambahPeminjaman').find('span').text('');
-            $('#tambahPeminjaman').find('input, select').val('');
+
             $('#tambahPeminjaman').find('#trks_tgl_peminjaman').val(new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' }).slice(0, 16));
         });
 
         $('body').on('click', '.pengembalian', function() {
             $('#pengembalian').find('span').text('');
-            $('#pengembalian').find('input, select').val("");
+            $('#pengembalian').find('input, select').val('');
             $('#pengembalian').find('#id_dbuku').empty();
             $('#pengembalian').find('#id_dbuku').append(
                 '<option value="">Pilih Buku</option>');
@@ -17,7 +17,7 @@
         $('#pengembalian').find('#id_dsiswa').on('change', function() {
             var id_usr = $(this).val();
             if (id_usr == '') {
-                $('#pengembalian').find('input, select').val("");
+                $('#pengembalian').find('input, select').val('');
                 $('#pengembalian').find('#id_dbuku').empty();
                 $('#pengembalian').find('#id_dbuku').append(
                     '<option value="">Pilih Buku</option>');
@@ -27,7 +27,8 @@
                     type: 'GET',
                     data: {
                         "_token": $('meta[name="csrf-token"]').attr('content'),
-                        "id_usr": id_usr
+                        "id_usr": id_usr,
+                        "type":"showUsr"
                     },
                     success: function(response) {
                         $('#pengembalian').find('#trks_tgl_pengembalian').val(new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Jakarta' }).slice(0, 16));
@@ -44,7 +45,36 @@
             }
 
         });
-
+        $('body').on('click', '.modalShowTrks', function() {
+        let id_trks = $(this).data('id');
+        let token = $("meta[name='csrf-token']").attr("content");
+        //fetch detail post with ajax
+        $.ajax({
+            url: `/transaksi/detail`,
+            type: "GET",
+            cache: false,
+            data: {
+                "id_trks": id_trks,
+                "_token": token,
+                "type":"showTrks"
+            },
+            success: function(response) {
+                $('#showTrks').find('#usr_nama').html(response.usr_nama);
+                $('#showTrks').find('#buku').html(response.dbuku_judul);
+                $('#showTrks').find('#tgl_peminjaman').html(response.trks_tgl_peminjaman.slice(0, 16));
+                $('#showTrks').find('#tgl_jatuh_tempo').html(response.trks_tgl_jatuh_tempo.slice(0, 16));
+                $('#showTrks').find('#tgl_pengembalian').html(response.trks_tgl_pengembalian == null ?
+                    "-" : response.trks_tgl_pengembalian.slice(0, 16));
+                if (response.trks_status == -1) {
+                    $('#showTrks').find('#status').html(`Dibatalkan`);
+                } else if (response.trks_status == 0) {
+                    $('#showTrks').find('#status').html(`Dipinjam`);
+                } else {
+                    $('#showTrks').find('#status').html(`Dikembalikan`);
+                };
+            }
+        });
+    });
         $('#pengembalian').find('#id_dbuku').on('change', function() {
             var id_trks = $(this).val();
             var tanggalKembali = $('#pengembalian').find('#trks_tgl_pengembalian').val();

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Akses_usr;
 use App\Models\Menu;
 use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -58,14 +59,23 @@ class LoginController extends Controller
                     ]);
 
                     if (Auth::check()) {
-                        $menus =  Menu::join('akses_usrs', 'menus.id_menu', '=', 'akses_usrs.id_menu')
-                            ->where('akses_usrs.id_usr', Auth::user()->id_usr)
-                            ->where('akses_usrs.hak_akses', '>=', 1)
-                            ->select('menus.*')
-                            ->groupBy('menus.id_menu')
-                            ->get();
-                        Session::put('menus', $menus);
-                        Session::put('redirect_url', $menus[0]->menu_url);
+                        $role = Akses_usr::join('users', 'akses_usrs.id_usr', 'users.id_usr')
+                            ->where('users.id_usr', Auth::user()->id_usr)
+                            ->join('roles', 'akses_usrs.id_role', 'roles.id_role')
+                            ->first();
+                        if ($role) {
+                            $menus =  Menu::join('akses_usrs', 'menus.id_menu', '=', 'akses_usrs.id_menu')
+                                ->where('akses_usrs.id_usr', Auth::user()->id_usr)
+                                ->where('akses_usrs.hak_akses', '>=', 1)
+                                ->select('menus.*')
+                                ->groupBy('menus.id_menu')
+                                ->get();
+                            Session::put('menus', $menus);
+                            Session::put('redirect_url', $menus[0]->menu_url);
+                        }
+
+
+
 
                         if (isset($request->remember_me)) {
                             $user = auth()->user();
@@ -82,7 +92,11 @@ class LoginController extends Controller
                                 unset($_COOKIE['login_user']);
                             }
                         }
-                        return redirect()->route('home');
+                        if ($role) {
+                            return redirect()->route('home');
+                        } {
+                            return redirect()->route('beranda.page');
+                        }
                     } else {
                         return redirect()->route('login-usr')->with('error_login', 'Gagal Login.');
                     }

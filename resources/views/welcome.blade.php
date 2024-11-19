@@ -64,12 +64,12 @@
 
     <!-- Buku Rekomendasi Section -->
     <section class="carousel">
-        <h2 class="categories__title">Rekomendasi Buku</h2>
+        <h2 class="penulis">Rekomendasi Buku</h2>
         <div class="container">
             @foreach ($datadepan as $item)
                 <div class="carousel-items">
                     <a href="{{ route('document.detail', ['id' => Crypt::encryptString($item->id_dbuku)]) }}">
-                        <img class="carousel-item__img" src="{{ asset('storage/cover/' . $item->dbuku_cover) }}"
+                        <img class="carousel-item__img" src="{{ $item->dbuku_cover }}"
                             alt="{{ $item->dbuku_judul }}" />
                     </a>
                     <div class="carousel-item__details">
