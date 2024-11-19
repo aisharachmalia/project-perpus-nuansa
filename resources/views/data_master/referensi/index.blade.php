@@ -71,29 +71,24 @@
         </div>
     </div>
 
+
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header">
-                        <div class="row">
-                            <div class="col-12 d-flex justify-content-start">
-                                <a href="javascript:void(0)" class="btn btn-success mb-2 modalSimpanKategori"
-                                    data-bs-toggle="modal" data-bs-target="#tambahKategori">+ Tambah</a>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="card-header text-center mb-3">Daftar Kelas</div>
                     <div class="card-body">
-                        <table id="tbl_kategori" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                        <table class="table table-striped table-bordered" id="tbl_list" width="100%">
                             <thead>
                                 <tr>
-                                    <th>No</th>
-                                    <th>Nama Kategori</th>
+                                    <th>ID Kelas</th>
+                                    <th>Nama Kelas</th>
+                                    <th>Tingkat</th>
+                                    <th>Jurusan</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-
                             </tbody>
                         </table>
                     </div>
@@ -101,6 +96,8 @@
             </div>
         </div>
     </div>
+    
+
     {{-- Modal penulis --}}
     {{-- edit --}}
     <div class="modal fade text-left" id="editPenulis" tabindex="-1" role="dialog" aria-labelledby="myModalLabel17"
@@ -442,133 +439,107 @@
     {{-- end modal penerbit --}}
 
 
-
-
-    {{-- Modal kategori --}}
-    {{-- edit --}}
-    <div class="modal fade text-left" id="editKategori" tabindex="-1" role="dialog" aria-labelledby="myModalLabel17"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel17">Memperbarui Kategori</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <i data-feather="x"></i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="col-12">
-                        <div class="card-content">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-12 col-12">
-                                        <div class="form-group">
-                                            <label for="nama_penerbit">Nama Kategori</label>
-                                            <input type="hidden" id="kategori_id">
-                                            <input type="text" id="nama_kategori" class="form-control"
-                                                placeholder="Nama Kategori">
-                                            <span class="text-danger" id="nama_error"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
-                        <i class="bx bx-x d-block d-sm-none"></i>
-                        <span class="d-none d-sm-block">Tutup</span>
-                    </button>
-                    <button type="submit" class="btn btn-primary ml-1" id="updateKategori">
-                        <i class="bx bx-check d-block d-sm-none"></i>
-                        <span class="d-none d-sm-block" id="submit">Kirim</span>
-                    </button>
-                </div>
+    {{-- kelas --}}
+    <!-- Modal Show Kelas -->
+<div class="modal fade" id="show" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">Show Kelas</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <i data-feather="x"></i>
+                </button>
             </div>
-        </div>
-    </div>
-
-    {{-- show --}}
-    <div class="modal fade text-left" id="showKategori" tabindex="-1" role="dialog" aria-labelledby="myModalLabel17"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel17">Melihat Kategori</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <i data-feather="x"></i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="col-12">
-                        <div class="card-content">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-12 col-12">
-                                        <div class="form-group">
-                                            <label for="nama_penulis">Nama Kategori :</label>
-                                            <input type="hidden" id="katgeori_id" name="penerbit_id">
-                                            <p id="nama_kategori"></p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
-                        <i class="bx bx-x d-block d-sm-none"></i>
-                        <span class="d-none d-sm-block">Tutup</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {{-- create --}}
-    <div class="modal fade text-left" id="tambahKategori" tabindex="-1" role="dialog"
-        aria-labelledby="myModalLabel17" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="myModalLabel17">Tambah Kategori</h4>
-                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                        <i data-feather="x"></i>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="col-12">
-                        <div class="card-content">
-                            <div class="card-body">
-                                <div class="row">
+            <div class="modal-body">
+                <div class="col-12">
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4 col-12">
                                     <div class="form-group">
-                                        <label for="nama_penerbit">Nama Kategori</label>
-                                        <input type="text" id="nama_kategori" class="form-control"
-                                            placeholder="Nama Kategori" name="nama_penerbit">
-                                        <span class="text-danger" id="nama_error"></span>
+                                        <label for="dkelas_nama_kelas">Nama Kelas</label>
+                                        <p id="dkelas_nama_kelas"></p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-12">
+                                    <div class="form-group">
+                                        <label for="dkelas_tingkat">Tingkat</label>
+                                        <p id="dkelas_tingkat"></p>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-12">
+                                    <div class="form-group">
+                                        <label for="dkelas_jurusan">Jurusan</label>
+                                        <p id="dkelas_jurusan"></p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
-                        <i class="bx bx-x d-block d-sm-none"></i>
-                        <span class="d-none d-sm-block">Tutup</span>
-                    </button>
-                    <button type="submit" class="btn btn-primary ml-1" id="simpanKategori">
-                        <i class="bx bx-check d-block d-sm-none"></i>
-                        <span class="d-none d-sm-block">Simpan</span>
-                    </button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+                    <i class="bx bx-x d-block d-sm-none"></i>
+                    <span class="d-none d-sm-block">Tutup</span>
+                </button>
             </div>
         </div>
     </div>
+</div>
 
-    {{-- end modal penerbit --}}
+<!-- Modal Edit Kelas -->
+<div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="modalEdit" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modalEdit">Edit Kelas</h4>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <i data-feather="x"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="col-12">
+                    <div class="card-content">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-4 col-12">
+                                    <div class="form-group">
+                                        <label for="dkelas_nama_kelas">Nama Kelas</label>
+                                        <input type="hidden" id="id_dkelas" name="id_dkelas">
+                                        <input type="text" id="dkelas_nama_kelas" class="form-control" placeholder="Nama Kelas" name="dkelas_nama_kelas">
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-12">
+                                    <div class="form-group">
+                                        <label for="dkelas_tingkat">Tingkat</label>
+                                        <input type="text" id="dkelas_tingkat" class="form-control" placeholder="Tingkat" name="dkelas_tingkat">
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-12">
+                                    <div class="form-group">
+                                        <label for="dkelas_jurusan">Jurusan</label>
+                                        <input type="text" id="dkelas_jurusan" class="form-control" placeholder="Jurusan" name="dkelas_jurusan">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">
+                    <i class="bx bx-x d-block d-sm-none"></i>
+                    <span class="d-none d-sm-block">Tutup</span>
+                </button>
+                <button type="submit" class="btn btn-primary ml-1" id="update">
+                    <i class="bx bx-check d-block d-sm-none"></i>
+                    <span class="d-none d-sm-block">Simpan</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -676,10 +647,10 @@
                     }
                 ]
             });
-            var table = $('#tbl_kategori').DataTable({
+            var table = $('#tbl_list').DataTable({
                 serverSide: true,
                 scrollX: true,
-                ajax: '{{ url('/data-master/dkategori') }}',
+                ajax: '{{ url('/data-master/kelas') }}',
                 columns: [{
                         data: 'DT_RowIndex',
                         orderable: false,
@@ -687,15 +658,51 @@
                         class: "text-center"
                     },
                     {
-                        data: 'dkategori_nama_kategori'
+                        data: 'dkelas_nama_kelas'
                     },
                     {
-                        data: 'aksi',
-                        orderable: false
+                        data: 'dkelas_tingkat'
+                    },
+                    {
+                        data: 'dkelas_jurusan'
+                    },
+                    {  data: null,
+                    render: function(data, type, row) {
+                        return `
+                            <button class="btn btn-sm btn-warning me-1 edit-btn" data-id="${row.id_dkelas}"><i class="bi bi-pencil"></i></button>
+                            <button class="btn btn-sm btn-primary me-1 show-btn" data-id="${row.id_dkelas}"><i class="bi bi-eye"></i></button>
+                            <button class="btn btn-sm btn-danger delete-btn" data-id="${row.id_dkelas}"><i class="bi bi-trash"></i></button>
+                        `;
                     }
+                }
                 ]
             });
-        });
+
+    //         $(document).ready(function() {
+    // // Inisialisasi DataTable
+    //         var table = $('#tbl_list').DataTable({
+    //             processing: true,
+    //             serverSide: true,
+    //             ajax: '{{ url()->current() }}',
+    //             columns: [
+    //                 { data: 'id_dkelas' },
+    //                 { data: 'dkelas_nama_kelas' },
+    //                 { data: 'dkelas_tingkat' },
+    //                 { data: 'dkelas_jurusan' },
+    //                 {  data: null,
+    //                 render: function(data, type, row) {
+    //                     return `
+    //                         <button class="btn btn-sm btn-outline-info me-1 show-btn" data-id="${row.id_dkelas}"><i class="bx bx-eye"></i> Lihat</button>
+    //                         <button class="btn btn-sm btn-outline-warning me-1 edit-btn" data-id="${row.id_dkelas}"><i class="bx bx-pencil"></i> Edit</button>
+    //                         <button class="btn btn-sm btn-outline-danger delete-btn" data-id="${row.id_dkelas}"><i class="bx bx-trash"></i> Hapus</button>
+    //                     `;
+    //                 }
+
+    //                 }
+    //             ]
+    //         });
+    //     });
+    });
     </script>
 
     {{-- js ajax penulis --}}
@@ -1142,180 +1149,120 @@
     {{-- end ajax penerbit --}}
 
 
-    {{-- js ajax kategori --}}
-    <script>
-        // ajax show
-        $('body').on('click', '.modalShowKategori', function() {
+   <script>
 
-            let id_penerbit = $(this).data('id');
-            $.ajax({
-                url: `kategori/show/${id_penerbit}`,
-                type: "GET",
-                cache: false,
-                success: function(response) {
-                    $('#showKategori').find('#nama_kategori').text(response.dkategori_nama_kategori);
-                }
-            });
+    // Fungsi untuk menampilkan modal Show
+    $('#tbl_list').on('click', '.show-btn', function() {
+        var id = $(this).data('id'); 
+        $.ajax({
+            url: `kelas-detail/${id}`,
+            method: 'GET',
+            success: function(response) {
+                $('#show').find('#dkelas_nama_kelas').text(response.dkelas_nama_kelas);
+                $('#show').find('#dkelas_tingkat').text(response.dkelas_tingkat);
+                $('#show').find('#dkelas_jurusan').text(response.dkelas_jurusan);
+                $('#show').modal('show');
+            },
+            error: function(xhr) {
+                Swal.fire('Error', xhr.responseJSON?.message || 'Terjadi kesalahan', 'error');
+            }
         });
+    });
 
-
-        // ajax edit
-        $('body').on('click', '.modalEditKategori', function() {
-
-            let id = $(this).data('id');
-
-            //fetch detail post with ajax
-            $.ajax({
-                url: `kategori/show/${id}`,
-                type: "GET",
-                cache: false,
-                success: function(response) {
-                    console.log(response);
-
-                    //fill data to form
-                    $('#editKategori').find('#kategori_id').val(id);
-                    $('#editKategori').find('#nama_kategori').val(response.dkategori_nama_kategori);
-
-                    $('#editKategori').find('#nama_error').text('');
-                }
-            });
+    // Fungsi untuk menampilkan modal Edit
+    $('#tbl_list').on('click', '.edit-btn', function() {
+        var id = $(this).data('id');
+        $.ajax({
+            url: `kelas-detail/${id}`,
+            method: 'GET',
+            success: function(response) {
+                $('#edit').find('#id_dkelas').val(response.id_dkelas);  // Ambil id dengan benar
+                $('#edit').find('#dkelas_nama_kelas').val(response.dkelas_nama_kelas);
+                $('#edit').find('#dkelas_tingkat').val(response.dkelas_tingkat);
+                $('#edit').find('#dkelas_jurusan').val(response.dkelas_jurusan);
+                $('#edit').modal('show');  // Tampilkan modal edit
+            },
+            error: function(xhr) {
+                Swal.fire('Error', xhr.responseJSON?.message || 'Terjadi kesalahan', 'error');
+            }
         });
+    });
 
-        //action update post
-        $('#updateKategori').click(function(e) {
-            e.preventDefault();
+    // Fungsi untuk mengupdate data
+    $(document).on('click', '#update', function(e) {
+        e.preventDefault();
 
-            //define variable
-            let token = $('meta[name="csrf-token"]').attr('content');
-            let id = $('#editKategori').find('#kategori_id').val();
-            let nama_kategori = $('#editKategori').find('#nama_kategori').val();
-            //ajax
+        let id_dkelas = $('#edit').find('#id_dkelas').val();
+        let dkelas_nama_kelas = $('#edit').find('#dkelas_nama_kelas').val();
+        let dkelas_tingkat = $('#edit').find('#dkelas_tingkat').val();
+        let dkelas_jurusan = $('#edit').find('#dkelas_jurusan').val();
+        let token = $('meta[name="csrf-token"]').attr('content');
+
+        $.ajax({
+            url: `kelas-update/${id_dkelas}`,  // Pastikan URL update benar
+            type: "PUT",
+            data: {
+                "_token": token,
+                "dkelas_nama_kelas": dkelas_nama_kelas,
+                "dkelas_tingkat": dkelas_tingkat,
+                "dkelas_jurusan": dkelas_jurusan
+       },
+       success: function(response) {
+           Swal.fire({
+               icon: 'success',
+               title: `${response.message}`,
+               showConfirmButton: false,
+               timer: 1500
+           });
+           $('#tbl_list').DataTable().ajax.reload();
+           $('#edit').modal('hide');
+       },
+       error: function(xhr) {
+           Swal.fire('Error', xhr.responseJSON?.message || 'Terjadi kesalahan saat memperbarui data', 'error');
+       }
+   });
+});
+
+
+
+    // Fungsi untuk menghapus data
+$('body').on('click', '.delete-btn', function() {
+    let id_dkelas = $(this).data('id'); // Mengambil id_dkelas dari data-id tombol
+    let token = $("meta[name='csrf-token']").attr("content");
+
+    Swal.fire({
+        title: 'Apakah Kamu Yakin?',
+        text: "ingin menghapus data ini!",
+        icon: 'warning',
+        showCancelButton: true,
+        cancelButtonText: 'TIDAK',
+        confirmButtonText: 'YA, HAPUS!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Mengirim permintaan DELETE ke server
             $.ajax({
-                url: `kategori/edit/${id}`,
-                type: "PUT",
-                cache: false,
+                url: `kelas/delete/${id_dkelas}`,  // Pastikan URL delete sesuai dengan route Anda
+                type: "DELETE",
                 data: {
-                    "nama_kategori": nama_kategori,
                     "_token": token
                 },
                 success: function(response) {
-
-                    //edit success message
-                    Swal.fire({
-                        type: 'success',
-                        icon: 'success',
-                        title: `${response.message}`,
-                        editConfirmButton: false,
-                        timer: 3000
-                    });
-                    $('#editKategori').modal('toggle');
-                    $('.modal-backdrop').remove();
-                    $('#tbl_kategori').DataTable().ajax.reload();
-                    $('body').removeClass('modal-open');
-                    $('body').css('overflow', 'auto');
-                },
-                error: function(xhr) {
-                    if (xhr.status === 422) {
-                        var error = $.parseJSON(xhr.responseText);
-                        var errors = error.errors;
-                        // Tampilkan pesan error dari validasi
-                        if (errors.nama_kategori) {
-                            $('#editKategori').find('#nama_error').text(errors.nama_kategori[0]);
-                        } else {
-                            $('#editKategori').find('#nama_error').text('');
-                        }
-                    }
-                }
-            });
-        });
-
-        // ajax add
-
-        $('body').on('click', '.modalSimpanKategori', function() {
-            $('#tambahKategori').find('#nama_error').text('');
-            $('#tambahKategori').find('#nama_kategori').val('');
-        });
-        $('#simpanKategori').on('click', function(e) {
-            e.preventDefault();
-            let nama_kategori = $('#tambahKategori').find('#nama_kategori').val();
-            let token = $("meta[name='csrf-token']").attr("content");
-
-            $.ajax({
-                url: `kategori/add`,
-                type: "POST",
-                cache: false,
-                data: {
-                    "nama_kategori": nama_kategori,
-                    "_token": token
-                },
-                success: function(response) {
+                    // Menampilkan pesan sukses
                     Swal.fire({
                         icon: 'success',
                         title: `${response.message}`,
                         showConfirmButton: false,
-                        timer: 3000
+                        timer: 1500
                     });
-                    $('#tambahKategori').modal('toggle');
-                    $('.modal-backdrop').remove();
-                    $('#tbl_kategori').DataTable().ajax.reload();
-                    $('body').removeClass('modal-open');
-                    $('body').css('overflow', 'auto');
+                    $('#tbl_list').DataTable().ajax.reload(); // Memperbarui tabel
                 },
                 error: function(xhr) {
-                    if (xhr.status === 422) {
-                        var error = $.parseJSON(xhr.responseText);
-                        var errors = error.errors;
-                        if (errors.nama_kategori) {
-                            $('#tambahKategori').find('#nama_error').text(errors.nama_kategori[0]);
-                        } else {
-                            $('#tambahKategori').find('#nama_error').text('');
-                        }
-                    }
+                    Swal.fire('Error', xhr.responseJSON?.message || 'Terjadi kesalahan saat menghapus data', 'error');
                 }
-
             });
-        });
-
-
-        // ajax delete
-        $('body').on('click', '#btn-delete-kategori', function() {
-
-            let id_penerbit = $(this).data('id');
-            let token = $("meta[name='csrf-token']").attr("content");
-
-            Swal.fire({
-                title: 'Apakah Kamu Yakin?',
-                text: "ingin menghapus data ini!",
-                icon: 'warning',
-                showCancelButton: true,
-                cancelButtonText: 'TIDAK',
-                confirmButtonText: 'YA, HAPUS!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-
-                        url: `kategori/delete/${id_penerbit}`,
-                        type: "DELETE",
-                        cache: false,
-                        data: {
-                            "_token": token
-                        },
-                        success: function(response) {
-
-                            //show success message
-                            Swal.fire({
-                                type: 'success',
-                                icon: 'success',
-                                title: `${response.message}`,
-                                showConfirmButton: false,
-                                timer: 3000
-                            });
-                            $('#tbl_kategori').DataTable().ajax.reload()
-                        }
-                    });
-                }
-            })
-        });
+        }
+    });
+});
     </script>
-    {{-- end ajax kategori --}}
+
 @endpush

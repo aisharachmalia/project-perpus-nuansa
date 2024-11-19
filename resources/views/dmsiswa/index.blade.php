@@ -180,7 +180,7 @@
                                     </div>
                                     <div class="col-md-6 col-12">
                                         <div class="form-group">
-                                            <label for="dkelas_nama_kelas">ID Kelas</label>
+                                            <label for="dkelas_nama_kelas">Kelas</label>
                                             <p id="dkelas_nama_kelas"></p>
                                         </div>
                                     </div>
