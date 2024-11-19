@@ -103,6 +103,7 @@ class UsePageController extends Controller
         $penulisAsing->each(function ($penulis) {
             $penulis->buku = DB::table('dm_buku')
                 ->where('id_dpenulis', $penulis->id_dpenulis)
+                ->whereNotNull('dbuku_file')
                 ->limit(6)
                 ->get();
             
@@ -198,6 +199,4 @@ class UsePageController extends Controller
         });
     
         return view('user.halaman_penulis_fav', compact('penulisFavorit'));
-    }
-    
-}
+    }}
