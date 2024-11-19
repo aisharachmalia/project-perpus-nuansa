@@ -29,8 +29,8 @@ class DmBukuSeeder extends Seeder
                 'dbuku_bahasa' => 'Indonesian',
                 'dbuku_file' => 'laravel.pdf',
                 'dbuku_status' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => now('Asia/Jakarta'),
+                'updated_at' => now('Asia/Jakarta'),
             ],
             [
                 'dbuku_cover' => 'cover2.jpg',
@@ -46,8 +46,8 @@ class DmBukuSeeder extends Seeder
                 'dbuku_bahasa' => 'English',
                 'dbuku_file' => 'php.pdf',
                 'dbuku_status' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => now('Asia/Jakarta'),
+                'updated_at' => now('Asia/Jakarta'),
             ],
             [
                 'dbuku_cover' => 'cover3.jpg',
@@ -63,8 +63,8 @@ class DmBukuSeeder extends Seeder
                 'dbuku_bahasa' => 'English',
                 'dbuku_file' => 'js.pdf',
                 'dbuku_status' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => now('Asia/Jakarta'),
+                'updated_at' => now('Asia/Jakarta'),
             ],
             [
                 'dbuku_cover' => 'cover4.jpg',
@@ -80,8 +80,8 @@ class DmBukuSeeder extends Seeder
                 'dbuku_bahasa' => 'Indonesian',
                 'dbuku_file' => 'python.pdf',
                 'dbuku_status' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => now('Asia/Jakarta'),
+                'updated_at' => now('Asia/Jakarta'),
             ],
             [
                 'dbuku_cover' => 'cover5.jpg',
@@ -97,8 +97,8 @@ class DmBukuSeeder extends Seeder
                 'dbuku_bahasa' => 'English',
                 'dbuku_file' => 'react.pdf',
                 'dbuku_status' => 1,
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => now('Asia/Jakarta'),
+                'updated_at' => now('Asia/Jakarta'),
             ],
         ]);
     }
