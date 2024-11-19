@@ -135,17 +135,17 @@
     </div>
 </section>
 
-<section id="pengembalian" class="guide-section">
+<section id="peminjaman" class="guide-section">
     <div class="container">
         <h2>Panduan Pengembalian Buku</h2>
-        {{-- <p>Ikuti langkah berikut untuk mengembalikan buku yang telah dipinjam:</p> --}}
+        {{-- <p>Langkah-langkah untuk meminjam buku di perpustakaan:</p> --}}
         <ul>
             <li>Kembalikan buku tepat waktu untuk menghindari denda keterlambatan.</li>
             <li>Buku dapat dikembalikan di meja layanan atau kotak pengembalian (jika tersedia).</li>
         </ul>
     </div>
 </section>
-<section id="aturan" class="guide-section">
+<section id="peminjaman" class="guide-section">
     <div class="container">
         <h2>Aturan & Etika di Perpustakaan</h2>
         <ul>
