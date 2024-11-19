@@ -15,17 +15,27 @@ class KelasController extends Controller
     if ($request->ajax()) {
         $kelas = Dm_kelas::query()->whereNull('deleted_at')->get(); // Lebih baik menggunakan whereNull
         return Datatables::of($kelas)->addIndexColumn()
-            ->addColumn('action', function ($row) {
-                $btn = 'View';
-                if ($row->id_dkelas > 2) {
-                    $btn .= ' | Edit | Hapus';
-                }
-                return $btn;
+            ->addColumn('aksi', function ($row) {
+                $btn = '<div class="d-flex mr-2">
+                <a href="javascript:void(0)" data-id="' . Crypt::encryptString($row->id_dkelas) . '" class="btn btn-warning btn-sm modalEditKelas mr-2" data-bs-toggle="modal" data-bs-target="#edit">
+                    <i class="bi bi-pencil"></i>
+                </a>
+                |
+                <a href="javascript:void(0)" data-id="' . Crypt::encryptString($row->id_dkelas) . '" class="btn btn-primary btn-sm modalShowKelas" data-bs-toggle="modal" data-bs-target="#show">
+                    <i class="bi bi-eye"></i>
+                </a>
+                |
+                <a href="javascript:void(0)" id="btn-delete-kelas" data-id="' . Crypt::encryptString($row->id_dkelas) . '" class="btn btn-danger btn-sm">
+                    <i class="bi bi-trash"></i>
+                </a>
+            </div>';
+    return $btn;
+    
             })
             ->editColumn('created_at', function ($row) {
                 return Carbon::parse($row->created_at)->format('d-m-Y');
             })
-            ->rawColumns(['action'])
+            ->rawColumns(['aksi'])
             ->make(true);
     }
     return view('data_master.referensi.index');
