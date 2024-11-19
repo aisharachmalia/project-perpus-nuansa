@@ -5,9 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\ReservasiController;
 use App\Http\Controllers\SiswaController;
-use App\Http\Controllers\UsePageController;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\PenulisController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -44,9 +43,6 @@ Route::post('/penulis/load-more-books-asing', [App\Http\Controllers\UsePageContr
 Route::get('/panduan', [App\Http\Controllers\WebController::class, 'pagePanduan'])->name('panduan');
 
 //Login
-Route::get('/login', function () {
-    return redirect('/login-usr');
-});
 Route::get('/login-usr', [App\Http\Controllers\WebController::class, 'pageLogin'])->name('login-usr');
 
 
@@ -140,12 +136,7 @@ Route::prefix('data-master')->group(function () {
     Route::get('/printout-siswa', [App\Http\Controllers\SiswaController::class, 'printoutSiswa'])->name('printout_siswa');
 
 
-    // Kelas
-    Route::get('/kelas', [App\Http\Controllers\KelasController::class, 'index'])->name('data_master.kelas');
-    Route::get('/kelas-detail/{id?}', [App\Http\Controllers\KelasController::class, 'detail'])->name('kelas.detail');
-    Route::delete('/kelas/delete/{id?}', [App\Http\Controllers\KelasController::class, 'destroy'])->name('kelas.delete');
-    Route::put('/kelas-update/{id?}', [App\Http\Controllers\KelasController::class, 'update'])->name('kelas.update');
-
+   
     // refernsi route
     Route::get('/referensi', [App\Http\Controllers\ReferensiController::class, 'pageReferensi'])->name('data_master.referensi');
     // excel
@@ -171,12 +162,19 @@ Route::prefix('data-master')->group(function () {
     Route::delete('/penerbit/delete/{id?}', [App\Http\Controllers\ReferensiController::class, 'deletePenerbit'])->name('data_master.referensi.penerbit.delete');
 
 
-    // kategori route
-    Route::get('/dkategori', [App\Http\Controllers\ReferensiController::class, 'dkategori']);
-    Route::post('/kategori/add', [App\Http\Controllers\ReferensiController::class, 'addKategori'])->name('data_master.referensi.kategori.add');
-    Route::put('/kategori/edit/{id?}', [App\Http\Controllers\ReferensiController::class, 'editKategori'])->name('data_master.referensi.kategori.edit');
-    Route::get('/kategori/show/{id?}', [App\Http\Controllers\ReferensiController::class, 'showKategori'])->name('data_master.referensi.kategori.show');
-    Route::delete('/kategori/delete/{id?}', [App\Http\Controllers\ReferensiController::class, 'deleteKategori'])->name('data_master.referensi.kategori.delete');
+    // // kategori route
+    // Route::get('/dkategori', [App\Http\Controllers\ReferensiController::class, 'dkategori']);
+    // Route::post('/kategori/add', [App\Http\Controllers\ReferensiController::class, 'addKategori'])->name('data_master.referensi.kategori.add');
+    // Route::put('/kategori/edit/{id?}', [App\Http\Controllers\ReferensiController::class, 'editKategori'])->name('data_master.referensi.kategori.edit');
+    // Route::get('/kategori/show/{id?}', [App\Http\Controllers\ReferensiController::class, 'showKategori'])->name('data_master.referensi.kategori.show');
+    // Route::delete('/kategori/delete/{id?}', [App\Http\Controllers\ReferensiController::class, 'deleteKategori'])->name('data_master.referensi.kategori.delete');
+
+     // Kelas
+     Route::get('/kelas', [App\Http\Controllers\KelasController::class, 'index'])->name('data_master.referensi.kelas');
+     Route::get('/kelas-detail/{id?}', [App\Http\Controllers\KelasController::class, 'detail'])->name('data_master.referensi.kelas.detail');
+     Route::delete('/kelas/delete/{id?}', [App\Http\Controllers\KelasController::class, 'destroy'])->name('data_master.referensi.kelas.delete');
+     Route::put('/kelas-update/{id?}', [App\Http\Controllers\KelasController::class, 'update'])->name('data_master.referensi.kelas.update');
+ 
 });
 
 Route::prefix('laporan')->group(function () {
@@ -243,6 +241,6 @@ Route::post('/reservasi/store', [ReservasiController::class, 'createReservasi'])
 Route::post('/pengambilan/store', [ReservasiController::class, 'createPengambilan'])->name('pengambilan.store');
 Route::get('/reservasi/detail', [ReservasiController::class, 'detailReservasi'])->name('reservasi.detail');
 Route::get('/reservasi/detail/{id?}', [ReservasiController::class, 'detailUpdate'])->name('reservasi.detail');
-Route::put('/reservasi/update/{id}', [ReservasiController::class, 'update'])->name('reservasi.update');      
+Route::put('/reservasi/update/{id}', [ReservasiController::class, 'update'])->name('reservasi.update');
 Route::post('/reservasi/batal', [ReservasiController::class, 'batalReservasi'])->name('reservasi.batal');
 

@@ -63,7 +63,8 @@
     </section>
 
     <!-- Buku Rekomendasi Section -->
-    <section class="carousel">
+    <section class="author">
+        <div class="container5">
         <h2 class="penulis">Rekomendasi Buku</h2>
         <div class="container">
             @foreach ($datadepan as $item)
@@ -78,11 +79,11 @@
                             <span class="fas fa-plus-circle"></span>
                         </div>
                         <h5 class="carousel-item__details--title">{{ $item->dbuku_judul }}</h5>
-                        <h6 class="carousel-item__details--subtitle">Last updated 3 mins ago</h6>
                     </div>
                 </div>
             @endforeach
         </div>
+    </div>
     </section>
 
     <!-- Penerbit Section -->

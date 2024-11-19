@@ -21,8 +21,8 @@ class DMPustakawanSeeder extends Seeder
                 'dpustakawan_no_telp' => '081234567890',
                 'dpustakawan_alamat' => 'Jl. Merdeka No. 10',
                 'dpustakawan_status' => '1',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => now('Asia/Jakarta'),
+                'updated_at' => now('Asia/Jakarta'),
             ],
             [
                 'dpustakawan_nama' => 'Budi Santoso',
@@ -30,8 +30,8 @@ class DMPustakawanSeeder extends Seeder
                 'dpustakawan_no_telp' => '081987654321',
                 'dpustakawan_alamat' => 'Jl. Sudirman No. 5',
                 'dpustakawan_status' => '1',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => now('Asia/Jakarta'),
+                'updated_at' => now('Asia/Jakarta'),
             ],
             [
                 'dpustakawan_nama' => 'Citra Dewi',
@@ -39,8 +39,8 @@ class DMPustakawanSeeder extends Seeder
                 'dpustakawan_no_telp' => '0821122334455',
                 'dpustakawan_alamat' => 'Jl. Thamrin No. 22',
                 'dpustakawan_status' => '1',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => now('Asia/Jakarta'),
+                'updated_at' => now('Asia/Jakarta'),
             ],
             [
                 'dpustakawan_nama' => 'Deni Setiawan',
@@ -48,8 +48,8 @@ class DMPustakawanSeeder extends Seeder
                 'dpustakawan_no_telp' => '08335566778899',
                 'dpustakawan_alamat' => 'Jl. Pahlawan No. 15',
                 'dpustakawan_status' => '1',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => now('Asia/Jakarta'),
+                'updated_at' => now('Asia/Jakarta'),
             ],
             [
                 'dpustakawan_nama' => 'Eka Putri',
@@ -57,8 +57,8 @@ class DMPustakawanSeeder extends Seeder
                 'dpustakawan_no_telp' => '08446677889900',
                 'dpustakawan_alamat' => 'Jl. Diponegoro No. 18',
                 'dpustakawan_status' => '1',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => now('Asia/Jakarta'),
+                'updated_at' => now('Asia/Jakarta'),
             ],
             [
                 'dpustakawan_nama' => 'Fajar Hidayat',
@@ -66,8 +66,8 @@ class DMPustakawanSeeder extends Seeder
                 'dpustakawan_no_telp' => '08554455667788',
                 'dpustakawan_alamat' => 'Jl. Gajah Mada No. 30',
                 'dpustakawan_status' => '1',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => now('Asia/Jakarta'),
+                'updated_at' => now('Asia/Jakarta'),
             ],
             [
                 'dpustakawan_nama' => 'Gita Ananda',
@@ -75,8 +75,8 @@ class DMPustakawanSeeder extends Seeder
                 'dpustakawan_no_telp' => '08667788990011',
                 'dpustakawan_alamat' => 'Jl. Kartini No. 50',
                 'dpustakawan_status' => '1',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => now('Asia/Jakarta'),
+                'updated_at' => now('Asia/Jakarta'),
             ],
         ]);
     }

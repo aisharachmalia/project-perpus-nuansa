@@ -199,6 +199,4 @@ class UsePageController extends Controller
         });
     
         return view('user.halaman_penulis_fav', compact('penulisFavorit'));
-    }
-    
-}
+    }}

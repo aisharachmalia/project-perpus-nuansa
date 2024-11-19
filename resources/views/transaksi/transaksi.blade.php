@@ -24,8 +24,7 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Judul Buku</th>
-                                    <th>Nama Peminjam</th>
+                                    <th>Judul Buku & Nama Peminjam</th>
                                     <th>Tanggal Peminjaman & Tanggal Jatuh Tempo</th>
                                     <th>Tanggal Pengembalian & Status Pengembalian </th>
                                     <th>Denda</th>
@@ -64,8 +63,7 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Judul Buku</th>
-                                    <th>Nama Peminjam</th>
+                                    <th>Judul Buku & Nama Peminjam</th>
                                     <th>Tanggal Reservasi & Tanggal Kadaluarsa</th>
                                     <th>Tanggal Pengambilan & Tanggal Pemberitahuan </th>
                                     <th>Status Reservasi </th>
@@ -115,11 +113,11 @@
                     },
                     {
                         class: "text-center",
-                        data: 'dbuku_judul'
-                    },
-                    {
-                        class: "text-center",
-                        data: 'usr_nama',
+                        data: null,
+                        render: function(data, type, row) {
+                            return '<strong>' + row.dbuku_judul + '</strong><br>' +
+                                row.usr_nama;
+                        }
                     },
                     {
                         class: "text-center",
@@ -127,7 +125,8 @@
                         render: function(data, type, row) {
                             return '<strong>' + new Date(row.trks_tgl_peminjaman)
                                 .toLocaleString('id-ID').slice(0, 17) + '</strong><br>' +
-                                new Date(row.trks_tgl_jatuh_tempo).toLocaleString('id-ID').slice(0, 17);
+                                new Date(row.trks_tgl_jatuh_tempo).toLocaleString('id-ID').slice(0,
+                                    17);
                         }
 
                     },
@@ -137,18 +136,19 @@
                         render: function(data, type, row) {
                             let pengembalian = row.trks_tgl_pengembalian == null ?
                                 'Belum dikembalikan' :
-                                new Date(row.trks_tgl_pengembalian).toLocaleString('id-ID').slice(0, 17);
+                                new Date(row.trks_tgl_pengembalian).toLocaleString('id-ID').slice(0,
+                                    17);
                             let status = '';
                             if (row.trks_status == -1) {
-                                status = 'Dibatalkan';
+                                status = '<span class="badge bg-danger">Dibatalkan</span>';
                             }
                             if (row.trks_status == 0) {
-                                status = 'Dipinjam';
+                                status = '<span class="badge bg-warning text-dark">Dipinjam</span>';
                             }
                             if (row.trks_status == 1) {
-                                status = 'Dikembalikan';
+                                status = '<span class="badge bg-success">Dikembalikan</span>';
                             }
-                            return pengembalian + '  <br>' + status;
+                            return "<strong>" + pengembalian + "</strong>" + '  <br>' + status;
                         }
                     },
                     {
@@ -180,18 +180,19 @@
                     },
                     {
                         class: "text-center",
-                        data: 'dbuku_judul'
-                    },
-                    {
-                        class: "text-center",
-                        data: 'usr_nama',
+                        data: null,
+                        render: function(data, type, row) {
+                            return '<strong>' + row.dbuku_judul + '</strong><br>' + row.usr_nama;
+                        }
                     },
                     {
                         class: "text-center",
                         data: null,
                         render: function(data, type, row) {
-                            return '<strong>' + new Date(row.trsv_tgl_reservasi).toLocaleString('id-ID').slice(0, 17) + '</strong><br>' +
-                                new Date(row.trsv_tgl_kadaluarsa).toLocaleString('id-ID').slice(0, 17);
+                            return '<strong>' + new Date(row.trsv_tgl_reservasi).toLocaleString(
+                                    'id-ID').slice(0, 17) + '</strong><br>' +
+                                new Date(row.trsv_tgl_kadaluarsa).toLocaleString('id-ID').slice(0,
+                                    17);
                         }
 
                     },
@@ -201,11 +202,13 @@
                         render: function(data, type, row) {
                             let pemberitahuan = row.trsv_tgl_pemberitahuan == null ?
                                 'Belum ada pemberitahuan' :
-                                new Date(row.trsv_tgl_pemberitahuan).toLocaleString('id-ID').slice(0, 17);
+                                new Date(row.trsv_tgl_pemberitahuan).toLocaleString('id-ID').slice(
+                                    0, 17);
                             let pengambilan = row.trsv_tgl_pengambilan == null ?
                                 'Belum diambil' :
-                                new Date(row.trsv_tgl_pengambilan).toLocaleString('id-ID').slice(0, 17);
-                            return pengambilan + '<br>' + pemberitahuan;
+                                new Date(row.trsv_tgl_pengambilan).toLocaleString('id-ID').slice(0,
+                                    17);
+                            return "<strong>" + pengambilan + "</strong>" + '<br>' + pemberitahuan;
                         }
 
                     },
@@ -215,16 +218,16 @@
                         render: function(data, type, row) {
                             let status = '';
                             if (row.trsv_status == -1) {
-                                status = 'Dibatalkan';
+                                status = '<span class="badge bg-danger">Dibatalkan</span>';
                             }
                             if (row.trsv_status == 0) {
-                                status = 'Kadaluarsa';
+                                status = '<span class="badge bg-secondary">Kadaluarsa</span>';
                             }
                             if (row.trsv_status == 1) {
-                                status = 'Aktif';
+                                status = '<span class="badge bg-info">Aktif</span>';
                             }
                             if (row.trsv_status == 2) {
-                                status = 'Selesai';
+                                status = '<span class="badge bg-success">Selesai</span>';
                             }
                             return status;
                         }

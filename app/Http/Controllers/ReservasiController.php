@@ -22,6 +22,7 @@ class ReservasiController extends Controller
                 ->join('users', 'users.id_usr', '=', 'trks_reservasis.id_usr')
                 ->select('users.usr_nama', 'trks_reservasis.id_trsv', 'dm_buku.dbuku_judul', 'trks_reservasis.trsv_tgl_reservasi', 'trks_reservasis.trsv_tgl_kadaluarsa', 'trks_reservasis.trsv_tgl_pemberitahuan', 'trks_reservasis.trsv_tgl_pengambilan', 'trks_reservasis.trsv_status')
                 ->whereNull('trks_reservasis.deleted_at')
+                ->orderBy('trks_reservasis.created_at', 'desc')
                 ->get();
 
             return DataTables::of($reservasi)
@@ -66,7 +67,7 @@ class ReservasiController extends Controller
                 'id_dbuku' => 'required',
                 'id_usr' => 'required',
                 'trks_tgl_reservasi' => 'required|date|after_or_equal:today',
-                'trsv_tgl_kadaluarsa' => 'required|date|after_or_equal:trks_tgl_reservasi',
+                'trsv_tgl_kadaluarsa' => 'required|date|after:trks_tgl_reservasi',
             ];
 
             $messages = [
@@ -77,7 +78,7 @@ class ReservasiController extends Controller
                 'trks_tgl_reservasi.after_or_equal' => 'Tanggal reservasi harus setelah atau sama dengan hari ini.',
                 'trsv_tgl_kadaluarsa.required' => 'Tanggal kadaluarsa harus diisi.',
                 'trsv_tgl_kadaluarsa.date' => 'Tanggal kadaluarsa harus berupa tanggal yang valid.',
-                'trsv_tgl_kadaluarsa.after_or_equal' => 'Tanggal kadaluarsa harus setelah atau sama dengan tanggal reservasi.',
+                'trsv_tgl_kadaluarsa.after' => 'Tanggal kadaluarsa harus setelah tanggal reservasi.',
             ];
 
             $validator = Validator::make($request->all(), $rules, $messages);
@@ -91,71 +92,50 @@ class ReservasiController extends Controller
 
             $buku = Crypt::decryptString($request->id_dbuku);
             $user = Crypt::decryptString($request->id_usr);
-            $cbuku = dm_salinan_buku::where('id_dbuku', $buku)
-                ->where('dsbuku_kondisi', '!=', 'Hilang')
-                ->count();
+            $tglReservasi = str_replace('T', ' ', $request->trks_tgl_reservasi);
 
-            $cresevasi = trks_reservasis::where('id_dbuku', $buku)
+            // Cari peminjaman dan reservasi terakhir
+            $peminjaman = Transaksi::where("trks_status", 0)
+                ->where("id_dbuku", $buku)
+                ->whereNull('deleted_at')
+                ->orderBy('trks_tgl_jatuh_tempo', 'desc')
+                ->first();
+            $trkhirReservasi = trks_reservasis::where('id_dbuku', $buku)
                 ->where('trsv_status', 1)
-                ->count();
+                ->whereNull('deleted_at')
+                ->orderBy('trsv_tgl_reservasi', 'desc')
+                ->first();
 
-            // Cek ketersediaan buku
-            if ($cbuku - $cresevasi > 0) {
-                $dsbuku = dm_salinan_buku::where('id_dbuku', $buku)
-                    ->where('dsbuku_status', 0)
-                    ->first();
-
-                if ($dsbuku) {
-                    // Buat reservasi baru
-                    $reservasi = new trks_reservasis();
-                    $reservasi->id_dbuku = $buku;
-                    $reservasi->id_dsbuku = 0;
-                    $reservasi->id_usr = $user;
-                    $reservasi->trsv_tgl_reservasi = $request->trks_tgl_reservasi;
-                    $reservasi->trsv_tgl_kadaluarsa = $request->trsv_tgl_kadaluarsa;
-                    $reservasi->save();
-
-                    // Update status buku
-                    $dsbuku->dsbuku_status = 2;
-                    $dsbuku->dsbuku_flag = 1;
-                    $dsbuku->save();
-
-                    return response()->json([
-                        'success' => true,
-                        'message' => 'Reservasi berhasil dibuat untuk buku ini.'
-                    ]);
-                } else {
-                    $dsbuku = Transaksi::join('dm_salinan_bukus', 'dm_salinan_bukus.id_dbuku', '=', 'trks_transaksi.id_dbuku')
-                        ->join('dm_buku', 'dm_buku.id_dbuku', '=', 'dm_salinan_bukus.id_dbuku')
-                        ->where('dm_buku.id_dbuku', $buku)
-                        ->whereRaw("DATE_FORMAT(trks_transaksi.trks_tgl_jatuh_tempo, '%Y-%m-%d %H:%i') <= ?", [$request->trks_tgl_reservasi = str_replace('T', ' ', $request->trks_tgl_reservasi)])
-                        ->first();
-                    if ($dsbuku) {
-                        $reservasi = new trks_reservasis();
-                        $reservasi->id_dbuku = $buku;
-                        $reservasi->id_dsbuku = 0;
-                        $reservasi->id_usr = $user;
-                        $reservasi->trsv_tgl_reservasi = $request->trks_tgl_reservasi;
-                        $reservasi->trsv_tgl_kadaluarsa = $request->trsv_tgl_kadaluarsa;
-                        $reservasi->save();
-
-                        return response()->json([
-                            'success' => true,
-                            'message' => 'Reservasi berhasil dibuat untuk buku ini.'
-                        ]);
-                    } else {
-                        return response()->json([
-                            'success' => false,
-                            'message' => 'Saat ini, buku ini tidak tersedia untuk reservasi. Silakan coba lagi nanti.'
-                        ]);
-                    }
-                }
-            } else {
+            // Cek jika ada peminjaman aktif atau reservasi aktif
+            if (($peminjaman && $tglReservasi <= $peminjaman->trks_tgl_jatuh_tempo) ||
+                ($trkhirReservasi && $tglReservasi <= $trkhirReservasi->trsv_tgl_kadaluarsa)
+            ) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Tidak ada lagi buku yang tersedia untuk reservasi. Reservasi sudah penuh!'
+                    'message' => 'Saat ini, buku ini tidak tersedia untuk reservasi. Silakan coba lagi nanti.'
                 ]);
             }
+
+            $dsbuku = dm_salinan_buku::where('id_dbuku', $buku)
+                ->where('dsbuku_status', 0)
+                ->first();
+            $reservasi = new trks_reservasis();
+            $reservasi->id_dbuku = $buku;
+            $reservasi->id_dsbuku = 0;
+            $reservasi->id_usr = $user;
+            $reservasi->trsv_tgl_reservasi = $tglReservasi;
+            $reservasi->trsv_tgl_kadaluarsa = $request->trsv_tgl_kadaluarsa;
+            $reservasi->save();
+            if ($dsbuku) {
+                $dsbuku->dsbuku_status = 2;
+                $dsbuku->dsbuku_flag = 1;
+                $dsbuku->save();
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Reservasi berhasil dibuat untuk buku ini.'
+            ]);
         } catch (\Exception $th) {
             throw $th;
         }
@@ -204,6 +184,7 @@ class ReservasiController extends Controller
                 'trks_tgl_reservasi' => 'required|date',
                 'trsv_tgl_kadaluarsa' => 'required|date',
                 'trsv_tgl_pengambilan' => 'required|date',
+                ' trks_tgl_jth_tempo' => 'required|date|after:trsv_tgl_pengambilan',
             ];
 
             $messages = [
@@ -239,7 +220,7 @@ class ReservasiController extends Controller
                 $transaksi->id_dsbuku = $dsbuku->id_dsbuku;
                 $transaksi->id_usr = $user;
                 $transaksi->id_dpustakawan = Crypt::decryptString($request->id_dpustakawan);
-                $transaksi->trks_tgl_peminjaman = $request->trks_tgl_reservasi;
+                $transaksi->trks_tgl_peminjaman = $request->trsv_tgl_pengambilan;
                 $transaksi->trks_tgl_jatuh_tempo = $request->trks_tgl_jth_tempo;
                 $transaksi->save();
 
@@ -377,18 +358,19 @@ class ReservasiController extends Controller
 
             $jreservasi = trks_reservasis::where('id_dbuku', $preservasi->id_dbuku)->where('trsv_status', 1)->exists();
             $jtransaksi = Transaksi::where('id_dbuku', $preservasi->id_dbuku)->where('trks_status', 0)->exists();
-            $pbuku = dm_buku::find($preservasi->id_dbuku);
-            $pbuku->dbuku_jml_tersedia = $pbuku->dbuku_jml_tersedia + 1;
-            $pbuku->save();
-            if (!$jreservasi && !$jtransaksi) {
-                $pbuku->dbuku_flag = 0;
-                $pbuku->save();
-            }
+
             $dsbuku = dm_salinan_buku::where('id_dbuku', $preservasi->id_dbuku)->where('dsbuku_status', 2)->first();
             if ($dsbuku) {
                 $dsbuku->dsbuku_flag = 0;
                 $dsbuku->dsbuku_status = 0;
                 $dsbuku->save();
+                $pbuku = dm_buku::find($preservasi->id_dbuku);
+                $pbuku->dbuku_jml_tersedia = $pbuku->dbuku_jml_tersedia + 1;
+                $pbuku->save();
+                if (!$jreservasi && !$jtransaksi) {
+                    $pbuku->dbuku_flag = 0;
+                    $pbuku->save();
+                }
             }
             return response()->json(['message' => 'Buku reservasi dibatalkan!']);
         } catch (\Throwable $th) {

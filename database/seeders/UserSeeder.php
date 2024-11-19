@@ -21,7 +21,9 @@ class UserSeeder extends Seeder
             'usr_email' => 'superuser@gmail.com',
             'password' => bcrypt('SuperUser@2024'),
             'usr_stat' => 1,
-            'email_verified' => now(),
+            'email_verified' => now('Asia/Jakarta'),
+            'created_at' => now('Asia/Jakarta'),
+            'updated_at' => now('Asia/Jakarta'),
         ]);
 
         User::create([
@@ -30,7 +32,9 @@ class UserSeeder extends Seeder
             'usr_email' => 'admin@gmail.com',
             'password' => bcrypt('Admin@2024'),
             'usr_stat' => 1,
-            'email_verified' => now(),
+            'email_verified' => now('Asia/Jakarta'),
+            'created_at' => now('Asia/Jakarta'),
+            'updated_at' => now('Asia/Jakarta'),
         ]);
         User::create([
             'usr_nama' => 'Pustakawan',
@@ -38,7 +42,19 @@ class UserSeeder extends Seeder
             'usr_email' => 'pustakawan@gmail.com',
             'password' => bcrypt('Pustakawan@2024'),
             'usr_stat' => 1,
-            'email_verified' => now(),
+            'email_verified' => now('Asia/Jakarta'),
+            'created_at' => now('Asia/Jakarta'),
+            'updated_at' => now('Asia/Jakarta'),
+        ]);
+        User::create([
+            'usr_nama' => 'User',
+            'usr_username' => 'user',
+            'usr_email' => 'user@gmail.com',
+            'password' => bcrypt('User@2024'),
+            'usr_stat' => 1,
+            'email_verified' => now('Asia/Jakarta'),
+            'created_at' => now('Asia/Jakarta'),
+            'updated_at' => now('Asia/Jakarta'),
         ]);
     }
 }

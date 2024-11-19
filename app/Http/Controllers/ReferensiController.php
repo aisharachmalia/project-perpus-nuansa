@@ -139,7 +139,7 @@ class ReferensiController extends Controller
     {
         $id_dpenulis = Crypt::decryptString($id);
         $gr = dm_penulis::find($id_dpenulis);
-        $gr->deleted_at = Carbon::now();
+        $gr->deleted_at = Carbon::now('Asia/Jakarta');
         $gr->save();
 
         return response()->json([
@@ -273,7 +273,7 @@ class ReferensiController extends Controller
     {
         $id_dpenerbit = Crypt::decryptString($id);
         $penerbit = dm_penerbit::find($id_dpenerbit);
-        $penerbit->deleted_at = Carbon::now();
+        $penerbit->deleted_at = Carbon::now('Asia/Jakarta');
         $penerbit->save();
 
         return response()->json([
@@ -390,7 +390,7 @@ class ReferensiController extends Controller
     {
         $id_dpenerbit = Crypt::decryptString($id);
         $penerbit = dm_kategori::find($id_dpenerbit);
-        $penerbit->deleted_at = Carbon::now();
+        $penerbit->deleted_at = Carbon::now('Asia/Jakarta');
         $penerbit->save();
 
         return response()->json([

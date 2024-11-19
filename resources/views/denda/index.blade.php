@@ -15,7 +15,8 @@
             border: 0.1px solid #ced4da;
             border-radius: .375rem;
         }
-        .form-control{
+
+        .form-control {
             border: 0.1px solid #ced4da;
         }
 
@@ -93,12 +94,12 @@
                 <div class="form-group">
                     <label for="tanggalPembayaran">Tanggal Pembayaran</label>&nbsp;
                     <i class="bi bi-calendar-check"></i>
-                    <input type="date" class="form-control" id="tanggalPembayaran" required>
+                    <input type="datetime-local" class="form-control" id="tanggalPembayaran" required>
                     <span id="tgl_pembayaran_error" class="text-danger"></span>
                 </div>
             </div>
             <button type="button" class="btn btn-primary" id="bayar">
-               Simpan
+                Simpan
             </button>
         </div>
     </div>
@@ -182,7 +183,7 @@
                             if (data == null) {
                                 return '-';
                             } else {
-                                return new Date(data) .toLocaleDateString('id-ID');
+                                return new Date(data).toLocaleString('id-ID').slice(0,17);
                             }
                         }
                     },
@@ -190,9 +191,9 @@
                         data: 'status_denda',
                         render: function(data) {
                             if (data == 1) {
-                                return 'Sudah bayar';
+                                return '<span class="badge bg-success">Sudah bayar</span>';
                             } else {
-                                return 'Belum bayar';
+                                return '<span class="badge bg-danger">Belum bayar</span>';
                             }
                         },
                         class: 'text-center'
@@ -201,11 +202,11 @@
                         data: 'status',
                         render: function(data) {
                             if (data == 0) {
-                                return 'Belum Lunas';
+                                return '<span class="badge bg-warning">Belum Lunas</span>';
                             } else if (data == 1) {
-                                return 'Lunas';
+                                return '<span class="badge bg-success">Lunas</span>';
                             } else {
-                                return 'Belum Bayar';
+                                return '<span class="badge bg-danger">Belum Bayar</span>';
                             }
                         },
                         class: 'text-center'
@@ -221,7 +222,7 @@
                         url: `/denda-detail/${siswaId}`,
                         type: 'GET',
                         success: function(response) {
-                            $('#pembayaran').find('#tanggalPembayaran').val(new Date().toISOString().slice(0, 10));
+                            $('#pembayaran').find('#tanggalPembayaran').val(new Date().toLocaleString('sv-SE', {timeZone: 'Asia/Jakarta'}).slice(0, 16));
                             $('#pembayaran').find('#buku').empty();
                             $('#pembayaran').find('#buku').append(
                                 '<option value="">Pilih Buku</option>');
@@ -250,9 +251,13 @@
                         type: 'GET',
                         success: function(response) {
                             $('#pembayaran').find('#tanggalPeminjaman').text(response
-                                .trks_tgl_peminjaman == null ? new Date().toLocaleDateString('id-ID') : response.trks_tgl_peminjaman.split(' ')[0]);
+                                .trks_tgl_peminjaman == null ? new Date()
+                                .toLocaleDateString('id-ID') : response.trks_tgl_peminjaman
+                                .split(' ')[0]);
                             $('#pembayaran').find('#tanggalJatuhTempo').text(response
-                                .trks_tgl_jatuh_tempo == null ? new Date().toLocaleDateString('id-ID') : response.trks_tgl_jatuh_tempo.split(' ')[0]);
+                                .trks_tgl_jatuh_tempo == null ? new Date()
+                                .toLocaleDateString('id-ID') : response.trks_tgl_jatuh_tempo
+                                .split(' ')[0]);
                             $('#pembayaran').find('#jumlahDenda').text(response.jumlah);
                             $('#pembayaran').find('#buku_error').text('');
                             $('#pembayaran').find('#denda_error').text('');

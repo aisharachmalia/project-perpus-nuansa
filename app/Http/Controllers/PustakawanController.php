@@ -81,7 +81,7 @@ class PustakawanController extends Controller
                 'errors' => $validator->errors(),
             ], 422);
         }
-        
+
         $name = ucfirst(strtolower($request->dpustakawan_nama));
 
         // Check if the name already exists in the users table
@@ -125,8 +125,8 @@ class PustakawanController extends Controller
                     'id_role' => 3,
                     'id_menu' => $menu->id_menu,
                     'hak_akses' => 0,
-                    'created_at' => now(),
-                    'updated_at' => now(),
+                    'created_at' => now('Asia/Jakarta'),
+                    'updated_at' => now('Asia/Jakarta'),
                 ]);
             }
         }
@@ -141,21 +141,21 @@ class PustakawanController extends Controller
         try {
             $idPs = Crypt::decryptString($id);
             $pustakawan = dm_pustakawan::find($idPs);
-    
+
             if (!$pustakawan) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Data pustakawan tidak ditemukan',
                 ], 404);
             }
-    
+
             $rules = [
                 'dpustakawan_nama' => 'required',
                 'dpustakawan_email' => 'required|email|unique:dm_pustakawan,dpustakawan_email,' . $pustakawan->id_dpustakawan . ',id_dpustakawan',
                 'dpustakawan_no_telp' => 'required|unique:dm_pustakawan,dpustakawan_no_telp,' . $pustakawan->id_dpustakawan . ',id_dpustakawan|numeric|regex:/^([0-9\s\-\+\(\)]*)$/|digits_between:11,13',
                 'dpustakawan_alamat' => 'required',
             ];
-    
+
             $messages = [
                 'dpustakawan_email.email' => 'Format email tidak sesuai',
                 'dpustakawan_nama.required' => 'Nama harus diisi!',
@@ -167,10 +167,10 @@ class PustakawanController extends Controller
                 'dpustakawan_no_telp.regex' => 'No. Telepon harus angka!',
                 'dpustakawan_no_telp.digits_between' => 'No. Telepon harus di antara 11 hingga 13 angka!',
             ];
-    
+
             // Validate request
             $validator = \Validator::make($request->all(), $rules, $messages);
-    
+
             if ($validator->fails()) {
                 return response()->json([
                     'success' => false,
@@ -233,28 +233,30 @@ class PustakawanController extends Controller
         }
     }
 
+
+
     public function deletePustakawan($id = null)
     {
         try {
             $id_dpustakawan = Crypt::decryptString($id);
-    
+
             // Check if the pustakawan has lent any books
             $hasTransactions = \DB::table('trks_transaksi')
                 ->where('id_dpustakawan', $id_dpustakawan)
                 ->exists();
-    
+
             if ($hasTransactions) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Data pustakawan tidak dapat dihapus karena pustakawan ini sudah meminjamkan buku.',
                 ], 403);
             }
-    
+
             // Proceed with update (not soft delete) if no transactions are found
             \DB::table('dm_pustakawan')
                 ->where('id_dpustakawan', $id_dpustakawan)
-                ->update(['deleted_at' => Carbon::now()]);
-    
+                ->update(['deleted_at' => Carbon::now('Asia/Jakarta')]);
+
             // Update the related user record
             $ps = \DB::table('users')
                 ->where('usr_username', function ($query) use ($id_dpustakawan) {
@@ -263,13 +265,13 @@ class PustakawanController extends Controller
                         ->where('id_dpustakawan', $id_dpustakawan)
                         ->limit(1);
                 })
-                ->update(['deleted_at' => Carbon::now()]);
-    
+                ->update(['deleted_at' => Carbon::now('Asia/Jakarta')]);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Data Berhasil Dihapus!',
             ], 200);
-    
+
         } catch (\Throwable $th) {
             return response()->json([
                 'success' => false,
@@ -277,13 +279,13 @@ class PustakawanController extends Controller
             ], 500);
         }
     }
-    
+
 
     public function linkExportPustakawan(Request $request)
     {
         try {
             $link = route('export_pustakawan');
-            return \Response::json(array('link' => $link));                                       
+            return \Response::json(array('link' => $link));
         } catch (\Throwable $th) {
             throw $th;
         }

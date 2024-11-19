@@ -25,5 +25,6 @@ class dm_buku extends Model
         'dbuku_edisi',
         'dbuku_bahasa',
         'dbuku_status',
+        'dbuku_file'
     ];
 }

@@ -9,6 +9,12 @@
                 <div class="modal-body">
                     <form class="form" data-action="{{ route('pinjam.store') }}" method="POST" id="pinjamanForm">
                         @csrf
+                        @if ($role->id_role == 3)
+                            @php
+                                $id_pustakawan = \Crypt::encryptString(Auth::user()->id_usr);
+                            @endphp
+                            <input type="hidden" name="id_dpustakawan" id="id_dpustakawan" value="{{$id_pustakawan}}">
+                        @endif
                         <div class="row g-4"> <!-- Tambahkan gap untuk ruang antar kolom -->
                             <div class="col-md-6 col-12">
                                 <div class="form-group">
@@ -51,9 +57,6 @@
                                         <span id="pustakawan-error" class="text-danger small"></span>
                                     </div>
                                 </div>
-                            @else
-                                <input type="hidden" name="id_dpustakawan" id="id_dpustakawan"
-                                    value="{{ \Crypt::encryptString(Auth::user()->id_usr) }}">
                             @endif
                             <div class="col-md-6 col-12">
                                 <div class="form-group">
@@ -169,3 +172,69 @@
         </div>
     </div>
     {{-- end Modal Pengembalian --}}
+    {{-- show transaksi --}}
+    <div class="modal fade" id="showTrks" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-centered modal-dialog-scrollable modal-lg"
+            role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Lihat Detail Transaksi
+                    </h5>
+                </div>
+                <div class="modal-body">
+                    <div class="col-12">
+                        <div class="card-content">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4 col-12">
+                                        <div class="form-group">
+                                            <label for="usr_nama">Nama Peminjam</label>
+                                            <p id="usr_nama"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-12">
+                                        <div class="form-group">
+                                            <label for="usr_username">Buku</label>
+                                            <p id="buku"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-12">
+                                        <div class="form-group">
+                                            <label for="usr_email">Tanggal Peminjaman</label>
+                                            <p id="tgl_peminjaman"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-12">
+                                        <div class="form-group">
+                                            <label for="verified">Tanggal Jatuh Tempo</label>
+                                            <p id="tgl_jatuh_tempo"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-12">
+                                        <div class="form-group">
+                                            <label for="verified">Tanggal Pengembalian</label>
+                                            <p id="tgl_pengembalian"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-12">
+                                        <div class="form-group">
+                                            <label for="basicSelect">Status Transaksi</label>
+                                            <p id="status"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                        Tutup
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- end show transaksi --}}
