@@ -115,7 +115,7 @@ class TransaksiController extends Controller
             $buku = Crypt::decryptString($request->id_dbuku);
             $user = Crypt::decryptString($request->id_usr);
             $pustakawan = Crypt::decryptString($request->id_dpustakawan);
-            $dsbuku = dm_salinan_buku::where('id_dbuku', $buku)->first();
+            $dsbuku = dm_salinan_buku::where('id_dbuku', $buku)->where('dsbuku_status', 0)->first();
 
             // transaksi
             $transaksi = new Transaksi();
