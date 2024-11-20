@@ -11,6 +11,7 @@
         <th>Nama Penulis</th>
         <th>Nama Penerbit</th>
         <th>Tahun Terbit</th>
+        <th>Jumlah Buku</th>
     </tr>
     @foreach ($buku as $key => $item)
         <tr>
@@ -20,6 +21,7 @@
             <td>{{ $item->dpenulis_nama_penulis }}</td>
             <td>{{ $item->dpenerbit_nama_penerbit }}</td>
             <td>{{ $item->dbuku_thn_terbit }}</td>
+            <td>{{ $item->dbuku_jml_total}}</td>
         </tr>
     @endforeach
 </table>

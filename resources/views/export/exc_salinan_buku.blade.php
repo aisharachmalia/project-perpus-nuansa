@@ -5,6 +5,7 @@
         <th>Nama Penulis</th>
         <th>Nama Penerbit</th>
         <th>Tahun Terbit</th>
+        <th>Jumlah Buku</th>
     </tr>
         <tr>
             <td>{{ $bk[0]->dbuku_judul }}</td>
@@ -12,6 +13,7 @@
             <td>{{ $bk[0]->dpenulis_nama_penulis }}</td>
             <td>{{ $bk[0]->dpenerbit_nama_penerbit }}</td>
             <td>{{ $bk[0]->dbuku_thn_terbit }}</td>
+            <td>{{ $bk[0]->dbuku_jml_total}}</td>
         </tr>
 </table>
 <table>

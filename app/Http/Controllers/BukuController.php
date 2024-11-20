@@ -56,13 +56,13 @@ class BukuController extends Controller
                                     <span class="badge bg-light-info d-block">Salinan <i class="fas fa-book"></i></span>
                                 </a>
                                 <a href="javascript:void(0)" data-id="' . Crypt::encryptString($row->id_dbuku) . '" class="dropdown-item mb-2 text-end modalEdit" data-bs-toggle="modal" data-bs-target="#edit">
-                                    <span class="badge bg-light-primary d-block">Edit <i class="fa fa-pencil"></i></span>
+                                    <span class="badge bg-light-primary d-block">Ubah <i class="fa fa-pencil"></i></span>
                                 </a>
                                 <a href="javascript:void(0)" data-id="' . Crypt::encryptString($row->id_dbuku) . '" class="dropdown-item mb-2 text-end modalShow" data-bs-toggle="modal" data-bs-target="#show">
-                                    <span class="badge bg-light-success d-block">Show <i class="fa fa-eye"></i></span>
+                                    <span class="badge bg-light-success d-block">Lihat <i class="fa fa-eye"></i></span>
                                 </a>
                                 <a href="javascript:void(0)" id="btn-delete" data-id="' . Crypt::encryptString($row->id_dbuku) . '" class="dropdown-item mb-2 text-end">
-                                    <span class="badge bg-light-danger d-block">Delete <i class="fa fa-trash"></i></span>
+                                    <span class="badge bg-light-danger d-block">Hapus <i class="fa fa-trash"></i></span>
                                 </a>
                             </div>
                         </div>
@@ -419,6 +419,7 @@ class BukuController extends Controller
                 }
 
                 // Proceed with deletion by setting the deleted_at timestamp
+                $b->dbuku_nama = $b->dbuku_nama . ' (deleted)';
                 $b->deleted_at = Carbon::now('Asia/Jakarta');
                 $b->save();
 

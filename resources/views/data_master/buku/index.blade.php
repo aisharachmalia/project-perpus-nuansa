@@ -28,7 +28,8 @@
                                     <th width="10%">cover</th>
                                     <th>ISBN<br>Judul</th>
                                     <th>Penerbit<br>Penulis</th>
-                                    <th width="10%">Jumlah Buku</th>
+                                    <th width="10%">Jumlah Tersedia</th>
+                                    <th width="10%">Jumlah Total</th>
                                     <th width="10%">
                                         <center>Aksi</center>
                                     </th>
@@ -93,6 +94,10 @@
                                 '-';
                             return '<strong>' + penerbit + '</strong><br>' + penulis;
                         }
+                    },
+                    {
+                        class: "text-center",
+                        data: 'dbuku_jml_tersedia',
                     },
                     {
                         class: "text-center",
