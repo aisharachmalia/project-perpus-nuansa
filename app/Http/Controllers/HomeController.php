@@ -73,19 +73,30 @@ class HomeController extends Controller
         // Generate HTML untuk buku terbanyak dipinjam
         // Generate HTML untuk buku terbanyak dipinjam
         $html_buku_terbanyak_dipinjam = '';
+
         if (count($buku_terbanyak_dipinjam) > 0) {
             foreach ($buku_terbanyak_dipinjam as $key => $value) {
                 $no = $key + 1;
-                // Pastikan path menuju assets folder
-                $coverImagePath = asset('storage/cover/' . $value->dbuku_cover);
-                $coverImage = $value->dbuku_cover ? "<img src='{$coverImagePath}' alt='{$value->dbuku_judul}' style='width: 50px; height: auto;'>" : 'Cover Tidak Tersedia';
+
+                // Cek apakah file cover buku ada di storage
+                if (\Storage::exists('public/cover/' . $value->dbuku_cover)) {
+                    $coverImagePath = asset('storage/cover/' . $value->dbuku_cover);
+                } else {
+                    // Gunakan default image jika tidak tersedia
+                    $coverImagePath = asset('assets/images/buku/default.jpg');
+                }
+
+                // Buat tag <img> untuk gambar sampul
+                $coverImage = "<img src='{$coverImagePath}' alt='{$value->dbuku_judul}' style='width: 50px; height: auto;'>";
+
+                // Tambahkan data ke HTML
                 $html_buku_terbanyak_dipinjam .= "
-                                    <tr>
-                                        <td>{$coverImage}</td>
-                                        <td>{$value->dbuku_judul}</td>
-                                        <td>{$value->dpenulis_nama_penulis}</td>
-                                        <td>{$value->total_peminjaman}</td>
-                                    </tr>";
+                    <tr>
+                        <td>{$coverImage}</td>
+                        <td>{$value->dbuku_judul}</td>
+                        <td>{$value->dpenulis_nama_penulis}</td>
+                        <td>{$value->total_peminjaman}</td>
+                    </tr>";
             }
         } else {
             $html_buku_terbanyak_dipinjam .= "

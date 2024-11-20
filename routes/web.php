@@ -136,7 +136,7 @@ Route::prefix('data-master')->group(function () {
     Route::get('/printout-siswa', [App\Http\Controllers\SiswaController::class, 'printoutSiswa'])->name('printout_siswa');
 
 
-   
+
     // refernsi route
     Route::get('/referensi', [App\Http\Controllers\ReferensiController::class, 'pageReferensi'])->name('data_master.referensi');
     // excel
@@ -244,3 +244,8 @@ Route::get('/reservasi/detail/{id?}', [ReservasiController::class, 'detailUpdate
 Route::put('/reservasi/update/{id}', [ReservasiController::class, 'update'])->name('reservasi.update');
 Route::post('/reservasi/batal', [ReservasiController::class, 'batalReservasi'])->name('reservasi.batal');
 
+Route::post('/start-reading/{id}', [App\Http\Controllers\BacaOnlineController::class, 'startReading'])->name('startReading');
+// Route untuk selesai baca
+Route::post('/finish-reading/{id}', [App\Http\Controllers\BacaOnlineController::class, 'finishReading'])->name('finishReading');
+
+Route::get('/history', [App\Http\Controllers\BacaOnlineController::class, 'historyBaca'])->name('history');
