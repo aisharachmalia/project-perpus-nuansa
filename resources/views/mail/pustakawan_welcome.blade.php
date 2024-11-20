@@ -8,12 +8,12 @@
     <title>Selamat Datang di Perpustakaan</title>
 </head>
 <body>
-    <h1>Selamat Datang, {{ $name }}!</h1>
+    <h1>Selamat Datang, {{ $data['dpustakawan_nama'] }}!</h1>
     <p>Akun Anda untuk mengakses sistem perpustakaan telah berhasil dibuat. Berikut adalah informasi akun Anda:</p>
 
     <ul>
-        <li><strong>Email:</strong> {{ $email }}</li>
-        <li><strong>Password:</strong> {{ $password }}</li>
+        <li><strong>Email:</strong> {{ $data['dpustakawan_email'] }}</li>
+        <li><strong>Password:</strong>  {{ $data['password'] }}</li>
     </ul>
 
     <p>Silakan login dan mulai mengelola perpustakaan Anda. Jika Anda membutuhkan bantuan lebih lanjut, jangan ragu untuk menghubungi kami.</p>
