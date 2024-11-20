@@ -146,7 +146,7 @@ class BacaOnlineController extends Controller
     {
         try {
             if (!\Auth::check()) {
-                return redirect()->route('login-usr')->with('error', 'Anda harus login terlebih dahulu.');
+                return redirect()->route('login')->with('error', 'Anda harus login terlebih dahulu.');
             }
             $bacaOnline = baca_online::where('id_usr', \Auth::id())->get();
 
