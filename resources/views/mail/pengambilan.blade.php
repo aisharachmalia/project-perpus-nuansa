@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>Peminjaman Buku</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konfirmasi Pengambilan Buku</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -74,35 +76,32 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Peminjaman Buku</h1>
+            <h1>Konfirmasi Pengambilan Buku</h1>
         </div>
 
         <div class="content">
             <p>Halo, <strong>{{ $data['usr_nama'] }}</strong>!</p>
-            <p>Berikut adalah rincian peminjaman buku Anda:</p>
+            <p>Terima kasih telah mengambil buku yang telah Anda reservasi. Kami senang dapat melayani Anda!</p>
+            <p>Berikut adalah detail pengambilan Anda:</p>
 
-            <h3>Detail Peminjaman</h3>
+            <h3>Detail Pengambilan</h3>
             <table class="details">
-                <tr>
-                    <th>Nama Peminjam</th>
-                    <td>{{ $data['usr_nama'] }}</td>
-                </tr>
                 <tr>
                     <th>Judul Buku</th>
                     <td>{{ $data['dbuku_judul'] }}</td>
                 </tr>
                 <tr>
-                    <th>Tanggal Peminjaman</th>
-                    <td>{{ $data['trks_tgl_peminjaman'] }}</td>
+                    <th>Tanggal Reservasi</th>
+                    <td>{{ $data['trsv_tgl_reservasi'] }}</td>
                 </tr>
                 <tr>
-                    <th>Tanggal Jatuh Tempo</th>
-                    <td>{{ $data['trks_tgl_jatuh_tempo'] }}</td>
+                    <th>Tanggal Pengambilan</th>
+                    <td>{{ $data['trsv_tgl_pengambilan'] }}</td>
                 </tr>
             </table>
 
-            <p>Jika Anda tidak merasa melakukan transaksi ini, silakan abaikan email ini.</p>
-            
+            <p>Semoga buku ini bermanfaat untuk Anda. Jika ada hal lain yang dapat kami bantu, jangan ragu untuk menghubungi kami.</p>
+            <p>Terima kasih telah menggunakan layanan Perpustakaan Nuansa Baca!</p>
         </div>
 
         <div class="footer">
@@ -112,8 +111,3 @@
 </body>
 
 </html>
-
-
-
-
-

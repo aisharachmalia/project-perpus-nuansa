@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Selamat Datang di NuansaBaca!</title>
+    <title>Selamat Datang di Nuansa Baca!</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -74,12 +74,12 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Selamat Datang di NuansaBaca!</h1>
+            <h1>Selamat Datang di Nuansa Baca!</h1>
         </div>
 
         <div class="content">
             <p>Halo, <strong>{{ $data['dsiswa_nama'] }}</strong>!</p>
-            <p>Terima kasih telah bergabung dengan keluarga besar <strong>NuansaBaca</strong>. Kami sangat senang memiliki Anda sebagai anggota!</p>
+            <p>Terima kasih telah bergabung dengan keluarga besar <strong>Nuansa Baca</strong>. Kami sangat senang memiliki Anda sebagai anggota!</p>
 
             <h3>Detail Keanggotaan Anda</h3>
             <table class="details">
