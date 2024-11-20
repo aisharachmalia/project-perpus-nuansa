@@ -80,17 +80,6 @@
         }
 
         /* Pesan Data Kosong */
-        .empty-data-message {
-            text-align: center;
-            color: #888;
-            font-size: 1.5em;
-            font-weight: bold;
-            margin-top: 40px;
-        }
-
-        footer {
-            position: fixed;
-        }
     </style>
 
     <section class="hero">

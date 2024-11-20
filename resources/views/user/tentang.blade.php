@@ -22,6 +22,7 @@
 <section class="hero">
     <div class="container2">
         <h1 class="aesthetic-title">Nuansa Baca</h1>
+        <p>Selamat datang di halaman Nuansa Baca! Temukan Dunia Pengetahuan</p>
     </div>
 </section>
     <section class="about">

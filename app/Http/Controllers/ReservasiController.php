@@ -15,6 +15,10 @@ use Yajra\DataTables\Facades\DataTables;
 
 class ReservasiController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     public function index()
     {
         if (request()->ajax()) {

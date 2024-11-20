@@ -166,7 +166,12 @@
             </div>
         </div>
 
-        <button id="startReading" class="btn btn-primary mt-3">Mulai Baca</button>
+        <button id="startReading" 
+        class="btn btn-primary mt-3"
+        onclick="@if(Auth::check()) startReading(); @else window.location='{{ route('login-usr') }}'; @endif">
+    Mulai Baca
+</button>
+
     </div>
 <div id="readingCanvas" style="display:none;">
     <h2 class="text-center">Membaca: {{ $bk->dbuku_judul }}</h2>

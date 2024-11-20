@@ -22,11 +22,9 @@ class DatabaseSeeder extends Seeder
             KelasSeeder::class,
             DmGuruSeeder::class,
             DmMapelSeeder::class,
-            DMPustakawanSeeder::class,
             DmPenulisSeeder::class,
             DmPenerbitSeeder::class,
             DmKategoriSeeder::class,
-            DmBukuSeeder::class,
             SiswaSeeder::class,
         ]);
     }

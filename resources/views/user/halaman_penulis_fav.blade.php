@@ -60,7 +60,7 @@
                 @endif
             </div>
         @empty
-            <p class="text-center">Data kosong</p>
+        <p class="empty-data-message text-center">Data Kosong</p>
         @endforelse
     </div>
 </div>

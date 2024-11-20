@@ -1,158 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- CSRF Token -->
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <title>Nuansa Baca</title>
+        <link rel="icon" type="image/x-icon" href="{{ asset('assets/images/logo/logoNuansa1.ico')}}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
+        <style>
+            body {
+                font-family: 'Arial', sans-serif;
+                line-height: 1.6;
+                margin: 0;
+                padding: 0;
+                background-color: #f7f9fc;
+            }
+            .hero {
+                background-color: #007bff;
+                color: white;
+                padding: 50px 0;
+                text-align: center;
+            }
+            .hero h1 {
+                font-size: 3rem;
+                font-weight: bold;
+            }
+            .container-guide {
+                padding: 20px;
+                background: white;
+                margin: 20px auto;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                max-width: 800px;
+            }
+            h2 {
+                margin-top: 20px;
+                font-size: 1.8rem;
+                color: #007bff;
+            }
+            ol, ul {
+                padding-left: 20px;
+            }
+            li {
+                margin-bottom: 15px;
+            }
+            .contact-info p {
+                margin-bottom: 10px;
+            }
+            .contact-info i {
+                color: #007bff;
+                margin-right: 8px;
+            }
+            .footer {
+                text-align: center;
+                padding: 10px 0;
+                background-color: #007bff;
+                color: white;
+                margin-top: 20px;
+            }
+        </style>
+    </head>
+    <body>
 @extends('userz')
 @section('content')
 
-<style>
-
-/* Library Navigation */
-.library-nav {
-    background: linear-gradient(45deg, #2c5030, #2abb4c);
-    padding: 15px 0;
-    text-align: center;
-    border-bottom: 4px solid #2980b9;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-
-.library-nav ul {
-    list-style: none;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    gap: 25px;
-}
-
-.library-nav ul li a {
-    font-size: 1.1em;
-    font-weight: bold;
-    color: white;
-    text-decoration: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    transition: background 0.3s, transform 0.3s;
-}
-
-.library-nav ul li a:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    transform: scale(1.1);
-}
-
-/* Section Styles */
-.guide-section {
-    padding: 40px 0;
-    background-color: #f5f5f5;
-}
-
-.guide-section h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 2em;
-    color: #2c5030;
-}
-
-.guide-section p {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.guide-section ul {
-    list-style: none;
-    padding: 0;
-}
-
-.guide-section ul li {
-    margin: 10px 0;
-    font-size: 1.1em;
-}
-
-/* Facility Section */
-.fasilitas-list {
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
-.fasilitas-item {
-    text-align: center;
-    width: 30%;
-    background-color: white;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s;
-}
-
-.fasilitas-item img {
-    width: 100%;
-    border-radius: 5px;
-}
-
-.fasilitas-item:hover {
-    transform: scale(1.05);
-}
-</style>
-@push('scripts')
-<script>
-    document.querySelectorAll('.library-nav ul li a').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            e.preventDefault();
-            document.querySelector(this.getAttribute('href')).scrollIntoView({
-                behavior: 'smooth'
-            });
-        });
-    });
-</script>
-@endpush
-
-</style>
-
-
 <section class="hero">
-    <div class="container2">
-        <h1 class="aesthetic-title">Nuansa Baca</h1>
-        <p>Selamat datang di Nuansa Baca! Temukan Dunia Pengetahuan</p>
+    <div class="container">
+        <h1>Panduan Peminjaman Buku</h1>
+        <p class="lead">Kemudahan akses literasi untuk semua.</p>
     </div>
 </section>
 
-<nav class="library-nav">
-    <ul>
-        <li><a href="#peminjaman">Peminjaman Buku</a></li>
-        <li><a href="#pengembalian">Pengembalian Buku</a></li>
-        <li><a href="#aturan">Aturan & Etika</a></li>
-    </ul>
-</nav>
+<section class="about">
+    <div class="container-tentang">
+        <h2><i class="fas fa-book-reader"></i> Langkah-langkah Peminjaman Buku</h2>
+        <ol>
+            <li>
+                <strong>Mencari Buku:</strong> 
+                <p>Gunakan katalog digital di perpustakaan atau akses melalui portal <em>online</em> untuk menemukan buku yang Anda cari.</p>
+            </li>
+            <li>
+                <strong>Mengisi Formulir Peminjaman:</strong> 
+                <p>Kunjungi bagian layanan peminjaman dan isi formulir dengan informasi buku dan data pribadi Anda.</p>
+            </li>
+            <li>
+                <strong>Verifikasi dan Konfirmasi:</strong> 
+                <p>Petugas perpustakaan akan memverifikasi ketersediaan buku dan memproses peminjaman Anda.</p>
+            </li>
+            <li>
+                <strong>Menerima Buku:</strong> 
+                <p>Ambil buku yang sudah dipinjam dari petugas setelah proses selesai.</p>
+            </li>
+            <li>
+                <strong>Mengembalikan Buku:</strong> 
+                <p>Kembalikan buku sesuai dengan tanggal yang tertera untuk menghindari denda keterlambatan.</p>
+            </li>
+        </ol>
 
-<section id="peminjaman" class="guide-section">
-    <div class="container">
-        <h2>Panduan Peminjaman Buku</h2>
-        {{-- <p>Langkah-langkah untuk meminjam buku di perpustakaan:</p> --}}
+        <h2><i class="fas fa-info-circle"></i> Ketentuan Peminjaman</h2>
         <ul>
-            <li>Cari buku yang ingin Anda pinjam melalui katalog online atau langsung di perpustakaan.</li>
-            <li>Bawa buku ke meja layanan untuk proses peminjaman. Kartu identitas siswa diperlukan.</li>
-            <li>Simpan tanda terima peminjaman sebagai bukti dan periksa batas waktu pengembalian.</li>
+            <li>Maksimal 3 buku dapat dipinjam dalam satu waktu.</li>
+            <li>Durasi peminjaman adalah 14 hari, dengan opsi perpanjangan selama 7 hari jika buku belum dipesan oleh orang lain.</li>
+            <li>Buku yang terlambat dikembalikan akan dikenakan denda sebesar Rp2.000/hari.</li>
+            <li>Buku yang hilang atau rusak harus diganti dengan buku serupa atau membayar biaya penggantian.</li>
         </ul>
-    </div>
-</section>
 
-<section id="peminjaman" class="guide-section">
-    <div class="container">
-        <h2>Panduan Pengembalian Buku</h2>
-        {{-- <p>Langkah-langkah untuk meminjam buku di perpustakaan:</p> --}}
+        <h2><i class="fas fa-lightbulb"></i> Tips Memanfaatkan Perpustakaan</h2>
         <ul>
-            <li>Kembalikan buku tepat waktu untuk menghindari denda keterlambatan.</li>
-            <li>Buku dapat dikembalikan di meja layanan atau kotak pengembalian (jika tersedia).</li>
+            <li>Gunakan katalog digital untuk mencari koleksi terbaru.</li>
+            <li>Manfaatkan ruang diskusi untuk belajar kelompok.</li>
+            <li>Bawa kartu perpustakaan setiap kali berkunjung.</li>
         </ul>
-    </div>
-</section>
-<section id="peminjaman" class="guide-section">
-    <div class="container">
-        <h2>Aturan & Etika di Perpustakaan</h2>
-        <ul>
-            <li>Jaga ketenangan di area baca.</li>
-            <li>Dilarang membawa makanan dan minuman ke dalam ruang baca.</li>
-        </ul>
+
+        <h2><i class="fas fa-phone-alt"></i> Kontak Petugas Perpustakaan</h2>
+        <div class="contact-info">
+            <p><i class="fas fa-map-marker-alt"></i> Jl. Pendidikan No. 5, Jakarta</p>
+            <p><i class="fas fa-phone"></i> (021) 123-4567</p>
+            <p><i class="fas fa-envelope"></i> perpustakaan@sekolah.sch.id</p>
+        </div>
     </div>
 </section>
 
 @endsection
+</body>
+</html>
