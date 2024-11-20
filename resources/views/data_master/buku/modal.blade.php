@@ -40,7 +40,7 @@
                         <div class="col-4">
                             <div class="form-group">
                                 <label>ISBN</label>
-                                <input type="text" id="dbuku_isbn" class="form-control" placeholder="ISBN"
+                                <input type="text" id="dbuku_isbn" class="form-control" placeholder="ISBN(International Standard Book Number)"
                                     name="dbuku_isbn" onkeypress="return hanyaAngka(event)">
                                 <span id="isbn-error" class="text-danger"></span>
                             </div>
@@ -214,7 +214,7 @@
                         </div>
                         <div class="col-md-4">
                             <label>ISBN</label>
-                            <input type="text" id="dbuku_isbn" class="form-control" placeholder="ISBN"
+                            <input type="text" id="dbuku_isbn" class="form-control" placeholder="ISBN(International Standard Book Number)"
                                 name="dbuku_isbn" onkeypress="return hanyaAngka(event)">
                             <span id="isbn-error" class="text-danger"></span>
                         </div>

@@ -132,10 +132,8 @@ class LaporanController extends Controller
             TCPDF::SetPageOrientation('L');
             TCPDF::SetMargins(4, 3, 3, true);
 
-            $code = 'https://tcpdf.org/examples/example_050/';
 
             TCPDF::AddPage();
-            TCPDF::write2DBarcode($code, 'QRCODE,Q', 240, 150, 44, 35, false, 'P');
             TCPDF::writeHTML($html, true, false, true, false, '');
 
             return TCPDF::Output($filename, 'I');

@@ -9,7 +9,7 @@ class baca_online extends Model
 {
     use HasFactory;
 
-    protected $table = "baca_online";
+    protected $table = "baca_onlines";
     protected $primaryKey = "id_baca_online";
 
     protected $fillable = [
