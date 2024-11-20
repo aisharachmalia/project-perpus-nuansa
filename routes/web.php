@@ -44,35 +44,31 @@ Route::get('/panduan', [App\Http\Controllers\WebController::class, 'pagePanduan'
 
 //Login
 Route::get('/login-usr', [App\Http\Controllers\WebController::class, 'pageLogin'])->name('login-usr');
-
+Route::post('/login-user', [App\Http\Controllers\Auth\LoginController::class, 'loginUser'])->name('login_user');
 
 //Register
 Route::get('/register', [App\Http\Controllers\WebController::class, 'pageRegister'])->name('register');
+Route::post('/register-user', [App\Http\Controllers\Auth\RegisterController::class, 'registerUser'])->name('post_register_user');
 
 //Forgot Password
-Route::get('/forgot-password', [App\Http\Controllers\WebController::class, 'pageForgotPassword'])->name('forgot_password');
 Route::get('/reset-password', [App\Http\Controllers\WebController::class, 'pageForgotPassword'])->name('forgot_password');
-
-//Register User
-Route::post('/register-user', [App\Http\Controllers\Auth\RegisterController::class, 'registerUser'])->name('post_register_user');
+Route::get('/forgot-password', [App\Http\Controllers\WebController::class, 'pageForgotPassword'])->name('forgot_password');
+Route::post('/lupa-password', [ForgotPasswordController::class, 'lupaPassword'])->name('lupa_pass');
+Route::get('/reset-password/{id?}', [App\Http\Controllers\WebController::class, 'pageResetPassword'])->name('form_reset_password');
+Route::post('/reset-Password', [ForgotPasswordController::class, 'storePassword'])->name('reset_pass');
 
 //Verifikasi User
 Route::get('/verifikasi-user/{id?}', [App\Http\Controllers\Auth\VerificationController::class, 'verificationUser'])->name('verifikasi_user');
-
-//Login User
-Route::post('/login-user', [App\Http\Controllers\Auth\LoginController::class, 'loginUser'])->name('login_user');
-
-Route::post('/lupa-password', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'lupaPassword'])->name('lupa_pass');
 
 //
 Auth::routes();
 
 Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/total-data-dashboard',[App\Http\Controllers\HomeController::class, 'totalDataDashboard'])->name('total_data_dashboard');
-Route::get('/data-leaderboard',[App\Http\Controllers\HomeController::class, 'totalDataDashboard'])->name('data-leaderboard');
+Route::get('/total-data-dashboard', [App\Http\Controllers\HomeController::class, 'totalDataDashboard'])->name('total_data_dashboard');
+Route::get('/data-leaderboard', [App\Http\Controllers\HomeController::class, 'totalDataDashboard'])->name('data-leaderboard');
 Route::post('/update-chart', [App\Http\Controllers\HomeController::class, 'updateChart'])->name('update.chart');
 
-Route::prefix('data-master')->group(function () {
+Route::prefix('data-master')->middleware('auth')->group(function () {
     // guru route
     Route::get('/guru', [App\Http\Controllers\GuruController::class, 'pageGuru'])->name('data_master.guru');
     Route::post('/guru/add', [App\Http\Controllers\GuruController::class, 'addGuru'])->name('data_master.guru.add');
@@ -169,15 +165,14 @@ Route::prefix('data-master')->group(function () {
     // Route::get('/kategori/show/{id?}', [App\Http\Controllers\ReferensiController::class, 'showKategori'])->name('data_master.referensi.kategori.show');
     // Route::delete('/kategori/delete/{id?}', [App\Http\Controllers\ReferensiController::class, 'deleteKategori'])->name('data_master.referensi.kategori.delete');
 
-     // Kelas
-     Route::get('/kelas', [App\Http\Controllers\KelasController::class, 'index'])->name('data_master.referensi.kelas');
-     Route::get('/kelas-detail/{id?}', [App\Http\Controllers\KelasController::class, 'detail'])->name('data_master.referensi.kelas.detail');
-     Route::delete('/kelas/delete/{id?}', [App\Http\Controllers\KelasController::class, 'destroy'])->name('data_master.referensi.kelas.delete');
-     Route::put('/kelas-update/{id?}', [App\Http\Controllers\KelasController::class, 'update'])->name('data_master.referensi.kelas.update');
- 
+    // Kelas
+    Route::get('/kelas', [App\Http\Controllers\KelasController::class, 'index'])->name('data_master.referensi.kelas');
+    Route::get('/kelas-detail/{id?}', [App\Http\Controllers\KelasController::class, 'detail'])->name('data_master.referensi.kelas.detail');
+    Route::delete('/kelas/delete/{id?}', [App\Http\Controllers\KelasController::class, 'destroy'])->name('data_master.referensi.kelas.delete');
+    Route::put('/kelas-update/{id?}', [App\Http\Controllers\KelasController::class, 'update'])->name('data_master.referensi.kelas.update');
 });
 
-Route::prefix('laporan')->group(function () {
+Route::prefix('laporan')->middleware('auth')->group(function () {
     Route::get('/laporan-transaksi', [App\Http\Controllers\LaporanController::class, 'pageLaporan'])->name('pageLaporan');
     Route::get('/table-laporan-transaksi', [App\Http\Controllers\LaporanController::class, 'tableTrks'])->name('table_lap_trks');
 
@@ -188,7 +183,7 @@ Route::prefix('laporan')->group(function () {
     Route::get('/printout-laporan', [App\Http\Controllers\LaporanController::class, 'printoutLaporan'])->name('printout_laporan');
 });
 
-Route::prefix('setting')->group(function () {
+Route::prefix('setting')->middleware('auth')->group(function () {
     //crud user
     Route::get('/user', [App\Http\Controllers\UserController::class, 'index'])->name('setting.users');
     Route::get('/user-detail/{id?}', [App\Http\Controllers\UserController::class, 'detail'])->name('setting.users.detail');
@@ -210,10 +205,6 @@ Route::get('/denda-buku-detail/{id?}', [App\Http\Controllers\DendaController::cl
 Route::post('/denda-bayar', [App\Http\Controllers\DendaController::class, 'bayar'])->name('bayar_denda');
 Route::get('/table-denda', [App\Http\Controllers\DendaController::class, 'table']);
 
-Route::get('/forgot-password', [App\Http\Controllers\WebController::class, 'pageForgotPassword'])->name('forgot_password');
-Route::post('/lupa-password', [ForgotPasswordController::class, 'lupaPassword'])->name('lupa_pass');
-Route::get('/reset-password/{id?}', [App\Http\Controllers\WebController::class, 'pageResetPassword'])->name('form_reset_password');
-Route::post('/reset-Password', [ForgotPasswordController::class, 'storePassword'])->name('reset_pass');
 
 // route reservasi
 route::get('/reservasi/table,', [\App\Http\Controllers\ReservasiController::class, 'index'])->name('reservasi-table');
@@ -243,10 +234,11 @@ Route::post('/pengambilan/store', [ReservasiController::class, 'createPengambila
 Route::get('/reservasi/detail', [ReservasiController::class, 'detailReservasi'])->name('reservasi.detail');
 Route::get('/reservasi/detail/{id?}', [ReservasiController::class, 'detailUpdate'])->name('reservasi.detail');
 Route::put('/reservasi/update/{id}', [ReservasiController::class, 'update'])->name('reservasi.update');
-Route::post('/reservasi/batal', [ReservasiController::class, 'batalReservasi'])->name('reservasi.batal');
+
 
 Route::post('/start-reading/{id}', [App\Http\Controllers\BacaOnlineController::class, 'startReading'])->name('startReading');
 // Route untuk selesai baca
 Route::post('/finish-reading/{id}', [App\Http\Controllers\BacaOnlineController::class, 'finishReading'])->name('finishReading');
 
 Route::get('/history', [App\Http\Controllers\BacaOnlineController::class, 'historyBaca'])->name('history');
+Route::post('/transaksi/batal', [ReservasiController::class, 'batalTransaksi'])->name('reservasi.batal');

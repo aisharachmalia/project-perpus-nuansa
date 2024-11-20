@@ -20,7 +20,7 @@
             <div class="col-lg-6 col-12">
                 <div id="auth-left">
                     <h3 class="auth-title">Lupa Password.</h3>
-                  
+
                     <form action="{{ route('lupa_pass') }}" method="POST">
                         @csrf
                         <div class="form-group position-relative has-icon-left mb-4">
@@ -29,14 +29,14 @@
                                 <i class="bi bi-envelope"></i>
                             </div>
                             @if ($errors->has('usr_email'))
-                            <span class="text-danger">{{$errors->first('usr_email')}}</span>     
+                            <span class="text-danger">{{$errors->first('usr_email')}}</span>
                             @endif
                         </div>
                         <button type="submit" class="btn btn-primary btn-block btn-lg shadow-lg mt-5">Kirim</button>
                     </form>
                     <div class="text-center mt-5 text-lg fs-4">
                         <p class="text-gray-600">Tidak Memiliki Akun? <a href="{{ route('register') }}" class="font-bold">Sign up</a>.</p>
-                        <p class="text-gray-600">Sudah Memiliki Akun ? <a class="font-bold" href="{{ route('login') }}">Login</a>.</p>
+                        <p class="text-gray-600">Sudah Memiliki Akun ? <a class="font-bold" href="{{ route('login-usr') }}">Login</a>.</p>
                     </div>
                 </div>
             </div>
@@ -45,7 +45,7 @@
         </div>
 
     </div>
-    
+
 </body>
 
 </html>
