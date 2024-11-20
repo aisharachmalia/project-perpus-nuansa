@@ -76,12 +76,12 @@
                 <p>Gunakan katalog digital di perpustakaan atau akses melalui portal <em>online</em> untuk menemukan buku yang Anda cari.</p>
             </li>
             <li>
-                <strong>Mengisi Formulir Peminjaman:</strong> 
-                <p>Kunjungi bagian layanan peminjaman dan isi formulir dengan informasi buku dan data pribadi Anda.</p>
+                <strong>Putakawan Mengisi Formulir Peminjaman:</strong> 
+                <p>Kunjungi bagian layanan peminjaman dan pustakawan akan mengisi formulir dengan informasi buku dan data pribadi Anda.</p>
             </li>
             <li>
                 <strong>Verifikasi dan Konfirmasi:</strong> 
-                <p>Petugas perpustakaan akan memverifikasi ketersediaan buku dan memproses peminjaman Anda.</p>
+                <p>Pustakawan akan memverifikasi ketersediaan buku dan memproses peminjaman Anda.</p>
             </li>
             <li>
                 <strong>Menerima Buku:</strong> 
@@ -96,7 +96,7 @@
         <h2><i class="fas fa-info-circle"></i> Ketentuan Peminjaman</h2>
         <ul>
             <li>Maksimal 3 buku dapat dipinjam dalam satu waktu.</li>
-            <li>Durasi peminjaman adalah 14 hari, dengan opsi perpanjangan selama 7 hari jika buku belum dipesan oleh orang lain.</li>
+            <li>Durasi peminjaman adalah 30 hari.</li>
             <li>Buku yang terlambat dikembalikan akan dikenakan denda sebesar Rp2.000/hari.</li>
             <li>Buku yang hilang atau rusak harus diganti dengan buku serupa atau membayar biaya penggantian.</li>
         </ul>

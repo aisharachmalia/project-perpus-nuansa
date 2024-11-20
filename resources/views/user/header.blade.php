@@ -22,6 +22,7 @@
                     <i class="bi bi-door-open-fill"></i> Login
                 </a>
             @else
+            <i class="bi bi-person-fill" style="color: white"></i>&nbsp;
                 <div class="nav-item dropdown">
                     <a style="text-decoration:none"  id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: white">
                         {{ Auth::user()->usr_nama }}
