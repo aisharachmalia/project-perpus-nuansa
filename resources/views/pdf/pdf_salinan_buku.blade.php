@@ -14,6 +14,7 @@
                 <p><strong>Nama Penulis:</strong> {{ $bk[0]->dpenulis_nama_penulis }}</p>
                 <p><strong>Nama Penerbit:</strong> {{ $bk[0]->dpenerbit_nama_penerbit }}</p>
                 <p><strong>Tahun Terbit:</strong> {{ $bk[0]->dbuku_thn_terbit }}</p>
+                <p><strong>Jumlah:</strong> {{ $bk[0]->dbuku_jml_total }}</p>
             </td>
         </tr>
     </table>

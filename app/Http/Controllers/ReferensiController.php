@@ -465,7 +465,7 @@ class ReferensiController extends Controller
             $code = 'https://tcpdf.org/examples/example_050/';
 
             TCPDF::AddPage();
-            TCPDF::write2DBarcode($code, 'QRCODE,Q', 230, 150, 44, 35, false, 'P');
+            // TCPDF::write2DBarcode($code, 'QRCODE,Q', 230, 150, 44, 35, false, 'P');
             TCPDF::writeHTML($html, true, false, true, false, '');
 
             return TCPDF::Output($filename, 'I');
