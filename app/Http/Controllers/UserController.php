@@ -13,8 +13,9 @@ class UserController extends Controller
     public function index()
     {
         if (request()->ajax()) {
-            $users = User::query()->where("deleted_at", null);
-            return Datatables::of($users)->addIndexColumn()
+            $users = User::query()->whereNull("deleted_at")->where("id_usr", ">=", 2)->select("id_usr", "usr_username", "usr_email", "usr_nama", "usr_stat", "created_at")->get();
+            return Datatables::of($users)
+                ->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     $role = User::join('akses_usrs', 'akses_usrs.id_usr', 'users.id_usr')
                         ->where('users.id_usr', $row->id_usr)
@@ -57,6 +58,7 @@ class UserController extends Controller
     {
         $id_usr = Crypt::decryptString($id);
         $user = User::find($id_usr);
+        $user->usr_email .= '_deleted';
         $user->deleted_at = now('Asia/Jakarta');
         $user->save();
         return response()->json([

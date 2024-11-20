@@ -105,7 +105,7 @@ class SiswaController extends Controller
         ], 422);
     }
 
-    // Cek apakah data siswa sudah ada sebelumnya
+
     $existingSiswa = dm_siswa::where('dsiswa_nama', $request->dsiswa_nama)
                              ->where('dsiswa_nis', $request->dsiswa_nis)
                              ->where('dsiswa_email', $request->dsiswa_email)
@@ -120,9 +120,9 @@ class SiswaController extends Controller
         ], 409); 
     }
 
-    // Proses pembuatan username unik
+
     $baseUsername = $request->dsiswa_nama;
-    $username = $baseUsername;
+    $username = $baseUsername; 
     $counter = 1;
 
     while (User::where('usr_username', $username)->exists()) {
@@ -140,31 +140,63 @@ class SiswaController extends Controller
         $counter++;
     }
 
-    // Buat data user
-    $user = User::create([
-        'usr_nama' => $request->dsiswa_nama,
-        'usr_username' => $username,
-        'usr_email' => $email,
-        'password' => bcrypt('password_default'),
-    ]);
+   $password = $this->generateRandomPassword();
 
-    // Simpan data siswa di dm_siswa
-    dm_siswa::create([
-        'id_dkelas' => $request->id_dkelas,
-        'dsiswa_nama' => $request->dsiswa_nama,
-        'dsiswa_nis' => $request->dsiswa_nis,
-        'dsiswa_email' => $request->dsiswa_email,
-        'dsiswa_no_telp' => $request->dsiswa_no_telp,
-        'dsiswa_alamat' => $request->dsiswa_alamat,
-        'id_usr' => $user->id_usr,
-        'dsiswa_flag' => 0,
-    ]);
+   $user = User::create([
+       'usr_nama' => $request->dsiswa_nama,
+       'usr_username' => $request->dsiswa_nama,
+       'usr_email' => $request->dsiswa_email,
+       'password' => bcrypt($password),
+   ]);
 
-    return response()->json([
-        'success' => true,
-        'message' => 'Data Berhasil Disimpan!',
-    ], 200);
+
+   $siswa = dm_siswa::create([
+       'id_dkelas' => $request->id_dkelas,
+       'dsiswa_nama' => $request->dsiswa_nama,
+       'dsiswa_nis' => $request->dsiswa_nis,
+       'dsiswa_email' => $request->dsiswa_email,
+       'dsiswa_no_telp' => $request->dsiswa_no_telp,
+       'dsiswa_alamat' => $request->dsiswa_alamat,
+       'id_usr' => $user->id_usr,
+       'dsiswa_flag' => 0,
+   ]);
+
+
+   $data = [
+       'dsiswa_nama' => $siswa->dsiswa_nama,
+       'dsiswa_email' => $siswa->dsiswa_email,
+       'dsiswa_nis' => $siswa->dsiswa_nis,
+       'id_dkelas' => $siswa->dkelas_nama_kelas ?? 'Tidak ada kelas', 
+       'password' => $password,
+   ];
+
+   try {
+       Mail::send('mail.siswa_mail', ['data' => $data], function ($message) use ($siswa) {
+           $message->to($siswa->dsiswa_email)
+                   ->subject('Selamat Bergabung di NuansaBaca!');
+           $message->from('no-reply@nuansabaca.com', 'Perpustakaan NuansaBaca');
+       });
+
+       return response()->json([
+           'success' => true,
+           'message' => 'Data siswa berhasil disimpan dan email telah dikirim!',
+       ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengirim email: ' . $e->getMessage(),
+            ], 500);
+        }
 }
+
+
+private function generateRandomPassword($length = 10)
+{
+   $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()';
+   return substr(str_shuffle($characters), 0, $length);
+}
+
 
  
     public function update($id, Request $request)
@@ -208,20 +240,19 @@ class SiswaController extends Controller
                 ], 422);
             }
     
-            // Update data siswa di dm_siswas
             $siswa = dm_siswa::findOrFail($id_dsiswa);
             $siswa->update($request->only([
                 'dsiswa_nama', 'dsiswa_nis', 'dsiswa_email', 'dsiswa_no_telp', 'dsiswa_alamat', 'id_dkelas', 'dsiswa_sts'
             ]));
     
-            // Update data user di users (berdasarkan email siswa)
+        
             $user = User::where('usr_email', $siswa->dsiswa_email)->first();
             if ($user) {
                 $username = ucfirst(strtolower($request->dsiswa_nama));
                 $user->update([
                     'usr_nama' => $request->dsiswa_nama,
                     'usr_email' => $request->dsiswa_email,
-                    'usr_stat' => $request->dsiswa_sts, // Update usr_stat sesuai dsiswa_sts
+                    'usr_stat' => $request->dsiswa_sts, 
                     'password' => \Hash::make($request->dsiswa_no_telp),
                 ]);
             }

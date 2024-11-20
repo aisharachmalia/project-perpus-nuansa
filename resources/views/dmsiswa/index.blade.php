@@ -471,11 +471,10 @@
 
 
     <script>
-        // Function to clear error messages when input changes
         function clearErrorOnInput(field, errorField) {
             $(field).on('input', function() {
                 if ($(this).val().trim() !== '') {
-                    $(errorField).text(''); // Clear error message if input has a value
+                    $(errorField).text(''); 
                 }
             });
         }
@@ -488,23 +487,19 @@
         clearErrorOnInput('#dsiswa_alamat', '#alamat-error');
         clearErrorOnInput('#id_dkelas', '#kelas-error');
     
-        // Clear validation errors and reset form data when modal is closed
         $('#create').on('hidden.bs.modal', function() {
-            // Clear error messages
             $('#nama-error').text('');
             $('#nis-error').text('');
             $('#email-error').text('');
             $('#telp-error').text('');
             $('#alamat-error').text('');
             $('#kelas-error').text('');
-    
-            // Reset form fields
+
             $(this).find('input').val('');
-            $(this).find('select').val('');
             $(this).find('textarea').val('');
-        });
+            $(this).find('select').prop('selectedIndex', 0); 
+            });
     
-        // Main function for form submission
         $('#store').off('click').on('click', function(e) {
             e.preventDefault();
     
