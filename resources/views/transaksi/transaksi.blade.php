@@ -148,7 +148,7 @@
                             if (row.trks_status == 1) {
                                 status = '<span class="badge bg-success">Dikembalikan</span>';
                             }
-                            return "<strong>" + pengembalian + "</strong>" + '  <br>' + status;
+                            return row.trks_status == -1 ? status : "<strong>" + pengembalian + "</strong>" + '  <br>' + status;
                         }
                     },
                     {

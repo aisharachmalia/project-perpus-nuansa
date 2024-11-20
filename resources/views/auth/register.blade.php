@@ -70,7 +70,7 @@
                                 <span class="text-danger">{{ $errors->first('password') }}</span>
                             @endif
                         </div>
-                        
+
                         <div class="form-group position-relative has-icon-left mb-4">
                             <input type="password" class="form-control form-control-xl" name="password_konf" id="password_konf"
                                 placeholder="Confirm Password">
@@ -90,7 +90,7 @@
                         <button type="submit" class="btn btn-primary btn-block btn-lg shadow-lg mt-2">Sign Up</button>
                     </form>
                     <div class="text-center mt-4 text-lg fs-4">
-                        <p class='text-gray-600'>Sudah memiliki akun ? <a href="{{ route('login') }}"
+                        <p class='text-gray-600'>Sudah memiliki akun ? <a href="{{ route('login-usr') }}"
                                 class="font-bold">Log in</a>.</p>
                     </div>
                 </div>

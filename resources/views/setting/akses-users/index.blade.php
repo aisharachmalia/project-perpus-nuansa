@@ -1,98 +1,32 @@
 @extends('master')
-@push('css')
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.6/css/dataTables.bootstrap5.min.css" />
-@endpush
-
 @section('content')
-    <div class="col-12 col-md-12">
-        <div class="card border-light">
-            <div class="card-header">
-                <h4 class="card-title text-center">Daftar Akses User</h4>
-            </div>
-            <div class="card-content">
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="card-title text-center">Daftar User</h4>
+                </div>
                 <div class="card-body">
-                    <!-- Table with outer spacing -->
-                    <div class="table-responsive">
-                        <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Nama</th>
-                                    <th>Username</th>
-                                    <th>Email</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @php
-                                    $i = 1;
-                                @endphp
-                                @foreach ($usr as $item)
-                                    @php
-                                        // cek role
-                                        $role = App\Models\User::join('akses_usrs', 'akses_usrs.id_usr', 'users.id_usr')
-                                            ->where('users.id_usr', $item->id_usr)
-                                            ->where('akses_usrs.id_role', '<=', 2)
-                                            ->first();
-                                        $roleAusr = App\Models\User::leftJoin(
-                                            'akses_usrs',
-                                            'akses_usrs.id_usr',
-                                            'users.id_usr',
-                                        )
-                                            ->where('users.id_usr', $item->id_usr)
-                                            ->where(function ($query) {
-                                                $query
-                                                    ->whereIn('akses_usrs.id_role', [1, 2])
-                                                    ->orWhereNull('akses_usrs.id_usr');
-                                            })
-                                            ->first();
-
-                                    @endphp
-                                    <tr>
-                                        <td>{{ $i++ }}</td>
-                                        <td>{{ $item->usr_nama }}</td>
-                                        <td>{{ $item->usr_username }}</td>
-                                        <td>{{ $item->usr_email }}</td>
-                                        <td>
-                                            @if ($item->usr_stat == 1)
-                                                <span class="badge bg-primary">Aktif</span>
-                                            @else
-                                                <span class="badge bg-danger">Inaktif</span>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            @if (!$roleAusr)
-                                                <a href="javascript:void(0)" class="btn btn-success btn-sm modalAkses my-1"
-                                                    data-bs-toggle="modal" data-bs-target="#akses"
-                                                    data-id="{{ \Illuminate\Support\Facades\Crypt::encryptString($item->id_usr) }}">Akses</a>&nbsp;
-                                            @endif
-                                            @if (!$role)
-                                                <a href="javascript:void(0)" class="btn btn-danger btn-sm defaultPassword"
-                                                    data-bs-toggle="modal" data-bs-target="#reset"
-                                                    data-id="{{ \Illuminate\Support\Facades\Crypt::encryptString($item->id_usr) }}">Reset
-                                                    Password</a>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Nama</th>
-                                    <th>Username</th>
-                                    <th>Email</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
+                    <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
 
     <div class="modal fade text-left" id="akses" tabindex="-1" role="dialog" aria-labelledby="myModalLabel17"
@@ -189,13 +123,47 @@
     </div>
 @endsection
 @push('scripts')
-    <script src="https://cdn.datatables.net/2.1.6/js/dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/2.1.6/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @include('setting.akses-users.akses')
     <script>
-        new DataTable('#example', {
-            scrollX: true,
+        $(document).ready(function() {
+            $('#example').DataTable({
+                serverSide: true,
+                scrollX: true,
+                ajax: '{{ url()->current() }}',
+                columns: [{
+                        data:  'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'usr_nama',
+                    },
+                    {
+                        data: 'usr_username',
+                    },
+                    {
+                        data: 'usr_email',
+                    },
+                    {
+                        data: 'usr_stat',
+                        className: "dt-center",
+                        render: function(data) {
+                            if (data == 1) {
+                                return '<span class="badge bg-success">Aktif</span>';
+                            } else {
+                                return '<span class="badge bg-danger">Tidak Aktif</span>';
+                            }
+                        }
+                    },
+                    {
+                        data: 'aksi',
+                        orderable: false,
+                        searchable: false
+                    }
+                ]
+            });
         });
 
 

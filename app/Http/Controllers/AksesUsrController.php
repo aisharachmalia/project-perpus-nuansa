@@ -3,18 +3,57 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Yajra\DataTables\Facades\DataTables;
 
 class AksesUsrController extends Controller
 {
     public function index()
     {
-        $usr = User::whereNull('deleted_at')->get();
-        return view('setting.akses-users.index', compact('usr'));
+        if (request()->ajax()) {
+            $users = User::query()->whereNull("deleted_at")->where("id_usr", ">=", 2)->select("id_usr", "usr_username", "usr_email", "usr_nama", "usr_stat")->get();
+            return DataTables::of($users)->addIndexColumn()
+                ->addColumn('aksi', function ($row) {
+                    $btn = "";
+                    $role = User::join('akses_usrs', 'akses_usrs.id_usr', 'users.id_usr')
+                        ->where('users.id_usr', $row->id_usr)
+                        ->where('akses_usrs.id_role', '<=', 2)
+                        ->first();
+                    $roleAusr = User::leftJoin(
+                        'akses_usrs',
+                        'akses_usrs.id_usr',
+                        'users.id_usr',
+                    )
+                        ->where('users.id_usr', $row->id_usr)
+                        ->where(function ($query) {
+                            $query
+                                ->whereIn('akses_usrs.id_role', [1, 2])
+                                ->orWhereNull('akses_usrs.id_usr');
+                        })
+                        ->first();
+                    if (!$roleAusr)
+                        $btn .= ' <a href="javascript:void(0)" class="btn btn-success btn-sm modalAkses my-1"
+                            data-bs-toggle="modal" data-bs-target="#akses"
+                            data-id="' . Crypt::encryptString($row->id_usr) . '">Akses</a>&nbsp;';
+                    if (!$role)
+                        $btn .= '<a href="javascript:void(0)" class="btn btn-danger btn-sm defaultPassword"
+                            data-bs-toggle="modal" data-bs-target="#reset"
+                            data-id="' . Crypt::encryptString($row->id_usr) . '">Reset
+                            Password</a>';
+                    return $btn;
+                })
+                ->editColumn('created_at', function ($row) {
+                    return \Carbon\Carbon::parse($row->created_at)->format('d-m-Y');
+                })
+                ->rawColumns(['aksi'])
+                ->make(true);
+        }
+        return view('setting.akses-users.index');
     }
 
     public function detail(Request $request, $id = null)
@@ -69,7 +108,7 @@ class AksesUsrController extends Controller
                 ->select('users.id_usr', 'users.usr_username', 'users.usr_email', 'users.usr_nama')
                 ->get();
             $data['user'] = $user;
-            $data['password'] = str()->random(8);
+            $data['password'] = 'Default@0' . str()->random(3);
             return response($data);
         }
     }

@@ -33,13 +33,13 @@
 
 <body>
     <div class="container">
-        <h2>Hello, {{ $data['dsiswa_nama'] }}</h2>
+        <h2>Hello, {{ $data['usr_nama'] }}</h2>
         <p>Berikut adalah rincian peminjaman buku Anda:</p>
 
         <div class="row">
             <div class="column">
                 <span class="label">Nama Peminjam:</span>
-                <span class="value">{{ $data['dsiswa_nama'] }}</span>
+                <span class="value">{{ $data['usr_nama'] }}</span>
             </div>
             <div class="column">
                 <span class="label">Judul Buku:</span>

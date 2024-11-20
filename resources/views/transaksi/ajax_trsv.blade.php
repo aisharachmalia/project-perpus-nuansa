@@ -114,17 +114,18 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: `/reservasi/batal`,
+                    url: `/transaksi/batal`,
                     type: "POST",
                     cache: false,
                     data: {
                         "id_trsv": id_trsv,
-                        "_token": token
+                        "_token": token,
+                        'type': 'reservasi'
                     },
                     success: function(response) {
                         Swal.fire({
                             icon: 'success',
-                            title: 'Reservasi Telah Dibatalkan',
+                            title: 'Peminjaman Telah Dibatalkan',
                             html: `<p>${response.message}</p>`,
                             confirmButtonText: 'Ok',
                             timer: 3000,

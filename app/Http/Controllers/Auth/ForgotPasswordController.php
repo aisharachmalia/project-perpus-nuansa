@@ -29,31 +29,31 @@ class ForgotPasswordController extends Controller
             $rules = [
                 'usr_email' => 'required|email',
             ];
-    
+
             $messages = [
                 'usr_email.required' => 'E-Mail harus di isi.',
                 'usr_email.email' => 'Format E-Mail tidak sesuai.',
             ];
-    
+
             $this->validate($request, $rules, $messages);
-    
+
             // Mencari user dengan email
             $user = User::where('usr_email', $request->usr_email)->first();
-    
+
             // Cek apakah ada email yang terdaftar
             if (!$user) {
                 return redirect()->route('forgot_password')->with('error_email', 'Tidak ada email yang sesuai. Silahkan coba lagi.');
-            } 
-            
+            }
+
             // Jika email belum diverifikasi
             if ($user->email_verified == null) {
                 return redirect()->route('forgot_password')->with('error_verifikasi', 'E-Mail belum di verifikasi.');
             }
-    
+
             // Set kode OTP dan simpan
             $user->kode_otp = str()->random(5);
             $user->save();
-    
+
             // Kirim email verifikasi
             $url = route('form_reset_password') . '/' . Crypt::encryptString($user->id_usr);
             $array = [
@@ -66,26 +66,26 @@ class ForgotPasswordController extends Controller
                     'kode_otp' => $user->kode_otp
                 ],
             ];
-    
+
             Mail::send('mail.reset_password', $array, function ($message) use ($array) {
                 $message->to($array['receive'])
                     ->subject($array['subject']);
                 $message->from('no-reply@project.com', 'Project PKL');
             });
-    
+
             if (Mail::flushMacros()) {
                 \Log::error('Mail failed to send.');
                 \Log::info('OTP generated for user: ' . $user->usr_email . ' with OTP: ' . $user->kode_otp);
 
                 return redirect()->route('forgot_password')->with('error_email', 'Gagal mengirim email. Silahkan coba lagi.');
             }
-    
+
             return redirect()->route('forgot_password')->with('success_reset', 'Kami telah mengirimkan email verifikasi ke ' . $request->usr_email);
         } catch (\Throwable $th) {
             throw $th;
         }
     }
-    
+
 
     public function storePassword(Request $request)
     {
@@ -138,11 +138,11 @@ class ForgotPasswordController extends Controller
                     \Log::error('Mail failed to send.');
                 }
 
-                return redirect()->route('login')->with('success_ganti_password', 'Ubah password berhasil.');
+                return redirect()->route('login-usr')->with('success_ganti_password', 'Ubah password berhasil.');
             } else {
                 return redirect()->back()->with('error_kode_otp', 'Kode OTP tidak sesuai. Silahkan coba lagi.');
             }
-            
+
         } catch (\Throwable $th) {
             throw $th;
         }
