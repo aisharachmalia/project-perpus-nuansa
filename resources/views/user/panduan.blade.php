@@ -19,7 +19,7 @@
                 background-color: #f7f9fc;
             }
             .hero {
-                background-color: #007bff;
+                background-color: #277a32;
                 color: white;
                 padding: 50px 0;
                 text-align: center;
@@ -39,7 +39,7 @@
             h2 {
                 margin-top: 20px;
                 font-size: 1.8rem;
-                color: #007bff;
+                color: #277a32;
             }
             ol, ul {
                 padding-left: 20px;
@@ -51,15 +51,8 @@
                 margin-bottom: 10px;
             }
             .contact-info i {
-                color: #007bff;
+                color: #277a32;
                 margin-right: 8px;
-            }
-            .footer {
-                text-align: center;
-                padding: 10px 0;
-                background-color: #007bff;
-                color: white;
-                margin-top: 20px;
             }
         </style>
     </head>
