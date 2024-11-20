@@ -20,12 +20,12 @@
                 <td style="text-align: left;">{{ $item->dbuku_judul }}</td>
                 <td style="text-align: center;" width="10%">{{ $item->usr_nama }}</td>
                 <td style="text-align: center;" width="15%">
-                    {{ \Carbon\Carbon::parse($item->trks_tgl_peminjaman)->format('d-m-Y') }}</td>
+                    {{ \Carbon\Carbon::parse($item->trks_tgl_peminjaman)->format('d-m-Y H:i') }}</td>
                 <td style="text-align: center;" width="15%">
-                    {{ \Carbon\Carbon::parse($item->trks_tgl_jatuh_tempo)->format('d-m-Y') }}</td>
+                    {{ \Carbon\Carbon::parse($item->trks_tgl_jatuh_tempo)->format('d-m-Y H:i') }}</td>
                 <td style="text-align: center;" width="15%">
                     @if ($item->trks_tgl_pengembalian)
-                        {{ \Carbon\Carbon::parse($item->trks_tgl_pengembalian)->format('d-m-Y') }}
+                        {{ \Carbon\Carbon::parse($item->trks_tgl_pengembalian)->format('d-m-Y H:i') }}
                     @else
                         -
                     @endif

@@ -196,7 +196,21 @@
                     },
                     body: JSON.stringify({})
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (response.status === 401) {
+                        // Jika status 401 (Unauthorized), tampilkan SweetAlert dan redirect ke login
+                        Swal.fire({
+                            title: 'Mohon Maaf!',
+                            text: 'Anda harus login terlebih dahulu.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            window.location.href = "/login-usr"; // Redirect ke halaman login
+                        });
+                        throw new Error('Unauthorized'); // Hentikan eksekusi lebih lanjut
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     if (data.status === 'success') {
                         Swal.fire({
@@ -211,12 +225,11 @@
                         document.querySelector('.container-baca').style.display = 'none';
                         // Tampilkan area membaca dan tombol selesai baca
                         document.getElementById('readingCanvas').style.display = 'block';
-                        document.getElementById('finishReading').style.display =
-                        'block'; // Menampilkan tombol selesai baca
+                        document.getElementById('finishReading').style.display = 'block';
                         loadPDF(); // Panggil fungsi untuk memuat PDF
                     } else if (data.status === 'error') {
                         Swal.fire({
-                            title: 'Error!',
+                            title: 'Mohon Maaf!',
                             text: data.message,
                             icon: 'error',
                             confirmButtonText: 'OK'
@@ -225,14 +238,17 @@
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    Swal.fire({
-                        title: 'Terjadi Kesalahan!',
-                        text: 'Terjadi kesalahan saat memulai membaca buku.',
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
+                    if (error.message !== 'Unauthorized') {
+                        Swal.fire({
+                            title: 'Terjadi Kesalahan!',
+                            text: 'Terjadi kesalahan saat memulai membaca buku.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
                 });
         });
+
 
         // Event listener untuk tombol selesai baca
         document.getElementById('finishReading').addEventListener('click', function() {
@@ -247,7 +263,21 @@
                     },
                     body: JSON.stringify({})
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (response.status === 401) {
+                        // Jika status 401 (Unauthorized), tampilkan SweetAlert dan redirect ke login
+                        Swal.fire({
+                            title: 'Mohon Maaf!',
+                            text: 'Anda harus login terlebih dahulu.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            window.location.href = "/login-usr"; // Redirect ke halaman login
+                        });
+                        throw new Error('Unauthorized'); // Hentikan eksekusi lebih lanjut
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     if (data.status === 'success') {
                         Swal.fire({
@@ -263,7 +293,7 @@
                             'block'; // Kembali ke tampilan awal
                     } else if (data.status === 'error') {
                         Swal.fire({
-                            title: 'Error!',
+                            title: 'Mohon Maaf!',
                             text: data.message,
                             icon: 'error',
                             confirmButtonText: 'OK'
@@ -272,12 +302,14 @@
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    Swal.fire({
-                        title: 'Terjadi Kesalahan!',
-                        text: 'Terjadi kesalahan saat memulai membaca buku.',
-                        icon: 'error',
-                        confirmButtonText: 'OK'
-                    });
+                    if (error.message !== 'Unauthorized') {
+                        Swal.fire({
+                            title: 'Terjadi Kesalahan!',
+                            text: 'Terjadi kesalahan saat menyelesaikan membaca buku.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
                 });
         });
     </script>
