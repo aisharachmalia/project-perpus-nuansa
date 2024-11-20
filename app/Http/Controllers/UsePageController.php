@@ -71,41 +71,27 @@ class UsePageController extends Controller
         $query = $request->input('query');
     
         if ($query) {
-            // Cari buku berdasarkan judul yang cocok dengan query
+            // Search books with titles that match the query
             $buku = DB::table('dm_buku')
                 ->where('dbuku_judul', 'like', '%' . $query . '%')
                 ->get();
         } else {
-            // Jika tidak ada query, ambil semua buku
+            // If no query, retrieve all books
             $buku = dm_buku::all();
-        }
-    
-        // Filter buku untuk memastikan file PDF dan covernya ada
-        $filteredBuku = $buku->filter(function ($book) {
-            $pdfPath = 'public/pdf/' . $book->dbuku_file;
-            $coverPath = 'public/cover/' . $book->dbuku_cover;
-    
-            // Periksa keberadaan file PDF
-            if (\Storage::exists($pdfPath)) {
-                // Periksa keberadaan cover, gunakan default jika tidak ada
-                if (\Storage::exists($coverPath)) {
+            
+            foreach ($buku as $book) {
+                if (\Storage::exists('public/cover/' . $book->dbuku_cover)) {
+                    // If the file exists, generate a URL to 'storage/cover/'
                     $book->dbuku_cover = asset('storage/cover/' . $book->dbuku_cover);
                 } else {
+                    // If the file does not exist, use the default image path
                     $book->dbuku_cover = asset('assets/images/buku/default.jpg');
                 }
-    
-                return true; // File PDF ada, tetap tampilkan buku
             }
+        }
     
-            return false; // File PDF tidak ada, hapus buku dari koleksi
-        });
-    
-        return view('user.halaman_buku', [
-            'buku' => $filteredBuku,
-            'query' => $query
-        ]);
+        return view('user.halaman_buku', compact('buku', 'query'));
     }
-    
     public function penulisAsing()
     {
         // Mengambil data penulis yang tidak berasal dari Indonesia
