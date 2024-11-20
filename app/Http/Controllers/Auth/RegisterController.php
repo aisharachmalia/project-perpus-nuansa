@@ -6,11 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Mail;
-use RealRashid\SweetAlert\Facades\Alert;
 class RegisterController extends Controller
 {
     /*
@@ -79,7 +77,7 @@ class RegisterController extends Controller
                 $message->from('no-reply@project.com','Project PKL');
             });
 
-            return redirect()->route('login')->with('success', 'Registrasi berhasil!.');
+            return redirect()->route('login-usr')->with('success', 'Registrasi berhasil!.');
 
         } catch (\Throwable $th) {
             throw $th;

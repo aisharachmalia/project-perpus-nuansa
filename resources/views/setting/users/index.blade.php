@@ -172,7 +172,10 @@
                 scrollX: true,
                 ajax: '{{ url()->current() }}',
                 columns: [{
-                        data: 'id_usr',
+                        data: 'DT_RowIndex',
+                        name: 'DT_RowIndex',
+                        orderable: false,
+                        searchable: false
                     },
                     {
                         data: 'usr_nama',

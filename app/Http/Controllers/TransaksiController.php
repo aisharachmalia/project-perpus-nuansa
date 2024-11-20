@@ -34,19 +34,29 @@ class TransaksiController extends Controller
                 ->addIndexColumn()
                 ->addColumn('aksi', function ($row) {
                     $btnClass = $row->trks_status <= 0 ? 'editPeminjaman' : 'editPengembalian';
-
-                    $btn = '<div class="d-flex mr-2">
+                    $btn = '<div class="d-flex mr-2">';
+                    if (in_array($row->trks_status, [0, 1])) {
+                        $btn .= '
                         <a href="javascript:void(0)" class="btn btn-warning btn-sm ' . $btnClass . ' mr-2"
                            data-id="' . Crypt::encryptString($row->id_trks) . '"
                            data-bs-toggle="modal" data-bs-target="#' . $btnClass . '">
                             <i class="bi bi-pencil"></i>
                         </a> &nbsp;
-                        <a href="javascript:void(0)" class="btn btn-primary btn-sm modalShowTrks"
+                    ';
+                    }
+                    $btn .= '  <a href="javascript:void(0)" class="btn btn-primary btn-sm modalShowTrks"
                          data-id="' . Crypt::encryptString($row->id_trks) . '"
                          data-bs-toggle="modal" data-bs-target="#showTrks">
                          <i class="bi bi-eye"></i>
-                         </a>
-                    </div>';
+                         </a>';
+                    if ($row->trks_status == 0) {
+                        $btn .= '  &nbsp; <a href="javascript:void(0)" id="btn-batal-trks"
+                        data-id="' . Crypt::encryptString($row->id_trks) . '"
+                        class="btn btn-danger btn-sm">
+                        <i class="bi bi-x-lg"></i>
+                    </a>';
+                    }
+                    $btn .= '</div>';
                     return $btn;
                 })
                 ->rawColumns(['aksi'])
@@ -221,6 +231,35 @@ class TransaksiController extends Controller
         $id_usr = Crypt::decryptString($request->id_usr);
         $id_dpustakawan = Crypt::decryptString($request->id_dpustakawan);
         $denda = Trks_denda::where('id_trks', $id_trks)->first();
+        $transaksi = Transaksi::find($id_trks);
+
+        if ($transaksi->id_dbuku != $id_dbuku) {
+            $dsbuku = dm_salinan_buku::where('id_dbuku', $id_dbuku)
+                ->where('dsbuku_status', 0)
+                ->first();
+            $bukulama = dm_buku::find($id_dbuku);
+            $tbuku = dm_buku::find($id_dbuku);
+            $dsbuku_lama=dm_salinan_buku::find($transaksi->id_dsbuku);
+            $dsbuku_lama->dsbuku_status = 0;
+            $dsbuku_lama->dsbuku_flag = 0;
+            $dsbuku_lama->save();
+            $dsbuku->dsbuku_status = 1;
+            $dsbuku->dsbuku_flag = 1;
+            $dsbuku->save();
+            if ($bukulama->dbuku_jml_tersedia <= $bukulama->dbuku_jml_total) {
+                $bukulama->dbuku_jml_tersedia = $bukulama->dbuku_jml_tersedia + 1;
+                $bukulama->save();
+            }
+            if ($dsbuku) {
+                $dsbuku->dsbuku_status = 1;
+                $dsbuku->dsbuku_flag = 1;
+                $dsbuku->save();
+                if ($tbuku->dbuku_jml_tersedia > 0) {
+                    $tbuku->dbuku_jml_tersedia = $tbuku->dbuku_jml_tersedia - 1;
+                    $tbuku->save();
+                }
+            }
+        }
 
         if ($request->trks_denda > 0) {
             if (!$denda) {
@@ -233,6 +272,7 @@ class TransaksiController extends Controller
         }
         Transaksi::where('id_trks', $id_trks)->update([
             'id_dbuku' => $id_dbuku,
+            'id_dsbuku' => $dsbuku->id_dsbuku ?? $transaksi->id_dsbuku,
             'id_usr' => $id_usr,
             'id_dpustakawan' => $id_dpustakawan,
             'trks_tgl_peminjaman' => $request->trks_tgl_peminjaman,
@@ -396,7 +436,7 @@ class TransaksiController extends Controller
             $trks = Transaksi::where('id_trks', $idTrks)
                 ->join('dm_buku', 'dm_buku.id_dbuku', '=', 'trks_transaksi.id_dbuku')
                 ->join('users', 'users.id_usr', '=', 'trks_transaksi.id_usr')
-                ->select('users.usr_nama', 'dm_buku.dbuku_judul', 'trks_transaksi.trks_tgl_peminjaman', 'trks_transaksi.trks_tgl_jatuh_tempo','trks_transaksi.trks_tgl_pengembalian','trks_transaksi.trks_status')
+                ->select('users.usr_nama', 'dm_buku.dbuku_judul', 'trks_transaksi.trks_tgl_peminjaman', 'trks_transaksi.trks_tgl_jatuh_tempo', 'trks_transaksi.trks_tgl_pengembalian', 'trks_transaksi.trks_status')
                 ->first();
             return response()->json($trks);
         }

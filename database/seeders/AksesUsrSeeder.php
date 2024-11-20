@@ -164,20 +164,20 @@ class AksesUsrSeeder extends Seeder
             [119, 3, 3, 4, 3, now('Asia/Jakarta'), NULL, NULL],
             [120, 3, 3, 4, 4, now('Asia/Jakarta'), NULL, NULL],
 
-            [121, 3, 3, 5, 1, now('Asia/Jakarta'), NULL, NULL],  // Menu 5
-            [122, 3, 3, 5, 2, now('Asia/Jakarta'), NULL, NULL],
-            [123, 3, 3, 5, 3, now('Asia/Jakarta'), NULL, NULL],
-            [124, 3, 3, 5, 4, now('Asia/Jakarta'), NULL, NULL],
+            [121, 3, 3, 5, 0, now('Asia/Jakarta'), NULL, NULL],  // Menu 5
+            [122, 3, 3, 5, 0, now('Asia/Jakarta'), NULL, NULL],
+            [123, 3, 3, 5, 0, now('Asia/Jakarta'), NULL, NULL],
+            [124, 3, 3, 5, 0, now('Asia/Jakarta'), NULL, NULL],
 
-            [125, 3, 3, 6, 1, now('Asia/Jakarta'), NULL, NULL],  // Menu 6
-            [126, 3, 3, 6, 2, now('Asia/Jakarta'), NULL, NULL],
-            [127, 3, 3, 6, 3, now('Asia/Jakarta'), NULL, NULL],
-            [128, 3, 3, 6, 4, now('Asia/Jakarta'), NULL, NULL],
+            [125, 3, 3, 6, 0, now('Asia/Jakarta'), NULL, NULL],  // Menu 6
+            [126, 3, 3, 6, 0, now('Asia/Jakarta'), NULL, NULL],
+            [127, 3, 3, 6, 0, now('Asia/Jakarta'), NULL, NULL],
+            [128, 3, 3, 6, 0, now('Asia/Jakarta'), NULL, NULL],
 
-            [137, 3, 3, 9, 1, now('Asia/Jakarta'), NULL, NULL],  // Menu 9
-            [138, 3, 3, 9, 2, now('Asia/Jakarta'), NULL, NULL],
-            [139, 3, 3, 9, 3, now('Asia/Jakarta'), NULL, NULL],
-            [140, 3, 3, 9, 4, now('Asia/Jakarta'), NULL, NULL],
+            [137, 3, 3, 9, 0, now('Asia/Jakarta'), NULL, NULL],  // Menu 9
+            [138, 3, 3, 9, 0, now('Asia/Jakarta'), NULL, NULL],
+            [139, 3, 3, 9, 0, now('Asia/Jakarta'), NULL, NULL],
+            [140, 3, 3, 9, 0, now('Asia/Jakarta'), NULL, NULL],
 
             [141, 3, 3, 10, 0, now('Asia/Jakarta'), NULL, NULL], // Menu 10
             [142, 3, 3, 10, 0, now('Asia/Jakarta'), NULL, NULL],
@@ -201,10 +201,10 @@ class AksesUsrSeeder extends Seeder
             [159, 3, 3, 7, 0, now('Asia/Jakarta'), NULL, NULL],
             [160, 3, 3, 7, 0, now('Asia/Jakarta'), NULL, NULL],
 
-            [161, 3, 3, 8, 1, now('Asia/Jakarta'), NULL, NULL], // Menu 8
-            [162, 3, 3, 8, 2, now('Asia/Jakarta'), NULL, NULL],
-            [163, 3, 3, 8, 3, now('Asia/Jakarta'), NULL, NULL],
-            [164, 3, 3, 8, 4, now('Asia/Jakarta'), NULL, NULL],
+            [161, 3, 3, 8, 0, now('Asia/Jakarta'), NULL, NULL], // Menu 8
+            [162, 3, 3, 8, 0, now('Asia/Jakarta'), NULL, NULL],
+            [163, 3, 3, 8, 0, now('Asia/Jakarta'), NULL, NULL],
+            [164, 3, 3, 8, 0, now('Asia/Jakarta'), NULL, NULL],
 
         ];
 
