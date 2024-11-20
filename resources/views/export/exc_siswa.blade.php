@@ -14,9 +14,9 @@
     <tr>
         <td style="border: 3px solid black; padding: 8px; white-space: nowrap;">{{ $key+1 }}</td>
         <td style="border: 3px solid black; padding: 8px; white-space: nowrap;">{{ $item->dsiswa_nama }}</td>
-        <td style="border: 3px solid black; padding: 8px; white-space: nowrap;">{{ $item->dsiswa_nis }}</td>
+        <td style="border: 3px solid black; padding: 8px; white-space: nowrap;">'{{ $item->dsiswa_nis }}</td>
         <td style="border: 3px solid black; padding: 8px; white-space: nowrap;">{{ $item->dsiswa_email }}</td>
-        <td style="border: 3px solid black; padding: 8px; white-space: nowrap;">{{ $item->dsiswa_no_telp }}</td>
+        <td style="border: 3px solid black; padding: 8px; white-space: nowrap;">'{{ $item->dsiswa_no_telp }}</td>
         <td style="border: 3px solid black; padding: 8px; white-space: nowrap;">{{ $item->dsiswa_alamat }}</td>
         <td style="border: 3px solid black; padding: 8px; white-space: nowrap;">{{ $item->dkelas_nama_kelas }}</td>
         <td style="border: 3px solid black; padding: 8px; white-space: nowrap;">
