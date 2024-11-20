@@ -50,6 +50,13 @@ class PustakawanController extends Controller
 
         return response()->json($ps);
     }
+
+    private function generateRandomPassword($length = 10)
+    {
+        $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()';
+        return substr(str_shuffle($characters), 0, $length);
+    }
+
     public function addPustakawan(Request $request)
     {
         $rules = [
@@ -72,7 +79,7 @@ class PustakawanController extends Controller
             'dpustakawan_no_telp.max' => 'No. Telepon maksimal 13 angka!',
         ];
 
-        // Lakukan validasi
+        // Perform validation
         $validator = \Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
@@ -84,42 +91,36 @@ class PustakawanController extends Controller
 
         $name = ucfirst(strtolower($request->dpustakawan_nama));
 
-        // Check if the name already exists in the users table
-        $existingUser = User::where('usr_nama', $name)->first();
-
-        // Generate username, append number if name already exists
-        if ($existingUser) {
-            $counter = 1;
-            // Increment the counter until a unique username is found
-            while (User::where('usr_username', $name . $counter)->exists()) {
-                $counter++;
-            }
-            // Create a unique username by appending the counter
-            $username = $name . $counter;
-        } else {
-            // If no user with the same name, use the name as the username
-            $username = $name;
+        // Generate a unique username
+        $username = $name;
+        $counter = 1;
+        while (User::where('usr_username', $username)->exists()) {
+            $username = $name . $counter++;
         }
 
-        // Create the Pustakawan record
-        dm_pustakawan::create([
-            'dpustakawan_nama' => $name,
-            'dpustakawan_email' => $request->dpustakawan_email,
-            'dpustakawan_no_telp' => $request->dpustakawan_no_telp,
-            'dpustakawan_alamat' => $request->dpustakawan_alamat,
-        ]);
+        // Generate a random password
+        $password = $this->generateRandomPassword();
 
-        // Create the User record with hashed password
-        $user = User::create([
-            'usr_nama' => $name,
-            'usr_username' => $username,
-            'usr_email' => $request->dpustakawan_email,
-            'password' => \Hash::make($request->dpustakawan_no_telp),
-        ]);
-        $menus = \DB::table('menus')->get();
+        try {
+            // Create the Pustakawan record
+            $pustakawan = dm_pustakawan::create([
+                'dpustakawan_nama' => $name,
+                'dpustakawan_email' => $request->dpustakawan_email,
+                'dpustakawan_no_telp' => $request->dpustakawan_no_telp,
+                'dpustakawan_alamat' => $request->dpustakawan_alamat,
+            ]);
 
-        foreach ($menus as $menu) {
-            for ($i = 1; $i <= 4; $i++) {
+            // Create the User record
+            $user = User::create([
+                'usr_nama' => $name,
+                'usr_username' => $username,
+                'usr_email' => $request->dpustakawan_email,
+                'password' => \Hash::make($password),
+            ]);
+
+            // Assign default menu access
+            $menus = \DB::table('menus')->get();
+            foreach ($menus as $menu) {
                 \DB::table('akses_usrs')->insert([
                     'id_usr' => $user->id_usr,
                     'id_role' => 3,
@@ -129,12 +130,30 @@ class PustakawanController extends Controller
                     'updated_at' => now('Asia/Jakarta'),
                 ]);
             }
+
+            $url = route('verifikasi_user').'/'.Crypt::encryptString($user->id_usr);
+
+            // Send welcome email
+            \Mail::send('mail.pustakawan_mail', ['data' => $pustakawan , 'password' => $password , 'url' => $url], function ($message) use ($pustakawan) {
+                $message->to($pustakawan->dpustakawan_email)
+                    ->subject('Selamat Bergabung di NuansaBaca!')
+                    ->from('no-reply@nuansabaca.com', 'Perpustakaan NuansaBaca');
+            });
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data Pustakawan berhasil disimpan dan email telah dikirim!',
+            ], 200);
+
+        } catch (\Exception $e) {
+            // Rollback and return error response
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+            ], 500);
         }
-        return response()->json([
-            'success' => true,
-            'message' => 'Data Berhasil Disimpan!',
-        ], 200);
     }
+
 
     public function editPustakawan($id = null, Request $request)
     {
