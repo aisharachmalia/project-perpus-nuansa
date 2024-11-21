@@ -32,7 +32,7 @@
                             </div>
                         </div>
                         <div class="col-4">
-                            <label>link Buku <span class="text-danger1">*</span></label>
+                            <label>link Buku <span class="text-danger1"></span></label>
                             <input type="text" id="dbuku_link" class="form-control" placeholder="Link Buku"
                                 name="dbuku_link">
                             <span id="link-error" class="text-danger"></span>
