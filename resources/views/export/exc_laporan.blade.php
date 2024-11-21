@@ -16,15 +16,28 @@
     </tr>
     @foreach ($trks as $key => $item)
         <tr>
-            <td style="text-align: center">{{ $key+1 }}</td>
+            <td style="text-align: center">{{ $key + 1 }}</td>
             <td>{{ $item->dbuku_judul }}</td>
             <td>{{ $item->usr_nama }}</td>
-            <td>{{ $item->trks_tgl_peminjaman }}</td>
-            <td>{{ $item->trks_tgl_jatuh_tempo }}</td>
-            <td>{{ $item->trks_tgl_pengembalian }}</td>
-            <td>Rp.@if( $item->jumlah == null) 0 @else {{ $item->jumlah }} @endif</td>
             <td style="text-align: center;">
-                @if($item->trks_status == 1)
+                {{ \Carbon\Carbon::parse($item->trks_tgl_peminjaman)->format('d-m-Y H:i') }}</td>
+            <td style="text-align: center;">
+                {{ \Carbon\Carbon::parse($item->trks_tgl_jatuh_tempo)->format('d-m-Y H:i') }}</td>
+            <td style="text-align: center;">
+                @if ($item->trks_tgl_pengembalian)
+                    {{ \Carbon\Carbon::parse($item->trks_tgl_pengembalian)->format('d-m-Y H:i') }}
+                @else
+                    -
+                @endif
+            </td>
+            <td>Rp.@if ($item->jumlah == null)
+                    0
+                @else
+                    {{ $item->jumlah }}
+                @endif
+            </td>
+            <td style="text-align: center;">
+                @if ($item->trks_status == 1)
                     Dipinjam
                 @elseif($item->trks_status == 2)
                     Dikembalikan

@@ -24,6 +24,7 @@ class UsePageController extends Controller
             ->join('dm_penulis', 'dm_buku.id_dpenulis', '=', 'dm_penulis.id_dpenulis')
             ->groupBy('dm_buku.id_dbuku', 'dm_buku.dbuku_judul', 'dm_buku.dbuku_cover', 'dm_penulis.dpenulis_nama_penulis')
             ->orderByDesc('datadepan')
+            ->whereNotNull('dbuku_file')
             ->take(6)
             ->get();
 
@@ -50,35 +51,32 @@ class UsePageController extends Controller
     {
         $penerbit = \Crypt::decryptString($penerbit);
         $pnb = \DB::select("SELECT * FROM dm_penerbits
-                        WHERE dm_penerbits.deleted_at IS NULL AND dm_penerbits.id_dpenerbit = $penerbit;
+                        WHERE dm_penerbits.deleted_at IS NULL AND dm_penerbits.id_dpenerbit = $penerbit AND;
         ");
 
         // Dekripsi jika parameter diterima
         if ($penerbit) {
-            $buku = dm_buku::where('id_dpenerbit', $penerbit)->get();
-        } else {
-            $buku = dm_buku::all();
+            $buku = dm_buku::where('id_dpenerbit', $penerbit)->whereNotNull('dbuku_file')->get();
         }
 
         return view('user.buku_by_penerbit', compact('buku', 'pnb'));
     }
 
 
-
-
     public function pageBuku(Request $request)
     {
         $query = $request->input('query');
-    
+
         if ($query) {
             // Search books with titles that match the query
             $buku = DB::table('dm_buku')
                 ->where('dbuku_judul', 'like', '%' . $query . '%')
+                ->whereNotNull('dbuku_file')
                 ->get();
         } else {
             // If no query, retrieve all books
-            $buku = dm_buku::all();
-            
+            $buku = dm_buku::whereNotNull('dbuku_file')->get();
+
             foreach ($buku as $book) {
                 if (\Storage::exists('public/cover/' . $book->dbuku_cover)) {
                     // If the file exists, generate a URL to 'storage/cover/'
@@ -89,7 +87,7 @@ class UsePageController extends Controller
                 }
             }
         }
-    
+
         return view('user.halaman_buku', compact('buku', 'query'));
     }
     public function penulisAsing()
@@ -98,7 +96,7 @@ class UsePageController extends Controller
         $penulisAsing = DB::table('dm_penulis')
             ->where('dpenulis_kewarganegaraan', '!=', 'Indonesia') // Tidak berasal dari Indonesia
             ->get();
-    
+
         // Untuk setiap penulis, ambil maksimal 6 buku pertama
         $penulisAsing->each(function ($penulis) {
             $penulis->buku = DB::table('dm_buku')
@@ -106,13 +104,13 @@ class UsePageController extends Controller
                 ->whereNotNull('dbuku_file')
                 ->limit(6)
                 ->get();
-            
+
             // Hitung total buku untuk menentukan apakah "See More" diperlukan
             $penulis->jumlahBuku = DB::table('dm_buku')
                 ->where('id_dpenulis', $penulis->id_dpenulis)
                 ->count();
         });
-    
+
         return view('user.halaman_penulis_asing', compact('penulisAsing'));
     }
     public function loadMoreBooksAsing(Request $request)
@@ -120,66 +118,70 @@ class UsePageController extends Controller
         // Ambil buku tambahan berdasarkan offset dan id penulis
         $buku = DB::table('dm_buku')
             ->where('id_dpenulis', $request->id_dpenulis)
+            ->whereNotNull('dbuku_file')
             ->offset($request->offset)
             ->limit(6)
             ->get();
-    
+
         return response()->json($buku);
     }
-    
-        public function penulisLokal()
-        {
-            // Mengambil data penulis asal Indonesia
-            $penulisLokal = DB::table('dm_penulis')
-                ->where('dpenulis_kewarganegaraan', 'Indonesia')
-                ->get();
-    
-            // Untuk setiap penulis, ambil maksimal 6 buku pertama
-            $penulisLokal->each(function ($penulis) {
-                $penulis->buku = DB::table('dm_buku')
-                    ->where('id_dpenulis', $penulis->id_dpenulis)
-                    ->limit(6)
-                    ->get();
-                
-                // Hitung total buku untuk menentukan apakah "See More" diperlukan
-                $penulis->jumlahBuku = DB::table('dm_buku')
-                    ->where('id_dpenulis', $penulis->id_dpenulis)
-                    ->count();
-            });
-    
-            return view('user.halaman_penulis_lokal', compact('penulisLokal'));
-        }
-    
-        public function loadMoreBooks(Request $request)
-        {
-            // Ambil buku tambahan berdasarkan offset dan id penulis
-            $buku = DB::table('dm_buku')
-                ->where('id_dpenulis', $request->id_dpenulis)
-                ->offset($request->offset)
+
+    public function penulisLokal()
+    {
+        // Mengambil data penulis asal Indonesia
+        $penulisLokal = DB::table('dm_penulis')
+            ->where('dpenulis_kewarganegaraan', 'Indonesia')
+            ->get();
+
+        // Untuk setiap penulis, ambil maksimal 6 buku pertama
+        $penulisLokal->each(function ($penulis) {
+            $penulis->buku = DB::table('dm_buku')
+                ->where('id_dpenulis', $penulis->id_dpenulis)
+                ->whereNotNull('dbuku_file')
                 ->limit(6)
                 ->get();
-    
-            return response()->json($buku);
-        
-    } 
+
+            // Hitung total buku untuk menentukan apakah "See More" diperlukan
+            $penulis->jumlahBuku = DB::table('dm_buku')
+                ->where('id_dpenulis', $penulis->id_dpenulis)
+                ->count();
+        });
+
+        return view('user.halaman_penulis_lokal', compact('penulisLokal'));
+    }
+
+    public function loadMoreBooks(Request $request)
+    {
+        // Ambil buku tambahan berdasarkan offset dan id penulis
+        $buku = DB::table('dm_buku')
+            ->where('id_dpenulis', $request->id_dpenulis)
+            ->whereNotNull('dbuku_file')
+            ->offset($request->offset)
+            ->limit(6)
+            ->get();
+
+        return response()->json($buku);
+
+    }
     public function loadMoreBooksFav(Request $request)
     {
         // Validasi parameter
         if (!$request->has('offset') || !$request->has('id_dpenulis')) {
             return response()->json([], 400);
         }
-    
+
         // Mengambil data buku sesuai offset
         $buku = DB::table('dm_buku')
             ->where('id_dpenulis', $request->id_dpenulis)
+            ->whereNotNull('dbuku_file')
             ->offset($request->offset)
             ->limit(6)
             ->get();
-        
+
         return response()->json($buku);
     }
-    
-    
+
+
     public function penulisFavorit()
     {
         $penulisFavorit = DB::table('dm_penulis')
@@ -190,13 +192,15 @@ class UsePageController extends Controller
             ->orderByDesc('total_peminjaman')
             ->limit(5)
             ->get();
-    
+
         $penulisFavorit->each(function ($penulis) {
             $penulis->buku = DB::table('dm_buku')
                 ->where('id_dpenulis', $penulis->id_dpenulis)
+                ->whereNotNull('dbuku_file')
                 ->limit(6)
                 ->get();
         });
-    
+
         return view('user.halaman_penulis_fav', compact('penulisFavorit'));
-    }}
+    }
+}

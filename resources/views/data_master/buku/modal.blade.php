@@ -1,4 +1,9 @@
 {{-- Tambah Buku --}}
+<style>
+    .text-danger1 {
+        color: #dc3545;
+    }
+</style>
 <div class="modal fade text-left" id="createBuku" tabindex="-1" role="dialog" aria-labelledby="modalCreate"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
@@ -13,21 +18,21 @@
                     <div class="row">
                         <div class="col-4">
                             <div class="form-group">
-                                <label>Cover</label>
+                                <label>Cover <span class="text-danger1">*</span></label>
                                 <input type="file" name="dbuku_cover" id="dbuku_cover" class="form-control">
                                 <span id="cover-error" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-4">
                             <div class="form-group">
-                                <label>Judul Buku</label>
+                                <label>Judul Buku <span class="text-danger1">*</span></label>
                                 <input type="text" id="dbuku_judul" class="form-control" placeholder="Judul Buku"
                                     name="dbuku_judul">
                                 <span id="judul-error" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-4">
-                            <label>link Buku <span class="text-danger"> * tidak wajib diisi</span></label>
+                            <label>link Buku <span class="text-danger1">*</span></label>
                             <input type="text" id="dbuku_link" class="form-control" placeholder="Link Buku"
                                 name="dbuku_link">
                             <span id="link-error" class="text-danger"></span>
@@ -39,7 +44,7 @@
                         </div>
                         <div class="col-4">
                             <div class="form-group">
-                                <label>ISBN</label>
+                                <label>ISBN <span class="text-danger1">*</span></label>
                                 <input type="text" id="dbuku_isbn" class="form-control" placeholder="ISBN(International Standard Book Number)"
                                     name="dbuku_isbn" onkeypress="return hanyaAngka(event)">
                                 <span id="isbn-error" class="text-danger"></span>
@@ -47,7 +52,7 @@
                         </div>
                         <div class="col-4">
                             <div class="form-group">
-                                <label>Penulis</label>
+                                <label>Penulism <span class="text-danger1">*</span></label>
                                 @php
                                     $pnls = DB::select('SELECT * FROM dm_penulis');
                                 @endphp
@@ -64,7 +69,7 @@
                         </div>
                         <div class="col-4">
                             <div class="form-group">
-                                <label>Penerbit</label>
+                                <label>Penerbit <span class="text-danger1">*</span></label>
                                 @php
                                     $pnb = DB::select('SELECT * FROM dm_penerbits');
                                 @endphp
@@ -81,7 +86,7 @@
                         </div>
                         <div class="col-4">
                             <div class="form-group">
-                                <label>Tahun Terbit</label>
+                                <label>Tahun Terbit <span class="text-danger1">*</span></label>
                                 <select class="choices form-control" name="dbuku_thn_terbit">
                                     <option value="" selected disabled>Pilih Tahun Terbit</option>
                                     @php
@@ -100,7 +105,7 @@
                         </div>
                         <div class="col-4">
                             <div class="form-group">
-                                <label>Lokasi Rak</label>
+                                <label>Lokasi Rak <span class="text-danger1">*</span></label>
                                 <select class="form-control" name="dbuku_lokasi_rak">
                                     <option value="" selected disabled>Pilih Lokasi Rak</option>
                                     @php
@@ -118,7 +123,7 @@
                         </div>
                         <div class="col-4">
                             <div class="form-group">
-                                <label>Bahasa</label>
+                                <label>Bahasa <span class="text-danger1">*</span></label>
                                 <select class="form-control" name="dbuku_bahasa">
                                     <option value="" selected disabled>Pilih Bahasa</option>
                                     @php
@@ -136,7 +141,7 @@
                         </div>
                         <div class="col-4">
                             <div class="form-group">
-                                <label>Jumlah Buku</label>
+                                <label>Jumlah Buku <span class="text-danger1">*</span></label>
                                 <input type="number" class="form-control" placeholder="Jumlah"
                                     name="dbuku_jml_total" min="0" max="100">
                                 <span id="jml_total-error" class="text-danger"></span>
@@ -144,7 +149,7 @@
                         </div>
                         <div class="col-4">
                             <div class="form-group">
-                                <label>Edisi Buku</label>
+                                <label>Edisi Buku <span class="text-danger1">*</span></label>
                                 <select class="form-control" name="dbuku_edisi">
                                     <option value="" selected disabled>Pilih Edisi</option>
                                     @php
@@ -158,6 +163,9 @@
                                 </select>
                                 <span id="edisi-error" class="text-danger"></span>
                             </div>
+                        </div>
+                        <div class="col-12">
+                            <label for="Keterangan" class="text-danger1">File buku atau link buku harus diisi jika Anda ingin mengaktifkan fitur membaca online.</label>
                         </div>
                     </div>
                 </form>
@@ -185,24 +193,24 @@
                     <div class="row">
                         <div class="row">
                             <div class="col-md-4 mb-3">
-                                <label>Cover Sebelumnya</label>
+                                <label>Cover Sebelumnya </label>
                                 <img id="dbuku_cover" style="width: 150px; height: auto;">
                                 <input type="hidden" id="id_bk" name="id_bk">
                             </div>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label for="dbuku_cover">Ubah Cover</label>
+                            <label for="dbuku_cover">Ubah Cover <label for="" class="text-danger1"></label></label>
                             <input type="file" name="dbuku_cover" id="dbuku_cover" class="form-control">
                             <span id="cover-error" class="text-danger"></span>
                         </div>
                         <div class="col-md-4">
-                            <label>Judul</label>
+                            <label>Judul<label class="text-danger1">*</label></label>
                             <input type="text" id="dbuku_judul" class="form-control" placeholder="Judul Buku"
                                 name="dbuku_judul">
                             <span id="judul-error" class="text-danger"></span>
                         </div>
                         <div class="col-md-4">
-                            <label>link Buku <span class="text-danger"> * tidak wajib diisi</span></label>
+                            <label>link Buku</label>
                             <input type="text" id="dbuku_link" class="form-control" placeholder="Link Buku"
                                 name="dbuku_link">
                             <span id="link-error" class="text-danger"></span>
@@ -213,59 +221,63 @@
                             <span id="file-error" class="text-danger"></span>
                         </div>
                         <div class="col-md-4">
-                            <label>ISBN</label>
+                            <label>ISBN <label class="text-danger1">*</label></label>
                             <input type="text" id="dbuku_isbn" class="form-control" placeholder="ISBN(International Standard Book Number)"
                                 name="dbuku_isbn" onkeypress="return hanyaAngka(event)">
                             <span id="isbn-error" class="text-danger"></span>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label>Penulis</label>
+                            <label>Penulis<label class="text-danger1">*</label></label>
                             <select class="form-control" name="id_dpenulis" id="id_penulis">
                                 <option value="" selected disabled>Pilih Penulis</option>
                             </select>
                             <span id="penulis-error" class="text-danger"></span>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label>Penerbit</label>
+                            <label>Penerbit<label class="text-danger1">*</label></label>
                             <select class="form-control" name="id_dpenerbit" id="id_penerbit">
                                 <option value="" selected disabled>Pilih Penerbit</option>
                             </select>
                             <span id="penerbit-error" class="text-danger"></span>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label>Tahun Terbit</label>
+                            <label>Tahun Terbit<label class="text-danger1">*</label></label>
                             <select class="choices form-control" name="dbuku_thn_terbit" id="dbuku_thn_terbit">
                                 <option value="" selected disabled>Pilih Tahun Terbit</option>
                             </select>
                             <span id="thn_terbit-error" class="text-danger"></span>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label>Lokasi Rak</label>
+                            <label>Lokasi Rak<label class="text-danger1">*</label></label>
                             <select class="form-control" name="dbuku_lokasi_rak" id="dbuku_lokasi_rak">
                                 <option value="" selected disabled>Pilih Lokasi Rak</option>
                             </select>
                             <span id="lokasi_rak-error" class="text-danger"></span>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label>Bahasa</label>
+                            <label>Bahasa<label class="text-danger1">*</label></label>
                             <select class="form-control" name="dbuku_bahasa" id="dbuku_bahasa">
                                 <option value="" selected disabled>Pilih Bahasa</option>
                             </select>
                             <span id="bahasa-error" class="text-danger"></span>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label>Jumlah Buku</label>
+                            <label>Jumlah Buku<label class="text-danger1">*</label></label>
                             <input type="number" name="dbuku_jml_total" class="form-control" placeholder="Jumlah"
                                 id="dbuku_jml_total" min="0" max="100">
                             <span id="jml_total-error" class="text-danger"></span>
                             <span id="global-error" class="text-danger"></span>
                         </div>
                         <div class="col-md-4 mb-3">
-                            <label>Edisi Buku</label>
+                            <label>Edisi Buku <label for="" class="text-danger1">*</label></label>
                             <select class="form-control" name="dbuku_edisi" id="dbuku_edisi">
                                 <option value="" selected disabled>Pilih Edisi</option>
                             </select>
                             <span id="edisi-error" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="Keterangan" class="text-danger1">File buku atau link buku harus diisi jika Anda ingin mengaktifkan fitur membaca online.</label>
                         </div>
                     </div>
                 </form>
