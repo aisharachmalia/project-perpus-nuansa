@@ -246,7 +246,7 @@
                 <!-- Statistik Peminjaman Buku -->
                 <!-- Statistik Peminjaman Buku -->
                 <div class="row">
-                    <div class="col-9">
+                    <div class="col-12">
                         <div class="card">
                             <div class="card-body chart-container">
                                 <h4>Statistik Peminjaman Buku</h4>
@@ -254,7 +254,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card col-3" id="card-notifikasi">
+                    {{-- <div class="card col-3" id="card-notifikasi">
                         <div class="card-body">
                             <h4>Notifikasi</h4>
                             <div id="notification">
@@ -268,7 +268,7 @@
                             </div>
                             <div id="no-notifications" style="display: none;">Tidak ada notifikasi.</div>
                             <!-- Placeholder -->
-                        </div>
+                        </div> --}}
                     </div>
 
                 </div>

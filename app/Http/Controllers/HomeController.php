@@ -22,7 +22,13 @@ class HomeController extends Controller
     {
         $tanggalawal = $request->input('tanggal_awal');
         $tanggalakhir = $request->input('tanggal_akhir');
-
+        if (!$tanggalawal || !$tanggalakhir) {
+            $tahun_awal = date('Y'); // Tahun sekarang
+            $tahun_akhir = date('Y');
+        } else {
+            $tahun_awal = date('Y', strtotime($tanggalawal));
+            $tahun_akhir = date('Y', strtotime($tanggalakhir));
+        }
         // Kondisi untuk filter tanggal
         $kond = "";
         if ($tanggalawal && $tanggalakhir) {
@@ -38,7 +44,6 @@ class HomeController extends Controller
         if ($tanggalawal && $tanggalakhir) {
             $kond2 = "AND DATE_FORMAT(trks_transaksi.created_at, '%Y-%m-%d') BETWEEN '$tanggalawal' AND '$tanggalakhir'";
         }
-
         // Total data
         $data['total_buku'] = \DB::select("SELECT COALESCE(SUM(dbuku_jml_total), 0) as total_buku FROM dm_buku WHERE deleted_at IS NULL $kond")[0]->total_buku;
 

@@ -24,13 +24,19 @@
             <div class="row">
                 @foreach ($buku as $item)
                     <!-- Pastikan $items di-passing ke view -->
-                    <div class="col-2">
+                    <div class="carousel-items col-2">
                         <a href="{{ route('document.detail', ['id' => Crypt::encryptString($item->id_dbuku)]) }}">
                             <div class="card card-penulis mb-3" style="max-width: 540px; position: relative;">
                                 <img src="{{ $item->dbuku_cover }}" class="img-fluid rounded-start"
                                     alt="{{ $item->dbuku_judul }}" style="height: 300px; width: 100%; object-fit:cover ;">
                             </div>
                         </a>
+                        <div class="carousel-item__details">
+                            <div class="controls">
+                                <span class="fas fa-play-circle"></span>
+                                <span class="fas fa-plus-circle"></span>
+                            </div>
+                            <h5 class="carousel-item__details--title">{{ $item->dbuku_judul }}</h5>
                     </div>
                 @endforeach
             </div>

@@ -12,8 +12,10 @@ use Yajra\DataTables\Facades\DataTables;
 
 class DendaController extends Controller
 {
-
-
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     public function index()
     {
         $peminjam = Trks_denda::join('trks_transaksi', 'trks_denda.id_trks', '=', 'trks_transaksi.id_trks')

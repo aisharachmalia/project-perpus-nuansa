@@ -60,6 +60,34 @@
             font-weight: bold;
         }
 
+        /* Gaya dasar untuk tombol */
+            a.button {
+                display: inline-block;
+                padding: 12px 24px;
+                font-size: 16px;
+                font-weight: bold;
+                color: #fff;
+                text-decoration: none;
+                text-align: center;
+                background: linear-gradient(45deg, #4CAF50, #3A9F44);
+                border-radius: 8px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                transition: all 0.3s ease;
+            }
+
+            /* Hover efek */
+            a.button:hover {
+                background: linear-gradient(45deg, #3A9F44, #4CAF50);
+                transform: translateY(-3px);
+                box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+            }
+
+            /* Fokus efek */
+            a.button:focus {
+                outline: none;
+                box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.4);
+            }
+
         .footer {
             text-align: center;
             font-size: 12px;
@@ -103,11 +131,17 @@
 
             <p>Jangan ragu untuk menjelajahi koleksi buku kami yang beragam. Nikmati pengalaman membaca terbaik!</p>
             <p>Jika Anda tidak merasa melakukan pendaftaran ini, silakan abaikan email ini.</p>
-            
+            <p>Untuk melanjutkan, silakan klik tombol di bawah ini untuk memverifikasi alamat email Anda:</p>
+            <!-- Tombol Verifikasi -->
+            @if(isset($data['url']))
+            <a href="{{ $data['url'] }}" class="button">Verifikasi Email</a>
+        @else
+            <p>Link verifikasi tidak tersedia.</p>
+        @endif
         </div>
 
         <div class="footer">
-            <p>Salam hangat,<br>Tim Perpustakaan NuansaBaca</p>
+            <p>Salam hangat,<br>Tim Perpustakaan Nuansa Baca</p>
         </div>
     </div>
 </body>

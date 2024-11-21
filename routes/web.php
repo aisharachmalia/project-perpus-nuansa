@@ -63,7 +63,7 @@ Route::get('/verifikasi-user/{id?}', [App\Http\Controllers\Auth\VerificationCont
 //
 Auth::routes();
 
-Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('auth');
 Route::get('/total-data-dashboard', [App\Http\Controllers\HomeController::class, 'totalDataDashboard'])->name('total_data_dashboard');
 Route::get('/data-leaderboard', [App\Http\Controllers\HomeController::class, 'totalDataDashboard'])->name('data-leaderboard');
 Route::post('/update-chart', [App\Http\Controllers\HomeController::class, 'updateChart'])->name('update.chart');
@@ -220,7 +220,8 @@ Route::get('/transaksi/detail', [TransaksiController::class, 'detail']);
 Route::get('/transaksi/detailBuku', [TransaksiController::class, 'detailBuku']);
 Route::delete('/transaksi/delete/{id}', [TransaksiController::class, 'delete'])->name('transaksi.delete');
 
-Route::get('/document/{id}', [App\Http\Controllers\BacaOnlineController::class, 'documentDetail'])->name('document.detail');
+Route::get('/document/{id}', [App\Http\Controllers\BacaOnlineController::class, 'documentDetail'])->name('document.detail')
+->middleware('auth');
 
 Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'index'])->name('profile');
 Route::post('/update-profile', [App\Http\Controllers\ProfileController::class, 'updateProfile'])->name('update_profile');
