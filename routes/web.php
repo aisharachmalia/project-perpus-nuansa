@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Auth;
 */
 //
 Route::get('/', [App\Http\Controllers\UsePageController::class, 'berandaPage'])->name('beranda.page');
-Route::get('/rekomendasi-buku', [HomeController::class, 'rekomendasiBuku'])->name('rekomendasi.buku');
+Route::get('/rekomendasi-buku', [App\Http\Controllers\HomeController::class, 'rekomendasiBuku'])->name('rekomendasi.buku');
 Route::get('/tentang', [App\Http\Controllers\WebController::class, 'pageTentang'])->name('tentang');
 Route::get('/halaman-buku', [App\Http\Controllers\UsePageController::class, 'pageBuku'])->name('buku');
 Route::get('/search', [App\Http\Controllers\UsePageController::class, 'pageBuku'])->name('buku.search');

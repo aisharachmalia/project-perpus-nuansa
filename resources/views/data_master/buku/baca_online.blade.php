@@ -184,6 +184,35 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        const url = "{{ Storage::url('file/' . $bk->dbuku_file) }}";
+
+        function loadPDF() {
+            pdfjsLib.getDocument(url).promise.then(pdfDoc => {
+                for (let pageNum = 1; pageNum <= pdfDoc.numPages; pageNum++) {
+                    pdfDoc.getPage(pageNum).then(page => {
+                        const viewport = page.getViewport({
+                            scale: 1.5
+                        });
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
+                        canvas.classList.add('pdf-page');
+                        document.getElementById('pdf-container').appendChild(canvas);
+
+                        const renderContext = {
+                            canvasContext: ctx,
+                            viewport: viewport
+                        };
+                        page.render(renderContext);
+                    });
+                }
+            }).catch(error => {
+                console.error("Error loading PDF:", error);
+                alert("Gagal memuat PDF. Periksa URL atau file PDF.");
+            });
+        }
+
         document.getElementById('startReading').addEventListener('click', function() {
             const bookId = "{{ Crypt::encryptString($bk->id_dbuku) }}"; // ID buku terenkripsi
 
@@ -205,20 +234,29 @@
                             icon: 'error',
                             confirmButtonText: 'OK'
                         }).then(() => {
-                            window.location.href = "/login-usr"; // Redirect ke halaman login
+                            $.ajax({
+                                url: "/login-usr", // URL ke halaman login
+                                type: "GET", // Request metode
+                                success: function() {
+                                    window.location.href =
+                                        "{{ route('login-usr') }}"; // Redirect setelah login berhasil
+                                },
+                                error: function() {
+                                    Swal.fire({
+                                        title: 'Terjadi Kesalahan',
+                                        text: 'Gagal mengarahkan ke halaman login.',
+                                        icon: 'error',
+                                        confirmButtonText: 'OK'
+                                    });
+                                }
+                            });
                         });
-                        throw new Error('Unauthorized'); // Hentikan eksekusi lebih lanjut
+                        throw new Error('Unauthorized');
                     }
                     return response.json();
                 })
                 .then(data => {
                     if (data.status === 'success') {
-                        Swal.fire({
-                            title: 'Berhasil!',
-                            text: data.message,
-                            icon: 'success',
-                            confirmButtonText: 'OK'
-                        });
                         // Sembunyikan tombol mulai baca
                         document.getElementById('startReading').style.display = 'none';
                         // Sembunyikan area baca sebelum tampilkan
@@ -249,7 +287,6 @@
                 });
         });
 
-
         // Event listener untuk tombol selesai baca
         document.getElementById('finishReading').addEventListener('click', function() {
             const bookId = "{{ Crypt::encryptString($bk->id_dbuku) }}"; // ID buku terenkripsi
@@ -272,7 +309,23 @@
                             icon: 'error',
                             confirmButtonText: 'OK'
                         }).then(() => {
-                            window.location.href = "/login-usr"; // Redirect ke halaman login
+                            $.ajax({
+
+                                url: "", // URL ke halaman login
+                                type: "GET", // Request metode
+                                success: function() {
+                                    window.location.href =
+                                        "{{ route('login-usr') }}"; // Redirect setelah login berhasil
+                                },
+                                error: function() {
+                                    Swal.fire({
+                                        title: 'Terjadi Kesalahan',
+                                        text: 'Gagal mengarahkan ke halaman login.',
+                                        icon: 'error',
+                                        confirmButtonText: 'OK'
+                                    });
+                                }
+                            });
                         });
                         throw new Error('Unauthorized'); // Hentikan eksekusi lebih lanjut
                     }
@@ -281,16 +334,18 @@
                 .then(data => {
                     if (data.status === 'success') {
                         Swal.fire({
-                            title: 'Berhasil!',
-                            text: data.message,
                             icon: 'success',
-                            confirmButtonText: 'OK'
-                        });
-                        // Hapus tombol selesai baca dan area membaca
+                            title: 'Terima Kasih',
+                            text: 'Terimakasih telah membaca buku ini.',
+                            showConfirmButton: false,
+                            timer: 3000
+                        })
+                        document.getElementById('startReading').style.display = 'block';
+                        // Sembunyikan tombol selesai baca dan area membaca
                         document.getElementById('finishReading').style.display = 'none';
                         document.getElementById('readingCanvas').style.display = 'none';
-                        document.querySelector('.container-baca').style.display =
-                            'block'; // Kembali ke tampilan awal
+                        // Kembalikan ke tampilan awal
+                        document.querySelector('.container-baca').style.display = 'block';
                     } else if (data.status === 'error') {
                         Swal.fire({
                             title: 'Mohon Maaf!',

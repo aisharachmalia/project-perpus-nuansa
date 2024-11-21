@@ -1,3 +1,9 @@
+<style>
+    .text-danger1 {
+        color: #dc3545;
+    }
+</style>
+
 <div class="modal fade text-left" id="editSalinan" tabindex="1" role="dialog" aria-labelledby="modalEditSalinan"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
@@ -10,7 +16,7 @@
                 <form class="form" id="form_buku_salinan_upd" method="PUT" enctype="multipart/form-data">
                     <div class="row justify-content-around">
                         <div class="col-md-4">
-                            <label>Nama Buku Salinan</label>
+                            <label>Nama Buku Salinan <label class="text-danger1">*</label></label>
                             <input type="hidden" id="id_dsbk" name="id_dsbk">
                             <input type="text" id="dsbuku_no_salinan" class="form-control" placeholder="Nama Buku Salinan"
                                 name="dsbuku_no_salinan">

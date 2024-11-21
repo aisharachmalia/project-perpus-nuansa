@@ -9,10 +9,6 @@ use Illuminate\Http\Request;
 
 class BacaOnlineController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('login-usr');
-    }
     public function documentDetail($id = null)
     {
         $id = \Crypt::decryptString($id);
