@@ -1,7 +1,7 @@
 @extends('userz')
 @section('content')
 <style>
-    
+    hea
 </style>
     <section class="hero">
         <div class="container2">
