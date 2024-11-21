@@ -147,7 +147,7 @@ class TransaksiController extends Controller
             // dm_buku
             $dm_buku = dm_buku::find($buku);
             $dm_buku->dbuku_flag = 1;
-            $dm_buku->dbuku_jml_tersedia = $dm_buku->dbuku_jml_tersedia - 1;
+            $dm_buku->dbuku_jml_tersedia -= 1;
             $dm_buku->save();
 
 
@@ -231,19 +231,19 @@ class TransaksiController extends Controller
                 'errors' => $validator->errors(),
             ], 422);
         }
+
         $id_dbuku = Crypt::decryptString($request->id_dbuku);
         $id_usr = Crypt::decryptString($request->id_usr);
         $id_dpustakawan = Crypt::decryptString($request->id_dpustakawan);
         $denda = Trks_denda::where('id_trks', $id_trks)->first();
         $transaksi = Transaksi::find($id_trks);
-
+        $dsbuku = dm_salinan_buku::where('id_dbuku', $id_dbuku)
+            ->where('dsbuku_status', 0)
+            ->first();
+        $dsbuku_lama = dm_salinan_buku::find($transaksi->id_dsbuku);
+        $bukulama = dm_buku::find($transaksi->id_dbuku);
+        $bukuBaru = dm_buku::find($id_dbuku);
         if ($transaksi->id_dbuku != $id_dbuku) {
-            $dsbuku = dm_salinan_buku::where('id_dbuku', $id_dbuku)
-                ->where('dsbuku_status', 0)
-                ->first();
-            $bukulama = dm_buku::find($id_dbuku);
-            $tbuku = dm_buku::find($id_dbuku);
-            $dsbuku_lama=dm_salinan_buku::find($transaksi->id_dsbuku);
             $dsbuku_lama->dsbuku_status = 0;
             $dsbuku_lama->dsbuku_flag = 0;
             $dsbuku_lama->save();
@@ -251,17 +251,12 @@ class TransaksiController extends Controller
             $dsbuku->dsbuku_flag = 1;
             $dsbuku->save();
             if ($bukulama->dbuku_jml_tersedia <= $bukulama->dbuku_jml_total) {
-                $bukulama->dbuku_jml_tersedia = $bukulama->dbuku_jml_tersedia + 1;
+                $bukulama->dbuku_jml_tersedia += 1;
                 $bukulama->save();
             }
-            if ($dsbuku) {
-                $dsbuku->dsbuku_status = 1;
-                $dsbuku->dsbuku_flag = 1;
-                $dsbuku->save();
-                if ($tbuku->dbuku_jml_tersedia > 0) {
-                    $tbuku->dbuku_jml_tersedia = $tbuku->dbuku_jml_tersedia - 1;
-                    $tbuku->save();
-                }
+            if ($bukuBaru->dbuku_jml_tersedia > 0) {
+                $bukuBaru->dbuku_jml_tersedia -= 1;
+                $bukuBaru->save();
             }
         }
 
@@ -299,33 +294,30 @@ class TransaksiController extends Controller
                 'id_usr' => 'required',
                 'denda' => 'nullable|numeric|min:0',
                 'buku' => 'required',
+                'id_dpustakawan' => 'required',
                 'jatuh_tempo' => 'required|date|after_or_equal:peminjaman',
                 'peminjaman' => 'required|date',
                 'keterangan' => 'nullable|string|max:255',
                 'tanggal_pengembalian' => 'required|date|after_or_equal:peminjaman',
             ], [
                 'id_usr.required' => 'Peminjam wajib dipilih.',
-
                 'denda.numeric' => 'Denda harus berupa angka.',
+                'id_dpustakawan.required' => 'Pustakawan wajib dipilih.',
                 'denda.min' => 'Denda tidak boleh kurang dari 0.',
-
                 'buku.required' => 'Buku wajib dipilih.',
-
                 'jatuh_tempo.required' => 'Tanggal jatuh tempo wajib diisi.',
                 'jatuh_tempo.date' => 'Tanggal jatuh tempo harus berupa tanggal yang valid.',
                 'jatuh_tempo.after_or_equal' => 'Tanggal jatuh tempo harus sama atau setelah tanggal peminjaman.',
-
                 'peminjaman.required' => 'Tanggal peminjaman wajib diisi.',
                 'peminjaman.date' => 'Tanggal peminjaman harus berupa tanggal yang valid.',
-
                 'keterangan.string' => 'Keterangan harus berupa teks.',
                 'keterangan.max' => 'Keterangan maksimal 255 karakter.',
-
                 'tanggal_pengembalian.required' => 'Tanggal pengembalian wajib diisi.',
                 'tanggal_pengembalian.date' => 'Tanggal pengembalian harus berupa tanggal yang valid.',
                 'tanggal_pengembalian.after_or_equal' => 'Tanggal pengembalian harus sama atau setelah tanggal peminjaman.',
             ]);
             $id_trks = crypt::decryptString($request->id_trks);
+            $id_dpustakawan = Crypt::decryptString($request->id_dpustakawan);
             if ($request->denda != 0) {
                 Trks_denda::create([
                     'id_trks' => $id_trks,
@@ -333,10 +325,10 @@ class TransaksiController extends Controller
                     'status' => 0,
                 ]);
             }
-
             Transaksi::where('id_trks', $id_trks)->update([
                 'trks_tgl_pengembalian' => $request->tanggal_pengembalian,
                 'trks_denda' => $request->denda,
+                'id_dpustakawan' => $id_dpustakawan,
                 'trks_keterangan' => $request->keterangan,
                 'trks_status' => 1,
             ]);
@@ -346,16 +338,10 @@ class TransaksiController extends Controller
                 ->where('trsv_status', 1)
                 ->whereNull('trsv_tgl_pemberitahuan')
                 ->first();
-
-            if (!$reservasi) {
-                dm_salinan_buku::where('id_dsbuku', $transaksi->id_dsbuku)->update([
-                    'dsbuku_status' => 0,
-                    'dsbuku_flag' => 0
-                ]);
-                $dm_buku = dm_buku::find($transaksi->id_dbuku);
-                $dm_buku->dbuku_jml_tersedia = $dm_buku->dbuku_jml_tersedia + 1;
-                $dm_buku->save();
-            } else {
+            // jumlah reservasi dan jumlah data salinan buku
+            $jreservasi = trks_reservasis::where('trsv_status', 1)->count();
+            $jdsbuku = dm_salinan_buku::where('dsbuku_status', 2)->count();
+            if ($reservasi && $jdsbuku - $jreservasi > 0) {
                 dm_salinan_buku::where('id_dsbuku', $transaksi->id_dsbuku)->update([
                     'dsbuku_status' => 2,
                 ]);
@@ -377,31 +363,22 @@ class TransaksiController extends Controller
                         ->subject($array['subject']);
                     $message->from('perpustakaansmk@gmail.com', 'Perpustakaan SMK');
                 });
+            } else {
+                dm_salinan_buku::where('id_dsbuku', $transaksi->id_dsbuku)->update([
+                    'dsbuku_status' => 0,
+                    'dsbuku_flag' => 0
+                ]);
+                $dm_buku = dm_buku::find($transaksi->id_dbuku);
+                $masihAdaReservasi = trks_reservasis::where('id_dbuku', $transaksi->id_dbuku)->where('trsv_status', 1)->exists();
+                $masihAdaTransaksi = Transaksi::where('id_dbuku', $transaksi->id_dbuku)->where('trks_status', 0)->exists();
+                if ($dm_buku->dbuku_jml_tersedia <= $dm_buku->dbuku_jml_total) {
+                    $dm_buku->dbuku_jml_tersedia += 1;
+                }
+                if (!$masihAdaReservasi && !$masihAdaTransaksi) {
+                    $dm_buku->dbuku_flag = 0;
+                }
+                $dm_buku->save();
             }
-
-
-            // $peminjamDet = Transaksi::where('id_trks', $id_trks)->join('dm_buku', 'trks_transaksi.id_dbuku', '=', 'dm_buku.id_dbuku')->join('users', 'trks_transaksi.id_usr', '=', 'users.id_usr')->select('users.usr_email', 'dm_buku.dbuku_judul', 'users.usr_nama')->first();
-
-            // $array = [
-            //     'receive' => $peminjamDet->usr_email,
-            //     'subject' => 'Pengembalian Buku',
-            //     'data' => [
-            //         'dbuku_judul' => $peminjamDet->dbuku_judul,
-            //         'usr_nama' => $peminjamDet->usr_nama,
-            //         'trks_tgl_peminjaman' => $request->peminjaman,
-            //         'trks_tgl_jatuh_tempo' => $request->jatuh_tempo,
-            //         'trks_tgl_pengembalian' => $request->tanggal_pengembalian,
-            //         'trks_denda' => number_format($request->denda, 0, ',', '.'),
-            //         'trks_keterangan' => $request->keterangan,
-            //     ],
-            // ];
-
-            // Mail::send('mail.pengembalian_buku', $array, function ($message) use ($array) {
-            //     $message->to($array['receive'])
-            //         ->subject($array['subject']);
-            //     $message->from('perpustakaansmk@gmail.com', 'Perpustakaan SMK');
-            // });
-
             return response()->json([
                 'success' => true,
                 'message' => 'Pengembalian Buku Berhasil Disimpan!',
@@ -515,6 +492,6 @@ class TransaksiController extends Controller
 
         return response()->json($transaksi);
     }
-    // show transaksi
-    public function showTrks() {}
+
+
 }

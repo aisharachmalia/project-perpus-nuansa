@@ -33,6 +33,7 @@
 
     $('body').on('click', '#simpanReservasi', function(e) {
         e.preventDefault();
+        let button = $(this);
         let token = $('meta[name="csrf-token"]').attr('content');
         let id_trsv = $('#editReservasi').find('#id_trsv').val();
         let id_dbuku = $('#editReservasi').find('#id_dbuku').val();
@@ -40,6 +41,7 @@
         let trsv_tgl_reservasi = $('#editReservasi').find('#trsv_tgl_reservasi').val();
         let trsv_tgl_kadaluarsa = $('#editReservasi').find('#trsv_tgl_kadaluarsa').val();
         let trsv_tgl_pemberitahuan = $('#editReservasi').find('#trsv_tgl_pemberitahuan').val();
+        button.prop('disabled', true).html('Mohon Tunggu...');
 
         // Clear error messages
         $('#editReservasi').find('#buku-error').text('');
@@ -92,9 +94,10 @@
                         $('#editReservasi').find('#tgl-pemberitahuan-error').text(errors
                             .trsv_tgl_pemberitahuan[0]);
                     }
-                } else {
-                    console.log("Unexpected error:", xhr);
                 }
+            },
+            complete: function() {
+                button.prop('disabled', false).text('Simpan Perubahan');
             }
         });
     });
@@ -125,7 +128,7 @@
                     success: function(response) {
                         Swal.fire({
                             icon: 'success',
-                            title: 'Peminjaman Telah Dibatalkan',
+                            title: 'Reservasi Telah Dibatalkan',
                             html: `<p>${response.message}</p>`,
                             confirmButtonText: 'Ok',
                             timer: 3000,
@@ -137,15 +140,16 @@
         })
     });
     // ajax Create Reservasi
-    $('#storeReservasi').off('click').on('click', function(e) {
+    $('#storeReservasi').on('click', function(e) {
         e.preventDefault();
+        let button = $(this);
         // Ambil nilai dari form
         let id_dbuku = $('#reservasi').find('#id_dbuku').val();
         let id_usr = $('#reservasi').find('#id_dsiswa').val();
         let trks_tgl_reservasi = $('#reservasi').find('#trks_tgl_reservasi').val();
         let trsv_tgl_kadaluarsa = $('#reservasi').find('#trsv_tgl_kadaluarsa').val();
         let token = $("meta[name='csrf-token']").attr("content");
-
+        button.prop('disabled', true).html('Mohon Tunggu...');
         // Proses AJAX
         $.ajax({
             url: `reservasi/store`,
@@ -217,6 +221,9 @@
                     }
 
                 }
+            },
+            complete: function() {
+                button.prop('disabled', false).text('Simpan');
             }
         });
     });
@@ -259,7 +266,7 @@
 
     // clear modal reservasi
     $('.pengambilan').on('click', function() {
-        $('#pengambilan').find('input, select').val('');
+        $('#pengambilan').find('input, select').not('#id_dpustakawan').val('');
         $('#pengambilan').find('span').text('');
         $('#pengambilan').find('#trsv_tgl_pengambilan').val(new Date().toLocaleString('sv-SE', {
             timeZone: 'Asia/Jakarta'
@@ -275,7 +282,7 @@
         let id_usr = $(this).val();
         let token = $("meta[name='csrf-token']").attr("content");
         if (id_usr == "") {
-            $('#pengambilan').find('input, select').val('');
+            $('#pengambilan').find('input, select').not('#id_dpustakawan').val('');
             $('#pengambilan').find('#trsv_tgl_pengambilan').val(new Date().toLocaleString('sv-SE', {
                 timeZone: 'Asia/Jakarta'
             }).slice(0, 16));
@@ -336,8 +343,9 @@
     });
 
     // ajax Create Pengambilan
-    $('#storePengambilan').off('click').on('click', function(e) {
+    $('#storePengambilan').on('click', function(e) {
         e.preventDefault();
+        let button = $(this);
         // Ambil nilai dari form
         let id_dbuku = $('#pengambilan').find('#id_dbuku').val();
         let id_usr = $('#pengambilan').find('#id_dsiswa').val();
@@ -346,7 +354,9 @@
         let trsv_tgl_pengambilan = $('#pengambilan').find('#trsv_tgl_pengambilan').val();
         let trks_tgl_jth_tempo = $('#pengambilan').find('#trsv_jatuh_tempo').val();
         let id_trsv = $('#pengambilan').find('#id_trsv').val();
+        let id_dpustakawan = $('#pengambilan').find('#id_dpustakawan').val();
         let token = $("meta[name='csrf-token']").attr("content");
+        button.prop('disabled', true).text('Mohon Tunggu...');
         // Proses AJAX
         $.ajax({
             url: `pengambilan/store`,
@@ -355,7 +365,7 @@
             data: {
                 "id_dbuku": id_dbuku,
                 "id_trsv": id_trsv,
-                "id_dpustakawan": $('#pengambilan').find('#id_dpustakawan').val(),
+                "id_dpustakawan": id_dpustakawan,
                 "id_peminjam": id_usr,
                 "trks_tgl_reservasi": trks_tgl_reservasi,
                 "trks_tgl_jth_tempo": trks_tgl_jth_tempo,
@@ -454,6 +464,9 @@
                     }
 
                 }
+            },
+            complete: function() {
+                button.prop('disabled', false).text('Simpan');
             }
         });
     });
