@@ -214,7 +214,6 @@ class BukuController extends Controller
                     'dbuku_jml_total' => $request->dbuku_jml_total,
                     'dbuku_jml_tersedia' => $jml_tersedia,
                     'dbuku_edisi' => $request->dbuku_edisi,
-                    'dbuku_status' => 1,
                     'updated_at' => now('Asia/Jakarta'),
                 ]);
 
@@ -372,7 +371,7 @@ class BukuController extends Controller
                     'dbuku_jml_total' => $request->dbuku_jml_total,
                     'dbuku_jml_tersedia' => $request->dbuku_jml_total,
                     'dbuku_edisi' => $request->dbuku_edisi,
-                    'dbuku_status' => 1,
+                    'dbuku_status' => 0,
                     'created_at' => Carbon::now('Asia/Jakarta'),
                 ];
 
@@ -396,35 +395,42 @@ class BukuController extends Controller
                 $idb = Crypt::decryptString($id);
                 $b = dm_buku::find($idb);
 
-                // Check if the book has any associated records in dm_salinan_buku
-                $hasSalinan = dm_salinan_buku::where('id_dbuku', $idb)
-                    ->where('deleted_at', null)
-                    ->exists();
-
-                if ($hasSalinan) {
+                if (!$b) {
                     return response()->json([
                         'success' => false,
-                        'message' => 'Buku tidak dapat dihapus karena memiliki salinan!',
+                        'message' => 'Buku tidak ditemukan!',
+                    ], 404);
+                }
+
+                // Check if the book has any associated records in dm_salinan_buku
+                $hasNonZeroStatus = dm_salinan_buku::where('id_dbuku', $idb)
+                    ->where('deleted_at', null)
+                    ->where('dsbuku_status', '!=', 0) // Cek jika ada status bukan 0
+                    ->exists();
+
+                if ($hasNonZeroStatus) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Buku tidak dapat dihapus karena memiliki salinan yg sedang di reservasi atau di pinjam',
                     ], 403);
                 }
 
                 // Check if the flag is active
-                if ($b->dbuku_flag == 1) {
+                if ($b->dbuku_status == 1) { // Sesuaikan logika Anda untuk flag
                     return response()->json([
                         'success' => false,
-                        'message' => 'Buku tidak dapat dihapus karena flag aktif!',
+                        'message' => 'Buku tidak dapat dihapus karena sedang digunakan!',
                     ], 403);
                 }
 
                 // Proceed with deletion by setting the deleted_at timestamp
-                $b->dbuku_nama = $b->dbuku_nama . ' (deleted)';
+                $b->dbuku_judul = $b->dbuku_judul . ' (deleted)';
                 $b->deleted_at = Carbon::now('Asia/Jakarta');
                 $b->save();
 
                 // Optional: Update fields in dm_salinan_buku if needed
                 dm_salinan_buku::where('id_dbuku', $idb)->update([
                     'updated_at' => Carbon::now('Asia/Jakarta'),
-                    // Tambahkan kolom lain yang ingin diupdate jika diperlukan
                 ]);
 
                 // Return success response
@@ -432,7 +438,6 @@ class BukuController extends Controller
                     'success' => true,
                     'message' => 'Data Berhasil Dihapus!',
                 ]);
-
             }
 
             return response()->json([
