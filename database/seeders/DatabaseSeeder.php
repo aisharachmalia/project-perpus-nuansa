@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
             DmPenulisSeeder::class,
             DmPenerbitSeeder::class,
             DmKategoriSeeder::class,
-            DmBukuSeeder::class,
+            // DmBukuSeeder::class,
             // SiswaSeeder::class,
         ]);
     }

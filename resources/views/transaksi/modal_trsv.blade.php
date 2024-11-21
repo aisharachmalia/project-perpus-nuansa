@@ -80,11 +80,12 @@
                          id="pengambilanForm">
                          @csrf
                          @if ($role->id_role == 3)
-                            @php
-                                $id_pustakawan = \Crypt::encryptString(Auth::user()->id_usr);
-                            @endphp
-                            <input type="hidden" name="id_dpustakawan" id="id_dpustakawan" value="{{$id_pustakawan}}">
-                        @endif
+                                    @php
+                                        $id_pustakawan = \Crypt::encryptString(Auth::user()->id_usr);
+                                    @endphp
+                                    <input type="hidden" name="id_dpustakawan" id="id_dpustakawan"
+                                        value="{{ $id_pustakawan }}">
+                                @endif
                          <div class="row g-4">
                              <div class="col-md-4 col-12">
                                  <div class="form-group">

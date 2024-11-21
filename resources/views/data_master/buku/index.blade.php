@@ -219,6 +219,9 @@
 
             var form = $("#form_buku")[0];
             var data = new FormData(form);
+            let button = $(this);
+            button.prop('disabled', true).html('Mohon Tunggu...');
+
             $.ajax({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -311,8 +314,10 @@
                     } else {
                         console.log("Unexpected error structure:", xhr);
                     }
+                },
+                complete: function() {
+                    button.prop('disabled', false).html('Simpan');
                 }
-
             });
         });
 
@@ -361,6 +366,9 @@
             var form = $("#form_buku_upd")[0];
             var id_bk = $('#id_bk').val();
             var data = new FormData(form);
+
+            let button = $(this);
+            button.prop('disabled', true).html('Mohon Tunggu...');
 
             //ajax
             $.ajax({
@@ -474,6 +482,9 @@
                     } else {
                         console.log("Unexpected error structure:", xhr);
                     }
+                },
+                complete: function() {
+                    button.prop('disabled', false).html('Simpan');
                 }
             });
         });

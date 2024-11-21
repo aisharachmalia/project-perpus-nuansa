@@ -229,7 +229,6 @@
             let id_dsbk = $(this).data('id');
             let url = "{{ route('buku-salinan', ':id') }}";
             url = url.replace(':id', id_dsbk);
-            console.log(url);
 
 
             // Fetch detail post with ajax
@@ -258,7 +257,8 @@
             var form = $("#form_buku_salinan_upd")[0];
             var id_dsbk = $('#id_dsbk').val();
             var data = new FormData(form);
-            console.log(data);
+            let button = $(this);
+            button.prop('disabled', true).html('Mohon Tunggu...');
 
             let url = "{{ route('crud_dm_salinan_buku', ':id') }}";
             url = url.replace(':id', id_dsbk);
@@ -322,6 +322,9 @@
                     } else {
                         console.log("Unexpected error structure:", xhr);
                     }
+                },
+                complete: function() {
+                    button.prop('disabled', false).html('Simpan');
                 }
             });
         });
