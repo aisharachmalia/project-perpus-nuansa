@@ -51,7 +51,7 @@ class UsePageController extends Controller
     {
         $penerbit = \Crypt::decryptString($penerbit);
         $pnb = \DB::select("SELECT * FROM dm_penerbits
-                        WHERE dm_penerbits.deleted_at IS NULL AND dm_penerbits.id_dpenerbit = $penerbit AND;
+                        WHERE dm_penerbits.deleted_at IS NULL AND dm_penerbits.id_dpenerbit = $penerbit;
         ");
 
         // Dekripsi jika parameter diterima

@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Auth;
 */
 //
 Route::get('/', [App\Http\Controllers\UsePageController::class, 'berandaPage'])->name('beranda.page');
-Route::get('/rekomendasi-buku', [HomeController::class, 'rekomendasiBuku'])->name('rekomendasi.buku');
+Route::get('/rekomendasi-buku', [App\Http\Controllers\HomeController::class, 'rekomendasiBuku'])->name('rekomendasi.buku');
 Route::get('/tentang', [App\Http\Controllers\WebController::class, 'pageTentang'])->name('tentang');
 Route::get('/halaman-buku', [App\Http\Controllers\UsePageController::class, 'pageBuku'])->name('buku');
 Route::get('/search', [App\Http\Controllers\UsePageController::class, 'pageBuku'])->name('buku.search');
@@ -220,8 +220,7 @@ Route::get('/transaksi/detail', [TransaksiController::class, 'detail']);
 Route::get('/transaksi/detailBuku', [TransaksiController::class, 'detailBuku']);
 Route::delete('/transaksi/delete/{id}', [TransaksiController::class, 'delete'])->name('transaksi.delete');
 
-Route::get('/document/{id}', [App\Http\Controllers\BacaOnlineController::class, 'documentDetail'])->name('document.detail')
-->middleware('auth');
+Route::get('/document/{id}', [App\Http\Controllers\BacaOnlineController::class, 'documentDetail'])->name('document.detail');
 
 Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'index'])->name('profile');
 Route::post('/update-profile', [App\Http\Controllers\ProfileController::class, 'updateProfile'])->name('update_profile');
