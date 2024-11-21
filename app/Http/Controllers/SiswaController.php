@@ -15,6 +15,7 @@ use Illuminate\Support\Str;
 use App\Exports\SiswaExport;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -56,12 +57,12 @@ class SiswaController extends Controller
     public function show($id = null)
     {
         $id_dsiswa = Crypt::decryptString($id);
-        $siswa = \DB::table('dm_siswas')
+        $siswa = DB::table('dm_siswas')
             ->join('dm_kelas', 'dm_siswas.id_dkelas', '=', 'dm_kelas.id_dkelas')
             ->where('dm_siswas.id_dsiswa', $id_dsiswa)
             ->select('dm_siswas.*', 'dm_kelas.dkelas_nama_kelas')
             ->first();
-        $kelas = \DB::table('dm_kelas')->get();
+        $kelas = DB::table('dm_kelas')->get();
         $slc = '';
         foreach ($kelas as $mp) {
             $slc .= '<option value="' . $mp->id_dkelas . '" ' . ($mp->id_dkelas == $siswa->id_dkelas ? 'selected' : '') . '>' . $mp->dkelas_nama_kelas . '</option>';
@@ -72,123 +73,132 @@ class SiswaController extends Controller
 
     public function store(Request $request)
 {
-    // Validasi data
-    $validator = \Validator::make($request->all(), [
-        'dsiswa_nama' => 'required',
-        'dsiswa_nis' => 'required|numeric|unique:dm_siswas,dsiswa_nis',
-        'dsiswa_email' => 'required|email|unique:dm_siswas,dsiswa_email', 
-        'dsiswa_no_telp' => 'required|regex:/^\+?[\d\s\-]+$/|min:10|max:13|unique:dm_siswas,dsiswa_no_telp',
-        'dsiswa_alamat' => 'required',
-        'id_dkelas' => 'required',
-    ], [
-        'dsiswa_nama.required' => 'Nama harus diisi!',
-        'dsiswa_nis.required' => 'NIS harus diisi!',
-        'dsiswa_nis.numeric' => 'NIS harus berupa angka!',
-        'dsiswa_nis.unique' => 'NIS Sudah Terdaftar!',
-        'dsiswa_email.required' => 'Email harus diisi!',
-        'dsiswa_email.email' => 'Format email tidak valid!', 
-        'dsiswa_email.unique' => 'Email sudah terdaftar!',
-        'dsiswa_no_telp.required' => 'No. Telp harus diisi!',
-        'dsiswa_no_telp.regex' => 'No. Telp harus berformat angka yang benar!',
-        'dsiswa_no_telp.min' => 'No. Telp minimal 10 angka!',
-        'dsiswa_no_telp.max' => 'No. Telp maksimal 13 angka!',
-        'dsiswa_no_telp.unique' => 'No. Telp sudah terdaftar!',
-        'dsiswa_alamat.required' => 'Alamat harus diisi!',
-        'id_dkelas.required' => 'Kelas harus diisi!', 
-    ]);
+    try { // Tambahkan try di sini untuk menutupi keseluruhan logic
     
+        // Validasi data
+        $validator = Validator::make($request->all(), [
+            'dsiswa_nama' => 'required',
+            'dsiswa_nis' => 'required|numeric|unique:dm_siswas,dsiswa_nis',
+            'dsiswa_email' => 'required|email|unique:dm_siswas,dsiswa_email',  
+            'dsiswa_no_telp' => 'required|regex:/^\+?[\d\s\-]+$/|min:10|max:13|unique:dm_siswas,dsiswa_no_telp',
+            'dsiswa_alamat' => 'required',
+            'id_dkelas' => 'required',
+        ], [
+            'dsiswa_nama.required' => 'Nama harus diisi!',
+            'dsiswa_nis.required' => 'NIS harus diisi!',
+            'dsiswa_nis.numeric' => 'NIS harus berupa angka!',
+            'dsiswa_nis.unique' => 'NIS Sudah Terdaftar!',
+            'dsiswa_email.required' => 'Email harus diisi!',
+            'dsiswa_email.email' => 'Format email tidak valid!', 
+            'dsiswa_email.unique' => 'Email sudah terdaftar!',
+            'dsiswa_no_telp.required' => 'No. Telp harus diisi!',
+            'dsiswa_no_telp.regex' => 'No. Telp harus berformat angka yang benar!',
+            'dsiswa_no_telp.min' => 'No. Telp minimal 10 angka!',
+            'dsiswa_no_telp.max' => 'No. Telp maksimal 13 angka!',
+            'dsiswa_no_telp.unique' => 'No. Telp sudah terdaftar!',
+            'dsiswa_alamat.required' => 'Alamat harus diisi!',
+            'id_dkelas.required' => 'Kelas harus diisi!', 
+        ]);
+        
 
-    if ($validator->fails()) {
-        return response()->json([
-            'success' => false,
-            'errors' => $validator->errors(),
-        ], 422);
-    }
-
-
-    $existingSiswa = dm_siswa::where('dsiswa_nama', $request->dsiswa_nama)
-                             ->where('dsiswa_nis', $request->dsiswa_nis)
-                             ->where('dsiswa_email', $request->dsiswa_email)
-                             ->where('dsiswa_no_telp', $request->dsiswa_no_telp)
-                             ->where('dsiswa_alamat', $request->dsiswa_alamat)
-                             ->first();
-
-    if ($existingSiswa) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Data siswa dengan NIS, nama, email, atau no telp yang sama sudah ada!',
-        ], 409); 
-    }
-
-
-    $baseUsername = $request->dsiswa_nama;
-    $username = $baseUsername; 
-    $counter = 1;
-
-    while (User::where('usr_username', $username)->exists()) {
-        $username = $baseUsername . str_pad($counter, 3, '0', STR_PAD_LEFT);
-        $counter++;
-    }
-
-    // Proses pembuatan email unik jika sudah ada sebelumnya
-    $baseEmail = $request->dsiswa_email;
-    $email = $baseEmail;
-    $counter = 1;
-
-    while (User::where('usr_email', $email)->exists()) {
-        $email = $baseEmail . str_pad($counter, 3, '0', STR_PAD_LEFT);
-        $counter++;
-    }
-
-   $password = $this->generateRandomPassword();
-
-   $user = User::create([
-       'usr_nama' => $request->dsiswa_nama,
-       'usr_username' => $request->dsiswa_nama,
-       'usr_email' => $request->dsiswa_email,
-       'password' => bcrypt($password),
-   ]);
-
-
-   $siswa = dm_siswa::create([
-       'id_dkelas' => $request->id_dkelas,
-       'dsiswa_nama' => $request->dsiswa_nama,
-       'dsiswa_nis' => $request->dsiswa_nis,
-       'dsiswa_email' => $request->dsiswa_email,
-       'dsiswa_no_telp' => $request->dsiswa_no_telp,
-       'dsiswa_alamat' => $request->dsiswa_alamat,
-       'id_usr' => $user->id_usr,
-       'dsiswa_flag' => 0,
-   ]);
-
-
-   $data = [
-       'dsiswa_nama' => $siswa->dsiswa_nama,
-       'dsiswa_email' => $siswa->dsiswa_email,
-       'dsiswa_nis' => $siswa->dsiswa_nis,
-       'id_dkelas' => $siswa->dkelas_nama_kelas ?? 'Tidak ada kelas', 
-       'password' => $password,
-   ];
-
-   try {
-       Mail::send('mail.siswa_mail', ['data' => $data], function ($message) use ($siswa) {
-           $message->to($siswa->dsiswa_email)
-                   ->subject('Selamat Bergabung di NuansaBaca!');
-           $message->from('no-reply@nuansabaca.com', 'Perpustakaan NuansaBaca');
-       });
-
-       return response()->json([
-           'success' => true,
-           'message' => 'Data siswa berhasil disimpan dan email telah dikirim!',
-       ], 200);
-
-        } catch (\Exception $e) {
+        if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal mengirim email: ' . $e->getMessage(),
-            ], 500);
+                'errors' => $validator->errors(),
+            ], 422);
         }
+
+
+        $existingSiswa = dm_siswa::where('dsiswa_nama', $request->dsiswa_nama)
+                                ->where('dsiswa_nis', $request->dsiswa_nis)
+                                ->where('dsiswa_email', $request->dsiswa_email)
+                                ->where('dsiswa_no_telp', $request->dsiswa_no_telp)
+                                ->where('dsiswa_alamat', $request->dsiswa_alamat)
+                                ->first();
+
+        if ($existingSiswa) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data siswa dengan NIS, nama, email, atau no telp yang sama sudah ada!',
+            ], 409); 
+        }
+
+
+        $baseUsername = $request->dsiswa_nama;
+        $username = $baseUsername; 
+        $counter = 1;
+
+        while (User::where('usr_username', $username)->exists()) {
+            $username = $baseUsername . str_pad($counter, 3, '0', STR_PAD_LEFT);
+            $counter++;
+        }
+
+        // Proses pembuatan email unik jika sudah ada sebelumnya
+        $baseEmail = $request->dsiswa_email;
+        $email = $baseEmail;
+        $counter = 1;
+
+        while (User::where('usr_email', $email)->exists()) {
+            $email = $baseEmail . str_pad($counter, 3, '0', STR_PAD_LEFT);
+            $counter++;
+        }
+
+        $password = $this->generateRandomPassword();
+
+        $user = User::create([
+            'usr_nama' => $request->dsiswa_nama,
+            'usr_username' => $request->dsiswa_nama,
+            'usr_email' => $request->dsiswa_email,
+            'password' => Hash::make($password),
+        ]);
+
+
+        $siswa = dm_siswa::create([
+            'id_dkelas' => $request->id_dkelas,
+            'dsiswa_nama' => $request->dsiswa_nama,
+            'dsiswa_nis' => $request->dsiswa_nis,
+            'dsiswa_email' => $request->dsiswa_email,
+            'dsiswa_no_telp' => $request->dsiswa_no_telp,
+            'dsiswa_alamat' => $request->dsiswa_alamat,
+            'id_usr' => $user->id_usr,
+            'dsiswa_flag' => 0,
+        ]);
+
+
+        // Buat URL verifikasi
+        $url = route('verifikasi_user') . '/' . Crypt::encryptString($user->id_usr);
+
+        // Data untuk email
+        $data = [
+            'dsiswa_nama' => $siswa->dsiswa_nama,
+            'dsiswa_email' => $siswa->dsiswa_email,
+            'dsiswa_nis' => $siswa->dsiswa_nis,
+            'id_dkelas' => $siswa->dkelas_nama_kelas ?? 'Tidak ada kelas',
+            'password' => $password,
+            'url' => $url,
+        ];
+
+        // Kirim email
+        Mail::send('mail.siswa_mail', ['data' => $data], function ($message) use ($siswa) {
+            $message->to($siswa->dsiswa_email)
+                ->subject('Selamat Bergabung di NuansaBaca!');
+            $message->from('no-reply@nuansabaca.com', 'Perpustakaan Nuansa Baca');
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data siswa dan pengguna berhasil dibuat!',
+        ], 200);
+
+    } catch (\Exception $e) { // Perbaikan catch dan tutup try
+        return response()->json([
+            'success' => false,
+            'message' => 'Gagal menyimpan data atau mengirim email: ' . $e->getMessage(),
+        ], 500);
+    }
 }
+
+
 
 
 private function generateRandomPassword($length = 10)
@@ -206,9 +216,9 @@ private function generateRandomPassword($length = 10)
             $id_dsiswa = Crypt::decryptString($id);
     
             // Validasi data
-            $validator = \Validator::make($request->all(), [
+            $validator = Validator::make($request->all(), [
                 'dsiswa_nama' => 'required',
-                 'dsiswa_nis' => 'required|numeric|unique:dm_siswas,dsiswa_nis,' . $id_dsiswa . ',id_dsiswa',
+                'dsiswa_nis' => 'required|numeric|unique:dm_siswas,dsiswa_nis,' . $id_dsiswa . ',id_dsiswa',
                 'dsiswa_email' => 'required|email|unique:dm_siswas,dsiswa_email,' . $id_dsiswa . ',id_dsiswa',
                 'dsiswa_no_telp' => 'required|unique:dm_siswas,dsiswa_no_telp,' . $id_dsiswa . ',id_dsiswa|regex:/^\+?[\d\s\-]+$/|min:10|max:13',
                 'dsiswa_alamat' => 'required',
@@ -253,7 +263,6 @@ private function generateRandomPassword($length = 10)
                     'usr_nama' => $request->dsiswa_nama,
                     'usr_email' => $request->dsiswa_email,
                     'usr_stat' => $request->dsiswa_sts, 
-                    'password' => \Hash::make($request->dsiswa_no_telp),
                 ]);
             }
     
@@ -336,7 +345,7 @@ public function destroy($id = null)
     {
         try {
             $link = route('export_siswa');
-            return \Response::json(array('link' =>$link));
+            return Response::json(array('link' =>$link));
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -355,7 +364,7 @@ public function destroy($id = null)
     {
         try {
             $link = route('printout_siswa');
-            return \Response::json(array('link' =>$link));
+            return Response::json(array('link' =>$link));
         } catch (\Throwable $th) {
             throw $th;
         }
@@ -372,6 +381,7 @@ public function destroy($id = null)
     }
 }
 
-    }
+    
 
 // return $pdf->download('Printout Siswa.pdf');
+}

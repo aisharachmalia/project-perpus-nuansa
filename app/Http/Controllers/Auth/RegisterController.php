@@ -74,7 +74,7 @@ class RegisterController extends Controller
             Mail::send('mail.verifikasi',$array, function($message) use($array) {
                 $message->to($array['receive'])
                         ->subject($array['subject']);
-                $message->from('no-reply@project.com','Project PKL');
+                $message->from('no-reply@project.com','Perpustakaan Nuansa Baca');
             });
 
             return redirect()->route('login-usr')->with('success', 'Registrasi berhasil!.');
