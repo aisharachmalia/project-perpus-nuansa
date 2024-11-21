@@ -63,25 +63,28 @@
     </section>
 
     <!-- Buku Rekomendasi Section -->
+    @if ($datadepan->isNotEmpty())
     <section class="author">
         <div class="container5">
-        <h2 class="penulis">Rekomendasi Buku</h2>
-        <div class="container">
-            @foreach ($datadepan as $item)
-                <div class="carousel-items">
-                    <a style="text-decoration:none" href="{{ route('document.detail', ['id' => Crypt::encryptString($item->id_dbuku)]) }}">
-                        <img class="carousel-item__img" src="{{ $item->dbuku_cover }}"
-                            alt="{{ $item->dbuku_judul }}" />
-                    </a>
-                    <div class="carousel-item__details">
-                     
-                        <h5 class="carousel-item__details--title">{{ $item->dbuku_judul }}</h5>
+            <h2 class="penulis">Rekomendasi Buku</h2>
+            <div class="container">
+                @foreach ($datadepan as $item)
+                    <div class="carousel-items">
+                        <a style="text-decoration:none" href="{{ route('document.detail', ['id' => Crypt::encryptString($item->id_dbuku)]) }}">
+                            <img class="carousel-item__img" src="{{ $item->dbuku_cover }}" alt="{{ $item->dbuku_judul }}" />
+                        </a>
+                        <div class="carousel-item__details">
+                            <h5 class="carousel-item__details--title">{{ $item->dbuku_judul }}</h5>
+                        </div>
                     </div>
-                </div>
-            @endforeach
+                @endforeach
+            </div>
         </div>
-    </div>
     </section>
+@else
+    <p class="text-center">Tidak ada rekomendasi buku untuk ditampilkan.</p>
+@endif
+
 
     <!-- Penerbit Section -->
     <section class="author">

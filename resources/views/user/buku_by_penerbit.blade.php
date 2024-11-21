@@ -1,5 +1,8 @@
 @extends('userz')
 @section('content')
+<style>
+    
+</style>
     <section class="hero">
         <div class="container2">
             <h1 class="aesthetic-title">Nuansa Baca</h1>
@@ -22,19 +25,24 @@
                 {{-- Jika data buku kosong --}}
                 <p class="empty-data-message text-center">Tidak ada data buku untuk ditampilkan.</p>
             @else
-                <div class="row">
-                    @foreach ($buku as $item)
-                        <div class="col-2">
-                            <a href="{{ route('document.detail', ['id' => Crypt::encryptString($item->id_dbuku)]) }}">
-                                <div class="card card-penulis mb-3" style="max-width: 540px; position: relative;">
+            <div class="row">
+                @foreach ($buku as $item)
+                    <!-- Pastikan $items di-passing ke view -->
+                    <div class="carousel-items col-2">
+                        <a href="{{ route('document.detail', ['id' => Crypt::encryptString($item->id_dbuku)]) }}">
+                            <div class="card card-penulis mb-3" style="max-width: 540px; position: relative;">
                                     <img src="{{ asset('storage/cover/' . $item->dbuku_cover) }}"
-                                        class="img-fluid rounded-start" alt="{{ $item->dbuku_judul }}"
+                                        class="carousel-item__img" alt="{{ $item->dbuku_judul }}"
                                         style="height: 100%; width: 100%; object-fit: cover;">
-                                </div>
-                            </a>
+                            </div>
+                        </a>
+                        <div class="carousel-item__details">
+                     
+                            <h5 class="carousel-item__details--title">{{ $item->dbuku_judul }}</h5>
                         </div>
-                    @endforeach
-                </div>
+                    </div>
+                @endforeach
+            </div>
             @endif
         </div>
     </section>
