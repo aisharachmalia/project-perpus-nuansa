@@ -69,12 +69,13 @@
                     },
 
                     {
+                        class: "text-center",
                         data: 'dpustakawan_status',
                         render: function(data) {
                             if (data == 1) {
-                                return '<p class = "badge bg-success" > Aktif </p>';
+                                return '<span class="badge bg-success">Aktif</span>';
                             } else {
-                                return '<p class = "badge bg-danger" > Inaktif </p>'
+                                return '<span class="badge bg-warning">Tidak Aktif</span>';
                             }
                         }
                     },
