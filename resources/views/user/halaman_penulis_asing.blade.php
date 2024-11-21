@@ -89,14 +89,6 @@
         </div>
     </section>
 
-    <nav class="library-nav">
-        <ul>
-            @foreach ($penulisAsing as $item)
-                <li><a href="#{{ $item->id_dpenulis }}">{{ $item->dpenulis_nama_penulis }}</a></li>
-            @endforeach
-        </ul>
-    </nav>
-
     <h1 class="text-center mb-4 mt-5">Penulis Asing (Bukan dari Indonesia)</h1>   
     <div class="containers my-4">
         @if ($penulisAsing->isEmpty())

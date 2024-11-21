@@ -47,7 +47,7 @@ header {
     top: 0;
     left: 0;
     z-index: 1000;
-    background: rgba(33, 79, 40, 0.776);
+    background: rgba(63, 108, 54, 0.676);
     padding: 10px 0;
     transition: background 0.3s ease;
     height: 80px;
@@ -107,7 +107,7 @@ header.sticky {
 }
 
 .logo img {
-    width: 90px;
+    width: 120px;
     height: auto;
     max-height: 90%;
 }
@@ -176,7 +176,8 @@ nav a.active {
 }
 
 .hero {
-    background-image: url('https://media.houseandgarden.co.uk/photos/620bb44d47f811e6e7d15429/16:9/w_2580,c_limit/Annabelle-Holland.jpg');
+  background-image: url('{{ asset('assets/images/bg/hero-perpus.jpg') }}');
+
     /* Gambar latar belakang */
     background-size: cover;
     /* Memastikan gambar menutupi seluruh area */
