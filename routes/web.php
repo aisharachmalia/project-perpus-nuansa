@@ -63,7 +63,7 @@ Route::get('/verifikasi-user/{id?}', [App\Http\Controllers\Auth\VerificationCont
 //
 Auth::routes();
 
-Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('auth');
 Route::get('/total-data-dashboard', [App\Http\Controllers\HomeController::class, 'totalDataDashboard'])->name('total_data_dashboard');
 Route::get('/data-leaderboard', [App\Http\Controllers\HomeController::class, 'totalDataDashboard'])->name('data-leaderboard');
 Route::post('/update-chart', [App\Http\Controllers\HomeController::class, 'updateChart'])->name('update.chart');
