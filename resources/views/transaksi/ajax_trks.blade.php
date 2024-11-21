@@ -26,7 +26,7 @@
                     success: function(response) {
                         Swal.fire({
                             icon: 'success',
-                            title: 'Reservasi Telah Dibatalkan',
+                            title: 'Peminjaman Telah Dibatalkan',
                             html: `<p>${response.message}</p>`,
                             confirmButtonText: 'Ok',
                             timer: 3000,
@@ -40,15 +40,15 @@
     // ajax buat pinjaman
     $('body').on('click', '.modalCreate', function() {
         $('#tambahPeminjaman').find('span').text('');
-
+        $('#tambahPeminjaman').find('input, select').not('#id_dpustakawan').val('');
         $('#tambahPeminjaman').find('#trks_tgl_peminjaman').val(new Date().toLocaleString('sv-SE', {
             timeZone: 'Asia/Jakarta'
         }).slice(0, 16));
     });
 
     $('body').on('click', '.pengembalian', function() {
+        $('#pengembalian').find('input, select').not('#id_dpustakawan').val('');
         $('#pengembalian').find('span').text('');
-        $('#pengembalian').find('input, select').val('');
         $('#pengembalian').find('#id_dbuku').empty();
         $('#pengembalian').find('#id_dbuku').append(
             '<option value="">Pilih Buku</option>');
@@ -57,7 +57,7 @@
     $('#pengembalian').find('#id_dsiswa').on('change', function() {
         var id_usr = $(this).val();
         if (id_usr == '') {
-            $('#pengembalian').find('input, select').val('');
+            $('#pengembalian').find('input, select').not('#id_dpustakawan').val('');
             $('#pengembalian').find('#id_dbuku').empty();
             $('#pengembalian').find('#id_dbuku').append(
                 '<option value="">Pilih Buku</option>');
@@ -145,6 +145,7 @@
 
     $('#pengembalian').find('#simpan').on('click', function(e) {
         e.preventDefault();
+        let button = $(this);
         let id_usr = $('#pengembalian').find('#id_dsiswa').val();
         let token = $('meta[name="csrf-token"]').attr('content');
         let denda = $('#pengembalian').find('#trks_denda').val();
@@ -152,8 +153,10 @@
         let keterangan = $('#pengembalian').find('#trks_keterangan').val();
         let buku = $('#pengembalian').find('#id_dbuku').val();
         let jatuh_tempo = $('#pengembalian').find('#trks_tgl_jatuh_tempo').val();
+        let id_dpustakawan = $('#pengembalian').find('#id_dpustakawan').val();
         let peminjaman = $('#pengembalian').find('#trks_tgl_peminjaman').val();
         let tanggal_pengembalian = $('#pengembalian').find('#trks_tgl_pengembalian').val();
+        button.prop('disabled', true).text('Mohon Tunggu...');
         $.ajax({
             url: `/pengembalian`,
             type: "POST",
@@ -162,6 +165,7 @@
                 "_token": token,
                 "id_trks": id_trks,
                 "id_usr": id_usr,
+                "id_dpustakawan": id_dpustakawan,
                 "denda": denda,
                 "buku": buku,
                 "jatuh_tempo": jatuh_tempo,
@@ -216,16 +220,14 @@
 
 
                     if (errors.jatuh_tempo) {
-                        $('#pengembalian').find('#tgl-jatuh-tempo-error').text(errors.jatuh_tempo[
-                            0]);
+                        $('#pengembalian').find('#tgl-jatuh-tempo-error').text(errors.jatuh_tempo[0]);
                     } else {
                         $('#pengembalian').find('#tgl-jatuh-tempo-error').text('');
                     }
 
 
                     if (errors.keterangan) {
-                        $('#pengembalian').find('#keterangan-error').text(errors
-                            .keterangan[0]);
+                        $('#pengembalian').find('#keterangan-error').text(errors.keterangan[0]);
                     } else {
                         $('#pengembalian').find('#keterangan-error').text('');
                     }
@@ -237,13 +239,24 @@
                         $('#pengembalian').find('#denda-error').text('');
                     }
 
+                    if (errors.id_dpustakawan) {
+                        $('#pengembalian').find('#pustakawan-error').text(errors.id_dpustakawan[
+                            0]);
+                    } else {
+                        $('#pengembalian').find('#pustakawan-error').text('');
+                    }
+
                 }
+            },
+            complete: function() {
+                button.prop('disabled', false).text('Simpan');
             }
         });
     });
 
-    $('#storePinjaman').off('click').on('click', function(e) {
+    $('#storePinjaman').on('click', function(e) {
         e.preventDefault();
+        let button = $(this);
         // Mendapatkan nilai dari input
         let token = $('meta[name="csrf-token"]').attr('content');
         let id_dbuku = $('#pinjamanForm').find('#id_dbuku').val();
@@ -251,6 +264,8 @@
         let id_dpustakawan = $('#pinjamanForm').find('#id_dpustakawan').val();
         let trks_tgl_peminjaman = $('#pinjamanForm').find('#trks_tgl_peminjaman').val();
         let trks_tgl_jatuh_tempo = $('#pinjamanForm').find('#trks_tgl_jatuh_tempo').val();
+
+        button.prop('disabled', true).text('Mohon Tunggu...');
 
         $.ajax({
             url: '/peminjaman/add',
@@ -324,6 +339,9 @@
                         $('#tambahPeminjaman').find('#tgl-jatuh-tempo-error').text('');
                     }
                 }
+            },
+            complete: function() {
+                button.prop('disabled', false).text('Simpan');
             }
         });
     });
@@ -365,6 +383,7 @@
             activeModal = $('#editPengembalian');
             type = 'pengembalian';
         }
+        let button = $(this);
         // Define variable
         let token = $('meta[name="csrf-token"]').attr('content');
         let id_trks = activeModal.find('#id_trks').val();
@@ -376,7 +395,7 @@
         let trks_tgl_pengembalian = activeModal.find('#trks_tgl_pengembalian').val();
         let trks_denda = activeModal.find('#trks_denda').val();
         let trks_keterangan = activeModal.find('#trks_keterangan').val();
-
+        button.prop('disabled', true).text('Mohon Tunggu...');
 
         // Clear error messages
         activeModal.find('span').text('');
@@ -451,6 +470,9 @@
                     }
 
                 }
+            },
+            complete: function() {
+                button.prop('disabled', false).text('Simpan Perubahan');
             }
         });
     });

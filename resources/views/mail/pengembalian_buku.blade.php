@@ -80,14 +80,14 @@
         </div>
 
         <div class="content">
-            <p>Halo, <strong>{{ $data['dsiswa_nama'] }}</strong>!</p>
+            <p>Halo, <strong>{{ $data['usr_nama'] }}</strong>!</p>
             <p>Terima kasih telah mengembalikan buku yang Anda pinjam. Berikut adalah rincian pengembalian buku Anda:</p>
 
             <h3>Detail Pengembalian</h3>
             <table class="details">
                 <tr>
                     <th>Nama Peminjam</th>
-                    <td>{{ $data['dsiswa_nama'] }}</td>
+                    <td>{{ $data['usr_nama'] }}</td>
                 </tr>
                 <tr>
                     <th>Judul Buku</th>
