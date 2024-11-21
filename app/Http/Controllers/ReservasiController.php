@@ -114,9 +114,6 @@ class ReservasiController extends Controller
                 ->first();
 
             // Cek jika ada peminjaman aktif atau reservasi aktif
-            $dsbuku = dm_salinan_buku::where('id_dbuku', $buku)
-                ->where('dsbuku_status', 0)
-                ->first();
             if ($jbuku > 0) {
                 $reservasi = new trks_reservasis();
                 $reservasi->id_dbuku = $buku;
@@ -125,76 +122,80 @@ class ReservasiController extends Controller
                 $reservasi->trsv_tgl_reservasi = $tglReservasi;
                 $reservasi->trsv_tgl_kadaluarsa = $request->trsv_tgl_kadaluarsa;
                 $reservasi->save();
-                if ($dsbuku) {
-                    $dsbuku->dsbuku_status = 2;
-                    $dsbuku->dsbuku_flag = 1;
-                    $dsbuku->save();
-                }
+                $userDet = trks_reservasis::join('users', 'trks_reservasis.id_usr', '=', 'users.id_usr')
+                    ->where('trks_reservasis.id_trsv', $reservasi->id_trsv)
+                    ->join('dm_buku', 'dm_buku.id_dbuku', '=', 'trks_reservasis.id_dbuku')
+                    ->select('users.usr_nama', 'dm_buku.dbuku_judul', 'users.usr_email')->first();
 
+                // Kirim reservasi
+                $array = [
+                    'receive' => $userDet->usr_email,
+                    'subject' => 'Reservasi Buku',
+                    'data' => [
+                        'type' => 'reservasi',
+                        'usr_nama' => $userDet->usr_nama,
+                        'dbuku_judul' => $userDet->dbuku_judul,
+                        'trsv_tgl_reservasi' => $reservasi->trsv_tgl_reservasi = str_replace('T', ' ', $reservasi->trsv_tgl_reservasi),
+                        'trsv_tgl_kadaluarsa' => $reservasi->trsv_tgl_kadaluarsa = str_replace('T', ' ', $reservasi->trsv_tgl_kadaluarsa),
+                    ],
+                ];
+
+                Mail::send('mail.mail_reservasi', $array, function ($message) use ($array) {
+                    $message->to($array['receive'])
+                        ->subject($array['subject']);
+                    $message->from('nuansabaca2024@gmail.com', 'Nuansa Baca');
+                });
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Reservasi berhasil dibuat untuk buku ini.'
+                ]);
+            } else {
+                if (($peminjaman && $tglReservasi <= $peminjaman->trks_tgl_jatuh_tempo) ||
+                    ($trkhirReservasi && $tglReservasi <= $trkhirReservasi->trsv_tgl_kadaluarsa)
+                ) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Saat ini, buku ini tidak tersedia untuk reservasi. Silakan coba lagi nanti.'
+                    ]);
+                }
+                $reservasi = new trks_reservasis();
+                $reservasi->id_dbuku = $buku;
+                $reservasi->id_dsbuku = 0;
+                $reservasi->id_usr = $user;
+                $reservasi->trsv_tgl_reservasi = $tglReservasi;
+                $reservasi->trsv_tgl_kadaluarsa = $request->trsv_tgl_kadaluarsa;
+                $reservasi->save();
+                $userDet = trks_reservasis::join('users', 'trks_reservasis.id_usr', '=', 'users.id_usr')
+                    ->where('trks_reservasis.id_trsv', $reservasi->id_trsv)
+                    ->join('dm_buku', 'dm_buku.id_dbuku', '=', 'trks_reservasis.id_dbuku')
+                    ->select('users.usr_nama', 'dm_buku.dbuku_judul', 'users.usr_email')->first();
+
+                // Kirim reservasi
+                $array = [
+                    'receive' => $userDet->usr_email,
+                    'subject' => 'Reservasi Buku',
+                    'data' => [
+                        'type' => 'reservasi',
+                        'usr_nama' => $userDet->usr_nama,
+                        'dbuku_judul' => $userDet->dbuku_judul,
+                        'trsv_tgl_reservasi' => $reservasi->trsv_tgl_reservasi = str_replace('T', ' ', $reservasi->trsv_tgl_reservasi),
+                        'trsv_tgl_kadaluarsa' => $reservasi->trsv_tgl_kadaluarsa = str_replace('T', ' ', $reservasi->trsv_tgl_kadaluarsa),
+                    ],
+                ];
+
+                Mail::send('mail.mail_reservasi', $array, function ($message) use ($array) {
+                    $message->to($array['receive'])
+                        ->subject($array['subject']);
+                    $message->from('nuansabaca2024@gmail.com', 'Nuansa Baca');
+                });
                 return response()->json([
                     'success' => true,
                     'message' => 'Reservasi berhasil dibuat untuk buku ini.'
                 ]);
             }
-            if (($peminjaman && $tglReservasi <= $peminjaman->trks_tgl_jatuh_tempo) ||
-                ($trkhirReservasi && $tglReservasi <= $trkhirReservasi->trsv_tgl_kadaluarsa)
-            ) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Saat ini, buku ini tidak tersedia untuk reservasi. Silakan coba lagi nanti.'
-                ]);
-            }
-            $reservasi = new trks_reservasis();
-            $reservasi->id_dbuku = $buku;
-            $reservasi->id_dsbuku = 0;
-            $reservasi->id_usr = $user;
-            $reservasi->trsv_tgl_reservasi = $tglReservasi;
-            $reservasi->trsv_tgl_kadaluarsa = $request->trsv_tgl_kadaluarsa;
-            $reservasi->save();
-
-            if ($dsbuku) {
-                $dsbuku->dsbuku_status = 2;
-                $dsbuku->dsbuku_flag = 1;
-                $dsbuku->save();
-            }
-            
-            return response()->json([
-                'success' => true,
-                'message' => 'Reservasi berhasil dibuat untuk buku ini.'
-            ]);
-        
-
-            $userDet = trks_reservasis::join('users','trks_reservasis.id_usr','=','users.id_usr')
-            ->where('trks_reservasis.id_trsv',$reservasi->id_trsv)
-            ->join('dm_buku','dm_buku.id_dbuku','=','trks_reservasis.id_dbuku')
-            ->select('users.usr_nama','dmbuku.dbuku_judul')->get();
-
-            // Kirim reservasi
-            $array = [
-                'receive' => $userDet->usr_email,
-                'subject' => 'Reservasi Buku',
-                'data' => [
-                    'usr_nama' => $userDet->usr_nama,
-                    'dbuku_judul' => $namaBuku->dbuku_judul,
-                    'trsv_tgl_reservasi' => $reservasi->trsv_tgl_reservasi,
-                    'trsv_tgl_kadaluarsa' => $reservasi->trsv_tgl_kadaluarsa,
-                ],
-            ];
-
-            Mail::send('mail.mail_reservasi', $array, function ($message) use ($array) {
-                $message->to($array['receive'])
-                    ->subject($array['subject']);
-                $message->from('nuansabaca2024@gmail.com', 'Nuansa Baca');
-            });
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Reservasi berhasil dibuat dan email notifikasi telah dikirim.',
-        ]);
-    } catch (\Exception $th) {
-        throw $th;
-    }
-
+        } catch (\Exception $th) {
+            throw $th;
+        }
     }
     public function detailReservasi(Request $request)
     {
@@ -234,26 +235,28 @@ class ReservasiController extends Controller
         try {
             $rules = [
                 'id_dbuku' => 'required',
-                'trks_tgl_jth_tempo' => 'required|date',
                 'id_peminjam' => 'required',
                 'id_dpustakawan' => 'required',
                 'trks_tgl_reservasi' => 'required|date',
                 'trsv_tgl_kadaluarsa' => 'required|date',
-                'trsv_tgl_pengambilan' => 'required|date',
+                'trsv_tgl_pengambilan' => 'required|date|after:trks_tgl_reservasi',
                 'trks_tgl_jth_tempo' => 'required|date|after:trsv_tgl_pengambilan',
             ];
 
             $messages = [
                 'id_dbuku.required' => 'Buku harus dipilih.',
                 'id_peminjam.required' => 'Peminjam harus dipilih.',
+                'id_dpustakawan.required' => 'Pustakawan harus dipilih.',
                 'trks_tgl_reservasi.required' => 'Tanggal reservasi harus diisi.',
                 'trks_tgl_reservasi.date' => 'Tanggal reservasi harus berupa tanggal yang valid.',
                 'trsv_tgl_kadaluarsa.required' => 'Tanggal kadaluarsa harus diisi.',
                 'trsv_tgl_kadaluarsa.date' => 'Tanggal kadaluarsa harus berupa tanggal yang valid.',
                 'trsv_tgl_pengambilan.required' => 'Tanggal pengambilan harus diisi.',
                 'trsv_tgl_pengambilan.date' => 'Tanggal pengambilan harus berupa tanggal yang valid.',
+                'trsv_tgl_pengambilan.after' => 'Tanggal pengambilan harus setelah tanggal reservasi.',
                 'trks_tgl_jth_tempo.required' => 'Tanggal jatuh tempo harus diisi.',
                 'trks_tgl_jth_tempo.date' => 'Tanggal jatuh tempo harus berupa tanggal yang valid.',
+                'trks_tgl_jth_tempo.after' => 'Tanggal jatuh tempo harus setelah tanggal pengambilan.',
 
             ];
 
@@ -293,24 +296,25 @@ class ReservasiController extends Controller
                 $dsbuku->dsbuku_flag = 1;
                 $dsbuku->save();
 
-                $userDet = trks_reservasis::join('users','trks_reservasis.id_usr','=','users.id_usr')
-                ->where('trks_reservasis.id_trsv',$preservasi->id_trsv)
-                ->join('dm_buku','dm_buku.id_dbuku','=','trks_reservasis.id_dbuku')
-                ->select('users.usr_nama','dmbuku.dbuku_judul')->get();
-    
+                $userDet = trks_reservasis::join('users', 'trks_reservasis.id_usr', '=', 'users.id_usr')
+                    ->where('trks_reservasis.id_trsv', $preservasi->id_trsv)
+                    ->join('dm_buku', 'dm_buku.id_dbuku', '=', 'trks_reservasis.id_dbuku')
+                    ->select('users.usr_nama', 'dm_buku.dbuku_judul', 'users.usr_email')->first();
+
                 // Kirim reservasi pengambilan
                 $array = [
                     'receive' => $userDet->usr_email,
-                    'subject' => 'Reservasi Buku',
+                    'subject' => 'Pengambilan Buku Reservasi',
                     'data' => [
                         'usr_nama' => $userDet->usr_nama,
-                        'dbuku_judul' => $namaBuku->dbuku_judul,
-                        'trsv_tgl_reservasi' => $reservasi->trsv_tgl_reservasi,
-                        'trsv_tgl_kadaluarsa' => $reservasi->trsv_tgl_kadaluarsa,
+                        'dbuku_judul' => $userDet->dbuku_judul,
+                        'trsv_tgl_reservasi' => $preservasi->trsv_tgl_reservasi,
+                        'trsv_tgl_pengambilan' => $preservasi->trsv_tgl_pengambilan,
+                        'trsv_tgl_jatuh_tempo' => $request->trks_tgl_jth_tempo = str_replace('T', ' ', $request->trks_tgl_jth_tempo)
                     ],
                 ];
-    
-                Mail::send('mail.mail_reservasi', $array, function ($message) use ($array) {
+
+                Mail::send('mail.pengambilan', $array, function ($message) use ($array) {
                     $message->to($array['receive'])
                         ->subject($array['subject']);
                     $message->from('nuansabaca2024@gmail.com', 'Nuansa Baca');
@@ -332,7 +336,6 @@ class ReservasiController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            // Dekripsi ID jika terenkripsi
             $id_trsv = Crypt::decryptString($id);
             $id_usr = Crypt::decryptString($request->id_usr);
             $id_dbuku = Crypt::decryptString($request->id_dbuku);
@@ -370,7 +373,6 @@ class ReservasiController extends Controller
             $dsbuku = dm_salinan_buku::where('id_dbuku', $id_dbuku)
                 ->where('dsbuku_status', 0)
                 ->first();
-            $tbuku = dm_buku::find($id_dbuku);
             $bukulama = dm_buku::find($reservasi->id_dbuku);
 
             if (!$reservasi) {
@@ -468,6 +470,65 @@ class ReservasiController extends Controller
                 $buku->dbuku_flag = 0;
             }
             $buku->save();
+
+            $peminjamDet = $type === "reservasi"
+                ? trks_reservasis::join('users', 'users.id_usr', '=', 'trks_reservasis.id_usr')
+                ->join('dm_buku', 'dm_buku.id_dbuku', '=', 'trks_reservasis.id_dbuku')
+                ->select(
+                    'users.usr_email',
+                    'users.usr_nama',
+                    'dm_buku.dbuku_judul',
+                    'trks_reservasis.trsv_tgl_reservasi',
+                    'trks_reservasis.trsv_tgl_kadaluarsa'
+                )
+                ->where('trks_reservasis.id_trsv', $id)
+                ->first()
+                : Transaksi::join('users', 'users.id_usr', '=', 'trks_transaksi.id_usr')
+                ->join('dm_buku', 'dm_buku.id_dbuku', '=', 'trks_transaksi.id_dbuku')
+                ->select(
+                    'users.usr_email',
+                    'users.usr_nama',
+                    'dm_buku.dbuku_judul',
+                    'trks_transaksi.trks_tgl_peminjaman',
+                    'trks_transaksi.trks_tgl_jatuh_tempo'
+                )
+                ->where('trks_transaksi.id_trks', $id)
+                ->first();
+
+            if ($type === "peminjaman") {
+                $array = [
+                    'receive' => $peminjamDet->usr_email,
+                    'subject' => 'Pembatalan Peminjaman Buku',
+                    'data' => [
+                        'type' => 'peminjaman',
+                        'dbuku_judul' => $peminjamDet->dbuku_judul,
+                        'usr_nama' => $peminjamDet->usr_nama,
+                        'trks_tgl_peminjaman' => $peminjamDet->trks_tgl_peminjaman = str_replace('T', ' ', $peminjamDet->trks_tgl_peminjaman),
+                        'trks_tgl_jatuh_tempo' => $peminjamDet->trks_tgl_jatuh_tempo = str_replace('T', ' ', $peminjamDet->trks_tgl_jatuh_tempo),
+                    ],
+                ];
+            } else {
+                $array = [
+                    'receive' => $peminjamDet->usr_email,
+                    'subject' => 'Pembatalan Reservasi',
+                    'data' => [
+                        'type' => 'reservasi',
+                        'dbuku_judul' => $peminjamDet->dbuku_judul,
+                        'usr_nama' => $peminjamDet->usr_nama,
+                        'trsv_tgl_reservasi' => $peminjamDet->trsv_tgl_reservasi = str_replace('T', ' ', $peminjamDet->trsv_tgl_reservasi),
+                        'trsv_tgl_kadaluarsa' => $peminjamDet->trsv_tgl_kadaluarsa = str_replace('T', ' ', $peminjamDet->trsv_tgl_kadaluarsa),
+                    ],
+                ];
+            }
+
+
+            // Kirim email
+            Mail::send('mail.mail_pembatalan_transaksi', $array, function ($message) use ($array) {
+                $message->to($array['receive'])
+                    ->subject($array['subject']);
+                $message->from('nuansabaca2024@gmail.com', 'Nuansa Baca');
+            });
+
             $message = $type === "reservasi" ? 'Reservasi berhasil dibatalkan!' : 'Transaksi berhasil dibatalkan!';
             return response()->json(['message' => $message]);
         } catch (\Throwable $th) {

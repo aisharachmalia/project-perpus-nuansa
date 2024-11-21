@@ -76,12 +76,27 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Reservasi Buku Tersedia</h1>
+            <h1>
+                @if ($data['type'] == 'reservasi')
+                    Detail Reservasi
+                @else
+                    Buku Reservasi Tersedia
+                @endif
+            </h1>
         </div>
 
         <div class="content">
-            <p>Halo, <strong>{{ $data['usr_nama'] }}</strong>!</p>
-            <p>Reservasi Anda untuk buku dengan judul <strong>{{ $data['dbuku_judul'] }}</strong> sudah tersedia.</p>
+            @if ($data['type'] == 'reservasi')
+                <p>Halo, <strong>{{ $data['usr_nama'] }}</strong>!</p>
+                <p>Reservasi Anda untuk buku <strong>{{ $data['dbuku_judul'] }}</strong> telah berhasil dilakukan.
+                    Pastikan Anda mengambil buku ini sebelum tanggal kadaluarsa reservasi.</p>
+                <p>Berikut adalah detail reservasi Anda:</p>
+            @else
+                <p>Halo, <strong>{{ $data['usr_nama'] }}</strong>!</p>
+                <p>Buku yang Anda reservasi dengan judul <strong>{{ $data['dbuku_judul'] }}</strong> sudah tersedia dan
+                    dapat diambil di perpustakaan.</p>
+                <p>Berikut adalah detail reservasi Anda:</p>
+            @endif
 
             <h3>Detail Reservasi</h3>
             <table class="details">
@@ -99,12 +114,12 @@
                 </tr>
             </table>
 
-            <p>Silakan datang ke perpustakaan untuk mengambil buku Anda.</p>
+            <p>Silakan datang ke perpustakaan sebelum tanggal kadaluarsa untuk mengambil buku Anda.</p>
             <p>Terima kasih telah menggunakan layanan reservasi kami!</p>
         </div>
 
         <div class="footer">
-            <p>Salam hangat,<br>Tim Perpustakaan Nuansa Baca</p>
+            <p>Salam hangat,<br>Tim Perpustakaan Sekolah</p>
         </div>
     </div>
 </body>

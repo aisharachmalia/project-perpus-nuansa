@@ -220,16 +220,14 @@
 
 
                     if (errors.jatuh_tempo) {
-                        $('#pengembalian').find('#tgl-jatuh-tempo-error').text(errors.jatuh_tempo[
-                            0]);
+                        $('#pengembalian').find('#tgl-jatuh-tempo-error').text(errors.jatuh_tempo[0]);
                     } else {
                         $('#pengembalian').find('#tgl-jatuh-tempo-error').text('');
                     }
 
 
                     if (errors.keterangan) {
-                        $('#pengembalian').find('#keterangan-error').text(errors
-                            .keterangan[0]);
+                        $('#pengembalian').find('#keterangan-error').text(errors.keterangan[0]);
                     } else {
                         $('#pengembalian').find('#keterangan-error').text('');
                     }
@@ -239,6 +237,13 @@
                         $('#pengembalian').find('#denda-error').text(errors.denda[0]);
                     } else {
                         $('#pengembalian').find('#denda-error').text('');
+                    }
+
+                    if (errors.id_dpustakawan) {
+                        $('#pengembalian').find('#pustakawan-error').text(errors.id_dpustakawan[
+                            0]);
+                    } else {
+                        $('#pengembalian').find('#pustakawan-error').text('');
                     }
 
                 }
@@ -390,7 +395,7 @@
         let trks_tgl_pengembalian = activeModal.find('#trks_tgl_pengembalian').val();
         let trks_denda = activeModal.find('#trks_denda').val();
         let trks_keterangan = activeModal.find('#trks_keterangan').val();
-button.prop('disabled', true).text('Mohon Tunggu...');
+        button.prop('disabled', true).text('Mohon Tunggu...');
 
         // Clear error messages
         activeModal.find('span').text('');
