@@ -67,6 +67,7 @@ class BacaOnlineController extends Controller
                 // Perbarui entri yang sudah ada
                 $bacaOnline->update([
                     'tgl_mulai_baca' => now("Asia/Jakarta"),
+                    'tgl_selesai_baca' => null,
                     'status_baca' => 1,
                 ]);
             }

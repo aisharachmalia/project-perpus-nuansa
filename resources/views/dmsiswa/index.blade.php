@@ -502,7 +502,10 @@
     
         $('#store').off('click').on('click', function(e) {
             e.preventDefault();
-    
+            
+            let button = $(this);
+            button.prop('disabled', true).html('Mohon Tunggu...');
+
             let dsiswa_nama = $('#create').find('#dsiswa_nama').val();
             let dsiswa_nis = $('#create').find('#dsiswa_nis').val();
             let dsiswa_email = $('#create').find('#dsiswa_email').val();
@@ -558,6 +561,9 @@
                     } else {
                         console.log("Unexpected error:", xhr);
                     }
+                },
+                complete: function() {
+                    button.prop('disabled', false).html('Simpan');
                 }
             });
         });
@@ -637,6 +643,9 @@
                 let dsiswa_nis = $('#edit').find('#dsiswa_nis').val();
                 let dsiswa_email = $('#edit').find('#dsiswa_email').val();
                 let dsiswa_no_telp = $('#edit').find('#dsiswa_no_telp').val();
+
+                let button = $(this);
+                button.prop('disabled', true).html('Mohon Tunggu...');
 
                 // Ambil nilai dsiswa_sts dari radio button yang dipilih
                 let dsiswa_sts = $('input[name="dsiswa_sts"]:checked').val(); // Update bagian ini
@@ -734,6 +743,9 @@
                         } else {
                             console.log("Unexpected error:", xhr);
                         }
+                    },
+                    complete: function() {
+                        button.prop('disabled', false).html('Simpan');   
                     }
                 });
             });
