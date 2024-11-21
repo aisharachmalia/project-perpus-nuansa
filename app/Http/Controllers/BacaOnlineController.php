@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 
 class BacaOnlineController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('login-usr');
+    }
     public function documentDetail($id = null)
     {
         $id = \Crypt::decryptString($id);
@@ -20,14 +24,11 @@ class BacaOnlineController extends Controller
                     FROM dm_buku 
                     LEFT JOIN dm_penulis ON dm_buku.id_dpenulis = dm_penulis.id_dpenulis 
                     LEFT JOIN dm_penerbits ON dm_buku.id_dpenerbit = dm_penerbits.id_dpenerbit 
-                    WHERE dm_buku.id_dbuku = $id; 
-        
-        "
+                    WHERE dm_buku.id_dbuku = ?;", [$id]
         );
-
         return view(
             'data_master.buku.baca_online',
-            ['bk' => $bk[0],]
+            ['bk' => $bk[0]]
         );
     }
 

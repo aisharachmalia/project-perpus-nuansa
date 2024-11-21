@@ -527,7 +527,13 @@ body {
   padding-left: 20px !important;
   color: #333;
 }
-
+.empty-data-message {
+            text-align: center;
+            color: #888;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-top: 40px;
+        }
 
 .carousel {
   width: 100%;

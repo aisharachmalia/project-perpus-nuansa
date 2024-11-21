@@ -15,13 +15,24 @@
     </head>
 <style>
   
+  .hero {
+                background-color: #277a32;
+                color: white;
+                padding: 50px 0;
+                text-align: center;
+            }
+            .hero h1 {
+                font-size: 3rem;
+                font-weight: bold;
+            }
 </style>
 <body>
 @extends('userz')
 @section('content')
 <section class="hero">
-    <div class="container2">
-        <h1 class="aesthetic-title">Nuansa Baca</h1>
+    <div class="container">
+        <h1>Tentang Nuansa Baca</h1>
+        <p class="lead">Kemudahan akses literasi untuk semua.</p>
     </div>
 </section>
     <section class="about">

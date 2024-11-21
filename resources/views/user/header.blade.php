@@ -18,12 +18,13 @@
         <!-- Login Button or User Dropdown (Aligned Right) -->
         <div class="header-login login-section">
             @guest
-                <a href="{{ route('login-usr') }}" style="color: white">
+                <a style="text-decoration:none"  href="{{ route('login-usr') }}" style="color: white">
                     <i class="bi bi-door-open-fill"></i> Login
                 </a>
             @else
+            <i class="bi bi-person-fill" style="color: white"></i>&nbsp;
                 <div class="nav-item dropdown">
-                    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: white">
+                    <a style="text-decoration:none"  id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: white">
                         {{ Auth::user()->usr_nama }}
                     </a>
                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
