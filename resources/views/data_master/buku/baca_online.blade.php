@@ -239,7 +239,7 @@
                                 type: "GET", // Request metode
                                 success: function() {
                                     window.location.href =
-                                    "/login-usr"; // Redirect setelah login berhasil
+                                        "/login-usr"; // Redirect setelah login berhasil
                                 },
                                 error: function() {
                                     Swal.fire({
@@ -309,7 +309,22 @@
                             icon: 'error',
                             confirmButtonText: 'OK'
                         }).then(() => {
-                            window.location.href = "/login-usr"; // Redirect ke halaman login
+                            $.ajax({
+                                url: "/login-usr", // URL ke halaman login
+                                type: "GET", // Request metode
+                                success: function() {
+                                    window.location.href =
+                                        "/login-usr"; // Redirect setelah login berhasil
+                                },
+                                error: function() {
+                                    Swal.fire({
+                                        title: 'Terjadi Kesalahan',
+                                        text: 'Gagal mengarahkan ke halaman login.',
+                                        icon: 'error',
+                                        confirmButtonText: 'OK'
+                                    });
+                                }
+                            });
                         });
                         throw new Error('Unauthorized'); // Hentikan eksekusi lebih lanjut
                     }
