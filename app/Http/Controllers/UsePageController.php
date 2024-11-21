@@ -54,12 +54,14 @@ class UsePageController extends Controller
     
         // Ambil data penerbit dengan query
         $pnb = \DB::select("SELECT * FROM dm_penerbits
-            WHERE dm_penerbits.deleted_at IS NULL AND dm_penerbits.id_dpenerbit = ?", [$penerbit]);
-    
-        // Ambil data buku berdasarkan penerbit
-        $buku = dm_buku::where('id_dpenerbit', $penerbit)->whereNotNull('dbuku_file')->get();
-    
-        // Return ke view
+                        WHERE dm_penerbits.deleted_at IS NULL AND dm_penerbits.id_dpenerbit = $penerbit;
+        ");
+
+        // Dekripsi jika parameter diterima
+        if ($penerbit) {
+            $buku = dm_buku::where('id_dpenerbit', $penerbit)->whereNotNull('dbuku_file')->get();
+        }
+
         return view('user.buku_by_penerbit', compact('buku', 'pnb'));
     }
     
