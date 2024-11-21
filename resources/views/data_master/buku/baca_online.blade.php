@@ -239,7 +239,7 @@
                                 type: "GET", // Request metode
                                 success: function() {
                                     window.location.href =
-                                        "{{ route('login-usr') }}"; // Redirect setelah login berhasil
+                                        "/login-usr"; // Redirect setelah login berhasil
                                 },
                                 error: function() {
                                     Swal.fire({
@@ -310,12 +310,11 @@
                             confirmButtonText: 'OK'
                         }).then(() => {
                             $.ajax({
-
-                                url: "", // URL ke halaman login
+                                url: "/login-usr", // URL ke halaman login
                                 type: "GET", // Request metode
                                 success: function() {
                                     window.location.href =
-                                        "{{ route('login-usr') }}"; // Redirect setelah login berhasil
+                                        "/login-usr"; // Redirect setelah login berhasil
                                 },
                                 error: function() {
                                     Swal.fire({
