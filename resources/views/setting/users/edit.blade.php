@@ -32,6 +32,8 @@
         let status = $('#edit').find('#status:checked').val();
         let token = $("meta[name='csrf-token']").attr("content");
 
+        let button = $(this);
+        button.prop('disabled', true).html('Mohon Tunggu...');
 
         //ajax
         $.ajax({
@@ -79,6 +81,9 @@
                         $('#edit').find('#email_error').text('');
                     }
                 }
+            },
+            complete: function() {
+                button.prop('disabled', false).html('simpan');
             }
         });
     });

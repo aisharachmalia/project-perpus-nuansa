@@ -159,6 +159,9 @@
             let dpustakawan_alamat = $('#create').find('#dpustakawan_alamat').val();
             let token = $("meta[name='csrf-token']").attr("content");
 
+            let button = $(this);
+            button.prop('disabled', true).html('Mohon Tunggu...');
+
             $('#create').find('#nama-error').text('');
             $('#create').find('#email-error').text('');
             $('#create').find('#telp-error').text('');
@@ -214,6 +217,9 @@
                     } else {
                         console.log("Unexpected error:", xhr);
                     }
+                },
+                complete: function() {
+                    button.prop('disabled', false).html('Simpan');
                 }
             });
 
@@ -261,6 +267,9 @@
         let dpustakawan_no_telp = $('#edit').find('#dpustakawan_no_telp').val();
         let dpustakawan_status = $('#edit').find('input[name="dpustakawan_status"]:checked').val();
         let dpustakawan_alamat = $('#edit').find('#dpustakawan_alamat').val();
+
+        let button = $(this);
+        button.prop('disabled', true).html('Mohon Tunggu...');
 
         // Clear error messages
         $('#edit').find('.error-message').text('');
@@ -328,6 +337,9 @@
                 } else {
                     console.log("Unexpected error:", xhr);
                 }
+            },
+            complete: function() {
+                button.prop('disabled', false).html('Simpan');
             }
         });
     });

@@ -113,7 +113,7 @@
                         <i class="bx bx-x d-block d-sm-none"></i>
                         <span class="d-none d-sm-block">Tutup</span>
                     </button>
-                    <button type="submit" class="btn btn-primary ml-1" data-bs-dismiss="modal" id="update">
+                    <button type="submit" class="btn btn-primary ml-1" id="update">
                         <i class="bx bx-check d-block d-sm-none"></i>
                         <span class="d-none d-sm-block">Simpan</span>
                     </button>
@@ -192,6 +192,9 @@
         $(document).on('click', '#update', function(e) {
             e.preventDefault();
             //define variable
+            let button = $(this);
+            button.prop('disabled', true).html('Mohon Tunggu...');
+            
             let id_usr = $('#reset').find('#usr_id').val();
             let password = $('#reset').find('#password').val();
             let token = $("meta[name='csrf-token']").attr("content");
@@ -214,6 +217,12 @@
                         showConfirmButton: false,
                         timer: 3000
                     });
+
+                    $('#reset').modal('hide');
+                    $('.modal-backdrop').remove();
+                },
+                complete: function() {
+                    button.prop('disabled', false).html('Simpan');
                 }
             });
         });
