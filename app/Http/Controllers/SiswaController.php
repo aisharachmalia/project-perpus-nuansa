@@ -285,7 +285,7 @@ private function generateRandomPassword($length = 10)
 public function destroy($id = null)
 {
     try {
-        // Cek apakah ID ada atau valid
+
         if (is_null($id)) {
             return response()->json([
                 'success' => false,
@@ -293,13 +293,12 @@ public function destroy($id = null)
             ], 400);
         }
 
-        // Decrypt ID siswa
+
         $id_dsiswa = Crypt::decryptString($id);     
 
-        // Temukan siswa berdasarkan ID   
         $siswa = Dm_siswa::find($id_dsiswa);
 
-        // Cek apakah siswa ditemukan
+
         if (!$siswa) {
             return response()->json([
                 'success' => false,
@@ -307,7 +306,7 @@ public function destroy($id = null)
             ], 404);
         }
 
-        // Cek apakah siswa sudah melakukan transaksi berdasarkan id_usr
+
         $transaksiCount = Transaksi::where('id_usr', $siswa->id_usr)->count();
 
         if ($transaksiCount > 0) {
@@ -319,13 +318,12 @@ public function destroy($id = null)
             ], 403);
         }
 
-        // Hapus data dari tabel users berdasarkan id_usr di tabel dm_siswas
+
         $user = User::where('id_usr', $siswa->id_usr)->first();
         if ($user) {
             $user->delete();
         }
 
-        // Hapus data siswa
         $siswa->delete();
 
         return response()->json([
