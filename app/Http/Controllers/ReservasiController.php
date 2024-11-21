@@ -7,9 +7,11 @@ use App\Models\trks_reservasis;
 use App\Models\User;
 use App\Models\dm_salinan_buku;
 use App\Models\Transaksi;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -174,14 +176,44 @@ class ReservasiController extends Controller
                     $tbuku->save();
                 }
             }
-
+            
             return response()->json([
                 'success' => true,
                 'message' => 'Reservasi berhasil dibuat untuk buku ini.'
             ]);
-        } catch (\Exception $th) {
-            throw $th;
-        }
+        
+
+            $userDet = trks_reservasis::join('users','trks_reservasis.id_usr','=','users.id_usr')
+            ->where('trks_reservasis.id_trsv',$reservasi->id_trsv)
+            ->join('dm_buku','dm_buku.id_dbuku','=','trks_reservasis.id_dbuku')
+            ->select('users.usr_nama','dmbuku.dbuku_judul')->get();
+
+            // Kirim reservasi
+            $array = [
+                'receive' => $userDet->usr_email,
+                'subject' => 'Reservasi Buku',
+                'data' => [
+                    'usr_nama' => $userDet->usr_nama,
+                    'dbuku_judul' => $namaBuku->dbuku_judul,
+                    'trsv_tgl_reservasi' => $reservasi->trsv_tgl_reservasi,
+                    'trsv_tgl_kadaluarsa' => $reservasi->trsv_tgl_kadaluarsa,
+                ],
+            ];
+
+            Mail::send('mail.mail_reservasi', $array, function ($message) use ($array) {
+                $message->to($array['receive'])
+                    ->subject($array['subject']);
+                $message->from('nuansabaca2024@gmail.com', 'Nuansa Baca');
+            });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Reservasi berhasil dibuat dan email notifikasi telah dikirim.',
+        ]);
+    } catch (\Exception $th) {
+        throw $th;
+    }
+
     }
     public function detailReservasi(Request $request)
     {
@@ -275,6 +307,29 @@ class ReservasiController extends Controller
                 $dsbuku->dsbuku_status = 1;
                 $dsbuku->dsbuku_flag = 1;
                 $dsbuku->save();
+
+                $userDet = trks_reservasis::join('users','trks_reservasis.id_usr','=','users.id_usr')
+                ->where('trks_reservasis.id_trsv',$preservasi->id_trsv)
+                ->join('dm_buku','dm_buku.id_dbuku','=','trks_reservasis.id_dbuku')
+                ->select('users.usr_nama','dmbuku.dbuku_judul')->get();
+    
+                // Kirim reservasi pengambilan
+                $array = [
+                    'receive' => $userDet->usr_email,
+                    'subject' => 'Reservasi Buku',
+                    'data' => [
+                        'usr_nama' => $userDet->usr_nama,
+                        'dbuku_judul' => $namaBuku->dbuku_judul,
+                        'trsv_tgl_reservasi' => $reservasi->trsv_tgl_reservasi,
+                        'trsv_tgl_kadaluarsa' => $reservasi->trsv_tgl_kadaluarsa,
+                    ],
+                ];
+    
+                Mail::send('mail.mail_reservasi', $array, function ($message) use ($array) {
+                    $message->to($array['receive'])
+                        ->subject($array['subject']);
+                    $message->from('nuansabaca2024@gmail.com', 'Nuansa Baca');
+                });
 
                 return response()->json(['message' => 'Buku reservasi berhasil diambil!']);
             } else {

@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Peminjaman Buku</title>
+    <title>Selamat Datang di NuansaBaca!</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -68,52 +68,58 @@
             padding: 10px 0;
             border-top: 1px solid #ddd;
         }
+        
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            border-radius: 4px;
+            font-size: 16px;
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
         <div class="header">
-            <h1>Peminjaman Buku</h1>
+            <h1>Selamat Datang di NuansaBaca!</h1>
         </div>
 
         <div class="content">
-            <p>Halo, <strong>{{ $data['usr_nama'] }}</strong>!</p>
-            <p>Berikut adalah rincian peminjaman buku Anda:</p>
+            <p>Halo, <strong>{{ $data['dpustakawan_nama'] }}</strong>!</p>
+            <p>Terima kasih telah bergabung dengan keluarga besar <strong>NuansaBaca</strong>. Kami sangat senang memiliki Anda sebagai Pustakaawan!</p>
 
-            <h3>Detail Peminjaman</h3>
+            <h3>Detail Pustakaawan Anda</h3>
             <table class="details">
                 <tr>
-                    <th>Nama Peminjam</th>
-                    <td>{{ $data['usr_nama'] }}</td>
+                    <th>Nama Anggota</th>
+                    <td>{{ $data['dpustakawan_nama'] }}</td>
                 </tr>
                 <tr>
-                    <th>Judul Buku</th>
-                    <td>{{ $data['dbuku_judul'] }}</td>
+                    <th>Email</th>
+                    <td>{{ $data['dpustakawan_email'] }}</td>
                 </tr>
                 <tr>
-                    <th>Tanggal Peminjaman</th>
-                    <td>{{ $data['trks_tgl_peminjaman'] }}</td>
-                </tr>
-                <tr>
-                    <th>Tanggal Jatuh Tempo</th>
-                    <td>{{ $data['trks_tgl_jatuh_tempo'] }}</td>
+                    <th>Password</th>
+                    <td>{{ $password }}</td>
                 </tr>
             </table>
 
-            <p>Jika Anda tidak merasa melakukan transaksi ini, silakan abaikan email ini.</p>
+            <p>Jangan ragu untuk menjelajahi koleksi buku kami yang beragam. Nikmati pengalaman membaca terbaik!</p>
+            <p>Jika Anda tidak merasa melakukan pendaftaran ini, silakan abaikan email ini.</p>
+
+            <p>klik di bawah ini untuk verifikasi email</p>
+            <a href="{{ $url }}" class="button">Verifikasi Email</a>
             
         </div>
 
         <div class="footer">
-            <p>Salam hangat,<br>Tim Perpustakaan Nuansa Baca</p>
+            <p>Salam hangat,<br>Tim Perpustakaan NuansaBaca</p>
         </div>
     </div>
 </body>
 
 </html>
-
-
-
-
-
