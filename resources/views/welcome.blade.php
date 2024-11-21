@@ -27,7 +27,7 @@
             <div class="row">
                 <!-- Penulis Favorit -->
                 <div class="col-4">
-                    <a href="{{ route('penulis.favorit') }}" class="text-decoration-none">
+                    <a style="text-decoration:none" href="{{ route('penulis.favorit') }}" class="text-decoration-none">
                         <div class="card card-penulis mb-3" style="max-width: 540px;">
                             <img src="https://i.pinimg.com/enabled_lo/564x/24/95/63/2495635bcea49ecfc842dd5d2b94d85e.jpg"
                                 class="img-fluid rounded-start" alt="Penulis Favorit"
@@ -38,7 +38,7 @@
                 </div>
                 <!-- Penulis Asing -->
                 <div class="col-4">
-                    <a href="{{ route('penulis.asing') }}" class="text-decoration-none">
+                    <a style="text-decoration:none" href="{{ route('penulis.asing') }}" class="text-decoration-none">
                         <div class="card card-penulis mb-3" style="max-width: 540px;">
                             <img src="https://i.pinimg.com/enabled_lo/564x/24/95/63/2495635bcea49ecfc842dd5d2b94d85e.jpg"
                                 class="img-fluid rounded-start" alt="Penulis Asing"
@@ -49,7 +49,7 @@
                 </div>
                 <!-- Penulis Lokal -->
                 <div class="col-4">
-                    <a href="{{ route('penulis.lokal') }}" class="text-decoration-none">
+                    <a style="text-decoration:none" href="{{ route('penulis.lokal') }}" class="text-decoration-none">
                         <div class="card card-penulis mb-3" style="max-width: 540px;">
                             <img src="https://i.pinimg.com/enabled_lo/564x/24/95/63/2495635bcea49ecfc842dd5d2b94d85e.jpg"
                                 class="img-fluid rounded-start" alt="Penulis Lokal"
@@ -63,28 +63,28 @@
     </section>
 
     <!-- Buku Rekomendasi Section -->
+    @if ($datadepan->isNotEmpty())
     <section class="author">
         <div class="container5">
-        <h2 class="penulis">Rekomendasi Buku</h2>
-        <div class="container">
-            @foreach ($datadepan as $item)
-                <div class="carousel-items">
-                    <a href="{{ route('document.detail', ['id' => Crypt::encryptString($item->id_dbuku)]) }}">
-                        <img class="carousel-item__img" src="{{ $item->dbuku_cover }}"
-                            alt="{{ $item->dbuku_judul }}" />
-                    </a>
-                    <div class="carousel-item__details">
-                        <div class="controls">
-                            <span class="fas fa-play-circle"></span>
-                            <span class="fas fa-plus-circle"></span>
+            <h2 class="penulis">Rekomendasi Buku</h2>
+            <div class="container">
+                @foreach ($datadepan as $item)
+                    <div class="carousel-items">
+                        <a style="text-decoration:none" href="{{ route('document.detail', ['id' => Crypt::encryptString($item->id_dbuku)]) }}">
+                            <img class="carousel-item__img" src="{{ $item->dbuku_cover }}" alt="{{ $item->dbuku_judul }}" />
+                        </a>
+                        <div class="carousel-item__details">
+                            <h5 class="carousel-item__details--title">{{ $item->dbuku_judul }}</h5>
                         </div>
-                        <h5 class="carousel-item__details--title">{{ $item->dbuku_judul }}</h5>
                     </div>
-                </div>
-            @endforeach
+                @endforeach
+            </div>
         </div>
-    </div>
     </section>
+@else
+    <p class="text-center">Tidak ada rekomendasi buku untuk ditampilkan.</p>
+@endif
+
 
     <!-- Penerbit Section -->
     <section class="author">
@@ -93,7 +93,7 @@
             <div class="row">
                 @foreach ($pnb as $item)
                     <div class="col-3">
-                        <a href="{{ route('BukuByPenerbit', \Crypt::encryptString($item->id_dpenerbit)) }}"
+                        <a style="text-decoration:none" href="{{ route('BukuByPenerbit', \Crypt::encryptString($item->id_dpenerbit)) }}"
                             class="text-decoration-none">
                             <div class="card card-penulis mb-3" style="max-width: 540px;">
                                 <img src="https://i.pinimg.com/564x/14/b7/15/14b715201694a3d4468d45468786ec01.jpg"

@@ -17,18 +17,37 @@ body {
     background-color: #f0f0f0;
     color: #333;
 }
+html, body {
+  height: 100%;  /* Pastikan html dan body mengambil tinggi penuh */
+}
+
+body {
+  display: flex;
+  flex-direction: column; /* Mengatur konten agar vertikal */
+}
+
+.container {
+  flex: 1; /* Konten mengisi sisa ruang yang tersedia */
+}
+
+footer {
+  background-color: #333;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  margin-top: auto; /* Footer selalu di bawah */
+}
 
 body {
         font-family: 'Poppins', sans-serif;
     }
 /* General Header Styling */
 header {
-    position: fixed;
     width: 100%;
     top: 0;
     left: 0;
     z-index: 1000;
-    background: rgba(79, 91, 81, 0.4);
+    background: rgba(33, 79, 40, 0.776);
     padding: 10px 0;
     transition: background 0.3s ease;
     height: 80px;
@@ -562,7 +581,6 @@ body {
   width: 200px;
   height: auto; /* Set height to auto to fit content */
   border-radius: 20px;
-  background-color: #95bcd6;
   overflow: hidden;
   margin-right: 10px;
   margin-top: 70px;
