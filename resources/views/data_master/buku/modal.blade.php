@@ -45,14 +45,14 @@
                         <div class="col-4">
                             <div class="form-group">
                                 <label>ISBN <span class="text-danger1">*</span></label>
-                                <input type="text" id="dbuku_isbn" class="form-control" placeholder="ISBN(International Standard Book Number)"
+                                <input type="text" id="dbuku_isbn" class="form-control" placeholder="ISBN"
                                     name="dbuku_isbn" onkeypress="return hanyaAngka(event)">
                                 <span id="isbn-error" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="col-4">
                             <div class="form-group">
-                                <label>Penulism <span class="text-danger1">*</span></label>
+                                <label>Penulis <span class="text-danger1">*</span></label>
                                 @php
                                     $pnls = DB::select('SELECT * FROM dm_penulis');
                                 @endphp
@@ -165,7 +165,9 @@
                             </div>
                         </div>
                         <div class="col-12">
-                            <label for="Keterangan" class="text-danger1">File buku atau link buku harus diisi jika Anda ingin mengaktifkan fitur membaca online.</label>
+                            <label for="Keterangan" class="text-danger1">-Jika buku ini tersedia untuk dibaca secara online, silakan unggah file atau tautan buku tersebut.
+                                <br>-ISBN (International Standard Book Number).
+                            </label>
                         </div>
                     </div>
                 </form>
@@ -222,7 +224,7 @@
                         </div>
                         <div class="col-md-4">
                             <label>ISBN <label class="text-danger1">*</label></label>
-                            <input type="text" id="dbuku_isbn" class="form-control" placeholder="ISBN(International Standard Book Number)"
+                            <input type="text" id="dbuku_isbn" class="form-control" placeholder="ISBN"
                                 name="dbuku_isbn" onkeypress="return hanyaAngka(event)">
                             <span id="isbn-error" class="text-danger"></span>
                         </div>
@@ -277,7 +279,9 @@
                         </div>
 
                         <div class="col-12">
-                            <label for="Keterangan" class="text-danger1">File buku atau link buku harus diisi jika Anda ingin mengaktifkan fitur membaca online.</label>
+                            <label for="Keterangan" class="text-danger1">-Jika buku ini tersedia untuk dibaca secara online, silakan unggah file atau tautan buku tersebut.
+                                <br>-ISBN (International Standard Book Number).
+                            </label>
                         </div>
                     </div>
                 </form>
