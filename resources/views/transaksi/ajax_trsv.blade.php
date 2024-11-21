@@ -41,7 +41,7 @@
         let trsv_tgl_reservasi = $('#editReservasi').find('#trsv_tgl_reservasi').val();
         let trsv_tgl_kadaluarsa = $('#editReservasi').find('#trsv_tgl_kadaluarsa').val();
         let trsv_tgl_pemberitahuan = $('#editReservasi').find('#trsv_tgl_pemberitahuan').val();
-        button.prop('disabled', true).html('Mohon Tunggu...');
+        button.prop('disabled', true).text('Mohon Tunggu...');
 
         // Clear error messages
         $('#editReservasi').find('#buku-error').text('');
@@ -103,7 +103,6 @@
     });
 
     $('body').on('click', '#btn-batal', function() {
-
         let id_trsv = $(this).data('id');
         let token = $("meta[name='csrf-token']").attr("content");
 
@@ -142,14 +141,14 @@
     // ajax Create Reservasi
     $('#storeReservasi').on('click', function(e) {
         e.preventDefault();
-        let button = $(this);
         // Ambil nilai dari form
         let id_dbuku = $('#reservasi').find('#id_dbuku').val();
         let id_usr = $('#reservasi').find('#id_dsiswa').val();
         let trks_tgl_reservasi = $('#reservasi').find('#trks_tgl_reservasi').val();
         let trsv_tgl_kadaluarsa = $('#reservasi').find('#trsv_tgl_kadaluarsa').val();
         let token = $("meta[name='csrf-token']").attr("content");
-        button.prop('disabled', true).html('Mohon Tunggu...');
+        let button = $(this);
+        button.prop('disabled', true).text('Mohon Tunggu...');
         // Proses AJAX
         $.ajax({
             url: `reservasi/store`,

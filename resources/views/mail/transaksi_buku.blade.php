@@ -101,8 +101,8 @@
                 </tr>
             </table>
 
-            <p>Jika Anda tidak merasa melakukan transaksi ini, silakan abaikan email ini.</p>
-            
+            <p>Jika Anda tidak merasa melakukan peminjaman ini, silakan abaikan email ini.</p>
+
         </div>
 
         <div class="footer">
