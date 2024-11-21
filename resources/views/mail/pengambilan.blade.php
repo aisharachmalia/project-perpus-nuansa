@@ -81,8 +81,8 @@
 
         <div class="content">
             <p>Halo, <strong>{{ $data['usr_nama'] }}</strong>!</p>
-            <p>Terima kasih telah mengambil buku yang telah Anda reservasi. Kami senang dapat melayani Anda!</p>
-            <p>Berikut adalah detail pengambilan Anda:</p>
+            <p>Terima kasih telah mengambil buku yang Anda reservasi. Kami harap buku ini dapat membantu dan memberikan manfaat untuk Anda.</p>
+            <p>Berikut adalah detail pengambilan buku Anda:</p>
 
             <h3>Detail Pengambilan</h3>
             <table class="details">
@@ -98,16 +98,21 @@
                     <th>Tanggal Pengambilan</th>
                     <td>{{ $data['trsv_tgl_pengambilan'] }}</td>
                 </tr>
+                <tr>
+                    <th>Tanggal Jatuh Tempo</th>
+                    <td>{{ $data['trsv_tgl_jatuh_tempo'] }}</td>
+                </tr>
             </table>
 
-            <p>Semoga buku ini bermanfaat untuk Anda. Jika ada hal lain yang dapat kami bantu, jangan ragu untuk menghubungi kami.</p>
-            <p>Terima kasih telah menggunakan layanan Perpustakaan Nuansa Baca!</p>
+            <p>Pastikan untuk mengembalikan buku sebelum tanggal jatuh tempo yang tertera. Jika Anda membutuhkan perpanjangan waktu, silakan hubungi petugas perpustakaan.</p>
+            <p>Terima kasih telah menggunakan layanan reservasi kami!</p>
         </div>
 
         <div class="footer">
-            <p>Salam hangat,<br>Tim Perpustakaan Nuansa Baca</p>
+            <p>Salam hangat,<br>Tim Perpustakaan Sekolah</p>
         </div>
     </div>
+
 </body>
 
 </html>

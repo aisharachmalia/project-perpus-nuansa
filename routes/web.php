@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Auth;
 */
 //
 Route::get('/', [App\Http\Controllers\UsePageController::class, 'berandaPage'])->name('beranda.page');
-Route::get('/rekomendasi-buku', [HomeController::class, 'rekomendasiBuku'])->name('rekomendasi.buku');
+Route::get('/rekomendasi-buku', [App\Http\Controllers\HomeController::class, 'rekomendasiBuku'])->name('rekomendasi.buku');
 Route::get('/tentang', [App\Http\Controllers\WebController::class, 'pageTentang'])->name('tentang');
 Route::get('/halaman-buku', [App\Http\Controllers\UsePageController::class, 'pageBuku'])->name('buku');
 Route::get('/search', [App\Http\Controllers\UsePageController::class, 'pageBuku'])->name('buku.search');
@@ -63,7 +63,7 @@ Route::get('/verifikasi-user/{id?}', [App\Http\Controllers\Auth\VerificationCont
 //
 Auth::routes();
 
-Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/dashboard', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('auth');
 Route::get('/total-data-dashboard', [App\Http\Controllers\HomeController::class, 'totalDataDashboard'])->name('total_data_dashboard');
 Route::get('/data-leaderboard', [App\Http\Controllers\HomeController::class, 'totalDataDashboard'])->name('data-leaderboard');
 Route::post('/update-chart', [App\Http\Controllers\HomeController::class, 'updateChart'])->name('update.chart');

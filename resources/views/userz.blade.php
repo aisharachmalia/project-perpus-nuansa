@@ -24,10 +24,12 @@
         <div>
             @yield('content')
 
-            @include('user.footer')
         </div>
+        @include('user.footer')
     </div>
+  
     @include('user.js')
+
     @stack('scripts')
 </body>
 

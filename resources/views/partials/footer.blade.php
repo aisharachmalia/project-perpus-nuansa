@@ -1,11 +1,10 @@
 <footer>
     <div class="footer clearfix mb-0 text-muted">
         <div class="float-start">
-            <p>2021 &copy; Mazer</p>
+            <p>2024 &copy; Nuansa Baca</p>
         </div>
         <div class="float-end">
-            <p>Di buat oleh <span class="text-danger"><i class="bi bi-heart"></i></span> dari <a
-                    href="http://ahmadsaugi.com">Pkl Assalaam </a></p>
+            <p><span class="text-danger"><i class="bi bi-book"></i></span>Nuansa Baca</p>
         </div>
     </div>
 </footer>
