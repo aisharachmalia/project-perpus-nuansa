@@ -562,7 +562,6 @@ body {
   width: 200px;
   height: auto; /* Set height to auto to fit content */
   border-radius: 20px;
-  background-color: #95bcd6;
   overflow: hidden;
   margin-right: 10px;
   margin-top: 70px;

@@ -15,24 +15,27 @@
             </form>
         </div>
     </section> --}}
+
     <section class="author">
         <div class="container5">
-            <h1 class="penerbit">{{ $pnb[0]->dpenerbit_nama_penerbit }}</h1>
-            {{-- <h1 class="penulis">Penulis</h1> --}}
-            <div class="row">
-                @foreach ($buku as $item)
-                    <!-- Pastikan $items di-passing ke view -->
-                    <div class="col-2">
-                        <a href="{{ route('document.detail', ['id' => Crypt::encryptString($item->id_dbuku)]) }}">
-                            <div class="card card-penulis mb-3" style="max-width: 540px; position: relative;">
-                                <img src="{{ asset('storage/cover/' . $item->dbuku_cover) }}"
-                                    class="img-fluid rounded-start" alt="{{ $item->dbuku_judul }}"
-                                    style="height: 100%; width: 100%; object-fit: cover;">
-                            </div>
-                        </a>
-                    </div>
-                @endforeach
-            </div>
+            @if ($buku->isEmpty())
+                {{-- Jika data buku kosong --}}
+                <p class="empty-data-message text-center">Tidak ada data buku untuk ditampilkan.</p>
+            @else
+                <div class="row">
+                    @foreach ($buku as $item)
+                        <div class="col-2">
+                            <a href="{{ route('document.detail', ['id' => Crypt::encryptString($item->id_dbuku)]) }}">
+                                <div class="card card-penulis mb-3" style="max-width: 540px; position: relative;">
+                                    <img src="{{ asset('storage/cover/' . $item->dbuku_cover) }}"
+                                        class="img-fluid rounded-start" alt="{{ $item->dbuku_judul }}"
+                                        style="height: 100%; width: 100%; object-fit: cover;">
+                                </div>
+                            </a>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
         </div>
     </section>
 @endsection

@@ -49,18 +49,20 @@ class UsePageController extends Controller
 
     public function pageBukuByPenerbit(Request $request, $penerbit = null)
     {
+        // Dekripsi parameter penerbit
         $penerbit = \Crypt::decryptString($penerbit);
+    
+        // Ambil data penerbit dengan query
         $pnb = \DB::select("SELECT * FROM dm_penerbits
-                        WHERE dm_penerbits.deleted_at IS NULL AND dm_penerbits.id_dpenerbit = $penerbit AND;
-        ");
-
-        // Dekripsi jika parameter diterima
-        if ($penerbit) {
-            $buku = dm_buku::where('id_dpenerbit', $penerbit)->whereNotNull('dbuku_file')->get();
-        }
-
+            WHERE dm_penerbits.deleted_at IS NULL AND dm_penerbits.id_dpenerbit = ?", [$penerbit]);
+    
+        // Ambil data buku berdasarkan penerbit
+        $buku = dm_buku::where('id_dpenerbit', $penerbit)->whereNotNull('dbuku_file')->get();
+    
+        // Return ke view
         return view('user.buku_by_penerbit', compact('buku', 'pnb'));
     }
+    
 
 
     public function pageBuku(Request $request)
