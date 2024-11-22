@@ -67,7 +67,6 @@
                     {
                         data: 'dpustakawan_alamat'
                     },
-
                     {
                         data: 'dpustakawan_status',
                         class : 'text-center',

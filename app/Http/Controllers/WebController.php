@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\dm_buku;
+use illuminate\Support\Facades\Auth;
 
 class WebController extends Controller
 {
@@ -16,6 +17,10 @@ class WebController extends Controller
     //
     public function pageLogin()
     {
+        if(Auth::check()){
+            return redirect()->back();
+        }
+        
         $login_user = null;
 
         if (isset($_COOKIE['login_user'])) {

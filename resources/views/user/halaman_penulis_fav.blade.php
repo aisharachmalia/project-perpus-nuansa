@@ -60,7 +60,8 @@
                 @endif
             </div>
         @empty
-        <p class="empty-data-message text-center">Data Kosong</p>
+        <center><p class="" style="text-align: center;
+            color: #888;">Tidak ada data buku untuk ditampilkan.</p></center>
         @endforelse
     </div>
 </div>

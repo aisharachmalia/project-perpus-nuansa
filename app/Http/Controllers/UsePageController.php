@@ -51,7 +51,7 @@ class UsePageController extends Controller
     {
         // Dekripsi parameter penerbit
         $penerbit = \Crypt::decryptString($penerbit);
-    
+
         // Ambil data penerbit dengan query
         $pnb = \DB::select("SELECT * FROM dm_penerbits
                         WHERE dm_penerbits.deleted_at IS NULL AND dm_penerbits.id_dpenerbit = $penerbit;
@@ -64,7 +64,7 @@ class UsePageController extends Controller
 
         return view('user.buku_by_penerbit', compact('buku', 'pnb'));
     }
-    
+
 
 
     public function pageBuku(Request $request)
@@ -73,34 +73,39 @@ class UsePageController extends Controller
 
         if ($query) {
             // Search books with titles that match the query
-            $buku = DB::table('dm_buku')
-                ->where('dbuku_judul', 'like', '%' . $query . '%')
+            $buku = dm_buku::where('dbuku_judul', 'like', '%' . $query . '%')
                 ->whereNotNull('dbuku_file')
                 ->get();
         } else {
-            // If no query, retrieve all books
+            // Retrieve all books if no query is provided
             $buku = dm_buku::whereNotNull('dbuku_file')->get();
+        }
 
-            foreach ($buku as $book) {
-                if (\Storage::exists('public/cover/' . $book->dbuku_cover)) {
-                    // If the file exists, generate a URL to 'storage/cover/'
-                    $book->dbuku_cover = asset('storage/cover/' . $book->dbuku_cover);
-                } else {
-                    // If the file does not exist, use the default image path
-                    $book->dbuku_cover = asset('assets/images/buku/default.jpg');
-                }
+        foreach ($buku as $book) {
+            // Check if file exists in storage
+            if (\Storage::exists('public/cover/' . $book->dbuku_cover)) {
+                $book->dbuku_cover = asset('storage/cover/' . $book->dbuku_cover);
+            } else {
+                // Use default image if file does not exist
+                $book->dbuku_cover = asset('assets/images/buku/default.jpg');
             }
+
+            // Debugging: Log generated cover URL
+
         }
 
         return view('user.halaman_buku', compact('buku', 'query'));
     }
+
     public function penulisAsing()
     {
         // Mengambil data penulis yang tidak berasal dari Indonesia
         $penulisAsing = DB::table('dm_penulis')
-            ->where('dpenulis_kewarganegaraan', '!=', 'Indonesia') // Tidak berasal dari Indonesia
+            ->join('dm_buku', 'dm_penulis.id_dpenulis', '=', 'dm_buku.id_dpenulis') // Hubungkan dengan tabel buku
+            ->where('dm_penulis.dpenulis_kewarganegaraan', '!=', 'Indonesia') // Tidak berasal dari Indonesia
+            ->select('dm_penulis.*') // Pilih semua kolom dari tabel dm_penulis
+            ->distinct() // Pastikan tidak ada duplikasi data penulis
             ->get();
-
         // Untuk setiap penulis, ambil maksimal 6 buku pertama
         $penulisAsing->each(function ($penulis) {
             $penulis->buku = DB::table('dm_buku')
@@ -134,7 +139,10 @@ class UsePageController extends Controller
     {
         // Mengambil data penulis asal Indonesia
         $penulisLokal = DB::table('dm_penulis')
-            ->where('dpenulis_kewarganegaraan', 'Indonesia')
+            ->join('dm_buku', 'dm_penulis.id_dpenulis', '=', 'dm_buku.id_dpenulis') // Hubungkan dengan tabel buku
+            ->where('dm_penulis.dpenulis_kewarganegaraan', '=', 'Indonesia') // Tidak berasal dari Indonesia
+            ->select('dm_penulis.*') // Pilih semua kolom dari tabel dm_penulis
+            ->distinct() // Pastikan tidak ada duplikasi data penulis
             ->get();
 
         // Untuk setiap penulis, ambil maksimal 6 buku pertama

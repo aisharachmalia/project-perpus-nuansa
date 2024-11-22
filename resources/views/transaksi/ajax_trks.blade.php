@@ -220,7 +220,8 @@
 
 
                     if (errors.jatuh_tempo) {
-                        $('#pengembalian').find('#tgl-jatuh-tempo-error').text(errors.jatuh_tempo[0]);
+                        $('#pengembalian').find('#tgl-jatuh-tempo-error').text(errors.jatuh_tempo[
+                            0]);
                     } else {
                         $('#pengembalian').find('#tgl-jatuh-tempo-error').text('');
                     }
@@ -280,13 +281,13 @@
                 "trks_tgl_jatuh_tempo": trks_tgl_jatuh_tempo
             },
             success: function(response) {
-                if (response.status === 'error') {
+                if (response.success === false) {
                     Swal.fire({
-                        icon: 'error',
-                        title: 'Terjadi Kesalahan',
+                        icon: 'warning',
+                        title: 'Tanggal Tidak Valid',
                         html: `<p>${response.message}</p>`,
                         confirmButtonText: 'Ok',
-                        timer: 3000,
+                        timer: 4000,
                     });
                 } else {
                     Swal.fire({
