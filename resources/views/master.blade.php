@@ -22,10 +22,9 @@
         @include('partials.header')
         <div id="main">
             @yield('content')
-        </div>
-        
 
-        @include('partials.footer')
+            @include('partials.footer')
+        </div>
     </div>
     @include('partials.js')
     @stack('scripts')
