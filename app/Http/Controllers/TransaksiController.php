@@ -130,27 +130,69 @@ class TransaksiController extends Controller
             $user = Crypt::decryptString($request->id_usr);
             $pustakawan = Crypt::decryptString($request->id_dpustakawan);
             $dsbuku = dm_salinan_buku::where('id_dbuku', $buku)->where('dsbuku_status', 0)->first();
+            $jbuku = dm_salinan_buku::where('id_dbuku', $buku)
+                ->whereNull('deleted_at')
+                ->whereIn('dsbuku_status', [0, 2])
+                ->count();
+            $jreservasi = trks_reservasis::where('id_dbuku', $buku)->whereNull('deleted_at')->where('trsv_status', 1)->count();
+            $cek = $jbuku - $jreservasi > 0;
+            if ($cek) {
+                $transaksi = new Transaksi();
+                $transaksi->id_dbuku = $buku;
+                $transaksi->id_dsbuku = $dsbuku->id_dsbuku;
+                $transaksi->id_usr = $user;
+                $transaksi->id_dpustakawan = $pustakawan;
+                $transaksi->trks_tgl_peminjaman = $request->trks_tgl_peminjaman;
+                $transaksi->trks_tgl_jatuh_tempo = $request->trks_tgl_jatuh_tempo;
+                $transaksi->save();
+                // dsbuku
+                $dsbuku->dsbuku_status = 1;
+                $dsbuku->dsbuku_flag = 1;
+                $dsbuku->save();
+                // dm_buku
+                $dm_buku = dm_buku::find($buku);
+                $dm_buku->dbuku_flag = 1;
+                $dm_buku->dbuku_jml_tersedia -= 1;
+                $dm_buku->save();
+            } else {
+                $dsbuku_rev = dm_salinan_buku::join('trks_reservasis', 'trks_reservasis.id_dbuku', '=', 'dm_salinan_bukus.id_dbuku')
+                    ->where('trks_reservasis.id_dbuku', $buku)
+                    ->where('trks_reservasis.trsv_status', 1)
+                    ->where('dm_salinan_bukus.dsbuku_status', 0)
+                    ->whereRaw("DATE_FORMAT(trks_reservasis.trsv_tgl_kadaluarsa, '%Y-%m-%d %H:%i') > ?", [$request->trks_tgl_jatuh_tempo = str_replace('T', ' ', $request->trks_tgl_jatuh_tempo)])
+                    ->whereNull('trks_reservasis.deleted_at')
+                    ->whereNull('dm_salinan_bukus.deleted_at')
+                    ->whereNull('trks_reservasis.trsv_tgl_pemberitahuan')
+                    ->select('dm_salinan_bukus.id_dsbuku','dm_salinan_bukus.dsbuku_status','dm_salinan_bukus.dsbuku_flag')
+                    ->first();
+                if ($dsbuku_rev) {
+                    $transaksi = new Transaksi();
+                    $transaksi->id_dbuku = $buku;
+                    $transaksi->id_dsbuku = $dsbuku_rev->id_dsbuku;
+                    $transaksi->id_usr = $user;
+                    $transaksi->id_dpustakawan = $pustakawan;
+                    $transaksi->trks_tgl_peminjaman = $request->trks_tgl_peminjaman;
+                    $transaksi->trks_tgl_jatuh_tempo = $request->trks_tgl_jatuh_tempo;
+                    $transaksi->save();
+                    // dsbuku
+                    $dsbuku_rev->dsbuku_status = 1;
+                    $dsbuku_rev->dsbuku_flag = 1;
+                    $dsbuku_rev->save();
+                    // dm_buku
+                    $dm_buku = dm_buku::find($buku);
+                    $dm_buku->dbuku_flag = 1;
+                    $dm_buku->dbuku_jml_tersedia -= 1;
+                    $dm_buku->save();
+                } else {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Buku ini tidak dapat dipinjam karena sedang dalam status reservasi aktif. Tanggal jatuh tempo yang Anda pilih melebihi batas kadaluarsa reservasi yang sedang berlangsung. Silakan pilih tanggal yang lebih awal atau tunggu hingga reservasi berakhir.'
+                    ]);
+                }
+            }
 
-            // transaksi
-            $transaksi = new Transaksi();
-            $transaksi->id_dbuku = $buku;
-            $transaksi->id_dsbuku = $dsbuku->id_dsbuku;
-            $transaksi->id_usr = $user;
-            $transaksi->id_dpustakawan = $pustakawan;
-            $transaksi->trks_tgl_peminjaman = $request->trks_tgl_peminjaman;
-            $transaksi->trks_tgl_jatuh_tempo = $request->trks_tgl_jatuh_tempo;
-            $transaksi->save();
-            // dsbuku
-            $dsbuku->dsbuku_status = 1;
-            $dsbuku->dsbuku_flag = 1;
-            $dsbuku->save();
-            // dm_buku
-            $dm_buku = dm_buku::find($buku);
-            $dm_buku->dbuku_flag = 1;
-            $dm_buku->dbuku_jml_tersedia -= 1;
-            $dm_buku->save();
 
-
+            // Kirim email
             $userDet = User::where('id_usr', $user)->select('usr_email', 'usr_nama')->first();
             $namaBuku = DB::table('dm_buku')->where('id_dbuku', $buku)->select('dbuku_judul')->first();
 
@@ -172,7 +214,10 @@ class TransaksiController extends Controller
                 $message->from('nuansabaca2024@gmail.com', 'Nuansa Baca');
             });
 
-            return response()->json(['message' => 'Data transaksi berhasil disimpan']);
+            return response()->json([
+                'success' => true,
+                'message' => 'Data transaksi berhasil disimpan'
+            ]);
         } catch (\Exception $th) {
             throw $th;
         }
