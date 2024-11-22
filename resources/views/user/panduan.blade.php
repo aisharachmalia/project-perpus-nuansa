@@ -88,24 +88,15 @@
 
         <h2><i class="fas fa-info-circle"></i> Ketentuan Peminjaman</h2>
         <ul>
-            <li>Maksimal 3 buku dapat dipinjam dalam satu waktu.</li>
-            <li>Durasi peminjaman adalah 30 hari.</li>
+            <li>Durasi peminjaman adalah di tentukan oleh pustakawan, siswa bisa mengajukan hari juga.</li>
             <li>Buku yang terlambat dikembalikan akan dikenakan denda sebesar Rp2.000/hari.</li>
             <li>Buku yang hilang atau rusak harus diganti dengan buku serupa atau membayar biaya penggantian.</li>
         </ul>
-
-        <h2><i class="fas fa-lightbulb"></i> Tips Memanfaatkan Perpustakaan</h2>
-        <ul>
-            <li>Gunakan katalog digital untuk mencari koleksi terbaru.</li>
-            <li>Manfaatkan ruang diskusi untuk belajar kelompok.</li>
-            <li>Bawa kartu perpustakaan setiap kali berkunjung.</li>
-        </ul>
-
         <h2><i class="fas fa-phone-alt"></i> Kontak Petugas Perpustakaan</h2>
         <div class="contact-info">
             <p><i class="fas fa-map-marker-alt"></i> Jl. Pendidikan No. 5, Jakarta</p>
             <p><i class="fas fa-phone"></i> (021) 123-4567</p>
-            <p><i class="fas fa-envelope"></i> perpustakaan@sekolah.sch.id</p>
+            <p><i class="fas fa-envelope"></i> nuansabaca2024@gmail.com</p>
         </div>
     </div>
 </section>
