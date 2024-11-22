@@ -43,7 +43,7 @@
         }
 
         .details {
-            margin-top: 20px;
+            margin-top: 20px;                                                                                               
             border-collapse: collapse;
             width: 100%;
         }
@@ -99,6 +99,10 @@
                     <td>{{ $data['dpustakawan_nama'] }}</td>
                 </tr>
                 <tr>
+                    <th>Username</th>
+                    <td>{{ $username }}</td>
+                </tr>
+                <tr>
                     <th>Email</th>
                     <td>{{ $data['dpustakawan_email'] }}</td>
                 </tr>
@@ -108,9 +112,11 @@
                 </tr>
             </table>
 
-            <p>Jangan ragu untuk menjelajahi koleksi buku kami yang beragam. Nikmati pengalaman membaca terbaik!</p>
+            <p>Silakan gunakan akun ini untuk mengelola perpustakaan, mulai dari pengelolaan buku hingga layanan kepada pengguna. Jika Anda memerlukan bantuan atau memiliki pertanyaan, jangan ragu untuk menghubungi admin kami.</p>
             <p>Jika Anda tidak merasa melakukan pendaftaran ini, silakan abaikan email ini.</p>
-
+            <br>
+            <p><strong>Catatan:</strong> Demi keamanan, harap segera mengubah kata sandi Anda setelah login pertama.</p>
+            <br>
             <p>klik di bawah ini untuk verifikasi email</p>
             <a href="{{ $url }}" class="button">Verifikasi Email</a>
             
