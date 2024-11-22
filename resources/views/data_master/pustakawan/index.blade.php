@@ -68,16 +68,16 @@
                         data: 'dpustakawan_alamat'
                     },
                     {
-    data: 'dpustakawan_status',
-    render: function(data) {
-        if (data == 1) {
-            return '<span class="badge bg-success" style="padding: 5px 10px; font-size: 14px;">Aktif</span>';
-        } else {
-            return '<span class="badge bg-danger" style="padding: 5px 10px; font-size: 14px; align:center;">Inaktif</span>';
-        }
-    }
-},
-
+                        data: 'dpustakawan_status',
+                        class : 'text-center',
+                        render: function(data) {
+                            if (data == 1) {
+                                return '<p class = "badge bg-success" > Aktif </p>';
+                            } else {
+                                return '<p class = "badge bg-danger" > Inaktif </p>'
+                            }
+                        }
+                    },
                     {
                         data: 'aksi',
                         name: 'aksi',

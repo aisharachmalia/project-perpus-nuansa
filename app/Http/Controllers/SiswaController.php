@@ -79,7 +79,7 @@ class SiswaController extends Controller
         $validator = Validator::make($request->all(), [
             'dsiswa_nama' => 'required',
             'dsiswa_nis' => 'required|numeric|unique:dm_siswas,dsiswa_nis',
-            'dsiswa_email' => 'required|email|unique:dm_siswas,dsiswa_email',  
+            'dsiswa_email' => 'required|email|unique:users,usr_email',  
             'dsiswa_no_telp' => 'required|regex:/^\+?[\d\s\-]+$/|min:10|max:13|unique:dm_siswas,dsiswa_no_telp',
             'dsiswa_alamat' => 'required',
             'id_dkelas' => 'required',
@@ -124,30 +124,29 @@ class SiswaController extends Controller
         }
 
 
-        $baseUsername = $request->dsiswa_nama;
+        $baseUsername =ucfirst(strtolower($request->dsiswa_nama));
         $username = $baseUsername; 
         $counter = 1;
 
         while (User::where('usr_username', $username)->exists()) {
-            $username = $baseUsername . str_pad($counter, 3, '0', STR_PAD_LEFT);
-            $counter++;
+            $username = $baseUsername .  $counter++;
         }
 
-        // Proses pembuatan email unik jika sudah ada sebelumnya
-        $baseEmail = $request->dsiswa_email;
-        $email = $baseEmail;
-        $counter = 1;
+        // // Proses pembuatan email unik jika sudah ada sebelumnya
+        // $baseEmail = $request->dsiswa_email;
+        // $email = $baseEmail;
+        // $counter = 1;
 
-        while (User::where('usr_email', $email)->exists()) {
-            $email = $baseEmail . str_pad($counter, 3, '0', STR_PAD_LEFT);
-            $counter++;
-        }
+        // while (User::where('usr_email', $email)->exists()) {
+        //     $email = $baseEmail . str_pad($counter, 3, '0', STR_PAD_LEFT);
+        //     $counter++;
+        // }
 
         $password = $this->generateRandomPassword();
 
         $user = User::create([
             'usr_nama' => $request->dsiswa_nama,
-            'usr_username' => $request->dsiswa_nama,
+            'usr_username' => $username,
             'usr_email' => $request->dsiswa_email,
             'password' => Hash::make($password),
         ]);
