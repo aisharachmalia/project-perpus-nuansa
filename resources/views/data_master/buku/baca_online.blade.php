@@ -155,7 +155,7 @@
             <h2 class="text-center mt-5">Membaca: {{ $bk->dbuku_judul }}</h2>
             <div id="pdf-container"></div>
         </div>
-        <button id="finishReading" class="btn btn-success mt-3 text-center" style="display:none;">Selesai Baca</button>
+        <button id="finishReading" class="btn btn-success mt-3 mb-3 text-center" style="display:none;">Selesai Baca</button>
     @endsection
 
     @push('scripts')
