@@ -43,7 +43,7 @@
         }
 
         .details {
-            margin-top: 20px;
+            margin-top: 20px;                                                                                               
             border-collapse: collapse;
             width: 100%;
         }
