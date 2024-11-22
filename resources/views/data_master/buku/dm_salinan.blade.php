@@ -373,14 +373,25 @@
                             // Parse the response text to get the error message
                             let response = JSON.parse(xhr.responseText);
 
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Error!',
-                                text: `${response.message}`,
-                                showConfirmButton: false,
-                                timer: 3000
-                            });
-                        }
+                            if (xhr.status === 404) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Terjadi Kesalahan!',
+                                    text: `${response.message}`,
+                                    showConfirmButton: false,
+                                    timer: 3000
+                                });
+                            } else if (xhr.status === 403) {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Peringatan!',
+                                    text: `${response.message}`,
+                                    showConfirmButton: false,
+                                    timer: 3000
+                                });
+                            }
+
+                        } 
                     });
                 }
             })

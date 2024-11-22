@@ -11,7 +11,7 @@
 
 <style>
 body {
-    font-family: 'Montserrat', sans-serif;
+font-family: 'Poppins', sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f0f0f0;
@@ -39,7 +39,7 @@ footer {
 }
 
 body {
-        font-family: 'Poppins', sans-serif;
+        
     }
 /* General Header Styling */
 header {
@@ -47,7 +47,7 @@ header {
     top: 0;
     left: 0;
     z-index: 1000;
-    background: rgba(63, 108, 54, 0.676);
+    background-color: rgba(43, 101, 28, 0.79);
     padding: 10px 0;
     transition: background 0.3s ease;
     height: 80px;
@@ -58,7 +58,7 @@ header {
     
     position: absolute;
     z-index: 1050;
-    background-color: rgb(42, 101, 28);
+    background-color: rgba(43, 101, 28, 0.71);
 }
 .dropdown-menu {
     z-index: 1050;

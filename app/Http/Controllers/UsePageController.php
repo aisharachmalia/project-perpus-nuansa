@@ -68,32 +68,35 @@ class UsePageController extends Controller
 
 
     public function pageBuku(Request $request)
-    {
-        $query = $request->input('query');
+{
+    $query = $request->input('query');
 
-        if ($query) {
-            // Search books with titles that match the query
-            $buku = DB::table('dm_buku')
-                ->where('dbuku_judul', 'like', '%' . $query . '%')
-                ->whereNotNull('dbuku_file')
-                ->get();
+    if ($query) {
+        // Search books with titles that match the query
+        $buku = dm_buku::where('dbuku_judul', 'like', '%' . $query . '%')
+            ->whereNotNull('dbuku_file')
+            ->get();
+    } else {
+        // Retrieve all books if no query is provided
+        $buku = dm_buku::whereNotNull('dbuku_file')->get();
+    }
+
+    foreach ($buku as $book) {
+        // Check if file exists in storage
+        if (\Storage::exists('public/cover/' . $book->dbuku_cover)) {
+            $book->dbuku_cover = asset('storage/cover/' . $book->dbuku_cover);
         } else {
-            // If no query, retrieve all books
-            $buku = dm_buku::whereNotNull('dbuku_file')->get();
-
-            foreach ($buku as $book) {
-                if (\Storage::exists('public/cover/' . $book->dbuku_cover)) {
-                    // If the file exists, generate a URL to 'storage/cover/'
-                    $book->dbuku_cover = asset('storage/cover/' . $book->dbuku_cover);
-                } else {
-                    // If the file does not exist, use the default image path
-                    $book->dbuku_cover = asset('assets/images/buku/default.jpg');
-                }
-            }
+            // Use default image if file does not exist
+            $book->dbuku_cover = asset('assets/images/buku/default.jpg');
         }
 
-        return view('user.halaman_buku', compact('buku', 'query'));
+        // Debugging: Log generated cover URL
+       
     }
+
+    return view('user.halaman_buku', compact('buku', 'query'));
+}
+
     public function penulisAsing()
     {
         // Mengambil data penulis yang tidak berasal dari Indonesia
