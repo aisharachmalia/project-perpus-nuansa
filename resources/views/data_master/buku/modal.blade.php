@@ -32,7 +32,7 @@
                             </div>
                         </div>
                         <div class="col-4">
-                            <label>link Buku <span class="text-danger1">*</span></label>
+                            <label>link Buku <span class="text-danger1"></span></label>
                             <input type="text" id="dbuku_link" class="form-control" placeholder="Link Buku"
                                 name="dbuku_link">
                             <span id="link-error" class="text-danger"></span>
@@ -153,7 +153,7 @@
                                 <select class="form-control" name="dbuku_edisi">
                                     <option value="" selected disabled>Pilih Edisi</option>
                                     @php
-                                        $edisi = ['1', '2', '3', '3', '5', '6', '7', '8', '9', '10'];
+                                        $edisi = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
                                         $opt_ed = '';
                                         foreach ($edisi as $ed) {
                                             $opt_ed .= '<option value="' . $ed . '">' . $ed . '</option>';

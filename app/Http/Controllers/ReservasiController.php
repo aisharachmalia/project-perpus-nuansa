@@ -99,7 +99,8 @@ class ReservasiController extends Controller
             $buku = Crypt::decryptString($request->id_dbuku);
             $user = Crypt::decryptString($request->id_usr);
             $tglReservasi = str_replace('T', ' ', $request->trks_tgl_reservasi);
-            $jbuku = dm_salinan_buku::where('id_dbuku', $buku)->where('dsbuku_status', 0)->count();
+            $jbuku = dm_salinan_buku::where('id_dbuku', $buku)->whereNull('deleted_at')->where('dsbuku_status', 0)->orWhere('dsbuku_status', 2)->count();
+            $jreservasi = trks_reservasis::where('id_dbuku', $buku)->whereNull('deleted_at')->where('trsv_status', 1)->count();
 
             // Cari peminjaman dan reservasi terakhir
             $peminjaman = Transaksi::where("trks_status", 0)
@@ -112,9 +113,9 @@ class ReservasiController extends Controller
                 ->whereNull('deleted_at')
                 ->orderBy('trsv_tgl_reservasi', 'desc')
                 ->first();
-
+            $cek = $jbuku - $jreservasi > 0;
             // Cek jika ada peminjaman aktif atau reservasi aktif
-            if ($jbuku > 0) {
+            if ($cek) {
                 $reservasi = new trks_reservasis();
                 $reservasi->id_dbuku = $buku;
                 $reservasi->id_dsbuku = 0;
@@ -272,6 +273,7 @@ class ReservasiController extends Controller
             $buku = Crypt::decryptString($request->id_dbuku);
             $user = Crypt::decryptString($request->id_peminjam);
             // Cek ketersediaan buku
+
             $dsbuku = dm_salinan_buku::where('id_dbuku', $buku)->where('dsbuku_status', 0)->orWhere('dsbuku_status', 2)->first();
             if ($dsbuku) {
                 $transaksi = new Transaksi();

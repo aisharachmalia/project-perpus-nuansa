@@ -90,7 +90,7 @@ class TransaksiController extends Controller
             ->where('trks_reservasis.trsv_status', 1)
             ->groupBy('users.id_usr')
             ->get();
-        $pustakawan = dm_pustakawan::select('id_dpustakawan', 'dpustakawan_nama')->get();
+        $pustakawan = dm_pustakawan::select('id_dpustakawan', 'dpustakawan_nama')->whereNull('deleted_at')->where('dpustakawan_status', 1)->get();
         return view('transaksi.transaksi', compact('buku', 'siswa', 'pustakawan', 'siswa2', 'bukuReservasi', 'reservasi'));
     }
 
