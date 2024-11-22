@@ -89,7 +89,7 @@
         </div>
     </section>
 
-    <h1 class="text-center mb-4 mt-5">Penulis Asing (Bukan dari Indonesia)</h1>  
+    <h1 class="text-center mb-4 mt-5">Penulis Asing </h1>  
     @if ($penulisAsing->isEmpty())
     <p class="empty-data-message text-center">Tidak ada data buku untuk ditampilkan.</p>
     @else 

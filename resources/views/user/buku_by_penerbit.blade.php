@@ -20,6 +20,7 @@
     </section> --}}
 
     <section class="author">
+        <h1 class="penerbit">{{ $pnb[0]->dpenerbit_nama_penerbit }}</h1>
         <div class="container5">
             @if ($buku->isEmpty())
                 {{-- Jika data buku kosong --}}
