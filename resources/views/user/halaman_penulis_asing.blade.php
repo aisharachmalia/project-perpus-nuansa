@@ -89,11 +89,12 @@
         </div>
     </section>
 
-    <h1 class="text-center mb-4 mt-5">Penulis Asing (Bukan dari Indonesia)</h1>   
+    <h1 class="text-center mb-4 mt-5">Penulis Asing (Bukan dari Indonesia)</h1>  
+    @if ($penulisAsing->isEmpty())
+    <p class="empty-data-message text-center">Tidak ada data buku untuk ditampilkan.</p>
+    @else 
     <div class="containers my-4">
-        @if ($penulisAsing->isEmpty())
-            <p class="empty-data-message text-center">Data Kosong</p>
-        @else
+       
             <div class="row">
                 @foreach ($penulisAsing as $penulis)
                     <div class="col-md-12 penulis-section">

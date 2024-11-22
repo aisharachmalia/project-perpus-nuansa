@@ -26,7 +26,6 @@
 
         </div>
     </div>
-    @include('user.footer')
   
     @include('user.js')
 

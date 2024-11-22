@@ -587,16 +587,6 @@ class BukuController extends Controller
                 }
             }
 
-            foreach ($buku as $book) {
-                if (\Storage::exists('public/cover/' . $book->dbuku_cover)) {
-                    // If the file exists, generate a URL to 'storage/cover/'
-                    $book->dbuku_cover = asset('storage/cover/' . $book->dbuku_cover);
-                } else {
-                    // If the file does not exist, use the default image path
-                    $book->dbuku_cover = asset('assets/images/buku/default.jpg');
-                }
-            }
-
             $html = \View::make('pdf.pdf_buku', [
                 'title' => 'Data Buku',
                 'buku' => $buku

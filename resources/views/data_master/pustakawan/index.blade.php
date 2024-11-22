@@ -67,18 +67,17 @@
                     {
                         data: 'dpustakawan_alamat'
                     },
-
                     {
-                        class: "text-center",
-                        data: 'dpustakawan_status',
-                        render: function(data) {
-                            if (data == 1) {
-                                return '<span class="badge bg-success">Aktif</span>';
-                            } else {
-                                return '<span class="badge bg-warning">Tidak Aktif</span>';
-                            }
-                        }
-                    },
+    data: 'dpustakawan_status',
+    render: function(data) {
+        if (data == 1) {
+            return '<span class="badge bg-success" style="padding: 5px 10px; font-size: 14px;">Aktif</span>';
+        } else {
+            return '<span class="badge bg-danger" style="padding: 5px 10px; font-size: 14px; align:center;">Inaktif</span>';
+        }
+    }
+},
+
                     {
                         data: 'aksi',
                         name: 'aksi',
