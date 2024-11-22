@@ -99,6 +99,10 @@
                     <td>{{ $data['dpustakawan_nama'] }}</td>
                 </tr>
                 <tr>
+                    <th>Username</th>
+                    <td>{{ $username }}</td>
+                </tr>
+                <tr>
                     <th>Email</th>
                     <td>{{ $data['dpustakawan_email'] }}</td>
                 </tr>
