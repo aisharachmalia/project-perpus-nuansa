@@ -70,6 +70,7 @@
 
                     {
                         data: 'dpustakawan_status',
+                        class : 'text-center',
                         render: function(data) {
                             if (data == 1) {
                                 return '<p class = "badge bg-success" > Aktif </p>';
