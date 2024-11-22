@@ -12,7 +12,6 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
         <style>
             body {
-                font-family: 'Arial', sans-serif;
                 line-height: 1.6;
                 margin: 0;
                 padding: 0;
@@ -40,12 +39,6 @@
                 margin-top: 20px;
                 font-size: 1.8rem;
                 color: #277a32;
-            }
-            ol, ul {
-                padding-left: 20px;
-            }
-            li {
-                margin-bottom: 15px;
             }
             .contact-info p {
                 margin-bottom: 10px;
