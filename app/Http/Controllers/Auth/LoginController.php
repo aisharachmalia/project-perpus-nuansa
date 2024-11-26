@@ -56,13 +56,14 @@ class LoginController extends Controller
                         'usr_username' => $username,
                         'password' => $password,
                         'usr_stat'  => 1
-                    ]);
-
+                    ]);//untuk menyamakan data
+                    //penyamaan data usr, usr stat pada database
                     if (Auth::check()) {
                         $role = Akses_usr::join('users', 'akses_usrs.id_usr', 'users.id_usr')
                             ->where('users.id_usr', Auth::user()->id_usr)
                             ->join('roles', 'akses_usrs.id_role', 'roles.id_role')
-                            ->first();
+                            ->first();//harusnya ada selesct biar load data ga lama
+                    //mencari role nya
                         if ($role) {
                             $menus =  Menu::join('akses_usrs', 'menus.id_menu', '=', 'akses_usrs.id_menu')
                                 ->where('akses_usrs.id_usr', Auth::user()->id_usr)

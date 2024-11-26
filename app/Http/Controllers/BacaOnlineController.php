@@ -150,15 +150,14 @@ class BacaOnlineController extends Controller
             
             foreach ($bacaOnline as $book) {
                 if (\Storage::exists('public/cover/' . $book->dbuku_cover)) {
-                    // If the file exists, generate a URL to 'storage/cover/'
                     $book->dbuku_cover = asset('storage/cover/' . $book->dbuku_cover);
                 } else {
-                    // If the file does not exist, use the default image path
+                    // Use default image if file does not exist
                     $book->dbuku_cover = asset('assets/images/buku/default.jpg');
                 }
             }
 
-            return view("history", compact('bacaOnline'));
+            return view("history", compact('bacaOnline','book'));
 
         } catch (\Exception $e) {
             \Log::error('Error in finishReading: ' . $e->getMessage());
