@@ -145,18 +145,19 @@ class BacaOnlineController extends Controller
             if (!\Auth::check()) {
                 return redirect()->route('login')->with('error', 'Anda harus login terlebih dahulu.');
             }
-            $bacaOnline = baca_online::where('id_usr', \Auth::id())->get();
-
-            
-            foreach ($bacaOnline as $book) {
-                if (\Storage::exists('public/cover/' . $book->dbuku_cover)) {
-                    $book->dbuku_cover = asset('storage/cover/' . $book->dbuku_cover);
-                } else {
-                    // Use default image if file does not exist
-                    $book->dbuku_cover = asset('assets/images/buku/default.jpg');
-                }
+            $bacaOnline = baca_online::where('id_usr', \Auth::id())
+            ->join('dm_buku', 'baca_onlines.id_dbuku', '=', 'dm_buku.id_dbuku')
+            ->get();
+        
+        foreach ($bacaOnline as $book) {
+            if (\Storage::exists('public/cover/' . $book->dbuku_cover)) {
+                $book->dbuku_cover = asset('storage/cover/' . $book->dbuku_cover);
+            } else {
+                // Gunakan gambar default jika file tidak ditemukan
+                $book->dbuku_cover = asset('assets/images/buku/default.jpg');
             }
-
+        }
+        
             return view("history", compact('bacaOnline','book'));
 
         } catch (\Exception $e) {

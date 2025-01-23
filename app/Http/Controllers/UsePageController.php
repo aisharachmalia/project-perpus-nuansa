@@ -215,4 +215,13 @@ class UsePageController extends Controller
 
         return view('user.halaman_penulis_fav', compact('penulisFavorit'));
     }
+    public function getBeritaById(Request $request)
+    {
+        $response = Http::get('https://uinsgd.ac.id/wp-json/wp/v2/posts/' . $request->id);
+        $berita = $response->json();
+        return view('detail', ['berita' => $berita]);
+    }
+    
+    
+
 }

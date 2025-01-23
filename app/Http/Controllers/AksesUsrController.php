@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Yajra\DataTables\Facades\DataTables;
-
+ 
 class AksesUsrController extends Controller
 {
     public function index()

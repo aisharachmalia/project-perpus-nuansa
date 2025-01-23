@@ -7,11 +7,15 @@
 
         <!-- Navigation Menu (Centered) -->
         <nav>
-            <ul id="navbar">
+            <ul id="navbar" >
+
                 <li><a href="{{ url('') }}">Beranda</a></li>
-                <li><a href="{{ url('halaman-buku') }}">Buku</a></li>
+                <li><a href="{{ url('halaman-buku') }}" >Buku</a></li>
                 <li><a href="{{ url('panduan') }}">Panduan</a></li>
                 <li><a href="{{ url('tentang') }}">Tentang</a></li>
+                @auth
+                <li><a href="{{ route('history') }}">Histori</a></li>
+            @endauth
             </ul>
         </nav>
 
@@ -28,7 +32,6 @@
                         {{ Auth::user()->usr_nama }}
                     </a>
                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        z
                         <a class="dropdown-item" href="{{ route('logout') }}"
                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                             Logout
