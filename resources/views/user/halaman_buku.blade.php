@@ -21,24 +21,27 @@
             @if (!empty($query))
                 <h3>Hasil pencarian untuk: <strong>{{ $query }}</strong></h3>
             @endif
-            <div class="row">
-                @foreach ($buku as $item)
-                    <!-- Pastikan $items di-passing ke view -->
-                    <div class="carousel-items col-2">
-                        <a href="{{ route('document.detail', ['id' => Crypt::encryptString($item->id_dbuku)]) }}">
-                            <div class="card card-penulis mb-3" style="max-width: 540px; position: relative;">
-                                <img src="{{ $item->dbuku_cover }}" class="carousel-item__img"
-                                    alt="{{ $item->dbuku_judul }}" style="height: 300px; width: 100%; object-fit:cover ;">
+            <center>
+                <div class="d-flex justify-content-center">
+                    <div class="row">
+                        @foreach ($buku as $item)
+                            <div class="carousel-items col-2">
+                                <a href="{{ route('document.detail', ['id' => Crypt::encryptString($item->id_dbuku)]) }}">
+                                    <div class="card card-penulis mb-3" style="max-width: 540px; position: relative;">
+                                        <img src="{{ $item->dbuku_cover }}" class="carousel-item__img"
+                                            alt="{{ $item->dbuku_judul }}" style="height: 300px; width: 100%; object-fit:cover ;">
+                                    </div>
+                                </a>
+                                <div class="carousel-item__details">
+                                    <h5 class="carousel-item__details--title">{{ $item->dbuku_judul }}</h5>
+                                </div>
                             </div>
-                        </a>
-                        <div class="carousel-item__details">
-                     
-                            <h5 class="carousel-item__details--title">{{ $item->dbuku_judul }}</h5>
-                        </div>
+                        @endforeach
                     </div>
-                @endforeach
-            </div>
-            @php
+                </div>
+            </center>
+w            
+            {{-- @php
             $response = Http::get('https://uinsgd.ac.id/wp-json/wp/v2/posts');
             $berita = $response->successful() ? $response->json() : [];
             $berita = collect($berita); // Ubah array menjadi koleksi jika perlu
@@ -73,7 +76,7 @@
                                 </div>
                             </div>
                             <hr class="w-100">
-                        @endforeach
+                        @endforeach --}}
         </div>
     </section>
 @endsection

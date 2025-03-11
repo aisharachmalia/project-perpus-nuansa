@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
-
+use Auth;
 class TransaksiController extends Controller
 {
     public function __construct()
@@ -101,7 +101,7 @@ class TransaksiController extends Controller
             $rules = [
                 'id_dbuku' => 'required',
                 'id_usr' => 'required',
-                'id_dpustakawan' => 'required',
+                // 'id_dpustakawan' => 'required',
                 'trks_tgl_peminjaman' => 'required|date|after_or_equal:today',
                 'trks_tgl_jatuh_tempo' => 'required|date|after:trks_tgl_peminjaman',
             ];
@@ -109,7 +109,7 @@ class TransaksiController extends Controller
             $messages = [
                 'id_dbuku.required' => 'Buku harus diisi.',
                 'id_usr.required' => 'Peminjam harus di isi!.',
-                'id_dpustakawan.required' => 'Pustakawan harus diisi.',
+                // 'id_dpustakawan.required' => 'Pustakawan harus diisi.',
                 'trks_tgl_peminjaman.required' => 'Tanggal peminjaman harus diisi.',
                 'trks_tgl_peminjaman.date' => 'Tanggal peminjaman harus berupa tanggal yang valid.',
                 'trks_tgl_peminjaman.after_or_equal' => 'Tanggal peminjaman harus hari ini.',
@@ -128,7 +128,7 @@ class TransaksiController extends Controller
 
             $buku = Crypt::decryptString($request->id_dbuku);
             $user = Crypt::decryptString($request->id_usr);
-            $pustakawan = Crypt::decryptString($request->id_dpustakawan);
+            // $pustakawan = Crypt::decryptString($request->id_dpustakawan);
             $dsbuku = dm_salinan_buku::where('id_dbuku', $buku)->where('dsbuku_status', 0)->first();
             $jbuku = dm_salinan_buku::where('id_dbuku', $buku)
                 ->whereNull('deleted_at')
@@ -141,7 +141,7 @@ class TransaksiController extends Controller
                 $transaksi->id_dbuku = $buku;
                 $transaksi->id_dsbuku = $dsbuku->id_dsbuku;
                 $transaksi->id_usr = $user;
-                $transaksi->id_dpustakawan = $pustakawan;
+                $transaksi->id_dpustakawan = Auth::user()->id_usr;
                 $transaksi->trks_tgl_peminjaman = $request->trks_tgl_peminjaman;
                 $transaksi->trks_tgl_jatuh_tempo = $request->trks_tgl_jatuh_tempo;
                 $transaksi->save();

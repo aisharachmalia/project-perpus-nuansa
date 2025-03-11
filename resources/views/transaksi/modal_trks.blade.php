@@ -9,13 +9,13 @@
                 <div class="modal-body">
                     <form class="form" data-action="{{ route('pinjam.store') }}" method="POST" id="pinjamanForm">
                         @csrf
-                        @if ($role->id_role == 3)
+                        {{-- @if ($role->id_role == 3 || $role->id_role == 2)
                             @php
                                 $id_pustakawan = \Crypt::encryptString(Auth::user()->id_usr);
                             @endphp
                             <input type="hidden" name="id_dpustakawan" id="id_dpustakawan"
                                 value="{{ $id_pustakawan }}">
-                        @endif
+                        @endif --}}
                         <div class="row g-4"> <!-- Tambahkan gap untuk ruang antar kolom -->
                             <div class="col-md-6 col-12">
                                 <div class="form-group">
@@ -43,7 +43,7 @@
                                     <span id="siswa-error" class="text-danger small"></span>
                                 </div>
                             </div>
-                            @if ($role->id_role < 3)
+                            {{-- @if ($role->id_role < 3)
                                 <div class="col-md-6 col-12">
                                     <div class="form-group">
                                         <label for="city-column" class="fw-semibold">Nama Pustakawan</label>
@@ -58,7 +58,7 @@
                                         <span id="pustakawan-error" class="text-danger small"></span>
                                     </div>
                                 </div>
-                            @endif
+                            @endif --}}
                             <div class="col-md-6 col-12">
                                 <div class="form-group">
                                     <label for="country-floating" class="fw-semibold">Tanggal Peminjaman</label>
@@ -102,7 +102,7 @@
                     <div class="row">
                         <div class="col-md-4 col-12">
                             <div class="form-group">
-                                @if ($role->id_role == 3)
+                                @if ($role->id_role == 3 || $role->id_role == 2)
                                     @php
                                         $id_pustakawan = \Crypt::encryptString(Auth::user()->id_usr);
                                     @endphp
@@ -130,7 +130,7 @@
                                 <span id="buku-error" class="text-danger"></span>
                             </div>
                         </div>
-                        @if ($role->id_role < 3)
+                        {{-- @if ($role->id_role < 3)
                             <div class="col-md-4 col-12">
                                 <div class="form-group">
                                     <label for="city-column" class="fw-semibold">Nama Pustakawan</label>
@@ -145,7 +145,7 @@
                                     <span id="pustakawan-error" class="text-danger small"></span>
                                 </div>
                             </div>
-                        @endif
+                        @endif --}}
                         <div class="col-md-4 col-12">
                             <div class="form-group">
                                 <label for="country-floating">Tanggal Peminjaman</label>

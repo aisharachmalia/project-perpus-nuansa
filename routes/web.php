@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\ReservasiController;
+use App\Http\Controllers\ReferensiController;
 use App\Http\Controllers\SiswaController;
 use Illuminate\Support\Facades\Auth;
 
@@ -158,12 +159,17 @@ Route::prefix('data-master')->middleware('auth')->group(function () {
     Route::delete('/penerbit/delete/{id?}', [App\Http\Controllers\ReferensiController::class, 'deletePenerbit'])->name('data_master.referensi.penerbit.delete');
 
 
-    // // kategori route
-    // Route::get('/dkategori', [App\Http\Controllers\ReferensiController::class, 'dkategori']);
-    // Route::post('/kategori/add', [App\Http\Controllers\ReferensiController::class, 'addKategori'])->name('data_master.referensi.kategori.add');
-    // Route::put('/kategori/edit/{id?}', [App\Http\Controllers\ReferensiController::class, 'editKategori'])->name('data_master.referensi.kategori.edit');
-    // Route::get('/kategori/show/{id?}', [App\Http\Controllers\ReferensiController::class, 'showKategori'])->name('data_master.referensi.kategori.show');
-    // Route::delete('/kategori/delete/{id?}', [App\Http\Controllers\ReferensiController::class, 'deleteKategori'])->name('data_master.referensi.kategori.delete');
+    Route::prefix('kategori')->group(function () {
+        Route::get('/', [ReferensiController::class, 'dkategori'])->name('kategori.index');
+        Route::post('/store', [ReferensiController::class, 'addKategori'])->name('kategori.store');
+        Route::get('/edit/{id}', [ReferensiController::class, 'editKategori'])->name('kategori.edit');
+        Route::post('/update/{id}', [ReferensiController::class, 'editKategori'])->name('kategori.update');
+        Route::get('/show/{id}', [ReferensiController::class, 'showKategori'])->name('kategori.show');
+        Route::delete('/delete/{id}', [ReferensiController::class, 'deleteKategori'])->name('kategori.delete');
+        Route::get('/export', [ReferensiController::class, 'linkExport'])->name('kategori.export');
+        Route::get('/kategori/list', [ReferensiController::class, 'dkategori'])->name('kategori.list');
+
+    });
 
     // Kelas
     Route::get('/kelas', [App\Http\Controllers\KelasController::class, 'index'])->name('data_master.referensi.kelas');

@@ -133,7 +133,7 @@ class ReferensiController extends Controller
         } catch (\Throwable $th) {
             throw $th;
         }
-    }
+    } 
 
     public function deletePenulis($id = null)
     {

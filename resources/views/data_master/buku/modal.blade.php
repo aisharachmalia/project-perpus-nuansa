@@ -31,14 +31,8 @@
                                 <span id="judul-error" class="text-danger"></span>
                             </div>
                         </div>
-                        <div class="col-4">
-                            <label>link Buku <span class="text-danger1"></span></label>
-                            <input type="text" id="dbuku_link" class="form-control" placeholder="Link Buku"
-                                name="dbuku_link">
-                            <span id="link-error" class="text-danger"></span>
-                        </div>
                         <div class="col-4 ">
-                            <label for="dbuku_file">Ubah File PDF</label>
+                            <label for="dbuku_file">File PDF</label>
                             <input type="file" name="dbuku_file" id="dbuku_file" class="form-control">
                             <span id="file-error" class="text-danger"></span>
                         </div>
@@ -90,7 +84,7 @@
                                 <select class="choices form-control" name="dbuku_thn_terbit">
                                     <option value="" selected disabled>Pilih Tahun Terbit</option>
                                     @php
-                                        $tahunMulai = 2000;
+                                        $tahunMulai = 1900;
                                         $tahunSekarang = date('Y');
 
                                         $opt_thn = '';
@@ -164,13 +158,13 @@
                                 <span id="edisi-error" class="text-danger"></span>
                             </div>
                         </div>
-                        <div class="col-12">
+                        {{-- <div class="col-12">
                             <label for="Keterangan" class="text-danger1">-Jika buku ini tersedia untuk dibaca secara online, silakan unggah file atau tautan buku tersebut.
                                 <br>-ISBN (International Standard Book Number).
                             </label>
-                        </div>
+                        </div> --}}
                     </div>
-                </form>
+                </form> 
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary ml-1" id="store">

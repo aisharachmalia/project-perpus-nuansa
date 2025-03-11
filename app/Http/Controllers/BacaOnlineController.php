@@ -12,7 +12,6 @@ class BacaOnlineController extends Controller
     public function documentDetail($id = null)
     {
         $id = \Crypt::decryptString($id);
-
         $bk = \DB::select(
             "SELECT dm_buku.*,                                         
                             dm_penulis.dpenulis_nama_penulis, 
@@ -158,7 +157,8 @@ class BacaOnlineController extends Controller
             }
         }
         
-            return view("history", compact('bacaOnline','book'));
+        return view("history", compact('bacaOnline'));
+
 
         } catch (\Exception $e) {
             \Log::error('Error in finishReading: ' . $e->getMessage());
